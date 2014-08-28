@@ -15,7 +15,12 @@
             else
         {     
         @: @Model.TotalTime worked
-
+        <div style="margin-left:20px">
+            @foreach(var summary in Model.Summary)
+            {
+                <div>@summary.TimeLogged - @summary.Name</div>
+            }
+        </div>
            foreach (var author in Model.Authors)
             {
                 <div style="margin-top:40px">

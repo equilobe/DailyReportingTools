@@ -20,6 +20,7 @@ namespace JiraReporter.Model
         public List<Author> Authors { get; set; }
         public string TotalTime { get; set; }
         public DateTime Date { get; set; }
+        public List<Author> Summary { get; set; }
 
         public void SetReportTimes()
         {

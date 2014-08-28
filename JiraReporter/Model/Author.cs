@@ -11,6 +11,7 @@ namespace JiraReporter.Model
         public string Name { get; set; }
         public List<Issue> Issues { get; set; }
         public string TimeLogged { get; set; }
+        public int TimeSpent { get; set; }
 
         private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet report)
        {
@@ -59,6 +60,7 @@ namespace JiraReporter.Model
                 var time = Convert.ToInt32(issue.TimeSpent);
                 totalTime += time;
             }
+            author.TimeSpent = totalTime;
             author.TimeLogged = totalTime.ToString();
         }
 
@@ -85,6 +87,16 @@ namespace JiraReporter.Model
         {
             foreach (var issue in author.Issues)
                 Issue.SetIssueTimeFormat(issue);
+        }
+
+        public static List<Author> OrderAuthorsName(List<Author> authors)
+        {
+            return authors.OrderBy(a => a.Name).ToList();
+        }
+
+        public static List<Author> OrderAuthorsTime(List<Author> authors)
+        {
+           return authors.OrderByDescending(a => a.TimeSpent).ToList();
         }
     }
 }

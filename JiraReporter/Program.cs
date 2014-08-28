@@ -23,7 +23,6 @@ namespace JiraReporter
             options.LoadDates();
             var timesheet = new Timesheet();
             timesheet = timesheet.GetTimesheet(p.TargetGroup, options.FromDate, options.ToDate);
-
             var issues = new List<Issue>(timesheet.Worklog.Issues);
 
             foreach (var issue in issues)
@@ -32,9 +31,13 @@ namespace JiraReporter
             Issue.SetIssues(timesheet);
 
             var authors = Author.GetAuthors(timesheet);
-            var report = new Report(p, options) { Authors = authors };
+            var report = new Report(p, options) { Authors = authors, Summary=authors };
 
             report.SetReportTimes();
+
+            report.Authors = Author.OrderAuthorsName(report.Authors);
+            report.Summary = Author.OrderAuthorsTime(report.Summary);
+
             report.Date = options.FromDate;
 
             string reportPath = p.ReportsPath;
