@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<log xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <logentry revison="0">
+    <author>Iulian Mina</author>
+    <date>2014-07-24T08:00:40Z</date>
+    <msg>New test</msg>
+  </logentry>
+</log>

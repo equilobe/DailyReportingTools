@@ -1,0 +1,33 @@
+﻿Prerequisites:
+- SlikSvn client (for the svn log command)
+
+Normal steps:
+- XCopy application (Release version) to C:\Applications\SvnReporterV2 on the staging server.
+- update policies with a different e-mail list (e.g. instead of a test email addresses to production email adresses)
+- Open Task Scheduler
+	- Click Add Task
+		- Give a name to the task
+		- Set "Run whether user is logged in or not"
+		- Check "Run with highest privilages"
+		- In the Triggers tab click New Trigger and select Daily
+		- Select the date and time for the first start
+		- In the Actions tab click New and browse for C:\Applications\SvnReporterV2\SvnLogReporter.exe		
+		- Set the command line parameters to the apropriate polciy file for that instance (e.g. --policy Policies\equilobe.xml)
+		- Set the "run in folder" to the appropriate folder (e.g. C:\Applications\SvnReporterV2). 
+			Attention! All relative paths used in the policy file and when specifying 
+			the policy file (from the command line attributes) will be relative to this path
+			and not the path of the executable.
+		- Click OK
+		- You will be asked for your password. please supply it in order for the task to run when you are not logged in.
+
+Current configuration:
+Right now there are multiple policy files (which are part of the source code) in the Policies folder.
+This folder is copied to the output folder and so are the policy files.
+Both policy files use a relative path for the root of the logs and reports stored by the SvnReporter.
+If you leave this path relative then you have to make sure the "run in folder" is
+appropriately set when you schedule the task.
+
+The application will not run without a policy file. To specify a policy file you can use:
+SvnLogReporter --policy Policies\equilobe.xml
+Be careful when using a relative path for the policy file.
+

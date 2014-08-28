@@ -1,0 +1,49 @@
+<div>
+      @if(Model.options.FromDate==Model.options.ToDate)
+        {
+           <span> @Model.Title for @Model.Date.ToString("dddd, dd MMMM yyyy") </span>
+        }
+        else
+        {
+           <span>@Model.Title for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</span>
+        }     
+    <div style="margin-top: 40px">
+        @if(Model.Authors.Count==0)
+        {
+            <span>0h worked</span>
+        }
+            else
+        {     
+        @: @Model.TotalTime worked
+
+           foreach (var author in Model.Authors)
+            {
+                <div style="margin-top:40px">
+                    <b>@author.Name - @author.TimeLogged</b>
+
+                    @foreach (var issue in author.Issues)
+                    {
+                        <div style="margin-top:10px">
+                            @issue.TimeSpent - <a href=@issue.Link>@issue.Key @issue.Summary</a>
+                            @foreach (var entry in issue.Entries)
+                            {
+                                <div>
+                                    @if (entry.Comment != "")
+                                    {
+                                        <div style="margin-top:10px">
+                                            @foreach (string comment in entry.Comment.Split('\n'))
+                                            {
+                                                <div style="margin-left:35px"> @comment</div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+              }
+         }
+    </div>
+</div>

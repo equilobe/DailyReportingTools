@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RootPath>equilobe</RootPath>
+  <DayStartHour>5</DayStartHour>
+  <ReportTitle>Equilobe</ReportTitle>
+  <ReportType>SVN</ReportType>
+  <RepoUrl>https://192.168.17.21/svn/Code/</RepoUrl>
+  <Username></Username>
+  <Password></Password>
+  <Emails>dan.badea@equilobe.com</Emails>
+</Policy>

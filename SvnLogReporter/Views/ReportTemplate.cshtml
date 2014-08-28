@@ -1,0 +1,31 @@
+@Model.Title report for @Model.ReportDate.ToString("dddd, dd MMMM yyyy") 
+<br />
+
+@if(Model.Authors==null)
+{ <br />
+    <p> No Entries </p>
+  <br />
+    <br/>
+}
+
+else {
+
+@foreach(var author in Model.Authors)
+{
+@:
+<br />
+<b>@author.Name (@author.EntryCount entries)</b>
+    <br />
+    <ul>
+@foreach(var entry in author.Entries)
+{		
+
+@:    <li>  @entry.Message</li>
+        <br />
+
+}
+        </ul>	
+@:
+<br /> 
+    <br />
+}}

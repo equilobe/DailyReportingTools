@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RootPath>BoardProspects</RootPath>
+  <DayStartHour>3</DayStartHour>
+  <ReportTitle>Board Prospects</ReportTitle>
+  <TargetGroup>BoardProspects</TargetGroup>
+  <Username></Username>
+  <Password></Password>
+  <Emails>seby_dum@yahoo.com</Emails>
+</Policy>
