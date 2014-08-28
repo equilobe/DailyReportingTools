@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +28,6 @@ namespace JiraReporter.Model
             Author.SetAuthorsTimeSpent(this.Authors);
             this.TotalTime = SetTotalTime(this.Authors);
             Author.SetAuthorsTimeFormat(this.Authors);
-            Author.SetIssuesTime(this.Authors);
         }
 
         private string SetTotalTime(List<Author> authors)
@@ -35,8 +35,6 @@ namespace JiraReporter.Model
             int totalTime = 0;
             foreach (var author in authors)
                 totalTime += author.TimeSpent;
-                //var time = Convert.ToInt32(author.TimeLogged);
-                //totalTime += time;
             
             var totalTimeString = Timesheet.SetTimeFormat(totalTime);
             return totalTimeString;

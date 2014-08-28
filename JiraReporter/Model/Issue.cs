@@ -67,6 +67,7 @@ namespace JiraReporter.Model
                 Key = issue.Key,
                 Link = issue.Link,
                 TimeLogged = issue.TimeLogged,
+                TimeSpent = issue.TimeSpent,
                 Summary = issue.Summary,
                 Entries = new List<Entries>()
             };
@@ -87,6 +88,7 @@ namespace JiraReporter.Model
             foreach (var issue in timesheet.Worklog.Issues)
             {
                 SetIssueTimeSpent(issue);
+                SetIssueTimeFormat(issue);
                 SetIssueLink(issue);
             }
         }
@@ -99,7 +101,7 @@ namespace JiraReporter.Model
 
         public static void SetIssueTimeFormat(Issue issue)
         {
-            issue.TimeLogged = Timesheet.SetTimeFormat(issue.TimeSpent);
+                 issue.TimeLogged = Timesheet.SetTimeFormat(issue.TimeSpent);
         }
 
         private static void SetIssueLink(Issue issue)

@@ -24,7 +24,6 @@ namespace JiraReporter
         {
             var smtp = new SmtpClient { EnableSsl = true };
             smtp.Send(GetMessage(reportPath));
-
         }
 
         private MailMessage GetMessage(string reportPath)

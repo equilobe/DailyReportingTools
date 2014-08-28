@@ -17,42 +17,20 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
-            //string baseUrl = "/rest/timesheet-gadget/1.0/raw-timesheet.xml";
             Options options = GetCommandLineOptions(args);
             Policy p = Policy.CreateFromFile(options.PolicyPath);
             options.LoadDates();
+
             var timesheet = new Timesheet();
             timesheet = timesheet.GetTimesheet(p.TargetGroup, options.FromDate, options.ToDate);
-            var issues = new List<Issue>(timesheet.Worklog.Issues);
 
-            foreach (var issue in issues)
-                Issue.SetEntries(issue.Entries, issue, timesheet.Worklog.Issues);
-            Issue.RemoveEntries(timesheet.Worklog.Issues);
-            Issue.SetIssues(timesheet);
+            SetTimesheetIssues(timesheet);
 
-            var authors = Author.GetAuthors(timesheet);
-            var report = new Report(p, options) { Authors = authors, Summary=authors };
+            var report = GetReport(timesheet,p,options);
 
-            report.SetReportTimes();
-
-            report.Authors = Author.OrderAuthorsName(report.Authors);
-            report.Summary = Author.OrderAuthorsTime(report.Summary);
-
-            report.Date = options.FromDate;
-
-            string reportPath = p.ReportsPath;
-            Directory.CreateDirectory(reportPath);
-
-            reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
-
-            var repCont = ReportProcessor.ProcessReport(report);
-
-            File.WriteAllText(reportPath, repCont);
-
-            var emailer = new ReportEmailer(p, options);
-            emailer.EmailReport(reportPath);
+            SendReport(report);
         }
-          
+
         private static Options GetCommandLineOptions(string[] args)
         {
             Options options = new Options();
@@ -60,5 +38,51 @@ namespace JiraReporter
             parser.ParseArguments(args, options);
             return options;
         }
+
+        private static void SetTimesheetIssues(Timesheet timesheet)
+        {
+            var issues = new List<Issue>(timesheet.Worklog.Issues);
+            foreach (var issue in issues)
+                Issue.SetEntries(issue.Entries, issue, timesheet.Worklog.Issues);
+            Issue.RemoveEntries(timesheet.Worklog.Issues);
+            Issue.SetIssues(timesheet);
+        }     
+ 
+        private static Report GetReport(Timesheet timesheet, Policy p, Options options)
+        {
+            var authors = Author.GetAuthors(timesheet);
+            var report = new Report(p, options) { Authors = authors, Summary = authors };
+            SetReport(report);
+            return report;
+        }
+
+        private static void SetReport(Report report)
+        {
+            report.SetReportTimes();
+            report.Authors = Author.OrderAuthorsName(report.Authors);
+            report.Summary = Author.OrderAuthorsTime(report.Summary);
+            report.Date = report.options.FromDate;
+        }
+
+        private static void SendReport(Report report)
+        {
+            string reportPath = GetReportPath(report);
+
+            var repCont = ReportProcessor.ProcessReport(report);
+
+            File.WriteAllText(reportPath, repCont);
+
+            var emailer = new ReportEmailer(report.policy, report.options);
+            emailer.EmailReport(reportPath);
+        }
+
+        private static string GetReportPath(Report report)
+        {
+            string reportPath = report.policy.ReportsPath;
+            Directory.CreateDirectory(reportPath);
+            reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
+            return reportPath;
+        }
+
     }
 }
