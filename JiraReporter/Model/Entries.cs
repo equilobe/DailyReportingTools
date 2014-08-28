@@ -14,7 +14,7 @@ namespace JiraReporter.Model
         public string Comment;
 
         [XmlElement("timeSpent")]
-        public string TimeSpent;
+        public int TimeSpent;
 
         [XmlElement("author")]
         public string Author;

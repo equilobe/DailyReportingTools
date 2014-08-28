@@ -17,7 +17,9 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public Uri Link;
 
-        public string TimeSpent;
+        public string TimeLogged;
+
+        public int TimeSpent;
 
         [XmlElement("summary")]
         public string Summary;
@@ -51,7 +53,6 @@ namespace JiraReporter.Model
                 AddEntry(newIssue, entry);
                 AddIssue(newIssue, issues);
             }
-
         }
 
         private static Issue IssueExists(Entries entry, List<Issue> issues, Issue issue)
@@ -65,7 +66,7 @@ namespace JiraReporter.Model
             {
                 Key = issue.Key,
                 Link = issue.Link,
-                TimeSpent = issue.TimeSpent,
+                TimeLogged = issue.TimeLogged,
                 Summary = issue.Summary,
                 Entries = new List<Entries>()
             };
@@ -81,7 +82,6 @@ namespace JiraReporter.Model
             issue.Entries.Add(entry);
         }
 
-
         public static void SetIssues(Timesheet timesheet)
         {
             foreach (var issue in timesheet.Worklog.Issues)
@@ -93,25 +93,24 @@ namespace JiraReporter.Model
 
         public static void SetIssueTimeSpent(Issue issue)
         {
-            int totalTime = 0;
             foreach (var entry in issue.Entries)
-            {
-                var time = Convert.ToInt32(entry.TimeSpent);
-                totalTime += time;
-            }
-            issue.TimeSpent = totalTime.ToString();
+                issue.TimeSpent += entry.TimeSpent;
         }
 
         public static void SetIssueTimeFormat(Issue issue)
         {
-            var time = Convert.ToInt32(issue.TimeSpent);
-            issue.TimeSpent = Timesheet.SetTimeFormat(time);
+            issue.TimeLogged = Timesheet.SetTimeFormat(issue.TimeSpent);
         }
 
         private static void SetIssueLink(Issue issue)
         {
             Uri baseLink=new Uri("https://equilobe.atlassian.net/browse/");
             issue.Link = new Uri(baseLink, issue.Key);           
+        }
+
+        public static List<Issue> OrderIssues(List<Issue> issues)
+        {
+            return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
     }
 }

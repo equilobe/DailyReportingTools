@@ -29,7 +29,7 @@
                     @foreach (var issue in author.Issues)
                     {
                         <div style="margin-top:10px">
-                            @issue.TimeSpent - <a href=@issue.Link>@issue.Key @issue.Summary</a>
+                            @issue.TimeLogged - <a href=@issue.Link>@issue.Key @issue.Summary</a>
                             @foreach (var entry in issue.Entries)
                             {
                                 <div>

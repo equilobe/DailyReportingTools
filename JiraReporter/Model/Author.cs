@@ -43,6 +43,7 @@ namespace JiraReporter.Model
            var authorsNew = new List<Author>();
            foreach (var author in authors)
                authorsNew.Add(new Author { Name = author.Key, Issues = author.Value });
+           authorsNew = OrderAuthorsIssues(authorsNew);
            return authorsNew;
        }
    
@@ -54,27 +55,16 @@ namespace JiraReporter.Model
 
         private static void SetAuthorTimeSpent(Author author)
         {
-            int totalTime = 0;
             foreach (var issue in author.Issues)
-            {
-                var time = Convert.ToInt32(issue.TimeSpent);
-                totalTime += time;
-            }
-            author.TimeSpent = totalTime;
-            author.TimeLogged = totalTime.ToString();
+                author.TimeSpent += issue.TimeSpent;
+
+            author.TimeLogged = author.TimeSpent.ToString();
         }
 
         public static void SetAuthorsTimeFormat(List<Author> authors)
         {
-            foreach (var auhtor in authors)
-                SetAuthorTimeFormat(auhtor);
-        }
-
-        private static void SetAuthorTimeFormat(Author author)
-        {
-            int time;
-            time = Convert.ToInt32(author.TimeLogged);
-            author.TimeLogged = Timesheet.SetTimeFormat(time);
+            foreach (var author in authors)
+                author.TimeLogged = Timesheet.SetTimeFormat(author.TimeSpent);
         }
 
         public static void SetIssuesTime(List<Author> authors)
@@ -97,6 +87,13 @@ namespace JiraReporter.Model
         public static List<Author> OrderAuthorsTime(List<Author> authors)
         {
            return authors.OrderByDescending(a => a.TimeSpent).ToList();
+        }
+
+        public static List<Author> OrderAuthorsIssues(List<Author> authors)
+        {
+            foreach (var author in authors)
+                author.Issues = Issue.OrderIssues(author.Issues);
+            return authors;
         }
     }
 }

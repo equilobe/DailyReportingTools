@@ -50,8 +50,6 @@ namespace JiraReporter.Model
 
         public static string SetTimeFormat(int time)
         {
-
-          // var c =  TimeSpan.FromSeconds(time).ToString("d\\:h\\:mm");
             string timeFormat="";
           
             TimeSpan t = TimeSpan.FromSeconds(time);

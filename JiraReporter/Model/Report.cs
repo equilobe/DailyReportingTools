@@ -34,10 +34,10 @@ namespace JiraReporter.Model
         {
             int totalTime = 0;
             foreach (var author in authors)
-            {
-                var time = Convert.ToInt32(author.TimeLogged);
-                totalTime += time;
-            }
+                totalTime += author.TimeSpent;
+                //var time = Convert.ToInt32(author.TimeLogged);
+                //totalTime += time;
+            
             var totalTimeString = Timesheet.SetTimeFormat(totalTime);
             return totalTimeString;
         }
