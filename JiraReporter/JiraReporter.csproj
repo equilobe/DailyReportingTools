@@ -57,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ReportEmailer.cs" />
-    <Compile Include="LoginUtils.cs" />
     <Compile Include="Model\Author.cs" />
     <Compile Include="Model\Entries.cs" />
     <Compile Include="Model\Issue.cs" />

@@ -29,26 +29,25 @@
                     @foreach (var issue in author.Issues)
                     {
                         <div style="margin-top:10px">
+                            <span>@issue.TimeLogged</span>
+
                             @if(issue.Resolution!=null)
                             {
-                                <span>@issue.TimeLogged (@issue.Resolution) - <a href=@issue.Link>@issue.Key @issue.Summary</a></span>
+                                <span>(@issue.Resolution)</span>                              
                             }
-                            else if(issue.RemainingEstimate==null)
-                                {
-                                    <span>@issue.TimeLogged - <a href=@issue.Link>@issue.Key @issue.Summary</a></span>
-                                    
-                                }
+                                
                                 else if(issue.RemainingEstimate!=null)
                                 {
                                     if (issue.RemainingEstimateSeconds==0)
                                     {
-                                        <span>@issue.TimeLogged (<b style="color:red">@issue.RemainingEstimate</b>) - <a href=@issue.Link>@issue.Key @issue.Summary</a></span>
+                                        <span>(<b style="color:red">@issue.RemainingEstimate</b>)</span>
                                     }
                                     else
                                     {
-                                        <span>@issue.TimeLogged (@issue.RemainingEstimate) - <a href=@issue.Link>@issue.Key @issue.Summary</a></span>
+                                        <span> (@issue.RemainingEstimate) </span>
                                     }
                                 }
+                              <span> - <a href=@issue.Link>@issue.Key @issue.Summary</a></span>
                                     
                             @if(issue.Assignee!=author.Name)
                             {
@@ -70,7 +69,6 @@
                             }
                         </div>
                     }
-
                 </div>
               }
          }
