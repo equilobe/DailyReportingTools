@@ -25,6 +25,7 @@ namespace JiraReporter.Model
         public int DayStartHour { get; set; }
 
         public string ReportTitle { get; set; }
+        public string BaseUrl { get; set; }
         public string TargetGroup { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

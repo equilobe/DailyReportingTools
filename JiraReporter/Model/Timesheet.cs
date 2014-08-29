@@ -34,14 +34,14 @@ namespace JiraReporter.Model
             client.Authenticator = new HttpBasicAuthenticator(username, password);
         }
 
-        public Timesheet GetTimesheet(string targetGroup, DateTime startDate, DateTime endDate)
+        public Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = Options.DateToString(startDate);
             string toDate = Options.DateToString(endDate);
-            var client = new RestClient("https://equilobe.atlassian.net");
-            Authenticate(client, LoginUtils.Username, LoginUtils.Password);
+            var client = new RestClient(policy.BaseUrl);
+            Authenticate(client, policy.Username, policy.Password);
             var request = new RestRequest("/rest/timesheet-gadget/1.0/raw-timesheet.xml?targetGroup={0}&startDate={1}&endDate={2}", Method.GET);
-            request.AddUrlSegment("0", targetGroup);
+            request.AddUrlSegment("0", policy.TargetGroup);
             request.AddUrlSegment("1", fromDate);
             request.AddUrlSegment("2", toDate);
             var response = client.Execute(request);

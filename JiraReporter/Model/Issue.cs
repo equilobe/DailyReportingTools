@@ -22,7 +22,7 @@ namespace JiraReporter.Model
         public int TimeSpent { get; set; }
         public string Resolution { get; set; }
         public string Status { get; set; }
-        public string Asignee { get; set; }
+        public string Assignee { get; set; }
         public string Priority { get; set; }
         public int RemainingEstimateSeconds { get; set; }
         public string RemainingEstimate { get; set; }
@@ -75,7 +75,7 @@ namespace JiraReporter.Model
                 TimeLogged = issue.TimeLogged,
                 TimeSpent = issue.TimeSpent,
                 Summary = issue.Summary,
-                Asignee = issue.Asignee,
+                Assignee = issue.Assignee,
                 Priority = issue.Priority,
                 RemainingEstimate = issue.RemainingEstimate,
                 RemainingEstimateSeconds = issue.RemainingEstimateSeconds,
@@ -95,19 +95,19 @@ namespace JiraReporter.Model
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet)
+        public static void SetIssues(Timesheet timesheet, Policy policy)
         {
             foreach (var issue in timesheet.Worklog.Issues)
-                issue.SetIssue();                         
+                issue.SetIssue(policy);
         }
 
-        private void SetIssue()
+        private void SetIssue(Policy policy)
         {
             var newIssue = new AnotherJiraRestClient.Issue();
-            newIssue = GetIssue(this.Key);
+            newIssue = GetIssue(this.Key, policy);
             this.Priority = newIssue.fields.priority.name;
             if (newIssue.fields.assignee!=null)
-                this.Asignee = newIssue.fields.assignee.displayName;
+                this.Assignee = newIssue.fields.assignee.displayName;
             this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
             this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
             if (newIssue.fields.resolution != null)
@@ -116,7 +116,7 @@ namespace JiraReporter.Model
 
             this.SetIssueTimeSpent();
             this.SetIssueTimeFormat();
-            this.SetIssueLink();
+            this.SetIssueLink(policy);
         }
 
         private void SetIssueTimeSpent()
@@ -130,15 +130,16 @@ namespace JiraReporter.Model
                  this.TimeLogged = Timesheet.SetTimeFormat(this.TimeSpent);
         }
 
-        private void SetIssueLink()
+        private void SetIssueLink(Policy policy)
         {
-            Uri baseLink=new Uri("https://equilobe.atlassian.net/browse/");
+            Uri baseLink = new Uri(policy.BaseUrl);
+            baseLink = new Uri(baseLink, "browse/");
             this.Link = new Uri(baseLink, this.Key);           
         }
 
-        private static AnotherJiraRestClient.Issue GetIssue(string issueKey)
+        private static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
         {
-            var account = new JiraAccount("https://equilobe.atlassian.net", LoginUtils.Username, LoginUtils.Password);
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);
             var issue = client.GetIssue(issueKey);
             return client.GetIssue(issueKey);
