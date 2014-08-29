@@ -11,6 +11,6 @@ namespace JiraReporter.Model
     public class WorkLog
     {
         [XmlElement("item", Type = typeof(Issue))]
-        public List<Issue> Issues;
+        public List<Issue> Issues { get; set; }
     }
 }

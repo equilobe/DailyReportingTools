@@ -14,7 +14,7 @@ namespace JiraReporter
         public static string ProcessReport(Report report)
         {
             string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml");
-            report.Title = "BoardProspects Timesheet Report";
+            report.Title = report.policy.ReportTitle + " Timesheet Report";
             return Razor.Parse(template, report);
         }
     }

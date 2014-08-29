@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using AnotherJiraRestClient;
 
 namespace JiraReporter.Model
 {
@@ -12,21 +13,26 @@ namespace JiraReporter.Model
     public class Issue
     {
         [XmlElement("key")]
-        public string Key;
+        public string Key {get; set;}
 
         [XmlIgnore]
-        public Uri Link;
+        public Uri Link { get; set; }
 
-        public string TimeLogged;
-
-        public int TimeSpent;
+        public string TimeLogged { get; set; }
+        public int TimeSpent { get; set; }
+        public string Resolution { get; set; }
+        public string Status { get; set; }
+        public string Asignee { get; set; }
+        public string Priority { get; set; }
+        public int RemainingEstimateSeconds { get; set; }
+        public string RemainingEstimate { get; set; }
 
         [XmlElement("summary")]
-        public string Summary;
+        public string Summary { get; set; }
 
         [XmlElement("entries", Type = typeof(Entries))]
-        public List<Entries> Entries;
-
+        public List<Entries> Entries { get; set; }
+ 
         public static void SetEntries(List<Entries> entries, Issue issue, List<Issue> issues)
         {
             foreach (var entry in entries)
@@ -69,6 +75,12 @@ namespace JiraReporter.Model
                 TimeLogged = issue.TimeLogged,
                 TimeSpent = issue.TimeSpent,
                 Summary = issue.Summary,
+                Asignee = issue.Asignee,
+                Priority = issue.Priority,
+                RemainingEstimate = issue.RemainingEstimate,
+                RemainingEstimateSeconds = issue.RemainingEstimateSeconds,
+                Resolution = issue.Resolution,
+                Status = issue.Status,
                 Entries = new List<Entries>()
             };
         }
@@ -86,28 +98,50 @@ namespace JiraReporter.Model
         public static void SetIssues(Timesheet timesheet)
         {
             foreach (var issue in timesheet.Worklog.Issues)
-            {
-                SetIssueTimeSpent(issue);
-                SetIssueTimeFormat(issue);
-                SetIssueLink(issue);
-            }
+                issue.SetIssue();                         
         }
 
-        public static void SetIssueTimeSpent(Issue issue)
+        private void SetIssue()
         {
-            foreach (var entry in issue.Entries)
-                issue.TimeSpent += entry.TimeSpent;
+            var newIssue = new AnotherJiraRestClient.Issue();
+            newIssue = GetIssue(this.Key);
+            this.Priority = newIssue.fields.priority.name;
+            if (newIssue.fields.assignee!=null)
+                this.Asignee = newIssue.fields.assignee.displayName;
+            this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
+            this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
+            if (newIssue.fields.resolution != null)
+                this.Resolution = newIssue.fields.resolution.name;
+            this.Status = newIssue.fields.status.name;
+
+            this.SetIssueTimeSpent();
+            this.SetIssueTimeFormat();
+            this.SetIssueLink();
         }
 
-        public static void SetIssueTimeFormat(Issue issue)
+        private void SetIssueTimeSpent()
         {
-                 issue.TimeLogged = Timesheet.SetTimeFormat(issue.TimeSpent);
+            foreach (var entry in this.Entries)
+                this.TimeSpent += entry.TimeSpent;
         }
 
-        private static void SetIssueLink(Issue issue)
+        private void SetIssueTimeFormat()
+        {
+                 this.TimeLogged = Timesheet.SetTimeFormat(this.TimeSpent);
+        }
+
+        private void SetIssueLink()
         {
             Uri baseLink=new Uri("https://equilobe.atlassian.net/browse/");
-            issue.Link = new Uri(baseLink, issue.Key);           
+            this.Link = new Uri(baseLink, this.Key);           
+        }
+
+        private static AnotherJiraRestClient.Issue GetIssue(string issueKey)
+        {
+            var account = new JiraAccount("https://equilobe.atlassian.net", LoginUtils.Username, LoginUtils.Password);
+            var client = new JiraClient(account);
+            var issue = client.GetIssue(issueKey);
+            return client.GetIssue(issueKey);
         }
 
         public static List<Issue> OrderIssues(List<Issue> issues)

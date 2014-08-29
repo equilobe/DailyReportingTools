@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using AnotherJiraRestClient;
 
 namespace JiraReporter.Model
 {
@@ -13,13 +14,13 @@ namespace JiraReporter.Model
     public class Timesheet
     {
         [XmlElement("worklog", Type = typeof(WorkLog))]
-        public WorkLog Worklog;
+        public WorkLog Worklog { get; set; }
 
         [XmlElement("startDate")]
-        public DateTime StartDate;
+        public DateTime StartDate { get; set; }
 
         [XmlElement("endDate")]
-        public DateTime EndDate;
+        public DateTime EndDate { get; set; }
 
         public static Timesheet LoadTimeSheet(string xmlString)
         {

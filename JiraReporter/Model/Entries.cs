@@ -11,30 +11,30 @@ namespace JiraReporter.Model
     public class Entries
     {
         [XmlElement("comment")]
-        public string Comment;
+        public string Comment { get; set; }
 
         [XmlElement("timeSpent")]
-        public int TimeSpent;
+        public int TimeSpent { get; set; }
 
         [XmlElement("author")]
-        public string Author;
+        public string Author { get; set; }
 
         [XmlElement("authorFullName")]
-        public string AuthorFullName;
+        public string AuthorFullName { get; set; }
 
         [XmlElement("created")]
-        public DateTime Created;
+        public DateTime Created { get; set; }
 
         [XmlElement("startDate")]
-        public DateTime StartDate;
+        public DateTime StartDate { get; set; }
 
         [XmlElement("updateAuthor")]
-        public string UpdateAuthor;
+        public string UpdateAuthor { get; set; }
 
         [XmlElement("updateAuthorFullName")]
-        public string UpdateAuthorFullName;
+        public string UpdateAuthorFullName { get; set; }
 
         [XmlElement("updated")]
-        public DateTime Updated;
+        public DateTime Updated { get; set; }
     }
 }
