@@ -26,6 +26,9 @@ namespace JiraReporter.Model
         public string Priority { get; set; }
         public int RemainingEstimateSeconds { get; set; }
         public string RemainingEstimate { get; set; }
+        public string Type { get; set; }
+        public bool SubTask { get; set; }
+        public Issue Parent { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -81,6 +84,9 @@ namespace JiraReporter.Model
                 RemainingEstimateSeconds = issue.RemainingEstimateSeconds,
                 Resolution = issue.Resolution,
                 Status = issue.Status,
+                SubTask = issue.SubTask,
+                Type = issue.Type,
+                Parent = issue.Parent,
                 Entries = new List<Entries>()
             };
         }
@@ -113,6 +119,8 @@ namespace JiraReporter.Model
             if (newIssue.fields.resolution != null)
                 this.Resolution = newIssue.fields.resolution.name;
             this.Status = newIssue.fields.status.name;
+            this.Type = newIssue.fields.issuetype.name;
+            this.SubTask = newIssue.fields.issuetype.subtask;
 
             this.SetIssueTimeSpent();
             this.SetIssueTimeFormat();

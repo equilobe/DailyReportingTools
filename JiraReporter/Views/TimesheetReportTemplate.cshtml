@@ -10,12 +10,12 @@
     <div style="margin-top: 40px">
         @if(Model.Authors.Count==0)
         {
-            <span>0h worked</span>
+            <span><b>0h worked</b></span>
         }
             else
         {     
-        @: @Model.TotalTime worked
-        <div style="margin-left:20px">
+        <b> @Model.TotalTime worked</b>
+        <div style="margin-top:10px">
             @foreach(var summary in Model.Summary)
             {
                 <div>@summary.TimeLogged - @summary.Name</div>
@@ -40,14 +40,14 @@
                                 {
                                     if (issue.RemainingEstimateSeconds==0)
                                     {
-                                        <span>(<b style="color:red">@issue.RemainingEstimate</b>)</span>
+                                        <span>(<b style="color:red">@issue.RemainingEstimate left</b>)</span>
                                     }
                                     else
                                     {
-                                        <span> (@issue.RemainingEstimate) </span>
+                                        <span> (@issue.RemainingEstimate left) </span>
                                     }
                                 }
-                              <span> - <a href=@issue.Link>@issue.Key @issue.Summary</a></span>
+                              <span> - <a href=@issue.Link style="text-decoration: none"> @issue.Summary</a> (@issue.Key) </span>
                                     
                             @if(issue.Assignee!=author.Name)
                             {
