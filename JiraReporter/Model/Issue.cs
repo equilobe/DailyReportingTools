@@ -29,6 +29,7 @@ namespace JiraReporter.Model
         public string Type { get; set; }
         public bool SubTask { get; set; }
         public Issue Parent { get; set; }
+        public string Label { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -87,6 +88,7 @@ namespace JiraReporter.Model
                 SubTask = issue.SubTask,
                 Type = issue.Type,
                 Parent = issue.Parent,
+                Label = issue.Label,
                 Entries = new List<Entries>()
             };
         }
@@ -101,10 +103,14 @@ namespace JiraReporter.Model
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, Policy policy)
+        public static void SetIssues(Timesheet timesheet, Policy policy, Options options)
         {
             foreach (var issue in timesheet.Worklog.Issues)
+            {
                 issue.SetIssue(policy);
+                if(issue.SubTask==true)
+                   issue.GetParent(issue, policy);
+            }
         }
 
         private void SetIssue(Policy policy)
@@ -121,6 +127,7 @@ namespace JiraReporter.Model
             this.Status = newIssue.fields.status.name;
             this.Type = newIssue.fields.issuetype.name;
             this.SubTask = newIssue.fields.issuetype.subtask;
+            this.SetLabel(policy, newIssue);
 
             this.SetIssueTimeSpent();
             this.SetIssueTimeFormat();
@@ -145,6 +152,13 @@ namespace JiraReporter.Model
             this.Link = new Uri(baseLink, this.Key);           
         }
 
+        private void SetLabel(Policy policy, AnotherJiraRestClient.Issue issue)
+        {
+            foreach (var label in issue.fields.labels)
+                if (label == policy.PermanentTaskLabel)
+                    this.Label = label;
+        }
+
         private static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
         {
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
@@ -156,6 +170,15 @@ namespace JiraReporter.Model
         public static List<Issue> OrderIssues(List<Issue> issues)
         {
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
+        }
+
+        private void GetParent(Issue issue, Policy policy)
+        {
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
+            var client = new JiraClient(account);
+            var issueNew = client.GetIssue(issue.Key);
+            issue.Parent = new Issue { Key = issueNew.fields.parent.key, Summary = issueNew.fields.parent.fields.summary };
+            issue.Parent.SetIssueLink(policy);
         }
     }
 }

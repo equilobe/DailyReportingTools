@@ -24,7 +24,7 @@ namespace JiraReporter
             var timesheet = new Timesheet();
             timesheet = timesheet.GetTimesheet(p, options.FromDate, options.ToDate);
 
-            SetTimesheetIssues(timesheet, p);
+            SetTimesheetIssues(timesheet, p, options);
 
             var report = GetReport(timesheet,p,options);
 
@@ -39,13 +39,13 @@ namespace JiraReporter
             return options;
         }
 
-        private static void SetTimesheetIssues(Timesheet timesheet, Policy policy)
+        private static void SetTimesheetIssues(Timesheet timesheet, Policy policy, Options options)
         {
             var issues = new List<Issue>(timesheet.Worklog.Issues);
             foreach (var issue in issues)
                 Issue.SetEntries(issue.Entries, issue, timesheet.Worklog.Issues);
             Issue.RemoveEntries(timesheet.Worklog.Issues);
-            Issue.SetIssues(timesheet, policy);
+            Issue.SetIssues(timesheet, policy, options);
         }     
  
         private static Report GetReport(Timesheet timesheet, Policy p, Options options)

@@ -27,6 +27,7 @@ namespace JiraReporter.Model
         public string ReportTitle { get; set; }
         public string BaseUrl { get; set; }
         public string TargetGroup { get; set; }
+        public string PermanentTaskLabel { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Emails { get; set; }

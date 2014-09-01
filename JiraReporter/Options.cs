@@ -47,7 +47,7 @@ namespace JiraReporter
 
         public static string DateToString(DateTime date)
         {
-            return date.ToString("dd/MMM/yyyy", DateTimeFormatInfo.InvariantInfo);
+            return date.ToString("yyyy/MM/dd", DateTimeFormatInfo.InvariantInfo);
         }
     }
 }
