@@ -20,6 +20,14 @@ namespace JiraReporter.Model
             var client = new JiraClient(account);
             var tasks = client.GetIssuesByJql("sprint in openSprints & project = " + policy.Project, 0, 250);
             return tasks;
-        }   
+        }
+
+        public static AnotherJiraRestClient.Issues GetOldIssues(Policy policy)
+        {
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
+            var client = new JiraClient(account);
+            var issues = client.GetIssuesByJql("resolved>= '2014/09/01'", 0, 250);
+            return issues;
+        }
     }
 }

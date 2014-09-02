@@ -55,7 +55,7 @@ namespace JiraReporter.Model
           
             TimeSpan t = TimeSpan.FromSeconds(time);
 
-            if(t.Hours>0)
+            if(t.Hours>0 || t.Days>0)
                  timeFormat += " " + string.Format("{0}h", t.Hours + t.Days*24);
             if (t.Minutes > 0)
                  timeFormat += " " + string.Format("{0}m", t.Minutes);
