@@ -49,5 +49,10 @@ namespace JiraReporter
         {
             return date.ToString("dd/MMM/yyyy", DateTimeFormatInfo.InvariantInfo);
         }
+
+        public static string DateToISO(DateTime date)
+        {
+            return date.ToString("yyyy'-'MM'-'dd", DateTimeFormatInfo.InvariantInfo);
+        }
     }
 }

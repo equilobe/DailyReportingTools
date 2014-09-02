@@ -51,8 +51,15 @@ namespace JiraReporter
         private static Report GetReport(Timesheet timesheet, Policy p, Options options)
         {
             var authors = Author.GetAuthors(timesheet);
-            var report = new Report(p, options) { Authors = authors, Summary = authors };
+            var report = new Report(p, options) { Authors = authors, Summary = authors, SprintReport=GetSprintReport(p,options)};
             SetReport(report);
+            return report;
+        }
+
+        private static SprintReport GetSprintReport(Policy p, Options options)
+        {
+            var report = new SprintReport();
+            report.GetOldCompletedTasks(p, options);
             return report;
         }
 
@@ -62,6 +69,7 @@ namespace JiraReporter
             report.Authors = Author.OrderAuthorsName(report.Authors);
             report.Summary = Author.OrderAuthorsTime(report.Summary);
             report.Date = report.options.FromDate;
+            report.SprintReport.SortTasks();
         }
 
         private static void SendReport(Report report)

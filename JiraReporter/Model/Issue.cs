@@ -107,21 +107,25 @@ namespace JiraReporter.Model
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
-                issue.SetIssue(policy);
+                var newIssue = new AnotherJiraRestClient.Issue();
+                newIssue = GetIssue(issue.Key, policy);
+                issue.SetIssue(policy, newIssue);
                 if(issue.SubTask==true)
                    issue.GetParent(issue, policy);
             }
         }
 
-        private void SetIssue(Policy policy)
+        public void SetIssue(Policy policy, AnotherJiraRestClient.Issue newIssue)
         {
-            var newIssue = new AnotherJiraRestClient.Issue();
-            newIssue = GetIssue(this.Key, policy);
+            
             this.Priority = newIssue.fields.priority.name;
             if (newIssue.fields.assignee!=null)
                 this.Assignee = newIssue.fields.assignee.displayName;
-            this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
-            this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
+            if (newIssue.fields.timetracking != null)
+            {
+                this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
+                this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
+            }
             if (newIssue.fields.resolution != null)
                 this.Resolution = newIssue.fields.resolution.name;
             this.Status = newIssue.fields.status.name;
@@ -129,7 +133,8 @@ namespace JiraReporter.Model
             this.SubTask = newIssue.fields.issuetype.subtask;
             this.SetLabel(policy, newIssue);
 
-            this.SetIssueTimeSpent();
+            if(this.Entries!=null)
+               this.SetIssueTimeSpent();
             this.SetIssueTimeFormat();
             this.SetIssueLink(policy);
         }
@@ -145,7 +150,7 @@ namespace JiraReporter.Model
                  this.TimeLogged = Timesheet.SetTimeFormat(this.TimeSpent);
         }
 
-        private void SetIssueLink(Policy policy)
+        public void SetIssueLink(Policy policy)
         {
             Uri baseLink = new Uri(policy.BaseUrl);
             baseLink = new Uri(baseLink, "browse/");

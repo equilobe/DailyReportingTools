@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    class Task
+    public class Task
     {
         public Issue Issue;
-        public int CompletedTime;
-        public string CompletedTimeAgo;        
+        public string CompletedTimeAgo;
+        public DateTime ResolutionDate;
     }
 }
