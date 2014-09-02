@@ -34,6 +34,26 @@ namespace SvnLogReporter
             return log;
         }
 
+        protected override List<Report> GetReports(Log log)
+        {
+            var reports = new List<Report>();
+            var logs = GetDayLogs(log);
+            var report = new Report();
+            var dates = new List<DateTime>();
+            Options.GetDates(dates);
+            reports = EmptyReports(logs, dates);
+            foreach (var logDict in logs)
+            {
+
+                report = LogProcessor.GetReport(logDict.Value);
+                report.ReportDate = logDict.Key;
+                reports.Add(report);
+            }
+            reports = reports.OrderBy(r => r.ReportDate).ToList();
+            reports.First().PullRequests = GetPullRequests(Policy.RepoOwner, Policy.RepoName).ToList();
+            return reports;
+        }
+
         protected IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
@@ -48,6 +68,14 @@ namespace SvnLogReporter
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
             ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
             return connectionAll.GetAll<Branch>(ApiUrls.RepoBranches(owner, name)).Result;
+        }
+
+        public IReadOnlyList<PullRequest> GetPullRequests(string owner, string name)
+        {
+            Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
+            Ensure.ArgumentNotNullOrEmptyString(name, "name");
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
+            return connectionAll.GetAll<PullRequest>(ApiUrls.PullRequests(owner,name)).Result;
         }
 
         protected List<GitHubCommit> ConcatCommits(string owner, string name, string sinceDate, string untilDate)
@@ -113,6 +141,6 @@ namespace SvnLogReporter
             AddName(commits);
 
             return commits;
-        }
+        } 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Octokit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace SvnLogReporter.Model
         public string Title { get; set; }
         public IEnumerable<Author> Authors{get;set;}
         public DateTime ReportDate { get; set; }
+        public List<PullRequest> PullRequests { get; set; }
     }
 }

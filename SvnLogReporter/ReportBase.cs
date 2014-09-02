@@ -65,7 +65,6 @@ namespace SvnLogReporter
 
         protected string GetReportContent(Log log)
         {
-            //string reportContent = "No Entries";
             var reportContent = "";
             var reports = GetReports(log);
                 foreach (var report in reports)
@@ -73,7 +72,7 @@ namespace SvnLogReporter
             return reportContent;
         }
 
-        protected List<Report> GetReports(Log log)
+        protected virtual List<Report> GetReports(Log log)
         {
             var reports = new List<Report>();
             var logs = GetDayLogs(log);
