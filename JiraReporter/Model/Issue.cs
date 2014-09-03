@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using AnotherJiraRestClient;
+using AnotherJiraRestClient.JiraModel;
 
 namespace JiraReporter.Model
 {
@@ -30,12 +31,48 @@ namespace JiraReporter.Model
         public bool SubTask { get; set; }
         public Issue Parent { get; set; }
         public string Label { get; set; }
+        public string ResolutionDate { get; set; }
+        public StatusCategory StatusCategory { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
 
         [XmlElement("entries", Type = typeof(Entries))]
         public List<Entries> Entries { get; set; }
+
+        public Issue()
+        {
+
+        }
+
+        public Issue(Issue issue)
+        {
+            if(issue.Assignee!=null)
+                this.Assignee = issue.Assignee;
+            if(issue.Entries!=null)
+                this.Entries = issue.Entries;
+            this.Key = issue.Key;
+            if(issue.Label!=null)
+                this.Label = issue.Label;
+            this.Link = issue.Link;
+            if (issue.Parent!=null)
+                 this.Parent = issue.Parent;
+            this.Priority = issue.Priority;
+            this.RemainingEstimate = issue.RemainingEstimate;
+            this.RemainingEstimateSeconds = issue.RemainingEstimateSeconds;
+            if (issue.Resolution != null)
+            {
+                this.Resolution = issue.Resolution;
+                this.ResolutionDate = issue.ResolutionDate;
+            }
+            this.Status = issue.Status;
+            this.SubTask = issue.SubTask;
+            this.Summary = issue.Summary;
+            this.TimeLogged = issue.TimeLogged;
+            this.TimeSpent = issue.TimeSpent;
+            this.Type = issue.Type;
+            this.StatusCategory = issue.StatusCategory;
+        }
  
         public static void SetEntries(List<Entries> entries, Issue issue, List<Issue> issues)
         {
@@ -89,6 +126,8 @@ namespace JiraReporter.Model
                 Type = issue.Type,
                 Parent = issue.Parent,
                 Label = issue.Label,
+                ResolutionDate = issue.ResolutionDate,
+                StatusCategory = issue.StatusCategory,
                 Entries = new List<Entries>()
             };
         }
@@ -127,11 +166,15 @@ namespace JiraReporter.Model
                 this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
             }
             if (newIssue.fields.resolution != null)
+            {
                 this.Resolution = newIssue.fields.resolution.name;
+                this.ResolutionDate = newIssue.fields.resolutiondate;
+            }
             this.Status = newIssue.fields.status.name;
             this.Type = newIssue.fields.issuetype.name;
             this.SubTask = newIssue.fields.issuetype.subtask;
             this.SetLabel(policy, newIssue);
+            this.StatusCategory = newIssue.fields.status.statusCategory;
 
             if(this.Entries!=null)
                this.SetIssueTimeSpent();

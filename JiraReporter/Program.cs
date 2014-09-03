@@ -51,15 +51,16 @@ namespace JiraReporter
         private static Report GetReport(Timesheet timesheet, Policy p, Options options)
         {
             var authors = Author.GetAuthors(timesheet);
-            var report = new Report(p, options) { Authors = authors, Summary = authors, SprintReport=GetSprintReport(p,options)};
+            var report = new Report(p, options) { Authors = authors, Summary = authors, SprintReport=GetSprintReport(p, options, timesheet)};
             SetReport(report);
             return report;
         }
 
-        private static SprintReport GetSprintReport(Policy p, Options options)
+        private static SprintReport GetSprintReport(Policy p, Options options, Timesheet timesheet)
         {
             var report = new SprintReport();
             report.GetOldCompletedTasks(p, options);
+            report.GetRecentlyCompletedTasks(p, options, timesheet);
             return report;
         }
 
