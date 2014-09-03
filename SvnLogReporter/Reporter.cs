@@ -11,7 +11,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Configuration;
 using RazorEngine.Templating;
-
+using Octokit;
 
 namespace SvnLogReporter
 {
@@ -41,22 +41,22 @@ namespace SvnLogReporter
             File.WriteAllText(reportPath, report);
         }
 
-        public static string ProcessReport(Policy p, Report report)
-        {
-            try
-            {
-                string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplate.cshtml");
-                report.Title = p.ReportTitle;
-                return Razor.Parse(template, report);
-            }
-            catch (TemplateCompilationException templateException)
-            {
-                foreach (var error in templateException.Errors)
-                {
-                    Debug.WriteLine(error);
-                }
-                return "Error in template compilation";
-            }
-        }           
+        //public static string ProcessReport(Policy p, Report report)
+        //{
+        //    try
+        //    {
+        //        string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplateSVN.cshtml");
+        //        report.Title = p.ReportTitle;
+        //        return Razor.Parse(template, report);
+        //    }
+        //    catch (TemplateCompilationException templateException)
+        //    {
+        //        foreach (var error in templateException.Errors)
+        //        {
+        //            Debug.WriteLine(error);
+        //        }
+        //        return "Error in template compilation";
+        //    }
+        //}           
     }
 }

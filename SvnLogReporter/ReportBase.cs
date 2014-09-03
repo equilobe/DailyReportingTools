@@ -68,29 +68,13 @@ namespace SvnLogReporter
             var reportContent = "";
             var reports = GetReports(log);
                 foreach (var report in reports)
-                        reportContent += Reporter.ProcessReport(Policy, report);         
+                        reportContent += ProcessReport(Policy, report);         
             return reportContent;
         }
+        protected abstract string ProcessReport(Policy p, Report report);       
 
-        protected virtual List<Report> GetReports(Log log)
-        {
-            var reports = new List<Report>();
-            var logs = GetDayLogs(log);
-            var report = new Report();
-            var dates = new List<DateTime>();
-            Options.GetDates(dates);
-            reports = EmptyReports(logs, dates);
-            foreach (var logDict in logs)
-            {
-
-                report = LogProcessor.GetReport(logDict.Value);
-                report.ReportDate = logDict.Key;
-                reports.Add(report);
-            }
-            reports = reports.OrderBy(r => r.ReportDate).ToList();
-            return reports;
-        }
-
+        protected abstract List<Report> GetReports(Log log);
+        
         protected List<Report> EmptyReports (Dictionary<DateTime, List<LogEntry>> logs, List<DateTime> dates)
         {
             List<Report> reports = new List<Report>();

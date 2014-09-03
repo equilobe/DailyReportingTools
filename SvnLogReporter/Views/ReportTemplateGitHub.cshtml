@@ -1,15 +1,8 @@
-<div style="margin-top:30px">
+<div style="margin-top:20px">
     @Model.Title report for @Model.ReportDate.ToString("dddd, dd MMMM yyyy")
-    <div style="margin-top:20px">
-        @if (Model.Authors == null)
+    @if (Model.PullRequests != null)
         {
-            <p> No Entries </p>
-        }
-
-        else
-        {
-            if (Model.PullRequests != null)
-            {
+            <div style="margin-top:20px">
                 <span><b>Pending Pull Requests</b></span>
                 <div style="margin-top:10px">
                     @foreach (var pull in Model.PullRequests)
@@ -19,7 +12,16 @@
                         </div>
                     }
                 </div>
-            }
+            </div>
+        }
+    <div style="margin-top:20px">
+        @if (Model.Authors == null)
+        {
+            <p> No Entries </p>
+        }
+
+        else
+        {           
             @foreach (var author in Model.Authors)
             {
                 <div style="margin-top:40px">

@@ -1,6 +1,9 @@
-﻿using SvnLogReporter.Model;
+﻿using RazorEngine;
+using RazorEngine.Templating;
+using SvnLogReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,6 +38,44 @@ namespace SvnLogReporter
                 throw new SvnNotAvailableException(ex);
             }
         }
+
+        protected override List<Report> GetReports(Log log)
+        {
+            var reports = new List<Report>();
+            var logs = GetDayLogs(log);
+            var report = new Report();
+            var dates = new List<DateTime>();
+            Options.GetDates(dates);
+            reports = EmptyReports(logs, dates);
+            foreach (var logDict in logs)
+            {
+
+                report = LogProcessor.GetReport(logDict.Value);
+                report.ReportDate = logDict.Key;
+                reports.Add(report);
+                report.PullRequests = null;
+            }
+            reports = reports.OrderBy(r => r.ReportDate).ToList();
+            return reports;
+        }
+
+        protected override string ProcessReport(Policy p, Report report)
+        {
+            try
+            {
+                string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplateSVN.cshtml");
+                report.Title = p.ReportTitle;
+                return Razor.Parse(template, report);
+            }
+            catch (TemplateCompilationException templateException)
+            {
+                foreach (var error in templateException.Errors)
+                {
+                    Debug.WriteLine(error);
+                }
+                return "Error in template compilation";
+            }
+        }           
 
         private string GetCommandString()
         {
