@@ -27,7 +27,7 @@ namespace JiraReporter.Model
         public void GetOldCompletedTasks(Policy policy, Options options)
         {
             var OldCompletedTasks = new List<Task>();
-            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-7), options.FromDate.AddDays(-1)).issues;
+            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6), options.FromDate.AddDays(+1)).issues;
             foreach (var issue in issues)
             {
                 OldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
@@ -45,7 +45,7 @@ namespace JiraReporter.Model
                 if(issue.Resolution!=null)
             {
                 date = Convert.ToDateTime(issue.ResolutionDate);
-                if (date.Day == DateTime.Now.AddDays(-1).Day)
+                if (DateTime.Compare(options.FromDate, date) <= 0)
                 {
                     RecentlyCompletedTasks.Add(new Task { Issue = new Issue(issue), ResolutionDate = date });
                     SetTaskHours(RecentlyCompletedTasks.Last());
@@ -72,6 +72,7 @@ namespace JiraReporter.Model
                         TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date });
                     InProgressTasks.Last().Issue.SetIssue(policy,issue);
                     InProgressTasks.Last().Issue.SetIssueTimeFormat();
+                    //InProgressTasks.Last().Issue.RemainingEstimate = TimesheetService.SetTimeFormat(InProgressTasks.Last().Issue.RemainingEstimateSeconds);
                 }
             this.InProgressTasks = InProgressTasks;
         }

@@ -194,9 +194,12 @@ namespace JiraReporter.Model
             this.StatusCategory = newIssue.fields.status.statusCategory;
             this.Updated = newIssue.fields.updated;
 
+            if (newIssue.fields.timetracking != null)
+                this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
             if(this.Entries!=null)
                this.SetIssueTimeSpent();
             this.SetIssueTimeFormat();
+            
             this.SetIssueLink(policy);
         }
 
@@ -209,7 +212,8 @@ namespace JiraReporter.Model
         public void SetIssueTimeFormat()
         {
                  this.TimeLogged = TimesheetService.SetTimeFormat(this.TimeSpent);
-                 this.RemainingEstimate = TimesheetService.SetTimeFormat(this.RemainingEstimateSeconds);
+                 if(this.RemainingEstimate==null)
+                      this.RemainingEstimate = TimesheetService.SetTimeFormat(this.RemainingEstimateSeconds);
         }
 
         public void SetIssueLink(Policy policy)

@@ -31,6 +31,7 @@ namespace JiraReporter
             {
                 var now = DateTime.Now;
                 FromDate = now.AddDays(-1);
+                FromDate = new DateTime(FromDate.Year, FromDate.Month, FromDate.Day, 0, 0, 0);
                 ToDate = FromDate;
             }
             else if (StringFromDate == null)
@@ -42,6 +43,7 @@ namespace JiraReporter
         private DateTime GetDate(string dateString)
         {
             DateTime date = Convert.ToDateTime(dateString);
+            date = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
             return date;
         }
 
