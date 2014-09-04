@@ -1,4 +1,4 @@
-<div>
+<div style="margin-top:15px">
       @if(Model.options.FromDate==Model.options.ToDate)
         {
            <span> @Model.Title for @Model.Date.ToString("dddd, dd MMMM yyyy") </span>
@@ -6,7 +6,63 @@
         else
         {
            <span>@Model.Title for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</span>
-        }     
+        }  
+
+    <div style="margin-top:40px">
+        <h2>Sprint status</h2>
+        <div style="margin-top:30px">           
+
+            @if (Model.SprintReport.RecentlyCompletedTasks != null)
+            {
+                <div style="margin-top:20px">
+                    @foreach (var task in Model.SprintReport.RecentlyCompletedTasks)
+                    {
+                        <div style="margin-top: 10px; color: rgb(11, 135, 10);">
+                            <span style="font-family:Webdings">&#x0061;</span>
+                            <a style="color: rgb(11, 135, 10); text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
+                            <span>(@task.Issue.Key)</span>
+                            @if (task.Issue.Assignee != null)
+                            {
+                                <span>(completed @task.CompletedTimeAgo ago by @task.Issue.Assignee)</span>
+                            }
+                            else
+                            {
+                                <span>(completed @task.CompletedTimeAgo ago)</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (Model.SprintReport.InProgressTasks != null)
+            {
+                <div style="margin-top:20px">
+                    @foreach (var task in Model.SprintReport.InProgressTasks)
+                    {                                              
+                            <div style="margin-top: 10px;">
+                                <span style="font-family:Webdings">&#x0034;</span>
+                                <a style="color:none ; text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <span>(@task.Issue.Key)</span>
+                                @if(task.Issue.TimeSpent>0)
+                                {
+                                    <span>(@task.Issue.TimeLogged worked, @task.Issue.RemainingEstimate left</span>
+                                }
+                                @if (task.Issue.Assignee != null)
+                                {
+                                    <span> assigned to  @task.Issue.Assignee)</span>
+                                }     
+                                else
+                                {
+                                    <span>)</span>
+                                }              
+                            </div>                        
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+   
     <div style="margin-top: 40px">
         @if(Model.Authors.Count==0)
         {
@@ -88,13 +144,10 @@
               }
          }
     </div>
-    <div style="margin-top:40px">
-        <h3>Sprint status</h3>
-        <div style="margin-top:30px">
-                @if (Model.SprintReport.OldCompletedTasks != null)
-                {
-                  <div style="margin-top:20px">
-                        @foreach (var task in Model.SprintReport.OldCompletedTasks)
+   <div style="margin-top:30px">
+      <h2>Completed during the last week</h2> 
+         <div style="margin-top:20px">              
+                @foreach (var task in Model.SprintReport.OldCompletedTasks)
                         {
                             <div style="margin-top: 10px; color: #989898; ">
                                 <span style="font-family:Webdings">&#x0061;</span>
@@ -110,32 +163,7 @@
                                 }
                             </div>
                         }
-                    </div>
-                }
-
-                @if (Model.SprintReport.RecentlyCompletedTasks != null)
-                {
-                    <div style="margin-top:20px">
-                        @foreach (var task in Model.SprintReport.RecentlyCompletedTasks)
-                        {
-                            <div style="margin-top: 10px; color: rgb(11, 135, 10);">
-                                <span style="font-family:Webdings">&#x0061;</span>
-                                <a style="color: rgb(11, 135, 10); text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span>(@task.Issue.Key)</span>
-                                @if (task.Issue.Assignee != null)
-                                {
-                                    <span>(completed @task.CompletedTimeAgo ago by @task.Issue.Assignee)</span>
-                                }
-                                else
-                                {
-                                    <span>(completed @task.CompletedTimeAgo ago)</span>
-                                }
-                            </div>
-                        }
-                    </div>
-                }
-
-            </div>
-    </div>
+          </div>
+   </div>
 
 </div>

@@ -14,18 +14,8 @@ namespace JiraReporter.Model
         public List<Task> InProgressTasks { get; set; }
         public List<Task> OpenTasks { get; set; }
 
-        //public AnotherJiraRestClient.Issues GetSprintTasks(Policy policy)
-        //{
-        //    var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
-        //    var client = new JiraClient(account);
-        //    var tasks = client.GetIssuesByJql("sprint in openSprints & project = " + policy.Project, 0, 250);
-        //    return tasks;
-        //}
-
-        private AnotherJiraRestClient.Issues GetOldIssues(Policy policy, DateTime startDate, DateTime endDate)
+        private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
-           // string toDate = Options.DateToISO(options.FromDate.AddDays(-1));
-            //string fromDate = Options.DateToISO(options.FromDate.AddDays(-7));
             string toDate = Options.DateToISO(endDate);
             string fromDate = Options.DateToISO(startDate);
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
@@ -37,7 +27,7 @@ namespace JiraReporter.Model
         public void GetOldCompletedTasks(Policy policy, Options options)
         {
             var OldCompletedTasks = new List<Task>();
-            var issues = GetOldIssues(policy, options.FromDate.AddDays(-7), options.FromDate.AddDays(-1)).issues;
+            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-7), options.FromDate.AddDays(-1)).issues;
             foreach (var issue in issues)
             {
                 OldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
@@ -64,7 +54,35 @@ namespace JiraReporter.Model
             this.RecentlyCompletedTasks = RecentlyCompletedTasks;
         }
 
-     //   public void Get
+        public void SetSprintTasks(Policy policy)
+        {
+            var issues = GetSprintTasks(policy);
+            GetInProgressTasks(policy, issues);
+        }
+
+        private void GetInProgressTasks(Policy policy, AnotherJiraRestClient.Issues issues)
+        {
+            var InProgressTasks = new List<Task>();
+            DateTime date;
+            foreach(var issue in issues.issues)
+                if(issue.fields.status.statusCategory.name=="In Progress")
+                {
+                    date = Convert.ToDateTime(issue.fields.updated);
+                    InProgressTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, ResolutionDate=null, 
+                        TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date });
+                    InProgressTasks.Last().Issue.SetIssue(policy,issue);
+                    InProgressTasks.Last().Issue.SetIssueTimeFormat();
+                }
+            this.InProgressTasks = InProgressTasks;
+        }
+
+        private AnotherJiraRestClient.Issues GetSprintTasks(Policy policy)
+        {
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
+            var client = new JiraClient(account);
+            var tasks = client.GetIssuesByJql("sprint in openSprints() & project = " + policy.Project, 0, 250);
+            return tasks;
+        }
 
         private TimeSpan SetTaskTimeSpan(Task task)
         {

@@ -32,6 +32,7 @@ namespace JiraReporter.Model
         public string Password { get; set; }
         public string Emails { get; set; }
         public string Project { get; set; }
+        public string ReopenedStatus { get; set; }
 
         [XmlIgnore]
         public IEnumerable<string> EmailCollection

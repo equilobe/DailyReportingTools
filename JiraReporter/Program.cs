@@ -21,8 +21,8 @@ namespace JiraReporter
             Policy p = Policy.CreateFromFile(options.PolicyPath);
             options.LoadDates();
 
-            var timesheet = new Timesheet();
-            timesheet = timesheet.GetTimesheet(p, options.FromDate, options.ToDate);
+            var timesheetService = new TimesheetService();
+            var timesheet = timesheetService.GetTimesheet(p, options.FromDate, options.ToDate);
 
             SetTimesheetIssues(timesheet, p, options);
 
@@ -61,6 +61,7 @@ namespace JiraReporter
             var report = new SprintReport();
             report.GetOldCompletedTasks(p, options);
             report.GetRecentlyCompletedTasks(p, options, timesheet);
+            report.SetSprintTasks(p);
             return report;
         }
 

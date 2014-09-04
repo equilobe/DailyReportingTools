@@ -18,21 +18,36 @@ namespace JiraReporter.Model
 
         [XmlIgnore]
         public Uri Link { get; set; }
-
+        [XmlIgnore]
         public string TimeLogged { get; set; }
+        [XmlIgnore]
         public int TimeSpent { get; set; }
+        [XmlIgnore]
         public string Resolution { get; set; }
+        [XmlIgnore]
         public string Status { get; set; }
+        [XmlIgnore]
         public string Assignee { get; set; }
+        [XmlIgnore]
         public string Priority { get; set; }
+        [XmlIgnore]
         public int RemainingEstimateSeconds { get; set; }
+        [XmlIgnore]
         public string RemainingEstimate { get; set; }
+        [XmlIgnore]
         public string Type { get; set; }
+        [XmlIgnore]
         public bool SubTask { get; set; }
+        [XmlIgnore]
         public Issue Parent { get; set; }
+        [XmlIgnore]
         public string Label { get; set; }
+        [XmlIgnore]
         public string ResolutionDate { get; set; }
+        [XmlIgnore]
         public StatusCategory StatusCategory { get; set; }
+        [XmlIgnore]
+        public string Updated { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -72,6 +87,7 @@ namespace JiraReporter.Model
             this.TimeSpent = issue.TimeSpent;
             this.Type = issue.Type;
             this.StatusCategory = issue.StatusCategory;
+            this.Updated = issue.Updated;
         }
  
         public static void SetEntries(List<Entries> entries, Issue issue, List<Issue> issues)
@@ -128,6 +144,7 @@ namespace JiraReporter.Model
                 Label = issue.Label,
                 ResolutionDate = issue.ResolutionDate,
                 StatusCategory = issue.StatusCategory,
+                Updated = issue.Updated,
                 Entries = new List<Entries>()
             };
         }
@@ -175,6 +192,7 @@ namespace JiraReporter.Model
             this.SubTask = newIssue.fields.issuetype.subtask;
             this.SetLabel(policy, newIssue);
             this.StatusCategory = newIssue.fields.status.statusCategory;
+            this.Updated = newIssue.fields.updated;
 
             if(this.Entries!=null)
                this.SetIssueTimeSpent();
@@ -188,9 +206,10 @@ namespace JiraReporter.Model
                 this.TimeSpent += entry.TimeSpent;
         }
 
-        private void SetIssueTimeFormat()
+        public void SetIssueTimeFormat()
         {
-                 this.TimeLogged = Timesheet.SetTimeFormat(this.TimeSpent);
+                 this.TimeLogged = TimesheetService.SetTimeFormat(this.TimeSpent);
+                 this.RemainingEstimate = TimesheetService.SetTimeFormat(this.RemainingEstimateSeconds);
         }
 
         public void SetIssueLink(Policy policy)

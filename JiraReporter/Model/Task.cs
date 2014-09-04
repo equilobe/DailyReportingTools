@@ -11,5 +11,6 @@ namespace JiraReporter.Model
         public Issue Issue;
         public string CompletedTimeAgo;
         public DateTime ResolutionDate;
+        public DateTime UpdatedDate;
     }
 }
