@@ -55,13 +55,13 @@ namespace JiraReporter.Model
             this.RecentlyCompletedTasks = RecentlyCompletedTasks;
         }
 
-        public void SetSprintTasks(Policy policy)
+        public void SetSprintTasks(Policy policy, Timesheet timesheet)
         {
             var issues = GetSprintTasks(policy);
-            GetInProgressTasks(policy, issues);
+            GetInProgressTasks(policy, issues, timesheet);
         }
 
-        private void GetInProgressTasks(Policy policy, AnotherJiraRestClient.Issues issues)
+        private void GetInProgressTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
         {
             var InProgressTasks = new List<Task>();
             DateTime date;
@@ -70,12 +70,22 @@ namespace JiraReporter.Model
                 {
                     date = Convert.ToDateTime(issue.fields.updated);
                     InProgressTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, ResolutionDate=null, 
-                        TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date });
+                        TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date, ExistsInTimesheet = false });
                     InProgressTasks.Last().Issue.SetIssue(policy,issue);
                     InProgressTasks.Last().Issue.SetIssueTimeFormat();
-                    //InProgressTasks.Last().Issue.RemainingEstimate = TimesheetService.SetTimeFormat(InProgressTasks.Last().Issue.RemainingEstimateSeconds);
+                    if (TaskLogged(InProgressTasks.Last(),timesheet.Worklog.Issues) == true)
+                        InProgressTasks.Last().ExistsInTimesheet = true;
+                    else
+                        InProgressTasks.Last().ExistsInTimesheet = false;
                 }
             this.InProgressTasks = InProgressTasks;
+        }
+
+        private bool TaskLogged(Task task, List<Issue> issues)
+        {
+            if (issues.Exists(i => i.Key == task.Issue.Key))
+                return true;
+            return false;
         }
 
         private AnotherJiraRestClient.Issues GetSprintTasks(Policy policy)

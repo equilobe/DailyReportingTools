@@ -7,6 +7,10 @@
         {
            <h2>@Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</h2>
         }  
+    @{
+        var bold = "";
+        var remainingEstimate = "";
+    }
 
     <div style="margin-top:40px">
         <h3>Sprint status</h3>
@@ -18,25 +22,18 @@
                     <h4>Recently completed</h4>
                     @foreach (var task in Model.SprintReport.RecentlyCompletedTasks)
                     {
-                        <div style="margin-top: 10px; color: rgb(11, 135, 10);">
-                            @if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate.AddDays(1))>0)
+
+                        if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate) >= 0 && DateTime.Compare(task.ResolutionDate, Model.options.FromDate.AddDays(1)) <= 0)
                             {
-                                <span style="font-family: Segoe UI Symbol">&#10004;</span>
-                                <a style="color: rgb(11, 135, 10); text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span>(@task.Issue.Key)</span>
-                                if (task.Issue.Assignee != null)
-                                {                                                            
-                                        <span>(completed @task.CompletedTimeAgo ago by @task.Issue.Assignee)</span>                                                             
-                                }
-                                else
-                                {
-                                    <span>(completed @task.CompletedTimeAgo ago)</span>
-                                }
+                                bold = "font-weight: bold;";
                             }
                             else
-                            {   <b>
+                            {   
+                                bold="font-weight: normal;";                                                               
+                            }   
+                            <div style="margin-top: 10px; @bold">
                                 <span style="font-family: Segoe UI Symbol">&#10004;</span>
-                                <a style="color: rgb(11, 135, 10); text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
                                 <span>(@task.Issue.Key)</span>
                                 @if (task.Issue.Assignee != null)
                                 {
@@ -45,10 +42,8 @@
                                 else
                                 {
                                     <span>(completed @task.CompletedTimeAgo ago)</span>
-                                }
-                               </b>
-                            }                           
-                        </div>
+                                }                        
+                           </div>
                     }
                 </div>
             }
@@ -58,28 +53,51 @@
                 <div style="margin-top:20px">
                     <h4>In progress</h4>
                     @foreach (var task in Model.SprintReport.InProgressTasks)
-                    {                                              
-                            <div style="margin-top: 10px;">
-                                <span style="font-family: Segoe UI Symbol">&#10065;</span>
-                                <a style="color:black; text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span>(@task.Issue.Key)</span>
-                                @if(task.Issue.TimeSpent>0)
-                                {
-                                    <span>(@task.Issue.TimeLogged worked, @task.Issue.RemainingEstimate left</span>
-                                }
-                                @if (task.Issue.Assignee != null)
-                                {
-                                    <span> assigned to  @task.Issue.Assignee)</span>
-                                }     
-                                else
-                                {
-                                    <span>)</span>
-                                }              
-                            </div>                        
-                    }
+                     { 
+                        if (task.Issue.Label != Model.policy.PermanentTaskLabel)
+                        
+                           {
+                               if (task.ExistsInTimesheet==true)
+                               {
+                                   bold = "font-weight: bold;";
+                               }
+                               else
+                               {
+                                   bold = "font-weight: normal;";
+                               } 
+                       
+                               if (task.Issue.Subtasks.Count > 0)
+                               {
+                                   remainingEstimate = task.Issue.TotalRemaining;
+                               }
+                               else
+                               {
+                                   remainingEstimate = task.Issue.RemainingEstimate;
+                               }                              
+                               <div style="margin-top: 10px; @bold;">
+                                   <span style="font-family: Segoe UI Symbol">&#10065;</span>
+                                   <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                   <span>(@task.Issue.Key)</span>
+                                   <span>(</span>
+                                   @if(task.Issue.TimeSpent>0)
+                                   {
+                                       <span>@task.Issue.TimeLogged worked</span>
+                                        if(task.Issue.RemainingEstimateSeconds>0)
+                                           {
+                                               <span>, @remainingEstimate left</span>
+                                           }
+                                   }
+                          
+                                   @if (task.Issue.Assignee != null)
+                                   {
+                                       <span> assigned to  @task.Issue.Assignee</span>
+                                   }     
+                                  <span>)</span>  
+                               </div>           
+                          }                                                                        
+                     }
                 </div>
             }
-
         </div>
     </div>
    
@@ -104,6 +122,14 @@
 
                     @foreach (var issue in author.Issues)
                     {
+                        if(issue.Subtasks.Count>0)
+                        {
+                            remainingEstimate = issue.TotalRemaining;
+                        }
+                        else
+                        {
+                            remainingEstimate = issue.RemainingEstimate;
+                        }
                         <div style="margin-top:10px">
                             <span>@issue.TimeLogged</span>
                            @if (issue.Label != Model.policy.PermanentTaskLabel)
@@ -117,11 +143,11 @@
                                   {
                                       if (issue.RemainingEstimateSeconds==0)
                                       {
-                                          <span>(<b style="color:red">@issue.RemainingEstimate left</b>)</span>
+                                          <span>(<b style="color:red">@remainingEstimate left</b>)</span>
                                       }
                                       else
                                       {
-                                          <span> (@issue.RemainingEstimate left) </span>
+                                          <span> (@remainingEstimate left) </span>
                                       }
                                   }
                             }
@@ -166,14 +192,10 @@
     </div>
    <div style="margin-top:30px">
       <h2>Completed during the last week</h2> 
-         <div style="margin-top:20px">                
-             @{
-              var bold="";
-             }
-            
+         <div style="margin-top:20px">                          
                  @foreach (var task in Model.SprintReport.OldCompletedTasks)
                       {
-                          if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate.AddDays(1)) > 0)
+                          if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate) >=0 && DateTime.Compare(task.ResolutionDate, Model.options.FromDate.AddDays(1))<=0)
                           {
                               bold = "font-weight: bold;";
                           }
@@ -181,10 +203,10 @@
                           {
                               bold = "font-weight: normal;";
                           }                                       
-                            <div style="margin-top: 10px; color: rgb(11, 135, 10);@bold">
+                            <div style="margin-top: 10px; @bold">
 
                                 <span style="font-family: Segoe UI Symbol">&#10004;</span>
-                                <a style="color: rgb(11, 135, 10); text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
                                 <span>(@task.Issue.Key)</span>
                                 @if (task.Issue.Assignee != null)
                                 {

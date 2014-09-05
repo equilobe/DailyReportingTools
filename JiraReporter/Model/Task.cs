@@ -12,5 +12,6 @@ namespace JiraReporter.Model
         public string CompletedTimeAgo;
         public DateTime ResolutionDate;
         public DateTime UpdatedDate;
+        public bool ExistsInTimesheet;
     }
 }

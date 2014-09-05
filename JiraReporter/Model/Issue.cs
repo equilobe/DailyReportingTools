@@ -37,6 +37,8 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public int TotalRemainingSeconds { get; set; }
         [XmlIgnore]
+        public string TotalRemaining { get; set; }
+        [XmlIgnore]
         public string Type { get; set; }
         [XmlIgnore]
         public bool SubTask { get; set; }
@@ -80,6 +82,7 @@ namespace JiraReporter.Model
             this.RemainingEstimate = issue.RemainingEstimate;
             this.RemainingEstimateSeconds = issue.RemainingEstimateSeconds;
             this.TotalRemainingSeconds = issue.TotalRemainingSeconds;
+            this.TotalRemaining = issue.TotalRemaining;
             if (issue.Resolution != null)
             {
                 this.Resolution = issue.Resolution;
@@ -154,6 +157,7 @@ namespace JiraReporter.Model
                 Updated = issue.Updated,
                 Subtasks = issue.Subtasks,
                 TotalRemainingSeconds = issue.TotalRemainingSeconds,
+                TotalRemaining = issue.TotalRemaining,
                 Entries = new List<Entries>()
             };
         }
@@ -225,7 +229,9 @@ namespace JiraReporter.Model
         {
                  this.TimeLogged = TimesheetService.SetTimeFormat(this.TimeSpent);
                      if (this.Subtasks.Count>0)
-                         this.RemainingEstimate = TimesheetService.SetParentTimeFormat(this.TotalRemainingSeconds);
+                         this.TotalRemaining = TimesheetService.SetParentTimeFormat(this.TotalRemainingSeconds);
+                     if (this.RemainingEstimate == null)
+                         this.RemainingEstimate = TimesheetService.SetParentTimeFormat(this.RemainingEstimateSeconds);
         }
 
         public void SetIssueLink(Policy policy)

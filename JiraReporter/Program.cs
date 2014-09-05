@@ -62,7 +62,7 @@ namespace JiraReporter
             var report = new SprintReport();
             report.GetOldCompletedTasks(p, options);
             report.GetRecentlyCompletedTasks(p, options);
-            report.SetSprintTasks(p);
+            report.SetSprintTasks(p, timesheet);
             return report;
         }
 
