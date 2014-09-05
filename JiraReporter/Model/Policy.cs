@@ -60,6 +60,11 @@ namespace JiraReporter.Model
                 ser.Serialize(fs, this);
             }
         }
+
+        public void SetPermanentTaskLabel()
+        {
+            this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
+        }
     }
     
 }

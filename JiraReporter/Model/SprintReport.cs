@@ -14,41 +14,42 @@ namespace JiraReporter.Model
         public List<Task> InProgressTasks { get; set; }
         public List<Task> OpenTasks { get; set; }
 
-        private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
+        private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate)
         {
-            string toDate = Options.DateToISO(endDate);
             string fromDate = Options.DateToISO(startDate);
+            string toDate = "endOfDay()";
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);
-            var issues = client.GetIssuesByJql("resolved >= '" + fromDate + "' & resolved <= '"+ toDate + "'", 0, 250);
+            var issues = client.GetIssuesByJql("resolved >= '" + fromDate + "' & resolved <= "+ toDate, 0, 250);
             return issues;
         }
 
         public void GetOldCompletedTasks(Policy policy, Options options)
         {
             var OldCompletedTasks = new List<Task>();
-            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6), options.FromDate.AddDays(+1)).issues;
+            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6)).issues;
             foreach (var issue in issues)
             {
                 OldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
                 OldCompletedTasks.Last().Issue.SetIssue(policy,issue);
-                SetTaskDays(OldCompletedTasks.Last());
+                SetTaskCompletedTime(OldCompletedTasks.Last());
             }
             this.OldCompletedTasks = OldCompletedTasks;
         }
 
-        public void GetRecentlyCompletedTasks(Policy policy, Options options, Timesheet timesheet)
+        public void GetRecentlyCompletedTasks(Policy policy, Options options)
         {
             var RecentlyCompletedTasks = new List<Task>();
             DateTime date;
-            foreach(var issue in timesheet.Worklog.Issues)
-                if(issue.Resolution!=null)
+            var issues = GetOldCompletedIssues(policy, options.FromDate);
+            foreach(var issue in issues.issues)
+                if(issue.fields.resolution!=null)
             {
-                date = Convert.ToDateTime(issue.ResolutionDate);
-                if (DateTime.Compare(options.FromDate, date) <= 0)
+                date = Convert.ToDateTime(issue.fields.resolutiondate);
                 {
-                    RecentlyCompletedTasks.Add(new Task { Issue = new Issue(issue), ResolutionDate = date });
-                    SetTaskHours(RecentlyCompletedTasks.Last());
+                    RecentlyCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = date });
+                    RecentlyCompletedTasks.Last().Issue.SetIssue(policy, issue);
+                    SetTaskCompletedTime(RecentlyCompletedTasks.Last());
                 }
             }
             this.RecentlyCompletedTasks = RecentlyCompletedTasks;
@@ -93,16 +94,26 @@ namespace JiraReporter.Model
             return timeAgo;
         }
 
-        private void SetTaskDays(Task task)
+        private void SetTaskCompletedTime(Task task)
         {
-            int days = (int)SetTaskTimeSpan(task).TotalDays;
-            task.CompletedTimeAgo = string.Format("{0} days", days);
-        }
-
-        private void SetTaskHours(Task task)
-        {
-            int hours = (int)SetTaskTimeSpan(task).TotalHours;
-            task.CompletedTimeAgo = string.Format("{0} hours", hours);
+            task.CompletedTimeAgo="";
+            int minutes = (int)SetTaskTimeSpan(task).TotalMinutes;
+            var t = TimeSpan.FromMinutes(minutes);
+            var c = t.Days;
+            var x = t.TotalDays;
+            if (t.Days > 1)
+                task.CompletedTimeAgo = string.Format("{0} days", t.Days);
+            else
+                if (t.Days == 1)
+                    task.CompletedTimeAgo = string.Format("{0} day", t.Days);
+                else
+                    if (t.Hours > 1)
+                        task.CompletedTimeAgo = string.Format("{0} hours", t.Hours);
+                    else
+                        if (t.Hours == 1)
+                            task.CompletedTimeAgo = string.Format("{0} hour", t.Hours);
+                        else
+                            task.CompletedTimeAgo = string.Format("{0} minutes", t.Minutes);
         }
 
         public void SortTasks()

@@ -35,6 +35,8 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string RemainingEstimate { get; set; }
         [XmlIgnore]
+        public int TotalRemainingSeconds { get; set; }
+        [XmlIgnore]
         public string Type { get; set; }
         [XmlIgnore]
         public bool SubTask { get; set; }
@@ -48,6 +50,8 @@ namespace JiraReporter.Model
         public StatusCategory StatusCategory { get; set; }
         [XmlIgnore]
         public string Updated { get; set; }
+        [XmlIgnore]
+        public List<AnotherJiraRestClient.Subtask> Subtasks { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -75,6 +79,7 @@ namespace JiraReporter.Model
             this.Priority = issue.Priority;
             this.RemainingEstimate = issue.RemainingEstimate;
             this.RemainingEstimateSeconds = issue.RemainingEstimateSeconds;
+            this.TotalRemainingSeconds = issue.TotalRemainingSeconds;
             if (issue.Resolution != null)
             {
                 this.Resolution = issue.Resolution;
@@ -88,6 +93,8 @@ namespace JiraReporter.Model
             this.Type = issue.Type;
             this.StatusCategory = issue.StatusCategory;
             this.Updated = issue.Updated;
+            if (issue.Subtasks!=null)
+                this.Subtasks = issue.Subtasks;
         }
  
         public static void SetEntries(List<Entries> entries, Issue issue, List<Issue> issues)
@@ -145,6 +152,8 @@ namespace JiraReporter.Model
                 ResolutionDate = issue.ResolutionDate,
                 StatusCategory = issue.StatusCategory,
                 Updated = issue.Updated,
+                Subtasks = issue.Subtasks,
+                TotalRemainingSeconds = issue.TotalRemainingSeconds,
                 Entries = new List<Entries>()
             };
         }
@@ -193,9 +202,12 @@ namespace JiraReporter.Model
             this.SetLabel(policy, newIssue);
             this.StatusCategory = newIssue.fields.status.statusCategory;
             this.Updated = newIssue.fields.updated;
+            if (newIssue.fields.subtasks != null)
+            {
+                this.Subtasks = newIssue.fields.subtasks;
+                this.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
+            }
 
-            if (newIssue.fields.timetracking != null)
-                this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
             if(this.Entries!=null)
                this.SetIssueTimeSpent();
             this.SetIssueTimeFormat();
@@ -212,8 +224,8 @@ namespace JiraReporter.Model
         public void SetIssueTimeFormat()
         {
                  this.TimeLogged = TimesheetService.SetTimeFormat(this.TimeSpent);
-                 if(this.RemainingEstimate==null)
-                      this.RemainingEstimate = TimesheetService.SetTimeFormat(this.RemainingEstimateSeconds);
+                     if (this.Subtasks.Count>0)
+                         this.RemainingEstimate = TimesheetService.SetParentTimeFormat(this.TotalRemainingSeconds);
         }
 
         public void SetIssueLink(Policy policy)

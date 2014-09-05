@@ -19,6 +19,7 @@ namespace JiraReporter
         {
             Options options = GetCommandLineOptions(args);
             Policy p = Policy.CreateFromFile(options.PolicyPath);
+            p.SetPermanentTaskLabel();
             options.LoadDates();
 
             var timesheetService = new TimesheetService();
@@ -60,7 +61,7 @@ namespace JiraReporter
         {
             var report = new SprintReport();
             report.GetOldCompletedTasks(p, options);
-            report.GetRecentlyCompletedTasks(p, options, timesheet);
+            report.GetRecentlyCompletedTasks(p, options);
             report.SetSprintTasks(p);
             return report;
         }
