@@ -227,11 +227,11 @@ namespace JiraReporter.Model
 
         public void SetIssueTimeFormat()
         {
-                 this.TimeLogged = TimesheetService.SetTimeFormat(this.TimeSpent);
+                 this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
                      if (this.Subtasks.Count>0)
-                         this.TotalRemaining = TimesheetService.SetParentTimeFormat(this.TotalRemainingSeconds);
+                         this.TotalRemaining = TimeFormatting.SetParentTimeFormat(this.TotalRemainingSeconds);
                      if (this.RemainingEstimate == null)
-                         this.RemainingEstimate = TimesheetService.SetParentTimeFormat(this.RemainingEstimateSeconds);
+                         this.RemainingEstimate = TimeFormatting.SetParentTimeFormat(this.RemainingEstimateSeconds);
         }
 
         public void SetIssueLink(Policy policy)

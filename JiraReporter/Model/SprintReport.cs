@@ -61,6 +61,7 @@ namespace JiraReporter.Model
             GetUnfinishedTasks(policy, issues, timesheet);
             GetRecentlyCompletedTasks(policy, options);
             GetOldCompletedTasks(policy, options);
+            SortTasks();
         }
 
         private void GetUnfinishedTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
@@ -148,7 +149,7 @@ namespace JiraReporter.Model
                             task.CompletedTimeAgo = string.Format("{0} minutes", t.Minutes);
         }
 
-        public void SortTasks()
+        private void SortTasks()
         {
             if(this.OldCompletedTasks!=null)
                 this.OldCompletedTasks = this.OldCompletedTasks.OrderBy(date => date.ResolutionDate).ToList();

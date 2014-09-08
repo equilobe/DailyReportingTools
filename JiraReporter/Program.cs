@@ -60,8 +60,6 @@ namespace JiraReporter
         private static SprintReport GetSprintReport(Policy p, Options options, Timesheet timesheet)
         {
             var report = new SprintReport();
-            //report.GetOldCompletedTasks(p, options);
-            //report.GetRecentlyCompletedTasks(p, options);
             report.SetSprintTasks(p, timesheet, options);
             return report;
         }
@@ -72,7 +70,6 @@ namespace JiraReporter
             report.Authors = Author.OrderAuthorsName(report.Authors);
             report.Summary = Author.OrderAuthorsTime(report.Summary);
             report.Date = report.options.FromDate;
-            report.SprintReport.SortTasks();
         }
 
         private static void SendReport(Report report)

@@ -36,8 +36,8 @@ namespace JiraReporter.Model
             int totalTime = 0;
             foreach (var author in authors)
                 totalTime += author.TimeSpent;
-            
-            var totalTimeString = TimesheetService.SetTimeFormat(totalTime);
+
+            var totalTimeString = TimeFormatting.SetTimeFormat(totalTime);
             return totalTimeString;
         }
     }

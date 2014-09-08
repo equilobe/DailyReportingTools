@@ -70,6 +70,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportProcessor.cs" />
+    <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetService.cs" />
   </ItemGroup>
   <ItemGroup>

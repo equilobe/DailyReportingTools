@@ -64,7 +64,7 @@ namespace JiraReporter.Model
         public static void SetAuthorsTimeFormat(List<Author> authors)
         {
             foreach (var author in authors)
-                author.TimeLogged = TimesheetService.SetTimeFormat(author.TimeSpent);
+                author.TimeLogged = TimeFormatting.SetTimeFormat(author.TimeSpent);
         }
 
         public static List<Author> OrderAuthorsName(List<Author> authors)
