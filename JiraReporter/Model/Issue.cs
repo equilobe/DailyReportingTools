@@ -29,7 +29,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string Assignee { get; set; }
         [XmlIgnore]
-        public string Priority { get; set; }
+        public AnotherJiraRestClient.Priority Priority { get; set; }
         [XmlIgnore]
         public int RemainingEstimateSeconds { get; set; }
         [XmlIgnore]
@@ -187,7 +187,7 @@ namespace JiraReporter.Model
         public void SetIssue(Policy policy, AnotherJiraRestClient.Issue newIssue)
         {
             
-            this.Priority = newIssue.fields.priority.name;
+            this.Priority = newIssue.fields.priority;
             if (newIssue.fields.assignee!=null)
                 this.Assignee = newIssue.fields.assignee.displayName;
             if (newIssue.fields.timetracking != null)

@@ -60,9 +60,9 @@ namespace JiraReporter
         private static SprintReport GetSprintReport(Policy p, Options options, Timesheet timesheet)
         {
             var report = new SprintReport();
-            report.GetOldCompletedTasks(p, options);
-            report.GetRecentlyCompletedTasks(p, options);
-            report.SetSprintTasks(p, timesheet);
+            //report.GetOldCompletedTasks(p, options);
+            //report.GetRecentlyCompletedTasks(p, options);
+            report.SetSprintTasks(p, timesheet, options);
             return report;
         }
 

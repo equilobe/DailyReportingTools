@@ -24,7 +24,7 @@ namespace JiraReporter.Model
             return issues;
         }
 
-        public void GetOldCompletedTasks(Policy policy, Options options)
+        private void GetOldCompletedTasks(Policy policy, Options options)
         {
             var OldCompletedTasks = new List<Task>();
             var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6)).issues;
@@ -37,7 +37,7 @@ namespace JiraReporter.Model
             this.OldCompletedTasks = OldCompletedTasks;
         }
 
-        public void GetRecentlyCompletedTasks(Policy policy, Options options)
+        private void GetRecentlyCompletedTasks(Policy policy, Options options)
         {
             var RecentlyCompletedTasks = new List<Task>();
             DateTime date;
@@ -55,33 +55,55 @@ namespace JiraReporter.Model
             this.RecentlyCompletedTasks = RecentlyCompletedTasks;
         }
 
-        public void SetSprintTasks(Policy policy, Timesheet timesheet)
+        public void SetSprintTasks(Policy policy, Timesheet timesheet, Options options)
         {
             var issues = GetSprintTasks(policy);
-            GetInProgressTasks(policy, issues, timesheet);
+            GetUnfinishedTasks(policy, issues, timesheet);
+            GetRecentlyCompletedTasks(policy, options);
+            GetOldCompletedTasks(policy, options);
         }
 
-        private void GetInProgressTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
+        private void GetUnfinishedTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
         {
-            var InProgressTasks = new List<Task>();
-            DateTime date;
-            foreach(var issue in issues.issues)
-                if(issue.fields.status.statusCategory.name=="In Progress")
-                {
-                    date = Convert.ToDateTime(issue.fields.updated);
-                    InProgressTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, ResolutionDate=null, 
-                        TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date, ExistsInTimesheet = false });
-                    InProgressTasks.Last().Issue.SetIssue(policy,issue);
-                    InProgressTasks.Last().Issue.SetIssueTimeFormat();
-                    if (TaskLogged(InProgressTasks.Last(),timesheet.Worklog.Issues) == true)
-                        InProgressTasks.Last().ExistsInTimesheet = true;
-                    else
-                        InProgressTasks.Last().ExistsInTimesheet = false;
-                }
-            this.InProgressTasks = InProgressTasks;
+            var inProgressTasks = new List<Task>();
+            var openTasks = new List<Task>();
+            foreach (var issue in issues.issues)
+                if (issue.fields.status.statusCategory.name == "In Progress")
+                    GetInProgressTasks(policy, issue, timesheet, inProgressTasks);
+                else
+                    if (issue.fields.resolution == null)
+                        GetOpenTasks(policy, issue, timesheet, openTasks);
+            this.InProgressTasks = inProgressTasks;
+            this.OpenTasks = openTasks;
         }
 
-        private bool TaskLogged(Task task, List<Issue> issues)
+        private void GetInProgressTasks(Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> inProgressTasks)
+        {
+            DateTime date;
+            date = Convert.ToDateTime(issue.fields.updated);
+            inProgressTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, ResolutionDate=null, 
+                TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date, ExistsInTimesheet = false });
+            inProgressTasks.Last().Issue.SetIssue(policy, issue);
+            if (TaskExists(inProgressTasks.Last(), timesheet.Worklog.Issues) == true)
+                inProgressTasks.Last().ExistsInTimesheet = true;
+            else
+                inProgressTasks.Last().ExistsInTimesheet = false;              
+        }
+
+        private void GetOpenTasks(Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> openTasks)
+        {
+            DateTime date;
+            date = Convert.ToDateTime(issue.fields.updated);
+            openTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, ResolutionDate=null, 
+                TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date, ExistsInTimesheet = false });
+            openTasks.Last().Issue.SetIssue(policy, issue);
+            if (TaskExists(openTasks.Last(), timesheet.Worklog.Issues) == true)
+                openTasks.Last().ExistsInTimesheet = true;
+            else
+                openTasks.Last().ExistsInTimesheet = false;     
+        }
+    
+        private bool TaskExists(Task task, List<Issue> issues)
         {
             if (issues.Exists(i => i.Key == task.Issue.Key))
                 return true;
@@ -132,6 +154,10 @@ namespace JiraReporter.Model
                 this.OldCompletedTasks = this.OldCompletedTasks.OrderBy(date => date.ResolutionDate).ToList();
             if(this.RecentlyCompletedTasks!=null)
                 this.RecentlyCompletedTasks = this.RecentlyCompletedTasks.OrderBy(date => date.ResolutionDate).ToList();
+            if (this.InProgressTasks != null)
+                this.InProgressTasks = this.InProgressTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
+            if (this.OpenTasks != null)
+                this.OpenTasks = this.OpenTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
         }
 
     }
