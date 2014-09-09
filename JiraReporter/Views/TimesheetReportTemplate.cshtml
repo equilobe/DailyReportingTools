@@ -12,10 +12,11 @@
         var remainingEstimate = "";
         var openParentheses = "";
         var closedParantheses = "";
+        var color="black";
     }
 
     <div style="margin-top:40px">
-        <h3>Sprint status</h3>
+        <h2>Sprint status</h2>
         <div style="margin-top:30px">           
           
             @if (Model.SprintReport.RecentlyCompletedTasks != null)
@@ -75,7 +76,15 @@
                                else
                                {
                                    remainingEstimate = task.Issue.RemainingEstimate;
-                               }                              
+                               }
+                               if (task.Issue.RemainingEstimateSeconds==0)
+                               {
+                                   color = "red";
+                               }                 
+                               else
+                               {
+                                   color = "black";
+                               }             
                                <div style="margin-top: 10px; @bold;">
                                    <span style="font-family: Segoe UI Symbol">&#10065;</span>
                                    <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
@@ -83,8 +92,8 @@
                                    (
                                    @if(task.Issue.TimeSpent>0)
                                    {
-                                       <span>@task.Issue.TimeLogged worked</span>
-                                       <span>, @remainingEstimate left</span>
+                                       <span>@task.Issue.TimeLogged worked,</span>
+                                       <span style="color:@color">@remainingEstimate left</span>
                                    }
                           
                                    @if (task.Issue.Assignee != null)
@@ -123,6 +132,14 @@
                             {
                                 remainingEstimate = task.Issue.RemainingEstimate;
                             }
+                            if (task.Issue.RemainingEstimateSeconds == 0)
+                            {
+                                color = "red";
+                            }
+                            else
+                            {
+                                color = "black";
+                            }      
                              <div style="margin-top: 10px; @bold;">
                                    <span style="font-family: Segoe UI Symbol">&#10065;</span>
                                    <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
@@ -141,7 +158,7 @@
                                    @if(task.Issue.TimeSpent>0)
                                    {
                                        <span>@task.Issue.TimeLogged worked,</span>                                      
-                                       <span>@remainingEstimate left</span>                                              
+                                       <span style="color:@color">@remainingEstimate left</span>                                              
                                    }
                                    
                                    @if (task.Issue.Assignee != null)
