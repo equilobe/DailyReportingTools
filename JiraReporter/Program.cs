@@ -28,8 +28,9 @@ namespace JiraReporter
             SetTimesheetIssues(timesheet, p, options);
 
             var report = GetReport(timesheet,p,options);
+            SaveReportToFile(report);
 
-            SendReport(report);
+            SendReport(report, GetReportPath(report));
         }
 
         private static Options GetCommandLineOptions(string[] args)
@@ -72,14 +73,17 @@ namespace JiraReporter
             report.Date = report.options.FromDate;
         }
 
-        private static void SendReport(Report report)
+        private static void SaveReportToFile(Report report)
         {
             string reportPath = GetReportPath(report);
 
             var repCont = ReportProcessor.ProcessReport(report);
 
             File.WriteAllText(reportPath, repCont);
+        }
 
+        private static void SendReport(Report report, string reportPath)
+        {
             var emailer = new ReportEmailer(report.policy, report.options);
             emailer.EmailReport(reportPath);
         }
