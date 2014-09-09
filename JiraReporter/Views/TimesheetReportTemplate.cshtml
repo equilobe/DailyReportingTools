@@ -90,18 +90,20 @@
                                    <span style="font-family: Segoe UI Symbol">&#10065;</span>
                                    <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
                                    <span>(@task.Issue.Key)</span>
-                                   (
-                                   @if(task.Issue.TimeSpent>0)
-                                   {
-                                       <span>@task.Issue.TimeLogged worked,</span>
-                                       <span style="color:@color">@remainingEstimate left</span>
-                                   }
-                          
-                                   @if (task.Issue.Assignee != null)
-                                   {
-                                       <span> assigned to  @task.Issue.Assignee</span>
-                                   }     
-                                  )
+                                   <span style="font-size:0">
+                                       <span style="font-size:13px">(</span>
+                                       @if (task.Issue.TimeSpent > 0)
+                                       {
+                                           <span style="font-size:13px;">@task.Issue.TimeLogged worked, </span>
+                                           <span style="font-size:13px; color:@color">@remainingEstimate left </span>
+                                       }
+
+                                       @if (task.Issue.Assignee != null)
+                                       {
+                                           <span style="font-size:13px;"> assigned to  @task.Issue.Assignee</span>
+                                       }
+                                       <span style="font-size:13px">) </span>
+                                   </span>                                  
                                </div>  
                                 if(task.Issue.SubtasksIssues!=null)
                                 {
@@ -135,7 +137,7 @@
                                                    openParentheses = "";
                                                    closedParantheses = "";
                                                }     
-                                               <div style="margin-top:10px; margin-left:15px;@bold;">
+                                               <div style="margin-top:10px; margin-left:20px; @bold;">
                                                    <span style="font-family: Segoe UI Symbol">
                                                        @if(subtask.Resolution!=null)
                                                        {
@@ -146,18 +148,21 @@
                                                    </span>
                                                    <a style="text-decoration: none" href="@subtask.Link">@subtask.Summary</a>
                                                    <span>(@subtask.Key)</span>
-                                                   <span>@openParentheses</span>
-                                                   @if (subtask.TimeSpent > 0)
-                                                   {
-                                                       <span>@subtask.TimeLogged worked,</span>
-                                                       <span style="color:@color">@subtask.RemainingEstimate left</span>
-                                                   }
+                                                   <span style="font-size:0;">
+                                                       <span style="font-size:13px">@openParentheses</span>
+                                                       @if (subtask.TimeSpent > 0)
+                                                       {
+                                                           <span style="font-size:13px">@subtask.TimeLogged worked, </span>
+                                                           <span style="font-size:13px; color:@color;"> @subtask.RemainingEstimate left </span>
+                                                       }
 
-                                                   @if (subtask.Assignee != null)
-                                                   {
-                                                       <span> assigned to  @subtask.Assignee</span>
-                                                   }
-                                                   <span>@closedParantheses</span>
+                                                       @if (subtask.Assignee != null)
+                                                       {
+                                                           <span style="font-size:13px;"> assigned to  @subtask.Assignee</span>
+                                                       }
+                                                       <span style="font-size:13px">@closedParantheses </span>
+                                                   </span>
+                                                   <i>- @subtask.Status</i>
                                                </div>
                                 
                                            }
@@ -215,19 +220,22 @@
                              <div style="margin-top: 10px; @bold;">
                                    <span style="font-family: Segoe UI Symbol">&#10065;</span>
                                    <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                   <span>(@task.Issue.Key)</span>                                   
-                                   <span>@openParentheses</span>
-                                   @if(task.Issue.TimeSpent>0)
-                                   {
-                                       <span>@task.Issue.TimeLogged worked,</span>                                      
-                                       <span style="color:@color">@remainingEstimate left</span>                                              
-                                   }
+                                   <span>(@task.Issue.Key)</span> 
+                                   <span style="font-size:0">
+                                       <span style="font-size:13px">@openParentheses</span>
+                                       @if (task.Issue.TimeSpent > 0)
+                                       {
+                                           <span style="font-size:13px">@task.Issue.TimeLogged worked, </span>
+                                           <span style="font-size:13px; color:@color">@remainingEstimate left </span>
+                                       }
+
+                                       @if (task.Issue.Assignee != null)
+                                       {
+                                           <span style="font-size:13px"> assigned to  @task.Issue.Assignee</span>
+                                       }
+                                       <span style="font-size:13px">@closedParantheses </span>  
+                                   </span>                                  
                                    
-                                   @if (task.Issue.Assignee != null)
-                                   {
-                                       <span> assigned to  @task.Issue.Assignee</span>
-                                   }     
-                                  <span>@closedParantheses</span>  
                                   @if(task.Issue.Status==Model.policy.ReopenedStatus)
                                   {
                                       <span>-</span>
@@ -274,7 +282,7 @@
                                                        openParentheses = "";
                                                        closedParantheses = "";
                                                    }     
-                                                   <div style="margin-top:10px; margin-left:15px;@bold;">
+                                                   <div style="margin-top:10px; margin-left:20px;@bold;">
                                                        <span style="font-family: Segoe UI Symbol">
                                                            @if(subtask.Resolution!=null)
                                                            {
@@ -285,18 +293,21 @@
                                                        </span>
                                                        <a style="text-decoration: none" href="@subtask.Link">@subtask.Summary</a>
                                                        <span>(@subtask.Key)</span>
-                                                       <span>@openParentheses</span>
-                                                       @if (subtask.TimeSpent > 0)
-                                                       {
-                                                           <span>@subtask.TimeLogged worked,</span>
-                                                           <span style="color:@color">@subtask.RemainingEstimate left</span>
-                                                       }
+                                                       <span style="font-size:0">
+                                                           <span style="font-size:13px">@openParentheses</span>
+                                                           @if (subtask.TimeSpent > 0)
+                                                           {
+                                                               <span style="font-size:13px">@subtask.TimeLogged worked, </span>
+                                                               <span style="font-size:13px; color:@color">@subtask.RemainingEstimate left </span>
+                                                           }
 
-                                                       @if (subtask.Assignee != null)
-                                                       {
-                                                           <span> assigned to  @subtask.Assignee</span>
-                                                       }
-                                                       <span>@closedParantheses</span>
+                                                           @if (subtask.Assignee != null)
+                                                           {
+                                                               <span style="font-size:13px"> assigned to  @subtask.Assignee</span>
+                                                           }
+                                                           <span style="font-size:13px">@closedParantheses </span>
+                                                       </span>                                                     
+                                                       <i>- @subtask.Status</i>
                                                    </div>
                                                }
                                            }        

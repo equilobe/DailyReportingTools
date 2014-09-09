@@ -14,6 +14,16 @@ namespace JiraReporter.Model
         public List<Task> InProgressTasks { get; set; }
         public List<Task> OpenTasks { get; set; }
 
+
+        public void SetSprintTasks(Policy policy, Timesheet timesheet, Options options)
+        {
+            var issues = GetSprintTasks(policy);
+            GetUnfinishedTasks(policy, issues, timesheet);
+            GetRecentlyCompletedTasks(policy, options, timesheet);
+            GetOldCompletedTasks(policy, options, timesheet);
+            SortTasks();
+        }
+
         private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate)
         {
             string fromDate = Options.DateToISO(startDate);
@@ -53,15 +63,6 @@ namespace JiraReporter.Model
                 }
             }
             this.RecentlyCompletedTasks = RecentlyCompletedTasks;
-        }
-
-        public void SetSprintTasks(Policy policy, Timesheet timesheet, Options options)
-        {
-            var issues = GetSprintTasks(policy);
-            GetUnfinishedTasks(policy, issues, timesheet);
-            GetRecentlyCompletedTasks(policy, options, timesheet);
-            GetOldCompletedTasks(policy, options, timesheet);
-            SortTasks();
         }
 
         private void GetUnfinishedTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
