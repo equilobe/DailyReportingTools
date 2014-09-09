@@ -56,6 +56,8 @@ namespace JiraReporter.Model
         public List<AnotherJiraRestClient.Subtask> Subtasks { get; set; }
         [XmlIgnore]
         public List<Issue> SubtasksIssues { get; set; }
+        [XmlIgnore]
+        public bool ExistsInTimesheet { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -98,6 +100,7 @@ namespace JiraReporter.Model
             this.Type = issue.Type;
             this.StatusCategory = issue.StatusCategory;
             this.Updated = issue.Updated;
+            this.ExistsInTimesheet = issue.ExistsInTimesheet;
             if (issue.Subtasks != null)
             {
                 this.Subtasks = issue.Subtasks;
@@ -138,6 +141,13 @@ namespace JiraReporter.Model
             return issues.Find(i => i.Entries.First().AuthorFullName == entry.AuthorFullName && i.Key == issue.Key);
         }
 
+        private bool IssueExistsTimesheet(List<Issue> issues)
+        {
+            if (issues.Exists(i => i.Key == this.Key))
+                return true;
+            return false;
+        }
+
         private static Issue CreateNewIssue(Issue issue)
         {
             return new Issue
@@ -164,6 +174,7 @@ namespace JiraReporter.Model
                 SubtasksIssues = issue.SubtasksIssues,
                 TotalRemainingSeconds = issue.TotalRemainingSeconds,
                 TotalRemaining = issue.TotalRemaining,
+                ExistsInTimesheet = issue.ExistsInTimesheet,
                 Entries = new List<Entries>()
             };
         }
@@ -184,15 +195,15 @@ namespace JiraReporter.Model
             {
                 var newIssue = new AnotherJiraRestClient.Issue();
                 newIssue = GetIssue(issue.Key, policy);
-                issue.SetIssue(policy, newIssue);
+                issue.SetIssue(policy, newIssue, timesheet);
                 if(issue.SubTask==true)
                     issue.GetParent(issue, policy);
                 if (issue.Subtasks != null)
-                    issue.SetSubtasksIssues(policy);
+                    issue.SetSubtasksIssues(policy, timesheet);
             }
         }
 
-        public void SetIssue(Policy policy, AnotherJiraRestClient.Issue newIssue)
+        public void SetIssue(Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet)
         {
             
             this.Priority = newIssue.fields.priority;
@@ -225,19 +236,20 @@ namespace JiraReporter.Model
             else
                 this.TimeSpent = newIssue.fields.timespent;
             this.SetIssueTimeFormat();
+            this.SetIssueExists(timesheet.Worklog.Issues);
             
             this.SetIssueLink(policy);
         }
 
-        public void SetSubtasksIssues(Policy policy)
+        public void SetSubtasksIssues(Policy policy, Timesheet timesheet)
         {
             var issue = new AnotherJiraRestClient.Issue();
             this.SubtasksIssues = new List<Issue>();
             foreach(var task in Subtasks)
             {
-                this.SubtasksIssues.Add(new Issue { Key = task.key });
                 issue = GetIssue(task.key, policy);
-                this.SubtasksIssues.Last().SetIssue(policy, issue);
+                this.SubtasksIssues.Add(new Issue { Key = task.key, Summary=issue.fields.summary });               
+                this.SubtasksIssues.Last().SetIssue(policy, issue, timesheet);
             }
         }
 
@@ -256,11 +268,19 @@ namespace JiraReporter.Model
                          this.RemainingEstimate = TimeFormatting.SetTimeFormatDetailed(this.RemainingEstimateSeconds);
         }
 
-        public void SetIssueLink(Policy policy)
+        private void SetIssueLink(Policy policy)
         {
             Uri baseLink = new Uri(policy.BaseUrl);
             baseLink = new Uri(baseLink, "browse/");
             this.Link = new Uri(baseLink, this.Key);           
+        }
+
+        private void SetIssueExists(List<Issue> issues)
+        {
+            if (IssueExistsTimesheet(issues) == true)
+                this.ExistsInTimesheet = true;
+            else
+                this.ExistsInTimesheet = false;
         }
 
         private void SetLabel(Policy policy, AnotherJiraRestClient.Issue issue)
