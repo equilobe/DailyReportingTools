@@ -23,7 +23,7 @@ namespace JiraReporter
             return timeFormat;
         }
 
-        public static string SetParentTimeFormat(int seconds)
+        public static string SetTimeFormatDetailed(int seconds)
         {
             string timeFormat = "";
             int days = seconds / 28800;

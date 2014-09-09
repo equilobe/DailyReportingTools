@@ -32,6 +32,8 @@ namespace JiraReporter.Model
             {
                 OldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
                 OldCompletedTasks.Last().Issue.SetIssue(policy,issue);
+                if (OldCompletedTasks.Last().Issue.Subtasks!=null)
+                     OldCompletedTasks.Last().Issue.SetSubtasksIssues(policy);
                 SetTaskCompletedTime(OldCompletedTasks.Last());
             }
             this.OldCompletedTasks = OldCompletedTasks;
@@ -85,6 +87,8 @@ namespace JiraReporter.Model
             inProgressTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, ResolutionDate=null, 
                 TimeSpent = issue.fields.timespent, RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = date, ExistsInTimesheet = false });
             inProgressTasks.Last().Issue.SetIssue(policy, issue);
+            if (inProgressTasks.Last().Issue.Subtasks != null)
+                inProgressTasks.Last().Issue.SetSubtasksIssues(policy);
             if (TaskExists(inProgressTasks.Last(), timesheet.Worklog.Issues) == true)
                 inProgressTasks.Last().ExistsInTimesheet = true;
             else
