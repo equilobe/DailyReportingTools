@@ -130,7 +130,8 @@ namespace JiraReporter.Model
                 AddEntry(existsIssue, entry);
             else
             {
-                var newIssue = CreateNewIssue(issue);
+                //var newIssue = CreateNewIssue(issue);
+                var newIssue = new Issue(issue) { Entries = new List<Entries>() };
                 AddEntry(newIssue, entry);
                 AddIssue(newIssue, issues);
             }
@@ -148,36 +149,36 @@ namespace JiraReporter.Model
             return false;
         }
 
-        private static Issue CreateNewIssue(Issue issue)
-        {
-            return new Issue
-            {
-                Key = issue.Key,
-                Link = issue.Link,
-                TimeLogged = issue.TimeLogged,
-                TimeSpent = issue.TimeSpent,
-                Summary = issue.Summary,
-                Assignee = issue.Assignee,
-                Priority = issue.Priority,
-                RemainingEstimate = issue.RemainingEstimate,
-                RemainingEstimateSeconds = issue.RemainingEstimateSeconds,
-                Resolution = issue.Resolution,
-                Status = issue.Status,
-                SubTask = issue.SubTask,
-                Type = issue.Type,
-                Parent = issue.Parent,
-                Label = issue.Label,
-                ResolutionDate = issue.ResolutionDate,
-                StatusCategory = issue.StatusCategory,
-                Updated = issue.Updated,
-                Subtasks = issue.Subtasks,
-                SubtasksIssues = issue.SubtasksIssues,
-                TotalRemainingSeconds = issue.TotalRemainingSeconds,
-                TotalRemaining = issue.TotalRemaining,
-                ExistsInTimesheet = issue.ExistsInTimesheet,
-                Entries = new List<Entries>()
-            };
-        }
+        //private static Issue CreateNewIssue(Issue issue)
+        //{
+        //    return new Issue
+        //    {
+        //        Key = issue.Key,
+        //        Link = issue.Link,
+        //        TimeLogged = issue.TimeLogged,
+        //        TimeSpent = issue.TimeSpent,
+        //        Summary = issue.Summary,
+        //        Assignee = issue.Assignee,
+        //        Priority = issue.Priority,
+        //        RemainingEstimate = issue.RemainingEstimate,
+        //        RemainingEstimateSeconds = issue.RemainingEstimateSeconds,
+        //        Resolution = issue.Resolution,
+        //        Status = issue.Status,
+        //        SubTask = issue.SubTask,
+        //        Type = issue.Type,
+        //        Parent = issue.Parent,
+        //        Label = issue.Label,
+        //        ResolutionDate = issue.ResolutionDate,
+        //        StatusCategory = issue.StatusCategory,
+        //        Updated = issue.Updated,
+        //        Subtasks = issue.Subtasks,
+        //        SubtasksIssues = issue.SubtasksIssues,
+        //        TotalRemainingSeconds = issue.TotalRemainingSeconds,
+        //        TotalRemaining = issue.TotalRemaining,
+        //        ExistsInTimesheet = issue.ExistsInTimesheet,
+        //        Entries = new List<Entries>()
+        //    };
+        //}
 
         private static void AddIssue(Issue issue, List<Issue> issues)
         {
@@ -196,8 +197,8 @@ namespace JiraReporter.Model
                 var newIssue = new AnotherJiraRestClient.Issue();
                 newIssue = GetIssue(issue.Key, policy);
                 issue.SetIssue(policy, newIssue, timesheet);
-                if(issue.SubTask==true)
-                    issue.GetParent(issue, policy);
+           //     if(issue.SubTask==true)
+                //    issue.GetParent(issue, policy);
                 if (issue.Subtasks != null)
                     issue.SetSubtasksIssues(policy, timesheet);
             }
@@ -237,6 +238,8 @@ namespace JiraReporter.Model
                 this.TimeSpent = newIssue.fields.timespent;
             this.SetIssueTimeFormat();
             this.SetIssueExists(timesheet.Worklog.Issues);
+            if (this.SubTask == true)
+                this.SetParent(newIssue, policy);
             
             this.SetIssueLink(policy);
         }
@@ -303,13 +306,12 @@ namespace JiraReporter.Model
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        private void GetParent(Issue issue, Policy policy)
+        private void SetParent(AnotherJiraRestClient.Issue issue, Policy policy)
         {
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
-            var client = new JiraClient(account);
-            var issueNew = client.GetIssue(issue.Key);
-            issue.Parent = new Issue { Key = issueNew.fields.parent.key, Summary = issueNew.fields.parent.fields.summary };
-            issue.Parent.SetIssueLink(policy);
+            var client = new JiraClient(account);           
+            this.Parent = new Issue { Key = issue.fields.parent.key, Summary = issue.fields.parent.fields.summary };
+            this.Parent.SetIssueLink(policy);
         }
     }
 }

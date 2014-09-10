@@ -152,8 +152,12 @@
                                                        <span style="font-size:13px">@openParentheses</span>
                                                        @if (subtask.TimeSpent > 0)
                                                        {
-                                                           <span style="font-size:13px">@subtask.TimeLogged worked, </span>
-                                                           <span style="font-size:13px; color:@color;"> @subtask.RemainingEstimate left </span>
+                                                           <span style="font-size:13px">@subtask.TimeLogged worked </span>
+                                                           if(subtask.Resolution == null)
+                                                           {
+                                                               <span style="font-size:13px">, </span>
+                                                               <span style="font-size:13px; color:@color;"> @subtask.RemainingEstimate left </span>
+                                                           }
                                                        }
 
                                                        @if (subtask.Assignee != null)
@@ -297,8 +301,12 @@
                                                            <span style="font-size:13px">@openParentheses</span>
                                                            @if (subtask.TimeSpent > 0)
                                                            {
-                                                               <span style="font-size:13px">@subtask.TimeLogged worked, </span>
-                                                               <span style="font-size:13px; color:@color">@subtask.RemainingEstimate left </span>
+                                                               <span style="font-size:13px">@subtask.TimeLogged worked </span>
+                                                                if(subtask.Resolution == null)
+                                                                {   
+                                                                    <span style="font-size:13px">, </span>
+                                                                    <span style="font-size:13px; color:@color;"> @subtask.RemainingEstimate left </span>
+                                                                }                                                             
                                                            }
 
                                                            @if (subtask.Assignee != null)
@@ -416,7 +424,7 @@
             </div>
         </div>
         <div style="margin-top:30px">
-            <h2>Completed during the last week</h2>
+            <h2>Completed earlier</h2>
             <div style="margin-top:20px">
                 @foreach (var task in Model.SprintReport.OldCompletedTasks)
                 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JiraReporter.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,5 +43,36 @@ namespace JiraReporter
                 timeFormat = "0m";
             return timeFormat;
         }
+
+
+        public static string GetCompletedTime(DateTime date)
+        {
+            var CompletedTimeAgo = "";
+            int minutes = (int)SetTimeSpan(date).TotalMinutes;
+            var t = TimeSpan.FromMinutes(minutes);
+            if (t.Days > 1)
+                CompletedTimeAgo = string.Format("{0} days", t.Days);
+            else
+                if (t.Days == 1)
+                    CompletedTimeAgo = string.Format("{0} day", t.Days);
+                else
+                    if (t.Hours > 1)
+                        CompletedTimeAgo = string.Format("{0} hours", t.Hours);
+                    else
+                        if (t.Hours == 1)
+                            CompletedTimeAgo = string.Format("{0} hour", t.Hours);
+                        else
+                            CompletedTimeAgo = string.Format("{0} minutes", t.Minutes);
+            return CompletedTimeAgo;
+        }
+
+        private static TimeSpan SetTimeSpan(DateTime date)
+        {
+            var dateNow = DateTime.Now;
+            var resolutionDate = date;
+            TimeSpan timeAgo = dateNow - date;
+            return timeAgo;
+        }
+
     }
 }

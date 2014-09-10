@@ -24,45 +24,46 @@ namespace JiraReporter.Model
             SortTasks();
         }
 
-        private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate)
+        private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = Options.DateToISO(startDate);
-            string toDate = "endOfDay()";
+            //string toDate = "endOfDay()";
+            string toDate = Options.DateToISO(endDate);
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);
-            var issues = client.GetIssuesByJql("resolved >= '" + fromDate + "' & resolved <= "+ toDate, 0, 250);
+            var issues = client.GetIssuesByJql("resolved >= '" + fromDate + "' & resolved <= '"+ toDate + "'", 0, 250);
             return issues;
         }
 
         private void GetOldCompletedTasks(Policy policy, Options options, Timesheet timesheet)
         {
-            var OldCompletedTasks = new List<Task>();
-            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6)).issues;
+            var oldCompletedTasks = new List<Task>();
+            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6), options.FromDate).issues;
             foreach (var issue in issues)
             {
-                OldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
-                OldCompletedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
-                SetTaskCompletedTime(OldCompletedTasks.Last());
+                oldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
+                oldCompletedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
+                oldCompletedTasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(oldCompletedTasks.Last().ResolutionDate);
             }
-            this.OldCompletedTasks = OldCompletedTasks;
+            this.OldCompletedTasks = oldCompletedTasks;
         }
 
         private void GetRecentlyCompletedTasks(Policy policy, Options options, Timesheet timesheet)
         {
-            var RecentlyCompletedTasks = new List<Task>();
+            var recentlyCompletedTasks = new List<Task>();
             DateTime date;
-            var issues = GetOldCompletedIssues(policy, options.FromDate);
+            var issues = GetOldCompletedIssues(policy, options.FromDate, DateTime.Now);
             foreach(var issue in issues.issues)
                 if(issue.fields.resolution!=null)
             {
                 date = Convert.ToDateTime(issue.fields.resolutiondate);
                 {
-                    RecentlyCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = date });
-                    RecentlyCompletedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
-                    SetTaskCompletedTime(RecentlyCompletedTasks.Last());
+                    recentlyCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = date });
+                    recentlyCompletedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
+                    recentlyCompletedTasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(recentlyCompletedTasks.Last().ResolutionDate);
                 }
             }
-            this.RecentlyCompletedTasks = RecentlyCompletedTasks;
+            this.RecentlyCompletedTasks = recentlyCompletedTasks;
         }
 
         private void GetUnfinishedTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
@@ -108,44 +109,14 @@ namespace JiraReporter.Model
             var client = new JiraClient(account);
             var tasks = client.GetIssuesByJql("sprint in openSprints() & project = " + policy.Project, 0, 250);
             return tasks;
-        }
-
-        private TimeSpan SetTaskTimeSpan(Task task)
-        {
-            var dateNow = DateTime.Now;
-            var resolutionDate = task.ResolutionDate;
-            TimeSpan timeAgo = dateNow - resolutionDate;
-            return timeAgo;
-        }
-
-        private void SetTaskCompletedTime(Task task)
-        {
-            task.CompletedTimeAgo="";
-            int minutes = (int)SetTaskTimeSpan(task).TotalMinutes;
-            var t = TimeSpan.FromMinutes(minutes);
-            var c = t.Days;
-            var x = t.TotalDays;
-            if (t.Days > 1)
-                task.CompletedTimeAgo = string.Format("{0} days", t.Days);
-            else
-                if (t.Days == 1)
-                    task.CompletedTimeAgo = string.Format("{0} day", t.Days);
-                else
-                    if (t.Hours > 1)
-                        task.CompletedTimeAgo = string.Format("{0} hours", t.Hours);
-                    else
-                        if (t.Hours == 1)
-                            task.CompletedTimeAgo = string.Format("{0} hour", t.Hours);
-                        else
-                            task.CompletedTimeAgo = string.Format("{0} minutes", t.Minutes);
-        }
+        }       
 
         private void SortTasks()
         {
             if(this.OldCompletedTasks!=null)
-                this.OldCompletedTasks = this.OldCompletedTasks.OrderBy(date => date.ResolutionDate).ToList();
+                this.OldCompletedTasks = this.OldCompletedTasks.OrderByDescending(date => date.ResolutionDate).ToList();
             if(this.RecentlyCompletedTasks!=null)
-                this.RecentlyCompletedTasks = this.RecentlyCompletedTasks.OrderBy(date => date.ResolutionDate).ToList();
+                this.RecentlyCompletedTasks = this.RecentlyCompletedTasks.OrderByDescending(date => date.ResolutionDate).ToList();
             if (this.InProgressTasks != null)
                 this.InProgressTasks = this.InProgressTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
             if (this.OpenTasks != null)
