@@ -44,31 +44,25 @@ namespace JiraReporter
             return timeFormat;
         }
 
-
-        public static string GetCompletedTime(DateTime date)
+        public static string GetCompletedTime(DateTime completedDate)
         {
-            var CompletedTimeAgo = "";
-            int minutes = (int)SetTimeSpan(date).TotalMinutes;
-            var t = TimeSpan.FromMinutes(minutes);
-            if (t.Days > 1)
-                CompletedTimeAgo = string.Format("{0} days", t.Days);
+            var completedTime = "";
+            completedDate = new DateTime(completedDate.Year, completedDate.Month, completedDate.Day, 0, 0, 0);            
+            int days = (int)SetTimeSpan(completedDate).TotalDays;
+            var d = TimeSpan.FromDays(days);
+            if (d.Days == 0)
+                completedTime = "today";
             else
-                if (t.Days == 1)
-                    CompletedTimeAgo = string.Format("{0} day", t.Days);
+                if (d.Days == 1)
+                    completedTime = "yesterday";
                 else
-                    if (t.Hours > 1)
-                        CompletedTimeAgo = string.Format("{0} hours", t.Hours);
-                    else
-                        if (t.Hours == 1)
-                            CompletedTimeAgo = string.Format("{0} hour", t.Hours);
-                        else
-                            CompletedTimeAgo = string.Format("{0} minutes", t.Minutes);
-            return CompletedTimeAgo;
+                    completedTime = string.Format("{0} days ago", d.Days);
+            return completedTime;
         }
 
         private static TimeSpan SetTimeSpan(DateTime date)
         {
-            var dateNow = DateTime.Now;
+            var dateNow = DateTime.Today;
             var resolutionDate = date;
             TimeSpan timeAgo = dateNow - date;
             return timeAgo;

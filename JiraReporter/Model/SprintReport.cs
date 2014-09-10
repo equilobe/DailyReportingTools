@@ -27,7 +27,6 @@ namespace JiraReporter.Model
         private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = Options.DateToISO(startDate);
-            //string toDate = "endOfDay()";
             string toDate = Options.DateToISO(endDate);
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);

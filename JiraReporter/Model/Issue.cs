@@ -130,7 +130,6 @@ namespace JiraReporter.Model
                 AddEntry(existsIssue, entry);
             else
             {
-                //var newIssue = CreateNewIssue(issue);
                 var newIssue = new Issue(issue) { Entries = new List<Entries>() };
                 AddEntry(newIssue, entry);
                 AddIssue(newIssue, issues);
@@ -148,37 +147,6 @@ namespace JiraReporter.Model
                 return true;
             return false;
         }
-
-        //private static Issue CreateNewIssue(Issue issue)
-        //{
-        //    return new Issue
-        //    {
-        //        Key = issue.Key,
-        //        Link = issue.Link,
-        //        TimeLogged = issue.TimeLogged,
-        //        TimeSpent = issue.TimeSpent,
-        //        Summary = issue.Summary,
-        //        Assignee = issue.Assignee,
-        //        Priority = issue.Priority,
-        //        RemainingEstimate = issue.RemainingEstimate,
-        //        RemainingEstimateSeconds = issue.RemainingEstimateSeconds,
-        //        Resolution = issue.Resolution,
-        //        Status = issue.Status,
-        //        SubTask = issue.SubTask,
-        //        Type = issue.Type,
-        //        Parent = issue.Parent,
-        //        Label = issue.Label,
-        //        ResolutionDate = issue.ResolutionDate,
-        //        StatusCategory = issue.StatusCategory,
-        //        Updated = issue.Updated,
-        //        Subtasks = issue.Subtasks,
-        //        SubtasksIssues = issue.SubtasksIssues,
-        //        TotalRemainingSeconds = issue.TotalRemainingSeconds,
-        //        TotalRemaining = issue.TotalRemaining,
-        //        ExistsInTimesheet = issue.ExistsInTimesheet,
-        //        Entries = new List<Entries>()
-        //    };
-        //}
 
         private static void AddIssue(Issue issue, List<Issue> issues)
         {
