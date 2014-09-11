@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\CompletedTasks.cs" />
     <Compile Include="Model\SprintReport.cs" />
     <Compile Include="Model\Task.cs" />
     <Compile Include="ReportEmailer.cs" />
@@ -78,7 +79,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <Content Include="Policies\BoardProspects.xml" />
+    <Content Include="Policies\BoardProspects.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Policies\BoardProspectsAll.xml" />
     <Content Include="Policies\Alyssa.xml" />
     <Content Include="Views\TimesheetReportTemplate.cshtml">

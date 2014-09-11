@@ -11,6 +11,8 @@ namespace JiraReporter.Model
     {
         public List<Task> OldCompletedTasks { get; set; }
         public List<Task> RecentlyCompletedTasks { get; set; }
+        public List<CompletedTasks> CompletedTasksList { get; set; }
+      //  public CompletedTasks CompletedTasks { get; set; }
         public List<Task> InProgressTasks { get; set; }
         public List<Task> OpenTasks { get; set; }
 
@@ -21,10 +23,12 @@ namespace JiraReporter.Model
             GetUnfinishedTasks(policy, issues, timesheet);
             GetRecentlyCompletedTasks(policy, options, timesheet);
             GetOldCompletedTasks(policy, options, timesheet);
+            var completedTasks = GetCompletedTasks(policy,options,timesheet);
+            SetCompletedTasks(GetCompletedTasks(completedTasks));
             SortTasks();
         }
 
-        private AnotherJiraRestClient.Issues GetOldCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
+        private AnotherJiraRestClient.Issues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = Options.DateToISO(startDate);
             string toDate = Options.DateToISO(endDate);
@@ -37,7 +41,7 @@ namespace JiraReporter.Model
         private void GetOldCompletedTasks(Policy policy, Options options, Timesheet timesheet)
         {
             var oldCompletedTasks = new List<Task>();
-            var issues = GetOldCompletedIssues(policy, options.FromDate.AddDays(-6), options.FromDate).issues;
+            var issues = GetCompletedIssues(policy, options.FromDate.AddDays(-6), options.FromDate).issues;
             foreach (var issue in issues)
             {
                 oldCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate) });
@@ -51,18 +55,37 @@ namespace JiraReporter.Model
         {
             var recentlyCompletedTasks = new List<Task>();
             DateTime date;
-            var issues = GetOldCompletedIssues(policy, options.FromDate, DateTime.Now);
-            foreach(var issue in issues.issues)
-                if(issue.fields.resolution!=null)
-            {
-                date = Convert.ToDateTime(issue.fields.resolutiondate);
+            var issues = GetCompletedIssues(policy, options.FromDate, DateTime.Now);
+            foreach (var issue in issues.issues)
+                if (issue.fields.resolution != null)
                 {
-                    recentlyCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = date });
-                    recentlyCompletedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
-                    recentlyCompletedTasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(recentlyCompletedTasks.Last().ResolutionDate);
+                    date = Convert.ToDateTime(issue.fields.resolutiondate);
+                    {
+                        recentlyCompletedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = date });
+                        recentlyCompletedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
+                        recentlyCompletedTasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(recentlyCompletedTasks.Last().ResolutionDate);
+                    }
                 }
-            }
             this.RecentlyCompletedTasks = recentlyCompletedTasks;
+        }
+
+        private List<Task> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
+        {
+            var completedTasks = new List<Task>();
+            DateTime date;
+            var issues = GetCompletedIssues(policy, options.FromDate.AddDays(-6), DateTime.Now);
+            foreach(var issue in issues.issues)
+            {
+                if(issue.fields.issuetype.subtask==false)
+                {
+                    date = Convert.ToDateTime(issue.fields.resolutiondate);
+                    completedTasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary }, ResolutionDate = date });
+                    completedTasks.Last().Issue.SetIssue(policy, issue, timesheet);
+                    completedTasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(completedTasks.Last().ResolutionDate);
+                }               
+            }
+            completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
+            return completedTasks; 
         }
 
         private void GetUnfinishedTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
@@ -115,11 +138,37 @@ namespace JiraReporter.Model
             if(this.OldCompletedTasks!=null)
                 this.OldCompletedTasks = this.OldCompletedTasks.OrderByDescending(date => date.ResolutionDate).ToList();
             if(this.RecentlyCompletedTasks!=null)
-                this.RecentlyCompletedTasks = this.RecentlyCompletedTasks.OrderByDescending(date => date.ResolutionDate).ToList();
+                this.RecentlyCompletedTasks = this.RecentlyCompletedTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
             if (this.InProgressTasks != null)
                 this.InProgressTasks = this.InProgressTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
             if (this.OpenTasks != null)
                 this.OpenTasks = this.OpenTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
+        }
+
+        private IEnumerable<IGrouping<int,Task>> GetCompletedTasks(List<Task> completedTasks)
+        {
+            var tasks = from task in completedTasks
+                            group task by task.ResolutionDate.Day into newGroup
+                            orderby newGroup.Key
+                            select newGroup;
+            tasks = tasks.OrderByDescending(d => d.Key);
+            return tasks;
+        }
+
+        private void SetCompletedTasks(IEnumerable<IGrouping<int,Task>> tasks)
+        {
+            var completedTasksList = new List<CompletedTasks>();
+            foreach(var task in tasks)
+            {
+                completedTasksList.Add(new CompletedTasks());
+                completedTasksList.Last().Tasks = new List<Task>();
+                  foreach(var item in task)
+                   {
+                      completedTasksList.Last().Tasks.Add(item);
+                      completedTasksList.Last().CompletedTimeAgo = item.CompletedTimeAgo;
+                   }
+            }
+            this.CompletedTasksList = completedTasksList;
         }
 
     }
