@@ -11,10 +11,11 @@ namespace JiraReporter.Model
     {
         public List<Task> OldCompletedTasks { get; set; }
         public List<Task> RecentlyCompletedTasks { get; set; }
-        public List<CompletedTasks> CompletedTasksList { get; set; }
-      //  public CompletedTasks CompletedTasks { get; set; }
+        public List<CompletedTasks> CompletedTasksList { get; set; } 
         public List<Task> InProgressTasks { get; set; }
         public List<Task> OpenTasks { get; set; }
+        public int InProgressTasksCount { get { return InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null); } }
+        public int OpenTasksCount { get { return OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null); } }
 
 
         public void SetSprintTasks(Policy policy, Timesheet timesheet, Options options)
@@ -168,7 +169,7 @@ namespace JiraReporter.Model
                       completedTasksList.Last().CompletedTimeAgo = item.CompletedTimeAgo;
                    }
             }
-            this.CompletedTasksList = completedTasksList;
+            this.CompletedTasksList = completedTasksList;            
         }
 
     }

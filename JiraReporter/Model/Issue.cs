@@ -165,8 +165,6 @@ namespace JiraReporter.Model
                 var newIssue = new AnotherJiraRestClient.Issue();
                 newIssue = GetIssue(issue.Key, policy);
                 issue.SetIssue(policy, newIssue, timesheet);
-           //     if(issue.SubTask==true)
-                //    issue.GetParent(issue, policy);
                 if (issue.Subtasks != null)
                     issue.SetSubtasksIssues(policy, timesheet);
             }

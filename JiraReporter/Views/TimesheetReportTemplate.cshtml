@@ -113,15 +113,19 @@
 
     <div style="margin-top:40px">
         <h2>Sprint status</h2>
-
-            @if (Model.SprintReport.RecentlyCompletedTasks != null)
-            {
-                <div style="margin-top:30px">
-                    <h4>Recently completed</h4>
-                    @foreach (var task in Model.SprintReport.RecentlyCompletedTasks)
+            
+        @if (Model.SprintReport.CompletedTasksList!=null)
+        {
+            foreach(var completedTasks in Model.SprintReport.CompletedTasksList)
+            {   
+                if(DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate)>=0)
+                {
+                   <div style="margin-top:30px">
+                    <h4>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</h4>
+                    @foreach (var task in completedTasks.Tasks)
                     {
 
-                        if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate) >= 0 && DateTime.Compare(task.ResolutionDate, Model.options.FromDate.AddDays(1)) <= 0)
+                        if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate) >= 0 && DateTime.Compare(task.ResolutionDate, DateTime.Today) <= 0)
                         {
                             bold = "font-weight: bold;";
                         }
@@ -129,27 +133,25 @@
                         {
                             bold = "font-weight: normal;";
                         }
-                        <div style="margin-top: 10px; @bold">
-                            <span style="font-family: Segoe UI Symbol">&#10004;</span>
-                            <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                            <span>(@task.Issue.Key)</span>
+                        <div style="margin-top: 10px">
+                            <span style="font-family: Segoe UI Symbol; @bold;">&#10004;</span>
+                            <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
+                            <span style="color: #888"> &#x25cf; @task.Issue.Key </span>
                             @if (task.Issue.Assignee != null)
                             {
-                                <span>(completed @task.CompletedTimeAgo by <span style="white-space:nowrap"> @task.Issue.Assignee)</span></span>
-                            }
-                            else
-                            {
-                                <span>(completed @task.CompletedTimeAgo)</span>
-                            }
+                            <span style="white-space:nowrap"> &#x25cf; @task.Issue.Assignee </span>
+                            }                       
                         </div>
                     }
-                </div>
+               </div>               
+                }
+                               
             }
-
+        }
             @if (Model.SprintReport.InProgressTasks != null)
             {
                 <div style="margin-top:30px">
-                    <h4>In progress</h4>
+                    <h4>In progress (@Model.SprintReport.InProgressTasksCount)</h4>
                     @foreach (var task in Model.SprintReport.InProgressTasks)
                     {
                         if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
@@ -179,24 +181,19 @@
                             {
                                 color = "black";
                             }
-                            <div style="margin-top: 10px; @bold;">
-                                <span style="font-family: Segoe UI Symbol">&#10065;</span>
-                                <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span>(@task.Issue.Key)</span>
-                                <span style="font-size:0">
-                                    <span style="font-size:13px">(</span>
-                                    @if (task.Issue.TimeSpent > 0)
-                                    {
-                                        <span style="font-size:13px;">@task.Issue.TimeLogged worked, </span>
-                                        <span style="font-size:13px; color:@color">@remainingEstimate left </span>
-                                    }
-
-                                    @if (task.Issue.Assignee != null)
-                                    {
-                                        <span style="font-size:13px;"> assigned to  <span style="white-space:nowrap; font-size:13px;"> @task.Issue.Assignee</span></span>
-                                    }
-                                    <span style="font-size:13px">) </span>
-                                </span>
+                            <div style="margin-top: 10px;">
+                                <span style="font-family: Segoe UI Symbol; @bold;">&#10065;</span>
+                                <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <span style ="color: #888"> &#x25cf; @task.Issue.Key </span>
+                                @if (task.Issue.Assignee != null)
+                                {
+                                    <span style="white-space:nowrap;"> &#x25cf; @task.Issue.Assignee</span>
+                                }
+                                @if (task.Issue.TimeSpent > 0)
+                                {
+                                    <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                    <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
+                                }                                   
                             </div>
                             if (task.Issue.SubtasksIssues != null)
                             {
@@ -219,48 +216,41 @@
                                         else
                                         {
                                             color = "black";
-                                        }
-                                        if (subtask.TimeSpent > 0 || subtask.Assignee != null)
-                                        {
-                                            openParentheses = "(";
-                                            closedParantheses = ")";
-                                        }
-                                        else
-                                        {
-                                            openParentheses = "";
-                                            closedParantheses = "";
-                                        }
-                                        <div style="margin-top:10px; margin-left:20px; @bold;">
+                                        }                                 
+                                        <div style="margin-top:10px; margin-left:20px;">
                                             <span style="font-family: Segoe UI Symbol">
                                                 @if (subtask.Resolution != null)
                                                 {
-                                                    <span>&#10004;</span>
+                                                    <span style="@bold;">&#10004;</span>
                                                 }
                                                 else
                                                 { <span>&#10065;</span>}
 
                                             </span>
-                                            <a style="text-decoration: none" href="@subtask.Link">@subtask.Summary</a>
-                                            <span>(@subtask.Key)</span>
-                                            <span style="font-size:0;">
-                                                <span style="font-size:13px">@openParentheses</span>
-                                                @if (subtask.TimeSpent > 0)
+                                            <a style="text-decoration: none; @bold;" href="@subtask.Link">@subtask.Summary</a>
+                                            <span style="color:#888;"> &#x25cf; @subtask.Key </span>
+                                            @if (subtask.Assignee != null)
+                                            {
+                                                <span style="font-size:13px;white-space:nowrap;"> &#x25cf; @subtask.Assignee</span>
+                                            }
+                                            @if (subtask.TimeSpent > 0)
+                                            {
+                                                <span> &#x25cf; @subtask.TimeLogged worked </span>
+                                                if (subtask.Resolution == null)
                                                 {
-                                                    <span style="font-size:13px">@subtask.TimeLogged worked </span>
-                                                    if (subtask.Resolution == null)
-                                                    {
-                                                        <span style="font-size:13px">, </span>
-                                                        <span style="font-size:13px; color:@color;"> @subtask.RemainingEstimate left </span>
-                                                    }
+                                                    <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
                                                 }
-
-                                                @if (subtask.Assignee != null)
-                                                {
-                                                    <span style="font-size:13px;"> assigned to  <span style="font-size:13px;white-space:nowrap;"> @subtask.Assignee</span></span>
-                                                }
-                                                <span style="font-size:13px">@closedParantheses </span>
-                                            </span>
-                                            <i style="white-space:nowrap">- @subtask.Status</i>
+                                            }
+                                          
+                                            @if(subtask.Resolution!=null)
+                                            {
+                                                <i style="white-space:nowrap; font-weight:bold"> &#x25cf; @subtask.Status</i>
+                                            }
+                                            else
+                                            {
+                                                 <i style="white-space:nowrap; font-weight:normal"> &#x25cf; @subtask.Status</i>
+                                            }
+                                           
                                         </div>
 
                                     }
@@ -275,7 +265,7 @@
             @if (Model.SprintReport.OpenTasks != null)
             {
                 <div style="margin-top:30px;">
-                    <h4>Upcoming</h4>
+                    <h4>Upcoming (@Model.SprintReport.OpenTasksCount)</h4>
                     @foreach (var task in Model.SprintReport.OpenTasks)
                     {
                         if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
@@ -315,29 +305,25 @@
                                 openParentheses = "";
                                 closedParantheses = "";
                             }
-                            <div style="margin-top: 10px; @bold;">
+                            <div style="margin-top: 10px;">
                                 <span style="font-family: Segoe UI Symbol">&#10065;</span>
-                                <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span>(@task.Issue.Key)</span>
-                                <span style="font-size:0">
-                                    <span style="font-size:13px">@openParentheses</span>
-                                    @if (task.Issue.TimeSpent > 0)
-                                    {
-                                        <span style="font-size:13px">@task.Issue.TimeLogged worked, </span>
-                                        <span style="font-size:13px; color:@color">@remainingEstimate left </span>
-                                    }
+                                <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <span style="color: #888;"> &#x25cf; @task.Issue.Key </span>
+                                @if (task.Issue.Assignee != null)
+                                {
+                                 <span style="white-space:nowrap;"> &#x25cf; @task.Issue.Assignee</span>
+                                }
 
-                                    @if (task.Issue.Assignee != null)
-                                    {
-                                        <span style="font-size:13px"> assigned to  <span style="font-size:13px;white-space:nowrap;"> @task.Issue.Assignee</span></span>
-                                    }
-                                    <span style="font-size:13px">@closedParantheses </span>
-                                </span>
-
+                                @if (task.Issue.TimeSpent > 0)
+                                {
+                                    <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                    <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
+                                }
+                               
                                 @if (task.Issue.Status == Model.policy.ReopenedStatus)
                                 {
-                                    <span style="white-space:nowrap">
-                                        -
+                                    <span style="white-space:nowrap; font-weight:normal">
+                                        &#x25cf;
                                         <i><u> Reopened</u></i>
                                     </span>
                                 }
@@ -345,8 +331,8 @@
                                 {
                                     if (task.Issue.TimeSpent > 0)
                                     {
-                                        <span style="white-space:nowrap">
-                                            -
+                                        <span style="white-space:nowrap; font-weight:normal">
+                                            &#x25cf;
                                             <i><u>Paused</u></i>
                                         </span>
                                     }
@@ -374,47 +360,40 @@
                                         {
                                             color = "black";
                                         }
-                                        if (subtask.TimeSpent > 0 || subtask.Assignee != null)
-                                        {
-                                            openParentheses = "(";
-                                            closedParantheses = ")";
-                                        }
-                                        else
-                                        {
-                                            openParentheses = "";
-                                            closedParantheses = "";
-                                        }
-                                        <div style="margin-top:10px; margin-left:20px;@bold;">
+                                        <div style="margin-top:10px; margin-left:20px;">
                                             <span style="font-family: Segoe UI Symbol">
                                                 @if (subtask.Resolution != null)
                                                 {
-                                                    <span>&#10004;</span>
+                                                    <span style="@bold;">&#10004;</span>
                                                 }
                                                 else
                                                 { <span>&#10065;</span>}
 
                                             </span>
                                             <a style="text-decoration: none" href="@subtask.Link">@subtask.Summary</a>
-                                            <span>(@subtask.Key)</span>
-                                            <span style="font-size:0">
-                                                <span style="font-size:13px">@openParentheses</span>
+                                            <span style="color:#888;"> &#x25cf; @subtask.Key</span>
+                                            @if (subtask.Assignee != null)
+                                            {
+                                                <span style="white-space:nowrap;"> &#x25cf; @subtask.Assignee</span>
+                                            }
                                                 @if (subtask.TimeSpent > 0)
                                                 {
-                                                    <span style="font-size:13px">@subtask.TimeLogged worked </span>
+                                                    <span> &#x25cf; @subtask.TimeLogged worked </span>
                                                     if (subtask.Resolution == null)
                                                     {
-                                                        <span style="font-size:13px">, </span>
-                                                        <span style="font-size:13px; color:@color;"> @subtask.RemainingEstimate left </span>
+                                                        <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
                                                     }
                                                 }
 
-                                                @if (subtask.Assignee != null)
-                                                {
-                                                    <span style="font-size:13px"> assigned to  <span style="font-size:13px; white-space:nowrap;"> @subtask.Assignee</span></span>
-                                                }
-                                                <span style="font-size:13px">@closedParantheses </span>
-                                            </span>
-                                            <i style="white-space:nowrap">- @subtask.Status</i>
+                                              
+                                            @if (subtask.Resolution != null)
+                                            {
+                                                <i style="white-space:nowrap; font-weight:bold"> &#x25cf; @subtask.Status</i>
+                                            }
+                                            else
+                                            {
+                                                <i style="white-space:nowrap; font-weight:normal"> &#x25cf; @subtask.Status</i>
+                                            }
                                         </div>
                                     }
                                 }
@@ -424,43 +403,45 @@
                 </div>
             }
             
-
-            <div style="margin-top:40px;">
-                <i>Tasks in bold have work logged in the timesheet.</i>
-            </div>
-
-
-            @if (Model.SprintReport.OldCompletedTasks != null)
+        @if (Model.SprintReport.CompletedTasksList != null)
+        {
+            foreach (var completedTasks in Model.SprintReport.CompletedTasksList)
             {
-                <div style="margin-top:30px">
-                    <h4>Completed earlier</h4>
-                    @foreach (var task in Model.SprintReport.OldCompletedTasks)
-                    {
-                        if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate) >= 0 && DateTime.Compare(task.ResolutionDate, Model.options.FromDate.AddDays(1)) <= 0)
+                if (DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate) < 0)
+                {
+                    <div style="margin-top:30px">
+                        <h4>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</h4>
+                        @foreach (var task in completedTasks.Tasks)
                         {
-                            bold = "font-weight: bold;";
-                        }
-                        else
-                        {
-                            bold = "font-weight: normal;";
-                        }
-                        <div style="margin-top: 10px; @bold">
 
-                            <span style="font-family: Segoe UI Symbol">&#10004;</span>
-                            <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
-                            <span>(@task.Issue.Key)</span>
-                            @if (task.Issue.Assignee != null)
+                            if (DateTime.Compare(task.ResolutionDate, Model.options.FromDate) >= 0 && DateTime.Compare(task.ResolutionDate, DateTime.Today) <= 0)
                             {
-                                <span>(completed @task.CompletedTimeAgo by <span style="white-space:nowrap"> @task.Issue.Assignee)</span></span>
+                                bold = "font-weight: bold;";
                             }
                             else
                             {
-                                <span>(completed @task.CompletedTimeAgo)</span>
+                                bold = "font-weight: normal;";
                             }
-                        </div>
-                    }
-                </div>
+                            <div style="margin-top: 10px; @bold">
+                                <span style="font-family: Segoe UI Symbol">&#10004;</span>
+                                <a style="text-decoration: none" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
+                                @if (task.Issue.Assignee != null)
+                                {
+                                    <span style="white-space:nowrap"> &#x25cf; @task.Issue.Assignee </span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+
             }
+        }
+            
+        <div style="margin-top:40px;">
+            <i>Tasks in bold have work logged in the timesheet.</i>
+        </div>
+
     </div>   
 
 </div>
