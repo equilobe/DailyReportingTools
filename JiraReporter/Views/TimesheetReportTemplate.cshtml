@@ -32,7 +32,7 @@
                 </div>
                 foreach (var author in Model.Authors)
                 {
-                    <div style="margin-top:25px">
+                    <div style="margin-top:20px">
                         <b>@author.Name - @author.TimeLogged</b>
 
                         @foreach (var issue in author.Issues)
@@ -82,7 +82,7 @@
                                     }
                                     else if (issue.Assignee != author.Name)
                                     {
-                                        <span style="white-space:nowrap"> &#x25cf; @issue.Assignee)</span>
+                                        <span style="white-space:nowrap"> &#x25cf; @issue.Assignee</span>
                                     }
                                 }
                                 @foreach (var entry in issue.Entries)
@@ -122,7 +122,7 @@
                 if(DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate)>=0)
                 {
                    <div style="margin-top:20px">
-                    <h4>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</h4>
+                    <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                     @foreach (var task in completedTasks.Tasks)
                     {
 
@@ -156,7 +156,7 @@
             @if (Model.SprintReport.InProgressTasks != null)
             {
                 <div style="margin-top:20px">
-                    <h4>In progress (@Model.SprintReport.InProgressTasksCount)</h4>
+                    <b>In progress (@Model.SprintReport.InProgressTasksCount)</b>
                     @foreach (var task in Model.SprintReport.InProgressTasks)
                     {
                         if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
@@ -188,6 +188,10 @@
                             }
                             <div>
                                 <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
+                                @if(DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1))>=0)
+                                {
+                                    <b> NEW: </b>
+                                }                                                                    
                                 <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                 <span style ="color: #B8B8B8"> &#x25cf; @task.Issue.Key </span>
                                 @if (task.Issue.Assignee != null)
@@ -231,17 +235,25 @@
                                                 else if(subtask.StatusCategory.name == "In Progress")
                                                 {
                                                     <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
+                                                    if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
+                                                    {
+                                                        <b> NEW: </b>
+                                                    }                  
                                                 }
                                                 else
                                                 { 
                                                     <span style="font-size:10.5pt;">&#10065;</span>
+                                                    if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
+                                                    {
+                                                        <b> NEW: </b>
+                                                    }                  
                                                     if(subtask.Status == Model.policy.ReopenedStatus)
                                                     {
-                                                         <span style="font-weight:bold">Reopened</span>
+                                                         <span style="font-weight:bold">Reopened:</span>
                                                     }                                                         
                                                     else if(subtask.TimeSpent>0)
                                                     {
-                                                        <span style="font-weight:bold">Paused</span>
+                                                        <span style="font-weight:bold">Paused:</span>
                                                     }                                                       
                                                 }
                                             </span>
@@ -273,7 +285,7 @@
             @if (Model.SprintReport.OpenTasks != null)
             {
                 <div style="margin-top:20px;">
-                    <h4>Upcoming (@Model.SprintReport.OpenTasksCount)</h4>
+                    <b>Upcoming (@Model.SprintReport.OpenTasksCount)</b>
                     @foreach (var task in Model.SprintReport.OpenTasks)
                     {
                         if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
@@ -305,6 +317,10 @@
                             }
                             <div>
                                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
+                                @if (DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
+                                {
+                                    <b> NEW: </b>
+                                }                  
                                 @if (task.Issue.Status == Model.policy.ReopenedStatus)
                                 {
                                         <b>Reopened: </b>
@@ -360,10 +376,18 @@
                                                else if (subtask.StatusCategory.name == "In Progress")
                                                {
                                                    <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
+                                                   if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
+                                                   {
+                                                       <b> NEW: </b>
+                                                   }                  
                                                }
                                                else
                                                {
                                                    <span style="font-size:10.5pt;">&#10065;</span>
+                                                   if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
+                                                   {
+                                                       <b> NEW: </b>
+                                                   }      
                                                    if (subtask.Status == Model.policy.ReopenedStatus)
                                                    {
                                                        <span style="font-weight:bold">Reopened</span>
@@ -404,7 +428,7 @@
                 if (DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate) < 0)
                 {
                     <div style="margin-top:30px">
-                        <h4>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</h4>
+                        <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                         @foreach (var task in completedTasks.Tasks)
                         {
 

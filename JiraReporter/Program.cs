@@ -58,9 +58,9 @@ namespace JiraReporter
             return report;
         }
 
-        private static SprintReport GetSprintReport(Policy p, Options options, Timesheet timesheet)
+        private static SprintStatusReport GetSprintReport(Policy p, Options options, Timesheet timesheet)
         {
-            var report = new SprintReport();
+            var report = new SprintStatusReport();
             report.SetSprintTasks(p, timesheet, options);
             return report;
         }

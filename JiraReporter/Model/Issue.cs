@@ -58,6 +58,8 @@ namespace JiraReporter.Model
         public List<Issue> SubtasksIssues { get; set; }
         [XmlIgnore]
         public bool ExistsInTimesheet { get; set; }
+        [XmlIgnore]
+        public DateTime Created { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -99,6 +101,7 @@ namespace JiraReporter.Model
             this.TimeSpent = issue.TimeSpent;
             this.Type = issue.Type;
             this.StatusCategory = issue.StatusCategory;
+            this.Created = issue.Created;
             this.Updated = issue.Updated;
             this.ExistsInTimesheet = issue.ExistsInTimesheet;
             if (issue.Subtasks != null)
@@ -191,6 +194,7 @@ namespace JiraReporter.Model
             this.SubTask = newIssue.fields.issuetype.subtask;
             this.SetLabel(policy, newIssue);
             this.StatusCategory = newIssue.fields.status.statusCategory;
+            this.Created = Convert.ToDateTime(newIssue.fields.created);
             this.Updated = newIssue.fields.updated;
             if (newIssue.fields.subtasks!=null)
             {

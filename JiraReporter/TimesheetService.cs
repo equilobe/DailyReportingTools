@@ -19,7 +19,7 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        private static void Authenticate(RestClient client, string username, string password)
+        private void Authenticate(RestClient client, string username, string password)
         {
             client.Authenticator = new HttpBasicAuthenticator(username, password);
         }

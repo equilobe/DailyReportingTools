@@ -22,7 +22,7 @@ namespace JiraReporter.Model
         public string TotalTime { get; set; }
         public DateTime Date { get; set; }
         public List<Author> Summary { get; set; }
-        public SprintReport SprintReport { get; set; }
+        public SprintStatusReport SprintReport { get; set; }
 
         public void SetReportTimes()
         {
