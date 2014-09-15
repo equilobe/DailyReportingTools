@@ -25,7 +25,7 @@ namespace JiraReporter
             var timesheetService = new TimesheetService();
             var timesheet = timesheetService.GetTimesheet(p, options.FromDate, options.ToDate);
 
-            SetTimesheetIssues(timesheet, p, options);
+            timesheetService.SetTimesheetIssues(timesheet, p, options);
 
             var report = GetReport(timesheet,p,options);
             SaveReportToFile(report);
@@ -39,20 +39,11 @@ namespace JiraReporter
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
-        }
-
-        private static void SetTimesheetIssues(Timesheet timesheet, Policy policy, Options options)
-        {
-            var issues = new List<Issue>(timesheet.Worklog.Issues);
-            foreach (var issue in issues)
-                Issue.SetEntries(issue.Entries, issue, timesheet.Worklog.Issues);
-            Issue.RemoveEntries(timesheet.Worklog.Issues);
-            Issue.SetIssues(timesheet, policy, options);
-        }     
+        }   
  
         private static Report GetReport(Timesheet timesheet, Policy p, Options options)
         {
-            var authors = Author.GetAuthors(timesheet);
+            var authors = AuthorsProcessing.GetAuthors(timesheet);
             var report = new Report(p, options) { Authors = authors, Summary = authors, SprintReport=GetSprintReport(p, options, timesheet)};
             SetReport(report);
             return report;
@@ -68,8 +59,8 @@ namespace JiraReporter
         private static void SetReport(Report report)
         {
             report.SetReportTimes();
-            report.Authors = Author.OrderAuthorsName(report.Authors);
-            report.Summary = Author.OrderAuthorsTime(report.Summary);
+            report.Authors = AuthorsProcessing.OrderAuthorsName(report.Authors);
+            report.Summary = AuthorsProcessing.OrderAuthorsTime(report.Summary);
             report.Date = report.options.FromDate;
         }
 

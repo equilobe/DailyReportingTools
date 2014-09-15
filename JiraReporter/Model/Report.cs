@@ -26,9 +26,9 @@ namespace JiraReporter.Model
 
         public void SetReportTimes()
         {
-            Author.SetAuthorsTimeSpent(this.Authors);
+            AuthorsProcessing.SetAuthorsTimeSpent(this.Authors);
             this.TotalTime = SetTotalTime(this.Authors);
-            Author.SetAuthorsTimeFormat(this.Authors);
+            AuthorsProcessing.SetAuthorsTimeFormat(this.Authors);
         }
 
         private string SetTotalTime(List<Author> authors)
