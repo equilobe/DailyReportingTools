@@ -58,7 +58,7 @@ namespace JiraReporter
 
         private static void SetReport(Report report)
         {
-            report.SetReportTimes();
+            ReportProcessor.SetReportTimes(report);
             report.Authors = AuthorsProcessing.OrderAuthorsName(report.Authors);
             report.Summary = AuthorsProcessing.OrderAuthorsTime(report.Summary);
             report.Date = report.options.FromDate;

@@ -17,5 +17,12 @@ namespace JiraReporter
             report.Title = report.policy.ReportTitle;
             return Razor.Parse(template, report);
         }
+
+        public static void SetReportTimes(Report report)
+        {
+            AuthorsProcessing.SetAuthorsTimeSpent(report.Authors);
+            report.TotalTime = TimeFormatting.SetReportTotalTime(report.Authors);
+            AuthorsProcessing.SetAuthorsTimeFormat(report.Authors);
+        }
     }
 }

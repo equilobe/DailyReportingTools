@@ -23,22 +23,5 @@ namespace JiraReporter.Model
         public DateTime Date { get; set; }
         public List<Author> Summary { get; set; }
         public SprintStatusReport SprintReport { get; set; }
-
-        public void SetReportTimes()
-        {
-            AuthorsProcessing.SetAuthorsTimeSpent(this.Authors);
-            this.TotalTime = SetTotalTime(this.Authors);
-            AuthorsProcessing.SetAuthorsTimeFormat(this.Authors);
-        }
-
-        private string SetTotalTime(List<Author> authors)
-        {
-            int totalTime = 0;
-            foreach (var author in authors)
-                totalTime += author.TimeSpent;
-
-            var totalTimeString = TimeFormatting.SetTimeFormat(totalTime);
-            return totalTimeString;
-        }
     }
 }
