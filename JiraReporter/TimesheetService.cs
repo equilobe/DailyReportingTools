@@ -37,6 +37,15 @@ namespace JiraReporter
             var response = client.Execute(request);
             string xmlString = response.Content;
             return LoadTimeSheet(xmlString);
-        }     
+        }
+
+        public void SetTimesheetIssues(Timesheet timesheet, Policy policy, Options options)
+        {
+            var issues = new List<Issue>(timesheet.Worklog.Issues);
+            foreach (var issue in issues)
+                Issue.SetEntries(issue.Entries, issue, timesheet.Worklog.Issues);
+            Issue.RemoveEntries(timesheet.Worklog.Issues);
+            Issue.SetIssues(timesheet, policy, options);
+        }  
     }
 }
