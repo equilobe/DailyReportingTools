@@ -1,4 +1,4 @@
-<div style="margin-top:15px">
+<div style="margin-top:15px;">
       @if(Model.options.FromDate==Model.options.ToDate)
         {
            <h2> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
@@ -32,7 +32,7 @@
                 </div>
                 foreach (var author in Model.Authors)
                 {
-                    <div style="margin-top:20px">
+                    <div style="margin-top:20px; line-height:1.3em;">
                         <b>@author.Name - @author.TimeLogged</b>
 
                         @foreach (var issue in author.Issues)
@@ -121,7 +121,7 @@
             {   
                 if(DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate)>=0)
                 {
-                   <div style="margin-top:20px">
+                   <div style="margin-top:20px; line-height:1.3em;">
                     <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                     @foreach (var task in completedTasks.Tasks)
                     {
@@ -155,7 +155,7 @@
         }
             @if (Model.SprintReport.InProgressTasks != null)
             {
-                <div style="margin-top:20px">
+                <div style="margin-top:20px; line-height:1.3em;">
                     <b>In progress (@Model.SprintReport.InProgressTasksCount)</b>
                     @foreach (var task in Model.SprintReport.InProgressTasks)
                     {
@@ -196,7 +196,7 @@
                                 <span style ="color: #B8B8B8"> &#x25cf; @task.Issue.Key </span>
                                 @if (task.Issue.Assignee != null)
                                 {
-                                    <span style="white-space:nowrap;"> &#x25cf; @task.Issue.Assignee</span>
+                                    <span style="white-space: nowrap;"> &#x25cf; @task.Issue.Assignee</span>
                                 }
                                 @if (task.Issue.TimeSpent > 0)
                                 {
@@ -226,8 +226,7 @@
                                         {
                                             color = "black";
                                         }                                 
-                                        <div style="margin-left:20px;">
-                                            <span style="font-family: Segoe UI Symbol">
+                                        <div style="margin-left: 20px">
                                                 @if (subtask.Resolution != null)
                                                 {
                                                     <span style="font-size:10.5pt;">&#10004;</span>
@@ -256,7 +255,6 @@
                                                         <span style="font-weight:bold">Paused:</span>
                                                     }                                                       
                                                 }
-                                            </span>
                                             <a style="text-decoration: none; @bold;" href="@subtask.Link">@subtask.Summary</a>
                                             <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
                                             @if (subtask.Assignee != null)
@@ -284,7 +282,7 @@
 
             @if (Model.SprintReport.OpenTasks != null)
             {
-                <div style="margin-top:20px;">
+                <div style="margin-top:20px; line-height:1.3em;">
                     <b>Upcoming (@Model.SprintReport.OpenTasksCount)</b>
                     @foreach (var task in Model.SprintReport.OpenTasks)
                     {
@@ -368,7 +366,6 @@
                                             color = "black";
                                         }
                                         <div style="margin-left:20px;">
-                                            <span style="font-family: Segoe UI Symbol">
                                                @if (subtask.Resolution != null)
                                                {
                                                    <span style="font-size:10.5pt;">&#10004;</span>
@@ -397,7 +394,6 @@
                                                        <span style="font-weight:bold">Paused</span>
                                                    }
                                                }
-                                            </span>
                                             <a style="text-decoration: none" href="@subtask.Link">@subtask.Summary</a>
                                             <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key</span>
                                             @if (subtask.Assignee != null)
@@ -427,7 +423,7 @@
             {
                 if (DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate) < 0)
                 {
-                    <div style="margin-top:30px">
+                    <div style="margin-top:30px; line-height:1.3em;">
                         <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                         @foreach (var task in completedTasks.Tasks)
                         {
