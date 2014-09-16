@@ -42,25 +42,24 @@ namespace JiraReporter
         }   
  
         private static Report GetReport(Timesheet timesheet, Policy p, Options options)
-        {
-            var authors = AuthorsProcessing.GetAuthors(timesheet);
-            var report = new Report(p, options) { Authors = authors, Summary = authors, SprintReport=GetSprintReport(p, options, timesheet)};
+        {           
+            var sprint = GetSprintReport(p, options, timesheet);
+            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint);
+            var report = new Report(p, options) { Authors = authors, Sprint=sprint};
             SetReport(report);
             return report;
         }
 
-        private static SprintStatusReport GetSprintReport(Policy p, Options options, Timesheet timesheet)
+        private static SprintStatus GetSprintReport(Policy p, Options options, Timesheet timesheet)
         {
-            var report = new SprintStatusReport();
+            var report = new SprintStatus();
             report.SetSprintTasks(p, timesheet, options);
             return report;
         }
 
         private static void SetReport(Report report)
         {
-            ReportProcessor.SetReportTimes(report);
-            report.Authors = AuthorsProcessing.OrderAuthorsName(report.Authors);
-            report.Summary = AuthorsProcessing.OrderAuthorsTime(report.Summary);
+            report.TotalTime = TimeFormatting.SetReportTotalTime(report.Authors);
             report.Date = report.options.FromDate;
         }
 

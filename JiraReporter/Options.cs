@@ -22,10 +22,10 @@ namespace JiraReporter
         public void LoadDates()
         {
             if (StringFromDate != null)
-                FromDate = GetDate(StringFromDate);
+                FromDate = DateFromString(StringFromDate);
 
             if (StringToDate != null)
-                ToDate = GetDate(StringToDate);
+                ToDate = DateFromString(StringToDate);
 
             if (StringFromDate == null && StringToDate == null)
             {
@@ -40,7 +40,7 @@ namespace JiraReporter
                 ToDate = FromDate;           
         }
 
-        private DateTime GetDate(string dateString)
+        private DateTime DateFromString(string dateString)
         {
             DateTime date = Convert.ToDateTime(dateString);
             date = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);

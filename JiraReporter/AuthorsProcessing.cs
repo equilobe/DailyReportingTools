@@ -3,16 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet report)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintStatus report)
+        {
+            var authors = GetAuthorsDict(timesheet);
+            var authorsNew = new List<Author>();
+            foreach (var author in authors)
+            {
+                authorsNew.Add(new Author { Name = author.Key, Issues = author.Value });
+                SetUnfinishedTasks(report, authorsNew.Last());
+            }
+            SetAuthors(authorsNew, report);
+            
+            return authorsNew;
+        }
+
+        private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet timesheet)
         {
             var authors = new Dictionary<string, List<Issue>>();
-            foreach (var issue in report.Worklog.Issues)
+            foreach (var issue in timesheet.Worklog.Issues)
                 Add(authors, issue.Entries.First().AuthorFullName, issue);
             return authors;
 
@@ -33,17 +46,16 @@ namespace JiraReporter
             }
         }
 
-        public static List<Author> GetAuthors(Timesheet timesheet)
+        private static void SetAuthors(List<Author> authors, SprintStatus report)
         {
-            var authors = GetAuthorsDict(timesheet);
-            var authorsNew = new List<Author>();
-            foreach (var author in authors)
-                authorsNew.Add(new Author { Name = author.Key, Issues = author.Value });
-            authorsNew = OrderAuthorsIssues(authorsNew);
-            return authorsNew;
+            authors = OrderAuthorsIssues(authors);
+            SetAuthorsTimeSpent(authors);
+            SetAuthorsTimeFormat(authors);
+            OrderAuthorsName(authors); 
+               
         }
 
-        public static void SetAuthorsTimeSpent(List<Author> authors)
+        private static void SetAuthorsTimeSpent(List<Author> authors)
         {
             foreach (var author in authors)
                 SetAuthorTimeSpent(author);
@@ -63,21 +75,45 @@ namespace JiraReporter
                 author.TimeLogged = TimeFormatting.SetTimeFormat(author.TimeSpent);
         }
 
-        public static List<Author> OrderAuthorsName(List<Author> authors)
+        private static void OrderAuthorsName(List<Author> authors)
         {
-            return authors.OrderBy(a => a.Name).ToList();
+            authors = authors.OrderBy(a => a.Name).ToList();
         }
 
-        public static List<Author> OrderAuthorsTime(List<Author> authors)
+        private static List<Author> OrderAuthorsTime(List<Author> authors)
         {
             return authors.OrderByDescending(a => a.TimeSpent).ToList();
         }
 
-        public static List<Author> OrderAuthorsIssues(List<Author> authors)
+        private static List<Author> OrderAuthorsIssues(List<Author> authors)
         {
             foreach (var author in authors)
                 author.Issues = Issue.OrderIssues(author.Issues);
             return authors;
         }
+
+        private static void SetUnfinishedTasks(SprintStatus report, Author author)
+        {
+            author.InProgressTasks = GetTasks(report.InProgressTasks, author);
+            if(author.InProgressTasks!=null)
+                author.InProgressTasksCount = author.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
+            author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
+            author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
+
+            author.OpenTasks = GetTasks(report.OpenTasks, author);
+            if(author.OpenTasks!=null)
+                author.OpenTasksCount = author.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
+            author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
+            author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
+        }
+
+        private static List<Task> GetTasks(List<Task> tasks, Author author)
+        {
+            var unfinishedTasks = new List<Task>();
+            foreach (var task in tasks)
+                if (task.Issue.Assignee == author.Name)
+                    unfinishedTasks.Add(task);
+            return unfinishedTasks;
+        }        
     }
 }

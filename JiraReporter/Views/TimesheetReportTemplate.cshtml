@@ -14,97 +14,115 @@
      }
   
     <div style="margin-top: 40px">
-        <div>
-            <h2>Timesheet</h2>
-
+        <h2>Summary</h2>
             @if (Model.Authors.Count == 0)
             {
-                <span  style="margin-top:20px"><b>No work logged</b></span>
+               <h2 style="font-weight:normal">No work logged</h2>
             }
             else
             {
-                <b> @Model.TotalTime worked</b>
-                <div style="margin-top:10px">
-                    @foreach (var summary in Model.Summary)
-                    {
-                        <div>@summary.TimeLogged - @summary.Name</div>
-                    }
-                </div>
+                <h2 style="font-weight:normal"> @Model.TotalTime worked</h2>
+          
                 foreach (var author in Model.Authors)
                 {
-                    <div style="margin-top:20px; line-height:1.3em;">
-                        <b>@author.Name - @author.TimeLogged</b>
-
-                        @foreach (var issue in author.Issues)
+                    <div style="margin-top:40px;">
+                        <b style="font-size:large;">@author.Name </b>
+                        <span> &#x25cf; @author.TimeLogged </span>
+                        @if (author.InProgressTasksCount>0)
                         {
-                            if (issue.Subtasks.Count > 0)
+                        <span> &#x25cf; @author.InProgressTasksCount tasks in progress</span>
+                        }
+                        @if(author.OpenTasksCount>0)
+                        {
+                        <span> &#x25cf; @author.OpenTasksCount upcoming tasks</span>
+                        }
+                        <div style="margin-top:20px; line-height:1.4em;">
+                            <b> Worked  &#x25cf; @author.Issues.Count &#x25cf; @author.TimeLogged</b>
+                            @foreach (var issue in author.Issues)
                             {
-                                remainingEstimate = issue.TotalRemaining;
-                            }
-                            else
-                            {
-                                remainingEstimate = issue.RemainingEstimate;
-                            }
-                            <div>
-                                <span>@issue.TimeLogged</span>
-                                @if (issue.Label != Model.policy.PermanentTaskLabel)
+                                if (issue.Subtasks.Count > 0)
                                 {
-                                    if (issue.Resolution != null)
-                                    {
-                                        <span>(@issue.Resolution)</span>
-                                    }
-
-                                    else if (issue.RemainingEstimate != null)
-                                    {
-                                        if (issue.RemainingEstimateSeconds == 0)
-                                        {
-                                            <span>(<b style="color:red">@remainingEstimate left</b>)</span>
-                                        }
-                                        else
-                                        {
-                                            <span> (@remainingEstimate left) </span>
-                                        }
-                                    }
-                                }
-                                @if (issue.SubTask == true)
-                                {
-                                    <span> - <a href=@issue.Parent.Link style="text-decoration: none"> @issue.Parent.Summary </a><span style="color: #B8B8B8;"> &#x25cf; @issue.Parent.Key </span>  &#x25cf; <a href=@issue.Link style="text-decoration: none"> @issue.Summary</a> <span style="color: #B8B8B8"> &#x25cf; @issue.Key </span></span>
+                                    remainingEstimate = issue.TotalRemaining;
                                 }
                                 else
                                 {
-                                    <span> - <a href=@issue.Link style="text-decoration: none"> @issue.Summary</a> <span style="color: #B8B8B8"> &#x25cf; @issue.Key </span></span>
+                                    remainingEstimate = issue.RemainingEstimate;
                                 }
-                                @if (issue.Label != Model.policy.PermanentTaskLabel)
-                                {
-                                    if (issue.Assignee == null)
+                                <div>
+                                    <span>@issue.TimeLogged</span>
+                                    @if (issue.Label != Model.policy.PermanentTaskLabel)
                                     {
-                                        <span> &#x25cf; Unassigned</span>
-                                    }
-                                    else if (issue.Assignee != author.Name)
-                                    {
-                                        <span style="white-space:nowrap"> &#x25cf; @issue.Assignee</span>
-                                    }
-                                }
-                                @foreach (var entry in issue.Entries)
-                                {
-                                    <div>
-                                        @if (entry.Comment != "")
+                                        if (issue.Resolution != null)
                                         {
-                                            <div>
-                                                @foreach (string comment in entry.Comment.Split('\n'))
-                                                {
-                                                    <div style="margin-left:35px"> @comment</div>
-                                                }
-                                            </div>
+                                            <span>(@issue.Resolution)</span>
                                         }
-                                    </div>
+
+                                        else if (issue.RemainingEstimate != null)
+                                        {
+                                            if (issue.RemainingEstimateSeconds == 0)
+                                            {
+                                                <span>(<b style="color:red">@remainingEstimate left</b>)</span>
+                                            }
+                                            else
+                                            {
+                                                <span> (@remainingEstimate left) </span>
+                                            }
+                                        }
+                                    }
+                                    @if (issue.SubTask == true)
+                                    {
+                                        <span> - <a href=@issue.Parent.Link style="text-decoration: none"> @issue.Parent.Summary </a><span style="color: #B8B8B8;"> &#x25cf; @issue.Parent.Key </span>  &#x25cf; <a href=@issue.Link style="text-decoration: none"> @issue.Summary</a> <span style="color: #B8B8B8"> &#x25cf; @issue.Key </span></span>
+                                    }
+                                    else
+                                    {
+                                        <span> - <a href=@issue.Link style="text-decoration: none"> @issue.Summary</a> <span style="color: #B8B8B8"> &#x25cf; @issue.Key </span></span>
+                                    }
+                                    @if (issue.Label != Model.policy.PermanentTaskLabel)
+                                    {
+                                        if (issue.Assignee == null)
+                                        {
+                                            <span> &#x25cf; Unassigned</span>
+                                        }
+                                        else if (issue.Assignee != author.Name)
+                                        {
+                                            <span style="white-space:nowrap"> &#x25cf; @issue.Assignee</span>
+                                        }
+                                    }
+                                    @foreach (var entry in issue.Entries)
+                                    {
+                                        <div>
+                                            @if (entry.Comment != "")
+                                            {
+                                                <div>
+                                                    @foreach (string comment in entry.Comment.Split('\n'))
+                                                    {
+                                                        <div style="margin-left:35px"> @comment</div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                         </div>
+                        @if(author.InProgressTasksCount>0)
+                        {
+                            <div style="margin-top:20px; line-height:1.4em;">
+                                @if (author.InProgressTasksTimeLeftSeconds == 0)
+                                {
+                                    <b>In Progress (@author.InProgressTasksCount tasks, </b>
+                                    <b style="color:red"> @author.InProgressTasksTimeLeft left)</b>
                                 }
-                            </div>
-                        }
-                    </div>
+                                else
+                                {
+                                    <b>In Progress (@author.InProgressTasksCount tasks, @author.InProgressTasksTimeLeft left)</b>
+                                }
+                                
+                           </div>
+                        }                       
+                    </div>                       
                 }
             }
-            </div>
         </div>
 
 
@@ -115,13 +133,13 @@
             <i style="color: #B8B8B8;">Tasks in bold have work logged in the timesheet.</i>
         </div>
             
-        @if (Model.SprintReport.CompletedTasksList!=null)
+        @if (Model.Sprint.CompletedTasksList!=null)
         {
-            foreach(var completedTasks in Model.SprintReport.CompletedTasksList)
+            foreach(var completedTasks in Model.Sprint.CompletedTasksList)
             {   
                 if(DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate)>=0)
                 {
-                   <div style="margin-top:20px; line-height:1.3em;">
+                   <div style="margin-top:20px; line-height:1.4em;">
                     <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                     @foreach (var task in completedTasks.Tasks)
                     {
@@ -153,13 +171,13 @@
                                
             }
         }
-            @if (Model.SprintReport.InProgressTasks != null)
+            @if (Model.Sprint.InProgressTasks != null)
             {
-                if(Model.SprintReport.InProgressTasksCount>0)
+                if(Model.Sprint.InProgressUnassignedCount>0)
                 {
-                    <div style="margin-top:20px; line-height:1.3em;">
-                        <b>In progress (@Model.SprintReport.InProgressTasksCount)</b>
-                        @foreach (var task in Model.SprintReport.InProgressTasks)
+                    <div style="margin-top:20px; line-height:1.4em;">
+                        <b>In progress (@Model.Sprint.InProgressUnassignedCount)</b>
+                        @foreach (var task in Model.Sprint.InProgressTasks)
                         {
                             if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
                             {
@@ -284,13 +302,13 @@
             }
             
 
-            @if (Model.SprintReport.OpenTasks != null)
+            @if (Model.Sprint.OpenTasks != null)
             {
-                if(Model.SprintReport.OpenTasksCount>0)
+                if(Model.Sprint.OpenUnassignedCount>0)
                 {
-                   <div style="margin-top:20px; line-height:1.3em;">
-                    <b>Upcoming (@Model.SprintReport.OpenTasksCount)</b>
-                    @foreach (var task in Model.SprintReport.OpenTasks)
+                   <div style="margin-top:20px; line-height:1.4em;">
+                    <b>Upcoming (@Model.Sprint.OpenUnassignedCount)</b>
+                    @foreach (var task in Model.Sprint.OpenTasks)
                     {
                         if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
                         {
@@ -425,13 +443,13 @@
                
             }
             
-        @if (Model.SprintReport.CompletedTasksList != null)
+        @if (Model.Sprint.CompletedTasksList != null)
         {
-            foreach (var completedTasks in Model.SprintReport.CompletedTasksList)
+            foreach (var completedTasks in Model.Sprint.CompletedTasksList)
             {
                 if (DateTime.Compare(completedTasks.Tasks.First().ResolutionDate, Model.options.FromDate) < 0)
                 {
-                    <div style="margin-top:30px; line-height:1.3em;">
+                    <div style="margin-top:30px; line-height:1.4em;">
                         <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                         @foreach (var task in completedTasks.Tasks)
                         {

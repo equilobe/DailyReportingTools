@@ -58,7 +58,8 @@
   <ItemGroup>
     <Compile Include="AuthorsProcessing.cs" />
     <Compile Include="Model\CompletedTasks.cs" />
-    <Compile Include="Model\SprintStatusReport.cs" />
+    <Compile Include="Model\SprintStatus.cs" />
+    <Compile Include="Model\Summary.cs" />
     <Compile Include="Model\Task.cs" />
     <Compile Include="ReportEmailer.cs" />
     <Compile Include="Model\Author.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportProcessor.cs" />
+    <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetService.cs" />
   </ItemGroup>

@@ -236,9 +236,9 @@ namespace JiraReporter.Model
         {
                  this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
                      if (this.Subtasks!=null)
-                         this.TotalRemaining = TimeFormatting.SetTimeFormatDetailed(this.TotalRemainingSeconds);
+                         this.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(this.TotalRemainingSeconds);
                      if (this.RemainingEstimate == null)
-                         this.RemainingEstimate = TimeFormatting.SetTimeFormatDetailed(this.RemainingEstimateSeconds);
+                         this.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(this.RemainingEstimateSeconds);
         }
 
         private void SetIssueLink(Policy policy)
