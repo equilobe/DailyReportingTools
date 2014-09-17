@@ -12,6 +12,7 @@
         var remainingEstimate = "";
         var color="black";
         var tasks="";
+        var comma = "";
      }
   
     <div style="margin-top: 40px">
@@ -22,9 +23,87 @@
             }
             else
             {
-                <h2 style="font-weight:normal"> @Model.TotalTime worked</h2>
-          
-                foreach (var author in Model.Authors)
+                <h2 style="font-weight:normal"> @Model.Summary.TotalTime worked</h2>
+            }
+            @if(Model.Summary.InProgressTasksCount>0)
+            {
+                <div style="margin-top:10px;">
+                    <span>@Model.Summary.InProgressTasksCount </span>
+                    @if(Model.Summary.InProgressTasksCount==1)
+                    {
+                        <span> task </span>
+                    }
+                    else
+                    {
+                         <span> tasks </span>
+                    }
+                   <span>in progress</span>
+                   <span style="font-size:0;">
+                       <span style="font-size:13px;">(</span>
+                       @if(Model.Summary.InProgressTasksTimeLeftSeconds==0)
+                       {
+                           <span style="color:red;font-size:13px;">@Model.Summary.InProgressTasksTimeLeft left</span>
+                       }
+                       else
+                       {
+                           <span style="font-size:13px;">@Model.Summary.InProgressTasksTimeLeft left</span>
+                       }
+                       @if(Model.Summary.InProgressUnassigned>0)
+                       {
+                           <span style="font-size:13px">, @Model.Summary.InProgressUnassigned unassigned</span>
+                       }
+                       <span style="font-size:13px;">)</span>
+                   </span>
+                </div>
+            }
+            
+            @if(Model.Summary.OpenTasksCount>0)
+            {
+                <div style="margin-top:10px;">
+                    <span>@Model.Summary.OpenTasksCount </span>
+                    @if (Model.Summary.OpenTasksCount == 1)
+                    {
+                        <span> task </span>
+                    }
+                    else
+                    {
+                        <span> tasks </span>
+                    }
+                    <span>upcoming</span>
+                    <span style="font-size:0;">
+                        @if (Model.Summary.OpenTasksTimeLeftSeconds > 0 && Model.Summary.OpenUnassigned > 0)
+                        {
+                            comma = ", ";
+                        }
+                        @if(Model.Summary.OpenTasksTimeLeftSeconds>0 || Model.Summary.OpenUnassigned>0)
+                        {
+                            <span style="font-size:13px;">(</span>
+                            if(Model.Summary.OpenTasksTimeLeftSeconds>0)
+                            {
+                                <span style="font-size:13px">@Model.Summary.OpenTasksTimeLeft left</span>
+                            }
+                            <span style="font-size:13px">@comma</span>
+                            if(Model.Summary.OpenUnassigned>0)
+                            {
+                                <span style="font-size:13px">@Model.Summary.OpenUnassigned unassigned</span>
+                            }
+                            <span style="font-size:13px">)</span>
+                        }
+                    </span>
+                </div>
+            }
+            
+            @if (Model.Summary.AuthorsInvolved>0)
+            {
+                <div style="margin-top:10px">
+                    <span>@Model.Summary.AuthorsInvolved people involved</span>
+                </div>                
+            }
+    </div>
+    <div style="margin-top:40px">
+        @if(Model.Authors.Count>0)
+        { 
+              foreach (var author in Model.Authors)
                 {
                     <div style="margin-top:40px;">
                         <b style="font-size:large;">@author.Name </b>

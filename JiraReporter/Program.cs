@@ -45,8 +45,7 @@ namespace JiraReporter
         {           
             var sprint = GetSprintReport(p, options, timesheet);
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint);
-            var report = new Report(p, options) { Authors = authors, Sprint=sprint};
-            SetReport(report);
+            var report = new Report(p, options) { Authors = authors, Sprint=sprint, Date = options.FromDate, Summary=new Summary(authors,sprint)};
             return report;
         }
 
@@ -55,12 +54,6 @@ namespace JiraReporter
             var report = new SprintStatus();
             report.SetSprintTasks(p, timesheet, options);
             return report;
-        }
-
-        private static void SetReport(Report report)
-        {
-            report.TotalTime = TimeFormatting.SetReportTotalTime(report.Authors);
-            report.Date = report.options.FromDate;
         }
 
         private static void SaveReportToFile(Report report)
