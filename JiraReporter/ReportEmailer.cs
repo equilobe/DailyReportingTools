@@ -42,9 +42,9 @@ namespace JiraReporter
         private string GetEmailSubject()
         {
             if (options.FromDate == options.ToDate)
-                return policy.ReportTitle + " Timesheet Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy");
+                return policy.ReportTitle + " Daily Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy");
             else
-                return policy.ReportTitle + " Timesheet Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.ToString("dddd, dd MMMM yyyy");
+                return policy.ReportTitle + " Daily Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.ToString("dddd, dd MMMM yyyy");
         }
     }
 }

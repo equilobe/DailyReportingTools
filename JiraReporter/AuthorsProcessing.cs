@@ -103,8 +103,8 @@ namespace JiraReporter
             author.OpenTasks = GetTasks(report.OpenTasks, author);
             if(author.OpenTasks!=null)
                 author.OpenTasksCount = author.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
-            author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
-            author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
+            author.OpenTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
+            author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
         }
 
         private static List<Task> GetTasks(List<Task> tasks, Author author)

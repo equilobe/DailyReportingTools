@@ -39,6 +39,8 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string TotalRemaining { get; set; }
         [XmlIgnore]
+        public int OriginalEstimateSeconds { get; set; }
+        [XmlIgnore]
         public string Type { get; set; }
         [XmlIgnore]
         public bool SubTask { get; set; }
@@ -89,6 +91,7 @@ namespace JiraReporter.Model
             this.RemainingEstimateSeconds = issue.RemainingEstimateSeconds;
             this.TotalRemainingSeconds = issue.TotalRemainingSeconds;
             this.TotalRemaining = issue.TotalRemaining;
+            this.OriginalEstimateSeconds = issue.OriginalEstimateSeconds;
             if (issue.Resolution != null)
             {
                 this.Resolution = issue.Resolution;
@@ -184,6 +187,7 @@ namespace JiraReporter.Model
                 this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
                 this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
             }
+            this.OriginalEstimateSeconds = newIssue.fields.aggregatetimeoriginalestimate;
             if (newIssue.fields.resolution != null)
             {
                 this.Resolution = newIssue.fields.resolution.name;

@@ -82,11 +82,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <Content Include="Policies\Alyssa.xml" />
     <Content Include="Policies\BoardProspects.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Policies\BoardProspectsAll.xml" />
-    <Content Include="Policies\Alyssa.xml" />
+    <Content Include="Policies\AlyssaDraft.xml" />
     <Content Include="Views\TimesheetReportTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
