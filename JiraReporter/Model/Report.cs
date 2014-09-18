@@ -19,7 +19,6 @@ namespace JiraReporter.Model
         }
         public string Title { get; set; }
         public List<Author> Authors { get; set; }
-       // public string TotalTime { get; set; }
         public DateTime Date { get; set; }
         public Summary Summary { get; set; }
         public SprintStatus Sprint { get; set; }

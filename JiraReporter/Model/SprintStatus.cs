@@ -59,11 +59,9 @@ namespace JiraReporter.Model
                 else
                     if (issue.fields.resolution == null)
                         SetTasks(policy, issue, timesheet, this.OpenTasks);
-                if (issue.fields.assignee == null)
+                if (issue.fields.assignee == null && issue.fields.resolution==null)
                     SetTasks(policy, issue, timesheet, this.UnassignedTasks);
             }
-         //   this.InProgressUnassignedCount = this.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee ==null);
-          //  this.OpenUnassignedCount = this.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
         }
 
         private void SetTasks(Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> tasks)
