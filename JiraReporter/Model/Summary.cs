@@ -22,15 +22,14 @@ namespace JiraReporter.Model
         public Summary(List<Author> authors, SprintStatus sprint)
         {
             this.TotalTime = TimeFormatting.SetReportTotalTime(authors);
-            this.InProgressTasksCount = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
-            this.OpenTasksCount = sprint.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
-            this.GetTasksTimeLeft(authors);
+            this.SetTasksTimeLeft(authors);
             this.InProgressUnassigned = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
             this.OpenUnassigned = sprint.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
+            this.SetTasksAssignedCount(authors);
             this.AuthorsInvolved = authors.Count;
         }
 
-        private void GetTasksTimeLeft(List<Author> authors)
+        private void SetTasksTimeLeft(List<Author> authors)
         {
             this.InProgressTasksTimeLeftSeconds = 0;
             this.OpenTasksTimeLeftSeconds = 0;
@@ -44,12 +43,17 @@ namespace JiraReporter.Model
             this.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.OpenTasksTimeLeftSeconds);
         }
 
-        private static string GetOpenTasksTimeLeft(List<Author> authors)
+        private void SetTasksAssignedCount(List<Author> authors)
         {
-            int seconds = 0;
-            foreach (var author in authors)
-                seconds += TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
-            return TimeFormatting.SetTimeFormat8Hour(seconds);
+            this.InProgressTasksCount = 0;
+            this.OpenTasksCount = 0;
+            foreach(var author in authors)
+            {
+                this.InProgressTasksCount += author.InProgressTasksCount;
+                this.OpenTasksCount += author.OpenTasksCount;
+            }
+            this.InProgressTasksCount += this.InProgressUnassigned;
+            this.OpenTasksCount += this.OpenUnassigned;
         }
     }
 }

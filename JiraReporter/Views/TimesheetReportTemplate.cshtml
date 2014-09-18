@@ -516,7 +516,7 @@
                 {
                     tasks = "tasks";
                 }
-                <div style="margin-top:40px; line-height:1.4em;">
+                <div style="margin-top:60px; line-height:1.4em;">
                     <h2>Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
                     @foreach (var task in Model.Sprint.UnassignedTasks)
                     {
@@ -660,7 +660,7 @@
             
         @if (Model.Sprint.CompletedTasksList != null)
         {
-            <div style="margin-top:40px">
+            <div style="margin-top:60px">
                 <h2>Completed last 7 days</h2>
                 @foreach (var completedTasks in Model.Sprint.CompletedTasksList)
                 {

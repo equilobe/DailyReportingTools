@@ -19,17 +19,12 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        private void Authenticate(RestClient client, string username, string password)
-        {
-            client.Authenticator = new HttpBasicAuthenticator(username, password);
-        }
-
         public Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = Options.DateToString(startDate);
             string toDate = Options.DateToString(endDate);
             var client = new RestClient(policy.BaseUrl);
-            Authenticate(client, policy.Username, policy.Password);
+            client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
             var request = new RestRequest("/rest/timesheet-gadget/1.0/raw-timesheet.xml?targetGroup={0}&startDate={1}&endDate={2}", Method.GET);
             request.AddUrlSegment("0", policy.TargetGroup);
             request.AddUrlSegment("1", fromDate);
