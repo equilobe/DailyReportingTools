@@ -18,16 +18,16 @@ namespace JiraReporter
         static void Main(string[] args)
         {
             Options options = GetCommandLineOptions(args);
-            Policy p = Policy.CreateFromFile(options.PolicyPath);
-            p.SetPermanentTaskLabel();
-           // User.GetUsers(p);
+            Policy policy = Policy.CreateFromFile(options.PolicyPath);
+            policy.SetPermanentTaskLabel();
+
             options.LoadDates();
             
-            var timesheet = RestApiRequests.GetTimesheet(p, options.FromDate, options.ToDate);
+            var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate);
             var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(timesheet, p, options);
+            timesheetService.SetTimesheetIssues(timesheet, policy, options);
 
-            var report = GetReport(timesheet,p,options);
+            var report = GetReport(timesheet,policy,options);
             SaveReportToFile(report);
 
             SendReport(report, GetReportPath(report));
@@ -41,11 +41,11 @@ namespace JiraReporter
             return options;
         }   
  
-        private static Report GetReport(Timesheet timesheet, Policy p, Options options)
+        private static Report GetReport(Timesheet timesheet, Policy policy, Options options)
         {           
-            var sprint = GetSprintReport(p, options, timesheet);
-            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint);
-            var report = new Report(p, options) { Authors = authors, Sprint=sprint, Date = options.FromDate, Summary=new Summary(authors,sprint)};
+            var sprint = GetSprintReport(policy, options, timesheet);
+            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy);
+            var report = new Report(policy, options) { Authors = authors, Sprint=sprint, Date = options.FromDate, Summary=new Summary(authors,sprint)};
             return report;
         }
 

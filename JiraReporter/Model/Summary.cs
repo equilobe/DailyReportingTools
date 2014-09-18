@@ -25,8 +25,9 @@ namespace JiraReporter.Model
             this.SetTasksTimeLeft(authors);
             this.InProgressUnassigned = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
             this.OpenUnassigned = sprint.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
-            this.SetTasksAssignedCount(authors);
-            this.AuthorsInvolved = authors.Count;
+            this.InProgressTasksCount = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
+            this.OpenTasksCount = sprint.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
+            this.AuthorsInvolved = authors.Count;          
         }
 
         private void SetTasksTimeLeft(List<Author> authors)
@@ -35,25 +36,14 @@ namespace JiraReporter.Model
             this.OpenTasksTimeLeftSeconds = 0;
             foreach (var author in authors)
             {
-                this.InProgressTasksTimeLeftSeconds += TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
-                this.OpenTasksTimeLeftSeconds += TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
+                if(author.InProgressTasks!=null)
+                     this.InProgressTasksTimeLeftSeconds += TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
+                if(author.OpenTasks!=null)
+                     this.OpenTasksTimeLeftSeconds += TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
             }
 
             this.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.InProgressTasksTimeLeftSeconds);
             this.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.OpenTasksTimeLeftSeconds);
-        }
-
-        private void SetTasksAssignedCount(List<Author> authors)
-        {
-            this.InProgressTasksCount = 0;
-            this.OpenTasksCount = 0;
-            foreach(var author in authors)
-            {
-                this.InProgressTasksCount += author.InProgressTasksCount;
-                this.OpenTasksCount += author.OpenTasksCount;
-            }
-            this.InProgressTasksCount += this.InProgressUnassigned;
-            this.OpenTasksCount += this.OpenUnassigned;
         }
     }
 }

@@ -8,17 +8,22 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintStatus report)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintStatus report, Policy policy)
         {
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
-            foreach (var author in authors)
+            var users = RestApiRequests.GetUsers(policy);
+
+            foreach (var user in users)
             {
-                authorsNew.Add(new Author { Name = author.Key, Issues = author.Value });
-                SetUnfinishedTasks(report, authorsNew.Last());
+                if(authors.ContainsKey(user.displayName))
+                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
+                else
+                    authorsNew.Add(new Author { Name = user.displayName });
+                SetAuthor(report, authorsNew.Last());
             }
-            SetAuthors(ref authorsNew);
-            
+
+            authorsNew.RemoveAll(AuthorIsEmpty);
             return authorsNew;
         }
 
@@ -46,73 +51,86 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthors(ref List<Author> authors)
+        private static void SetAuthor(SprintStatus sprint, Author author)
         {
-            authors = OrderAuthorsIssues(authors);
-            SetAuthorsTimeSpent(authors);
-            SetAuthorsTimeFormat(authors);
-            OrderAuthorsName(ref authors);               
+            author = OrderAuthorIssues(author);
+            SetAuthorTimeSpent(author);
+            SetAuthorTimeFormat(author);
+            SetUnfinishedTasks(sprint, author);
+           // OrderAuthorsName(ref authors);               
         }
 
-        private static void SetAuthorsTimeSpent(List<Author> authors)
-        {
-            foreach (var author in authors)
-                SetAuthorTimeSpent(author);
-        }
+        //private static void SetAuthorsTimeSpent(List<Author> authors)
+        //{
+        //    foreach (var author in authors)
+        //        if(author.Issues!=null)
+        //            SetAuthorTimeSpent(author);
+        //}
 
         private static void SetAuthorTimeSpent(Author author)
         {
-            foreach (var issue in author.Issues)
+            if(author.Issues!=null)
+              foreach (var issue in author.Issues)
                 author.TimeSpent += issue.TimeSpent;
 
             author.TimeLogged = author.TimeSpent.ToString();
         }
 
-        public static void SetAuthorsTimeFormat(List<Author> authors)
+        public static void SetAuthorTimeFormat(Author author)
         {
-            foreach (var author in authors)
                 author.TimeLogged = TimeFormatting.SetTimeFormat(author.TimeSpent);
         }
 
-        private static void OrderAuthorsName(ref List<Author> authors)
-        {
-            authors = authors.OrderBy(a => a.Name).ToList();
-        }
+        //private static void OrderAuthorsName(ref List<Author> authors)
+        //{
+        //    authors = authors.OrderBy(a => a.Name).ToList();
+        //}
 
-        private static List<Author> OrderAuthorsTime(List<Author> authors)
-        {
-            return authors.OrderByDescending(a => a.TimeSpent).ToList();
-        }
+        //private static List<Author> OrderAuthorsTime(List<Author> authors)
+        //{
+        //    return authors.OrderByDescending(a => a.TimeSpent).ToList();
+        //}
 
-        private static List<Author> OrderAuthorsIssues(List<Author> authors)
+        private static Author OrderAuthorIssues(Author author)
         {
-            foreach (var author in authors)
-                author.Issues = Issue.OrderIssues(author.Issues);
-            return authors;
+                if(author.Issues!=null)
+                    author.Issues = Issue.OrderIssues(author.Issues);
+                return author;
         }
 
         private static void SetUnfinishedTasks(SprintStatus report, Author author)
         {
-            author.InProgressTasks = GetTasks(report.InProgressTasks, author);
-            if(author.InProgressTasks!=null)
+            author.InProgressTasks = GetAuthorTasks(report.InProgressTasks, author);
+            if (author.InProgressTasks != null)
+            {
                 author.InProgressTasksCount = author.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
-            author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
-            author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
+                author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
+                author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
+            }
 
-            author.OpenTasks = GetTasks(report.OpenTasks, author);
-            if(author.OpenTasks!=null)
+            author.OpenTasks = GetAuthorTasks(report.OpenTasks, author);
+            if (author.OpenTasks != null)
+            {
                 author.OpenTasksCount = author.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
-            author.OpenTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
-            author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
+                author.OpenTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
+                author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
+            }
         }
 
-        private static List<Task> GetTasks(List<Task> tasks, Author author)
+        private static List<Task> GetAuthorTasks(List<Task> tasks, Author author)
         {
             var unfinishedTasks = new List<Task>();
             foreach (var task in tasks)
                 if (task.Issue.Assignee == author.Name)
                     unfinishedTasks.Add(task);
             return unfinishedTasks;
-        }        
+        } 
+       
+        private static bool AuthorIsEmpty(Author author)
+        {
+            if (author.Issues == null && author.InProgressTasksCount == 0 && author.OpenTasksCount == 0)
+                return true;
+            return false;
+        }
     }
 }

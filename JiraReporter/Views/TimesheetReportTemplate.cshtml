@@ -107,7 +107,10 @@
                 {
                     <div style="margin-top:40px;">
                         <b style="font-size:large;">@author.Name </b>
-                        <span> &#x25cf; @author.TimeLogged </span>
+                        @if(author.Issues!=null)
+                        {
+                            <span> &#x25cf; @author.TimeLogged </span>
+                        }                        
                         @if (author.InProgressTasksCount>0)
                         {
                             <span> &#x25cf; @author.InProgressTasksCount </span>
@@ -132,7 +135,9 @@
                                 <span> upcoming tasks </span>
                             }                            
                         }
-                        <div style="margin-top:20px; line-height:1.4em;">
+                        @if(author.Issues!=null)
+                        {
+                         <div style="margin-top:20px; line-height:1.4em;">
                             <b> Worked  &#x25cf; @author.Issues.Count </b>
                             @if(author.Issues.Count==0)
                             {
@@ -210,7 +215,7 @@
                                 </div>
                             }
                          </div>
-
+                        }
                         @if(author.InProgressTasksCount>0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
@@ -253,7 +258,7 @@
                                             {
                                                 remainingEstimate = task.Issue.RemainingEstimate;
                                             }
-                                            if (task.Issue.RemainingEstimateSeconds == 0)
+                                            if (task.Issue.RemainingEstimateSeconds == 0 && task.Issue.OriginalEstimateSeconds>0)
                                             {
                                                 color = "red";
                                             }
@@ -272,8 +277,12 @@
                                                 @if (task.Issue.TimeSpent > 0)
                                                 {
                                                     <span> &#x25cf; @task.Issue.TimeLogged worked </span>
-                                                    <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
-                                                }                                   
+                                                }
+                                                @if (task.Issue.OriginalEstimateSecondsTotal>0)
+                                                {
+                                                     <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
+                                                }                                                 
+                                                                        
                                             </div>
                                             if (task.Issue.SubtasksIssues != null)
                                             {
@@ -284,21 +293,21 @@
                                                         if(subtask.Assignee==author.Name)
                                                         {
                                                            if (subtask.ExistsInTimesheet == true)
-                                                        {
-                                                            bold = "font-weight: bold;";
-                                                        }
-                                                        else
-                                                        {
-                                                            bold = "font-weight: normal;";
-                                                        }
-                                                        if (subtask.RemainingEstimateSeconds == 0)
-                                                        {
-                                                            color = "red";
-                                                        }
-                                                        else
-                                                        {
-                                                            color = "black";
-                                                        }                                 
+                                                           {
+                                                               bold = "font-weight: bold;";
+                                                           }
+                                                           else
+                                                           {
+                                                               bold = "font-weight: normal;";
+                                                           }
+                                                           if (subtask.RemainingEstimateSeconds == 0)
+                                                           {
+                                                               color = "red";
+                                                           }
+                                                           else
+                                                           {
+                                                               color = "black";
+                                                           }                                 
                                                         <div style="margin-left: 20px">
                                                                 @if (subtask.Resolution != null)
                                                                 {
@@ -333,11 +342,14 @@
 
                                                             @if (subtask.TimeSpent > 0)
                                                             {
-                                                                <span> &#x25cf; @subtask.TimeLogged worked </span>
-                                                                if (subtask.Resolution == null)
-                                                                {
-                                                                    <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
-                                                                }
+                                                                <span> &#x25cf; @subtask.TimeLogged worked </span>                                                               
+                                                            }
+                                                            @if(subtask.OriginalEstimateSeconds>0)
+                                                            {
+                                                                 if (subtask.Resolution == null)
+                                                                 {
+                                                                     <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
+                                                                 }                                                                 
                                                             }
                                                         </div>  
                                                         }                                                       
@@ -391,7 +403,7 @@
                                     {
                                         remainingEstimate = task.Issue.RemainingEstimate;
                                     }
-                                    if (task.Issue.RemainingEstimateSeconds == 0)
+                                    if (task.Issue.RemainingEstimateSeconds == 0 && task.Issue.OriginalEstimateSeconds>0)
                                     {
                                         color = "red";
                                     }
@@ -422,8 +434,12 @@
                                         @if (task.Issue.TimeSpent > 0)
                                         {
                                             <span> &#x25cf; @task.Issue.TimeLogged worked </span>
-                                            <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
-                                        }                                                            
+                                        }
+                                        @if (task.Issue.OriginalEstimateSecondsTotal>0)
+                                        {
+                                            <span style="color:@color"> &#x25cf; @remainingEstimate left </span> 
+                                        }
+                                                                
                                     </div>
                                     if (task.Issue.SubtasksIssues != null)
                                     {
@@ -482,7 +498,10 @@
                                                     <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key</span>
                                                         @if (subtask.TimeSpent > 0)
                                                         {
-                                                            <span> &#x25cf; @subtask.TimeLogged worked </span>
+                                                            <span> &#x25cf; @subtask.TimeLogged worked </span>                                                            
+                                                        }
+                                                        @if (subtask.OriginalEstimateSeconds>0)
+                                                        {
                                                             if (subtask.Resolution == null)
                                                             {
                                                                 <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
