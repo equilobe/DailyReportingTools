@@ -20,11 +20,11 @@ namespace JiraReporter
             Options options = GetCommandLineOptions(args);
             Policy p = Policy.CreateFromFile(options.PolicyPath);
             p.SetPermanentTaskLabel();
+           // User.GetUsers(p);
             options.LoadDates();
-
+            
+            var timesheet = RestApiRequests.GetTimesheet(p, options.FromDate, options.ToDate);
             var timesheetService = new TimesheetService();
-            var timesheet = timesheetService.GetTimesheet(p, options.FromDate, options.ToDate);
-
             timesheetService.SetTimesheetIssues(timesheet, p, options);
 
             var report = GetReport(timesheet,p,options);

@@ -17,7 +17,7 @@ namespace JiraReporter
                 authorsNew.Add(new Author { Name = author.Key, Issues = author.Value });
                 SetUnfinishedTasks(report, authorsNew.Last());
             }
-            SetAuthors(authorsNew, report);
+            SetAuthors(ref authorsNew);
             
             return authorsNew;
         }
@@ -46,13 +46,12 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthors(List<Author> authors, SprintStatus report)
+        private static void SetAuthors(ref List<Author> authors)
         {
             authors = OrderAuthorsIssues(authors);
             SetAuthorsTimeSpent(authors);
             SetAuthorsTimeFormat(authors);
-            OrderAuthorsName(authors); 
-               
+            OrderAuthorsName(ref authors);               
         }
 
         private static void SetAuthorsTimeSpent(List<Author> authors)
@@ -75,7 +74,7 @@ namespace JiraReporter
                 author.TimeLogged = TimeFormatting.SetTimeFormat(author.TimeSpent);
         }
 
-        private static void OrderAuthorsName(List<Author> authors)
+        private static void OrderAuthorsName(ref List<Author> authors)
         {
             authors = authors.OrderBy(a => a.Name).ToList();
         }

@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
@@ -56,11 +57,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiUrls.cs" />
     <Compile Include="AuthorsProcessing.cs" />
+    <Compile Include="Deserialization.cs" />
     <Compile Include="Model\CompletedTasks.cs" />
     <Compile Include="Model\SprintStatus.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="Model\Task.cs" />
+    <Compile Include="Model\User.cs" />
     <Compile Include="ReportEmailer.cs" />
     <Compile Include="Model\Author.cs" />
     <Compile Include="Model\Entries.cs" />
@@ -73,6 +77,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportProcessor.cs" />
+    <Compile Include="RestApiRequests.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetService.cs" />
