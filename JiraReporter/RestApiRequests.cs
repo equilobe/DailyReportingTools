@@ -49,6 +49,14 @@ namespace JiraReporter
             var client = new JiraClient(account);
             var tasks = client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.Project), 0, 250);
             return tasks;
-        }   
+        }
+
+        public static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
+        {
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
+            var client = new JiraClient(account);
+            var issue = client.GetIssue(issueKey);
+            return client.GetIssue(issueKey);
+        }
     }
 }

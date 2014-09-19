@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public class SprintStatus
+    public class SprintTasks
     {
         public List<CompletedTasks> CompletedTasksList { get; set; } 
         public List<Task> InProgressTasks { get; set; }
@@ -20,7 +20,7 @@ namespace JiraReporter.Model
             var issues = RestApiRequests.GetSprintTasks(policy);
             GetUnfinishedTasks(policy, issues, timesheet);
             var completedTasks = GetCompletedTasks(policy,options,timesheet);
-            SetCompletedTasks(GetCompletedTasks(completedTasks));
+            SetCompletedTasks(GroupCompletedTasks(completedTasks));
             SortTasks();
         }
 
@@ -85,7 +85,7 @@ namespace JiraReporter.Model
                 this.UnassignedTasks = this.UnassignedTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
         }
 
-        private IEnumerable<IGrouping<int,Task>> GetCompletedTasks(List<Task> completedTasks)
+        private IEnumerable<IGrouping<int,Task>> GroupCompletedTasks(List<Task> completedTasks)
         {
             var tasks = from task in completedTasks
                             group task by task.ResolutionDate.Day into newGroup

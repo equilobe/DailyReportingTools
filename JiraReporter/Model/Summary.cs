@@ -19,7 +19,7 @@ namespace JiraReporter.Model
         public int OpenUnassigned { get; set; }
         public int AuthorsInvolved { get; set; }
 
-        public Summary(List<Author> authors, SprintStatus sprint)
+        public Summary(List<Author> authors, SprintTasks sprint)
         {
             this.TotalTime = TimeFormatting.SetReportTotalTime(authors);
             this.SetTasksTimeLeft(authors);

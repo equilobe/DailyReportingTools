@@ -178,7 +178,7 @@ namespace JiraReporter.Model
             foreach (var issue in timesheet.Worklog.Issues)
             {
                 var newIssue = new AnotherJiraRestClient.Issue();
-                newIssue = GetIssue(issue.Key, policy);
+                newIssue = RestApiRequests.GetIssue(issue.Key, policy);
                 issue.SetIssue(policy, newIssue, timesheet);
                 if (issue.Subtasks != null)
                     issue.SetSubtasksIssues(policy, timesheet);
@@ -235,7 +235,7 @@ namespace JiraReporter.Model
             this.SubtasksIssues = new List<Issue>();
             foreach(var task in Subtasks)
             {
-                issue = GetIssue(task.key, policy);
+                issue = RestApiRequests.GetIssue(task.key, policy);
                 this.SubtasksIssues.Add(new Issue { Key = task.key, Summary=issue.fields.summary });               
                 this.SubtasksIssues.Last().SetIssue(policy, issue, timesheet);
             }
@@ -282,23 +282,13 @@ namespace JiraReporter.Model
                     this.Label = label;
         }
 
-        private static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
-        {
-            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
-            var client = new JiraClient(account);
-            var issue = client.GetIssue(issueKey);
-            return client.GetIssue(issueKey);
-        }
-
         public static List<Issue> OrderIssues(List<Issue> issues)
         {
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
         private void SetParent(AnotherJiraRestClient.Issue issue, Policy policy)
-        {
-            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
-            var client = new JiraClient(account);           
+        {    
             this.Parent = new Issue { Key = issue.fields.parent.key, Summary = issue.fields.parent.fields.summary };
             this.Parent.SetIssueLink(policy);
         }

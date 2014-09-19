@@ -8,7 +8,7 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintStatus report, Policy policy)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, Policy policy)
         {
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
@@ -51,7 +51,7 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintStatus sprint, Author author)
+        private static void SetAuthor(SprintTasks sprint, Author author)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
@@ -98,7 +98,7 @@ namespace JiraReporter
                 return author;
         }
 
-        private static void SetUnfinishedTasks(SprintStatus report, Author author)
+        private static void SetUnfinishedTasks(SprintTasks report, Author author)
         {
             author.InProgressTasks = GetAuthorTasks(report.InProgressTasks, author);
             if (author.InProgressTasks != null)

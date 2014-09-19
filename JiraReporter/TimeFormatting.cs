@@ -27,17 +27,20 @@ namespace JiraReporter
         public static string SetTimeFormat8Hour(int seconds)
         {
             string timeFormat = "";
-            int days = seconds / 28800;
-            int hours = seconds / 3600 - days * 8;
-            int minutes = seconds / 60 - days * 8 * 60 - hours * 60;
+            int weeks = seconds / 144000;
+            int days = seconds / 28800 - weeks * 5;
+            int hours = seconds / 3600 - weeks * 5 * 8 - days * 8;
+            int minutes = seconds / 60 - weeks * 5 * 8 * 60 - days * 8 * 60 - hours * 60;
 
+            if (weeks > 0)
+                timeFormat += string.Format("{0}w ", weeks);
             if (days > 0)
                 timeFormat += string.Format("{0}d ", days);
             if (hours > 0)
                 timeFormat += string.Format("{0}h", hours);
             if (minutes > 0)
                 timeFormat += string.Format("{0}m", minutes);
-            if (days == 0 && hours == 0 && minutes == 0)
+            if (weeks == 0 && days == 0 && hours == 0 && minutes == 0)
                 timeFormat = "0m";
             return timeFormat;
         }
