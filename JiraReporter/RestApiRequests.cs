@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using AnotherJiraRestClient;
+using JiraReporter.Model;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -31,5 +32,23 @@ namespace JiraReporter
             string contentString = response.Content;
             return Deserialization.JsonDeserialize<List<User>>(contentString);
         }
+
+        public static AnotherJiraRestClient.Issues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
+        {
+            string fromDate = Options.DateToISO(startDate);
+            string toDate = Options.DateToISO(endDate);
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
+            var client = new JiraClient(account);
+            var issues = client.GetIssuesByJql(ApiUrls.ResolvedIssues(fromDate, toDate), 0, 250);
+            return issues;
+        }
+
+        public static AnotherJiraRestClient.Issues GetSprintTasks(Policy policy)
+        {
+            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
+            var client = new JiraClient(account);
+            var tasks = client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.Project), 0, 250);
+            return tasks;
+        }   
     }
 }

@@ -17,5 +17,15 @@ namespace JiraReporter
         {
             return string.Format("/rest/api/2/user/assignable/search?project={0}", project);
         }
+
+        public static string ResolvedIssues(string fromDate, string endDate)
+        {
+            return string.Format("resolved >= '{0}' & resolved <= '{1}'", fromDate, endDate);
+        }
+
+        public static string IssuesInOpenSprints(string project)
+        {
+            return string.Format("sprint in openSprints() & project = {0}", project);
+        }
     }
 }

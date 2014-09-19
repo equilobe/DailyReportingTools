@@ -17,27 +17,17 @@ namespace JiraReporter.Model
 
         public void SetSprintTasks(Policy policy, Timesheet timesheet, Options options)
         {
-            var issues = GetSprintTasks(policy);
+            var issues = RestApiRequests.GetSprintTasks(policy);
             GetUnfinishedTasks(policy, issues, timesheet);
             var completedTasks = GetCompletedTasks(policy,options,timesheet);
             SetCompletedTasks(GetCompletedTasks(completedTasks));
             SortTasks();
         }
 
-        private AnotherJiraRestClient.Issues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
-        {
-            string fromDate = Options.DateToISO(startDate);
-            string toDate = Options.DateToISO(endDate);
-            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
-            var client = new JiraClient(account);
-            var issues = client.GetIssuesByJql("resolved >= '" + fromDate + "' & resolved <= '"+ toDate + "'", 0, 250);
-            return issues;
-        }
-
         private List<Task> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
         {
             var completedTasks = new List<Task>();
-            var issues = GetCompletedIssues(policy, options.FromDate.AddDays(-6), DateTime.Now);
+            var issues = RestApiRequests.GetCompletedIssues(policy, options.FromDate.AddDays(-6), DateTime.Now);
             foreach(var issue in issues.issues)
             {
                 if(issue.fields.issuetype.subtask==false)
@@ -83,15 +73,7 @@ namespace JiraReporter.Model
                 tasks.Last().Issue.SetSubtasksIssues(policy, timesheet);
                 TasksService.HasTasksInProgress(tasks.Last());
             }
-        }
-
-        private AnotherJiraRestClient.Issues GetSprintTasks(Policy policy)
-        {
-            var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
-            var client = new JiraClient(account);
-            var tasks = client.GetIssuesByJql("sprint in openSprints() & project = " + policy.Project, 0, 250);
-            return tasks;
-        }       
+        }    
 
         private void SortTasks()
         {
