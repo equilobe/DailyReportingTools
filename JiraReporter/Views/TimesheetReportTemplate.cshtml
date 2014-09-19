@@ -171,7 +171,14 @@
                                         {
                                             if (issue.RemainingEstimateSeconds == 0)
                                             {
-                                                <span>(<b style="color:red">@remainingEstimate left</b>)</span>
+                                                if (issue.TotalRemainingSeconds != issue.RemainingEstimateSeconds)
+                                                {
+                                                    <span>(<b style="color:red">@remainingEstimate left from subtasks</b>)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>(<b style="color:red">@remainingEstimate left</b>)</span>
+                                                }                                                                                                                                            
                                             }
                                             else
                                             {
@@ -274,15 +281,39 @@
                                                 }                                                                    
                                                 <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                                 <span style ="color: #B8B8B8"> &#x25cf; @task.Issue.Key </span>
-                                                @if (task.Issue.TimeSpent > 0)
+                                                @if(task.Issue.Subtasks.Count==0)
                                                 {
-                                                    <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                                    if (task.Issue.TimeSpent > 0)
+                                                    {
+                                                        <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                                    }
                                                 }
-                                                @if (task.Issue.OriginalEstimateSecondsTotal>0)
+                                                else if(task.Issue.TimeSpentTotal>0)
                                                 {
-                                                     <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
-                                                }                                                 
-                                                                        
+                                                    <span> &#x25cf; @task.Issue.TimeLoggedTotal worked </span>
+                                                }
+                                                @if (task.Issue.OriginalEstimateSeconds>0)
+                                                {
+                                                    if(task.Issue.RemainingEstimateSeconds == 0)
+                                                    {
+                                                        <b style="color:red"> &#x25cf; @remainingEstimate left</b>
+                                                        if (task.Issue.TotalRemainingSeconds != task.Issue.RemainingEstimateSeconds)
+                                                        {
+                                                            <b style="font-size:13px; color:red"> (from subtasks)</b>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> &#x25cf; @remainingEstimate left </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (task.Issue.TotalRemainingSeconds > 0 && task.Issue.Subtasks.Count > 0)
+                                                    {
+                                                        <span> &#x25cf; @remainingEstimate left </span>
+                                                    }                                                   
+                                                }                                                                                                                       
                                             </div>
                                             if (task.Issue.SubtasksIssues != null)
                                             {
@@ -431,24 +462,54 @@
                                         <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                         <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
 
-                                        @if (task.Issue.TimeSpent > 0)
+                                       @if(task.Issue.Subtasks.Count==0)
+                                       {
+                                           if (task.Issue.TimeSpent > 0)
+                                           {
+                                               <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                           }
+                                       }
+                                       else if(task.Issue.TimeSpentTotal>0)
+                                       {
+                                           <span> &#x25cf; @task.Issue.TimeLoggedTotal worked </span>
+                                       }
+                                                                   
+                                        @if (task.Issue.OriginalEstimateSeconds > 0)
                                         {
-                                            <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                            if (task.Issue.RemainingEstimateSeconds == 0)
+                                            {
+                                                <b style="color:red"> &#x25cf; @remainingEstimate left</b>
+                                                if (task.Issue.TotalRemainingSeconds != task.Issue.RemainingEstimateSeconds)
+                                                {
+                                                    <b style="font-size:13px; color:red"> (from subtasks)</b>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span> &#x25cf; @remainingEstimate left </span>
+                                            }
                                         }
-                                        @if (task.Issue.OriginalEstimateSecondsTotal>0)
+                                        else
                                         {
-                                            <span style="color:@color"> &#x25cf; @remainingEstimate left </span> 
+                                            if (task.Issue.TotalRemainingSeconds > 0 && task.Issue.Subtasks.Count > 0)
+                                            {
+                                                <span> &#x25cf; @remainingEstimate left </span>
+                                            }
+                                        }                                                                                              
+                                        @if (task.HasInProgressAuthor == true)
+                                        {
+                                             <span style="color:red">(has sub-tasks in progress)</span>
                                         }
                                                                 
                                     </div>
                                     if (task.Issue.SubtasksIssues != null)
                                     {
                                         if (task.Issue.SubtasksIssues.Count > 0)
-                                        {
+                                        {                                            
                                             foreach (var subtask in task.Issue.SubtasksIssues)
                                             {
                                                 if(subtask.Assignee == author.Name)
-                                                {
+                                                {                                                  
                                                     if (subtask.ExistsInTimesheet == true)
                                                     {
                                                         bold = "font-weight: bold;";
@@ -593,16 +654,48 @@
                                 {
                                     <span style="white-space: nowrap;"> &#x25cf; @task.Issue.Assignee</span>
                                 }
-                                @if (task.Issue.TimeSpent > 0)
+                                @if(task.Issue.Subtasks.Count==0)
                                 {
-                                    <span> &#x25cf; @task.Issue.TimeLogged worked </span>
-                                    <span style="color:@color"> &#x25cf; @remainingEstimate left </span>
+                                    if (task.Issue.TimeSpent > 0)
+                                    {
+                                        <span> &#x25cf; @task.Issue.TimeLogged worked </span>
+                                    }
+                                }
+                                else if(task.Issue.TimeSpentTotal>0)
+                                {
+                                    <span> &#x25cf; @task.Issue.TimeLoggedTotal worked </span>
+                                }
+                                @if (task.Issue.OriginalEstimateSeconds > 0)
+                                {
+                                    if (task.Issue.RemainingEstimateSeconds == 0)
+                                    {
+                                        <b style="color:red"> &#x25cf; @remainingEstimate left</b>
+                                        if (task.Issue.TotalRemainingSeconds != task.Issue.RemainingEstimateSeconds)
+                                        {
+                                            <b style="font-size:13px; color:red"> (from subtasks)</b>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span> &#x25cf; @remainingEstimate left </span>
+                                    }
+                                }
+                                else
+                                {
+                                    if (task.Issue.TotalRemainingSeconds > 0 && task.Issue.Subtasks.Count > 0)
+                                    {
+                                        <span> &#x25cf; @remainingEstimate left </span>
+                                    }
+                                }                                    
+                                @if (task.HasInProgress == true)
+                                {
+                                    <span style="color:red">(has sub-tasks in progress)</span>
                                 }
                             </div>
                             if (task.Issue.SubtasksIssues != null)
                             {
                                 if (task.Issue.SubtasksIssues.Count > 0)
-                                {
+                                {                                    
                                     foreach (var subtask in task.Issue.SubtasksIssues)
                                     {
                                         if (subtask.Resolution == null && subtask.Assignee == null)                                       

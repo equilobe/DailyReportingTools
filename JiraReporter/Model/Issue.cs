@@ -21,7 +21,11 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string TimeLogged { get; set; }
         [XmlIgnore]
+        public string TimeLoggedTotal { get; set; }
+        [XmlIgnore]
         public int TimeSpent { get; set; }
+        [XmlIgnore]
+        public int TimeSpentTotal { get; set; }
         [XmlIgnore]
         public string Resolution { get; set; }
         [XmlIgnore]
@@ -104,6 +108,8 @@ namespace JiraReporter.Model
             this.SubTask = issue.SubTask;
             this.Summary = issue.Summary;
             this.TimeLogged = issue.TimeLogged;
+            this.TimeLoggedTotal = issue.TimeLoggedTotal;
+            this.TimeSpentTotal = issue.TimeSpentTotal;
             this.TimeSpent = issue.TimeSpent;
             this.Type = issue.Type;
             this.StatusCategory = issue.StatusCategory;
@@ -204,6 +210,7 @@ namespace JiraReporter.Model
             this.StatusCategory = newIssue.fields.status.statusCategory;
             this.Created = Convert.ToDateTime(newIssue.fields.created);
             this.Updated = newIssue.fields.updated;
+            this.TimeSpentTotal = newIssue.fields.aggregatetimespent;
             if (newIssue.fields.subtasks!=null)
             {
                 this.Subtasks = newIssue.fields.subtasks;
@@ -242,9 +249,13 @@ namespace JiraReporter.Model
 
         public void SetIssueTimeFormat()
         {
-                 this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
-                     if (this.Subtasks!=null)
-                         this.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(this.TotalRemainingSeconds);
+                 this.TimeLogged = TimeFormatting.SetTimeFormat8Hour(this.TimeSpent);
+                 if (this.Subtasks != null)
+                 {
+                     this.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(this.TotalRemainingSeconds);
+                     if (this.Subtasks.Count > 0)
+                         this.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(this.TimeSpentTotal);
+                 }
                      if (this.RemainingEstimate == null)
                          this.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(this.RemainingEstimateSeconds);
         }

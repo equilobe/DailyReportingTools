@@ -79,7 +79,10 @@ namespace JiraReporter.Model
 
             tasks.Last().Issue.SetIssue(policy, issue, timesheet);
             if (tasks.Last().Issue.Subtasks != null)
-                tasks.Last().Issue.SetSubtasksIssues(policy, timesheet);                        
+            {
+                tasks.Last().Issue.SetSubtasksIssues(policy, timesheet);
+                TasksService.HasTasksInProgress(tasks.Last());
+            }
         }
 
         private AnotherJiraRestClient.Issues GetSprintTasks(Policy policy)

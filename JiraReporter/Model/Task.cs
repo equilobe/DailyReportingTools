@@ -8,9 +8,11 @@ namespace JiraReporter.Model
 {
     public class Task
     {
-        public Issue Issue;
-        public string CompletedTimeAgo;
-        public DateTime ResolutionDate;
-        public DateTime UpdatedDate;
+        public Issue Issue { get; set; }
+        public string CompletedTimeAgo { get; set; }
+        public DateTime ResolutionDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public bool HasInProgress { get; set; }
+        public bool HasInProgressAuthor { get; set; }
     }
 }
