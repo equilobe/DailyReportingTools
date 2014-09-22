@@ -17,7 +17,7 @@
   
     <div style="margin-top: 40px">
         <h2>Summary</h2>
-            @if (Model.Authors.Count == 0)
+            @if (Model.Summary.TotalTimeSeconds == 0)
             {
                <h2 style="font-weight:normal">No work logged</h2>
             }
@@ -806,6 +806,5 @@
                         </div>
                 }
            </div>
-        }
-
+        } 
 </div>

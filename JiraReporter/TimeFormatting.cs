@@ -69,15 +69,12 @@ namespace JiraReporter
             return timeAgo;
         }
 
-
-        public static string SetReportTotalTime(List<Author> authors)
+        public static int GetReportTotalTime(List<Author> authors)
         {
             int totalTime = 0;
             foreach (var author in authors)
                 totalTime += author.TimeSpent;
-
-            var totalTimeString = SetTimeFormat(totalTime);
-            return totalTimeString;
+            return totalTime;
         }
 
     }

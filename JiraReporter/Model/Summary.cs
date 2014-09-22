@@ -9,6 +9,7 @@ namespace JiraReporter.Model
     public class Summary
     {
         public string TotalTime { get; set; }
+        public int TotalTimeSeconds { get; set; }
         public int InProgressTasksCount { get; set; }
         public string InProgressTasksTimeLeft { get; set; }
         public int InProgressTasksTimeLeftSeconds { get; set; }
@@ -21,7 +22,8 @@ namespace JiraReporter.Model
 
         public Summary(List<Author> authors, SprintTasks sprint)
         {
-            this.TotalTime = TimeFormatting.SetReportTotalTime(authors);
+            this.TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
+            this.TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
             this.SetTasksTimeLeft(authors);
             this.InProgressUnassigned = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
             this.OpenUnassigned = sprint.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
