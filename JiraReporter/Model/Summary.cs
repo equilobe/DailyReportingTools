@@ -24,7 +24,7 @@ namespace JiraReporter.Model
         {
             this.TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
             this.TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
-            this.SetTasksTimeLeft(authors);
+            this.SetSummaryTasksTimeLeft(authors);
             this.InProgressUnassigned = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
             this.OpenUnassigned = sprint.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null && tasks.Issue.Assignee == null);
             this.InProgressTasksCount = sprint.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
@@ -32,7 +32,7 @@ namespace JiraReporter.Model
             this.AuthorsInvolved = authors.Count;          
         }
 
-        private void SetTasksTimeLeft(List<Author> authors)
+        private void SetSummaryTasksTimeLeft(List<Author> authors)
         {
             this.InProgressTasksTimeLeftSeconds = 0;
             this.OpenTasksTimeLeftSeconds = 0;
