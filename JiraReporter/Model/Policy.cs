@@ -28,11 +28,13 @@ namespace JiraReporter.Model
         public string BaseUrl { get; set; }
         public string TargetGroup { get; set; }
         public string PermanentTaskLabel { get; set; }
+
         public string Username { get; set; }
         public string Password { get; set; }
         public string Emails { get; set; }
         public string Project { get; set; }
         public string ReopenedStatus { get; set; }
+        public SourceControl SourceControl { get; set; }
 
         [XmlIgnore]
         public IEnumerable<string> EmailCollection
