@@ -1,6 +1,9 @@
-﻿using SvnLogReporter.Model;
+﻿using RazorEngine;
+using RazorEngine.Templating;
+using SvnLogReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -71,7 +74,24 @@ namespace SvnLogReporter
                         reportContent += ProcessReport(Policy, report);         
             return reportContent;
         }
-        protected abstract string ProcessReport(Policy p, Report report);       
+
+        protected string ProcessReport(Policy p, Report report)
+        {
+            try
+            {
+                string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplate.cshtml");
+                report.Title = p.ReportTitle;
+                return Razor.Parse(template, report);
+            }
+            catch (TemplateCompilationException templateException)
+            {
+                foreach (var error in templateException.Errors)
+                {
+                    Debug.WriteLine(error);
+                }
+                return "Error in template compilation";
+            }
+        }           
 
         protected abstract List<Report> GetReports(Log log);
         

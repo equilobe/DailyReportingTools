@@ -58,23 +58,23 @@ namespace SvnLogReporter
             return reports;
         }
 
-        protected override string ProcessReport(Policy p, Report report)
-        {
-            try
-            {
-                string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplateGitHub.cshtml");
-                report.Title = p.ReportTitle;
-                return Razor.Parse(template, report);
-            }
-            catch (TemplateCompilationException templateException)
-            {
-                foreach (var error in templateException.Errors)
-                {
-                    Debug.WriteLine(error);
-                }
-                return "Error in template compilation";
-            }
-        }           
+        //protected override string ProcessReport(Policy p, Report report)
+        //{
+        //    try
+        //    {
+        //        string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplateGitHub.cshtml");
+        //        report.Title = p.ReportTitle;
+        //        return Razor.Parse(template, report);
+        //    }
+        //    catch (TemplateCompilationException templateException)
+        //    {
+        //        foreach (var error in templateException.Errors)
+        //        {
+        //            Debug.WriteLine(error);
+        //        }
+        //        return "Error in template compilation";
+        //    }
+        //}           
 
         protected IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)
         {

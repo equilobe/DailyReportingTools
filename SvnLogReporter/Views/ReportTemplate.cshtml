@@ -1,0 +1,42 @@
+<div style="margin-top:20px">
+    @Model.Title report for @Model.ReportDate.ToString("dddd, dd MMMM yyyy")
+    @if (Model.PullRequests != null)
+        {
+            if(Model.PullRequests.Count>0)
+            {
+                <div style="margin-top:20px">
+                    <span><b>Pending Pull Requests</b></span>
+                    <div style="margin-top:10px">
+                        @foreach (var pull in Model.PullRequests)
+                        {
+                            <div>
+                                <span><a style="text-decoration:none" href=@pull.HtmlUrl>@pull.Title</a></span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }            
+        }
+    <div style="margin-top:20px">
+        @if (Model.Authors == null)
+        {
+            <p> No Entries </p>
+        }
+
+        else
+        {           
+            foreach (var author in Model.Authors)
+            {
+                <div style="margin-top:40px">
+                    <b>@author.Name (@author.EntryCount entries)</b>
+                    <ul style="margin-top:10px">
+                        @foreach (var entry in author.Entries)
+                        {
+                            <li style="margin-top:10px">  @entry.Message</li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+    </div>
+</div>
