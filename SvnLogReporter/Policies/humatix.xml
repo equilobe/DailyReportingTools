@@ -4,8 +4,8 @@
   <DayStartHour>5</DayStartHour>
   <ReportTitle>Humatix</ReportTitle>
   <ReportType>SVN</ReportType>
-  <RepoUrl>svn://87.249.113.53/repository</RepoUrl>
+  <RepoUrl></RepoUrl>
   <Username></Username>
   <Password></Password>
-  <Emails>dan.badea@equilobe.com</Emails>
+  <Emails></Emails>
 </Policy>

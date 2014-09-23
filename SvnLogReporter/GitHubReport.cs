@@ -1,7 +1,6 @@
 ﻿using Octokit;
 using Octokit.Internal;
 using RazorEngine;
-using RazorEngine.Templating;
 using SvnLogReporter.Model;
 using System;
 using System.Collections.Generic;

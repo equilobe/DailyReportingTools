@@ -100,7 +100,7 @@ namespace SvnLogReporter
             List<Report> reports = new List<Report>();
             foreach (var date in dates)
                 if (!logs.ContainsKey(date))
-                    reports.Add(new Report() { ReportDate = date, Title=Policy.ReportTitle});
+                    reports.Add(new Report() { ReportDate = date, Title = Policy.ReportTitle});
             return reports;
         }
 
