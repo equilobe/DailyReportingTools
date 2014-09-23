@@ -16,7 +16,7 @@ namespace JiraReporter
             TimeSpan t = TimeSpan.FromSeconds(time);
 
             if (t.Hours > 0 || t.Days > 0)
-                timeFormat += string.Format("{0}h", t.Hours + t.Days * 24) + " ";
+                timeFormat += string.Format("{0}h ", t.Hours + t.Days * 24);
             if (t.Minutes > 0)
                 timeFormat += string.Format("{0}m", t.Minutes);
             if (t.Days == 0 && t.Hours == 0 && t.Minutes == 0)
@@ -37,9 +37,9 @@ namespace JiraReporter
             if (days > 0)
                 timeFormat += string.Format("{0}d ", days);
             if (hours > 0)
-                timeFormat += string.Format("{0}h", hours);
+                timeFormat += string.Format("{0}h ", hours);
             if (minutes > 0)
-                timeFormat += string.Format("{0}m", minutes);
+                timeFormat += string.Format("{0}m ", minutes);
             if (weeks == 0 && days == 0 && hours == 0 && minutes == 0)
                 timeFormat = "0m";
             return timeFormat;

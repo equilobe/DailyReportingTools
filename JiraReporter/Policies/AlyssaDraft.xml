@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RootPath>Alyssa</RootPath>
+  <DayStartHour>9</DayStartHour>
+  <ReportTitle>DRAFT Alyssa</ReportTitle>
+  <TargetGroup>developers</TargetGroup>
+  <Project>AL</Project>
+  <BaseUrl>https://itandcare-humatix.atlassian.net</BaseUrl>
+  <PermanentTaskLabel>permanent</PermanentTaskLabel>
+  <ReopenedStatus>Reopened</ReopenedStatus>
+  <Username></Username>
+  <Password></Password>
+  <Emails></Emails>
+</Policy>

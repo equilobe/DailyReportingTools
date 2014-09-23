@@ -192,10 +192,7 @@ namespace JiraReporter.Model
             if (newIssue.fields.assignee!=null)
                 this.Assignee = newIssue.fields.assignee.displayName;
             if (newIssue.fields.timetracking != null)
-            {
-                this.RemainingEstimate = newIssue.fields.timetracking.remainingEstimate;
                 this.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
-            }
             this.OriginalEstimateSecondsTotal = newIssue.fields.aggregatetimeoriginalestimate;
             this.OriginalEstimateSeconds = newIssue.fields.timeoriginalestimate;
             if (newIssue.fields.resolution != null)
@@ -211,10 +208,10 @@ namespace JiraReporter.Model
             this.Created = Convert.ToDateTime(newIssue.fields.created);
             this.Updated = newIssue.fields.updated;
             this.TimeSpentTotal = newIssue.fields.aggregatetimespent;
+            this.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
             if (newIssue.fields.subtasks!=null)
             {
-                this.Subtasks = newIssue.fields.subtasks;
-                this.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
+                this.Subtasks = newIssue.fields.subtasks;                
             }
 
             if (this.Entries != null)
@@ -256,7 +253,6 @@ namespace JiraReporter.Model
                      if (this.Subtasks.Count > 0)
                          this.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(this.TimeSpentTotal);
                  }
-                     if (this.RemainingEstimate == null)
                          this.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(this.RemainingEstimateSeconds);
         }
 
