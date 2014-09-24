@@ -15,7 +15,7 @@ namespace JiraReporter.Model
         public List<Task> UnassignedTasks { get; set; }
         public int UnassignedCount { get { return UnassignedTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null); } }
 
-        public void SetSprintTasks(Policy policy, Timesheet timesheet, Options options)
+        public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, Options options)
         {
             var issues = RestApiRequests.GetSprintTasks(policy);
             GetUnfinishedTasks(policy, issues, timesheet);
@@ -24,7 +24,7 @@ namespace JiraReporter.Model
             SortTasks();
         }
 
-        private List<Task> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
+        private List<Task> GetCompletedTasks(SvnLogReporter.Model.Policy policy, Options options, Timesheet timesheet)
         {
             var completedTasks = new List<Task>();
             var issues = RestApiRequests.GetCompletedIssues(policy, options.FromDate.AddDays(-6), DateTime.Now);
@@ -37,7 +37,7 @@ namespace JiraReporter.Model
             return completedTasks; 
         }
 
-        private void GetUnfinishedTasks(Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
+        private void GetUnfinishedTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
         {
             this.InProgressTasks = new List<Task>();
             this.OpenTasks = new List<Task>();
@@ -54,7 +54,7 @@ namespace JiraReporter.Model
             }
         }
 
-        private void SetTasks(Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> tasks)
+        private void SetTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> tasks)
         {
             DateTime updatedDate;
             updatedDate = Convert.ToDateTime(issue.fields.updated);

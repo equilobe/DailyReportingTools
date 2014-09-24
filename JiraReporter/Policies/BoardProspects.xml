@@ -10,5 +10,12 @@
   <ReopenedStatus>Reopened</ReopenedStatus>
   <Username></Username>
   <Password></Password>
-  <Emails></Emails>
+  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <SourceControl>
+    <Type></Type>
+    <RepoOwner></RepoOwner>
+    <RepoName></RepoName>
+    <Username></Username>
+    <Password></Password>
+  </SourceControl>
 </Policy>

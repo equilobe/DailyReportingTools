@@ -1,11 +1,20 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <RootPath>Humatix</RootPath>
   <DayStartHour>5</DayStartHour>
   <ReportTitle>Humatix</ReportTitle>
-  <ReportType>SVN</ReportType>
-  <RepoUrl></RepoUrl>
+  <TargetGroup></TargetGroup>
+  <Project></Project>
+  <BaseUrl></BaseUrl>
+  <PermanentTaskLabel></PermanentTaskLabel>
+  <ReopenedStatus></ReopenedStatus>
   <Username></Username>
   <Password></Password>
-  <Emails></Emails>
+  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <SourceControl>
+    <Type>SVN</Type>
+    <RepoUrl></RepoUrl>
+    <Username></Username>
+    <Password></Password>
+  </SourceControl>
 </Policy>

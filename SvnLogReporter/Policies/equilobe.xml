@@ -1,11 +1,20 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <RootPath>equilobe</RootPath>
   <DayStartHour>5</DayStartHour>
   <ReportTitle>Equilobe</ReportTitle>
-  <ReportType>SVN</ReportType>
-  <RepoUrl>https://192.168.17.21/svn/Code/</RepoUrl>
+  <TargetGroup></TargetGroup>
+  <Project></Project>
+  <BaseUrl></BaseUrl>
+  <PermanentTaskLabel></PermanentTaskLabel>
+  <ReopenedStatus></ReopenedStatus>
   <Username></Username>
   <Password></Password>
-  <Emails>dan.badea@equilobe.com</Emails>
+  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <SourceControl>
+    <Type>SVN</Type>
+    <RepoUrl>/</RepoUrl>
+    <Username></Username>
+    <Password></Password>
+  </SourceControl>
 </Policy>
