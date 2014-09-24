@@ -15,7 +15,7 @@ namespace JiraReporter.Model
         public List<Task> UnassignedTasks { get; set; }
         public int UnassignedCount { get { return UnassignedTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null); } }
 
-        public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, Options options)
+        public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, SvnLogReporter.Options options)
         {
             var issues = RestApiRequests.GetSprintTasks(policy);
             GetUnfinishedTasks(policy, issues, timesheet);
@@ -24,10 +24,10 @@ namespace JiraReporter.Model
             SortTasks();
         }
 
-        private List<Task> GetCompletedTasks(SvnLogReporter.Model.Policy policy, Options options, Timesheet timesheet)
+        private List<Task> GetCompletedTasks(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, Timesheet timesheet)
         {
             var completedTasks = new List<Task>();
-            var issues = RestApiRequests.GetCompletedIssues(policy, options.FromDate.AddDays(-6), DateTime.Now);
+            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Today.AddDays(-7), DateTime.Now);
             foreach(var issue in issues.issues)
             {
                 if(issue.fields.issuetype.subtask==false)

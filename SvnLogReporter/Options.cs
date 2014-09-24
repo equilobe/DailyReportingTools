@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace SvnLogReporter
 {
-    class Options
+    public class Options
     {
         [Option(null, "policy", Required=true)]
         public string PolicyPath { get; set; }
@@ -48,9 +48,14 @@ namespace SvnLogReporter
             }
         }
 
+        //public static string DateToISO(DateTime date)
+        //{
+        //    return date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", DateTimeFormatInfo.InvariantInfo);
+        //}
+
         public static string DateToISO(DateTime date)
         {
-            return date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", DateTimeFormatInfo.InvariantInfo);
+            return date.ToString("yyyy'-'MM'-'dd' 'HH':'mm", DateTimeFormatInfo.InvariantInfo);
         }
 
         public static DateTime FloorToDay(DateTime dateTime)
@@ -80,9 +85,9 @@ namespace SvnLogReporter
         }
 
 
-        public void LoadDates(Policy p)
+        public void LoadDates()
         {
-            this.Policy = p;
+           // this.Policy = p;
             if (HasToDate)
                 ToDate = GetDate(StringToDate);
 
@@ -91,7 +96,7 @@ namespace SvnLogReporter
 
             SetDefaultDates();
 
-            SwitchToUniversalTime();
+           // SwitchToUniversalTime();
 
             if (ToDate < FromDate)
                 throw new ArgumentException("ToDate < FromDate");
@@ -107,9 +112,10 @@ namespace SvnLogReporter
         {
             if (!HasToDate && !HasFromDate)
             {
-                var now = DateTime.Now;
-                ToDate = now.Hour < StartHour ? now.Date.AddDays(-1) : now.Date;                               
-                ToDate = ToDate.AddHours(StartHour);
+              //  var now = DateTime.Now;
+              //  ToDate = now.Hour < StartHour ? now.Date.AddDays(-1) : now.Date;                               
+            //    ToDate = ToDate.AddHours(StartHour);
+                ToDate = DateTime.Today;
                 FromDate = ToDate.AddDays(-1);              
             }
             else if (!HasToDate)

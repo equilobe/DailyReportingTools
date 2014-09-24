@@ -12,9 +12,9 @@ namespace JiraReporter
     class ReportEmailer
     {
         SvnLogReporter.Model.Policy policy;
-        Options options;
+        SvnLogReporter.Options options;
 
-        public ReportEmailer(SvnLogReporter.Model.Policy p, Options o)
+        public ReportEmailer(SvnLogReporter.Model.Policy p, SvnLogReporter.Options o)
         {
             this.policy = p;
             this.options = o;
@@ -41,10 +41,10 @@ namespace JiraReporter
 
         private string GetEmailSubject()
         {
-            if (options.FromDate == options.ToDate)
+            if ((options.ToDate - options.FromDate).Days <= 1)
                 return policy.ReportTitle + " Daily Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy");
             else
-                return policy.ReportTitle + " Daily Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.ToString("dddd, dd MMMM yyyy");
+                return policy.ReportTitle + " Daily Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM yyyy");
         }
     }
 }

@@ -13,8 +13,8 @@ namespace JiraReporter
     {
         public static Timesheet GetTimesheet(SvnLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
         {
-            string fromDate = Options.DateToString(startDate);
-            string toDate = Options.DateToString(endDate);
+            string fromDate = TimeFormatting.DateToString(startDate);
+            string toDate = TimeFormatting.DateToString(endDate);
             var client = new RestClient(policy.BaseUrl);
             client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
             var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, fromDate, toDate), Method.GET);
@@ -35,8 +35,8 @@ namespace JiraReporter
 
         public static AnotherJiraRestClient.Issues GetCompletedIssues(SvnLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
         {
-            string fromDate = Options.DateToISO(startDate);
-            string toDate = Options.DateToISO(endDate);
+            string fromDate = TimeFormatting.DateToISO(startDate);
+            string toDate = TimeFormatting.DateToISO(endDate);
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);
             var issues = client.GetIssuesByJql(ApiUrls.ResolvedIssues(fromDate, toDate), 0, 250);

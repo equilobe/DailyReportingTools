@@ -173,7 +173,7 @@ namespace JiraReporter.Model
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, Options options)
+        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {

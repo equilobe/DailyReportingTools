@@ -17,13 +17,13 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
-            Options options = GetCommandLineOptions(args);
+            SvnLogReporter.Options options = GetCommandLineOptions(args);
             SvnLogReporter.Model.Policy policy = SvnLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             policy.SetPermanentTaskLabel();
 
             options.LoadDates();
             
-            var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate);
+            var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
             var timesheetService = new TimesheetService();
             timesheetService.SetTimesheetIssues(timesheet, policy, options);
 
@@ -33,15 +33,15 @@ namespace JiraReporter
             SendReport(report, GetReportPath(report));
         }
 
-        private static Options GetCommandLineOptions(string[] args)
+        private static SvnLogReporter.Options GetCommandLineOptions(string[] args)
         {
-            Options options = new Options();
+            SvnLogReporter.Options options = new SvnLogReporter.Options();
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
         }
 
-        private static Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, Options options)
+        private static Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {           
             var sprint = GetSprintReport(policy, options, timesheet);
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy);
@@ -49,7 +49,7 @@ namespace JiraReporter
             return report;
         }
 
-        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, Options options, Timesheet timesheet)
+        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet)
         {
             var report = new SprintTasks();
             report.SetSprintTasks(p, timesheet, options);

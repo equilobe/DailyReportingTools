@@ -1,6 +1,7 @@
 ﻿using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,6 +76,16 @@ namespace JiraReporter
             foreach (var author in authors)
                 totalTime += author.TimeSpent;
             return totalTime;
+        }
+
+        public static string DateToString(DateTime date)
+        {
+            return date.ToString("dd/MMM/yyyy", DateTimeFormatInfo.InvariantInfo);
+        }
+
+        public static string DateToISO(DateTime date)
+        {
+            return date.ToString("yyyy'-'MM'-'dd' 'HH':'mm", DateTimeFormatInfo.InvariantInfo);
         }
 
     }
