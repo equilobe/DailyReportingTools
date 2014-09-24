@@ -24,13 +24,16 @@ namespace SvnLogReporter.Model
         public int DayStartHour { get; set; }
 
         public string ReportTitle { get; set; }
-        public SourceControlType ReportType { get; set; }
-        public string RepoUrl { get; set; }
-        public string RepoOwner { get; set; }
-        public string RepoName { get; set; }
+        public string BaseUrl { get; set; }
+        public string TargetGroup { get; set; }
+        public string PermanentTaskLabel { get; set; }
+
         public string Username { get; set; }
         public string Password { get; set; }
         public string Emails { get; set; }
+        public string Project { get; set; }
+        public string ReopenedStatus { get; set; }
+        public SourceControl SourceControl { get; set; }
 
         [XmlIgnore]
         public IEnumerable<string> EmailCollection
@@ -57,6 +60,11 @@ namespace SvnLogReporter.Model
                 XmlSerializer ser = new XmlSerializer(typeof(Policy));
                 ser.Serialize(fs, this);
             }
+        }
+
+        public void SetPermanentTaskLabel()
+        {
+            this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
         }
     }
 }

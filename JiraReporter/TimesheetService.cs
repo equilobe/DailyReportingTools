@@ -19,7 +19,7 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, Policy policy, Options options)
+        public void SetTimesheetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, Options options)
         {
             var issues = new List<Issue>(timesheet.Worklog.Issues);
             foreach (var issue in issues)

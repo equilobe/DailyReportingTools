@@ -123,9 +123,7 @@ namespace SvnLogReporter
             {
                 List<LogEntry> list = dict[key];
                 if (list.Contains(value) == false)
-                {
                     list.Add(value);
-                }
             }
             else
             {

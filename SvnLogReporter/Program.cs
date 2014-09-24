@@ -53,7 +53,7 @@ namespace SvnLogReporter
             Policy p = Policy.CreateFromFile(options.PolicyPath);
             options.LoadDates(p);
 
-            var processor = Processors[p.ReportType](p, options);
+            var processor = Processors[p.SourceControl.Type](p, options);
             var report = processor.GenerateReport();
             Reporter.WriteReport(p, report, processor.PathToLog);
 

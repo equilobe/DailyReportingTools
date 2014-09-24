@@ -21,7 +21,7 @@ namespace SvnLogReporter
 
         protected override Log CreateLog()
         {           
-            var report = GetReportCommits(Policy, Options);
+            var report = GetReportCommits();
             return LoadLog(report);
         }
 
@@ -31,7 +31,7 @@ namespace SvnLogReporter
             log.Entries = new List<LogEntry>();
 
             foreach (var rep in report)
-                log.Entries.Add(new LogEntry { Author = rep.Commit.Author.Name, Date = rep.Commit.Author.Date, Message = rep.Commit.Message, Revision = rep.Sha });
+                log.Entries.Add(new LogEntry { Author = rep.Commit.Author.Name, Date = rep.Commit.Author.Date, Message = rep.Commit.Message, Revision = rep.Sha, Link = rep.HtmlUrl });
 
             log.RemoveWrongEntries(Options.FromDate);
             return log;
@@ -53,7 +53,7 @@ namespace SvnLogReporter
                 reports.Add(report);
             }
             reports = reports.OrderBy(r => r.ReportDate).ToList();
-            reports.First().PullRequests = GetPullRequests(Policy.RepoOwner, Policy.RepoName).ToList();
+            reports.First().PullRequests = GetPullRequests(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName).ToList();
             return reports;
         }
 
@@ -79,7 +79,7 @@ namespace SvnLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
             return connectionAll.GetAll<GitHubCommit>(ApiUrls.RepositoryCommitsBranchDate(owner, name, sinceDate, untilDate, branch)).Result;
         }
 
@@ -87,7 +87,7 @@ namespace SvnLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
             return connectionAll.GetAll<Branch>(ApiUrls.RepoBranches(owner, name)).Result;
         }
 
@@ -95,7 +95,7 @@ namespace SvnLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
             return connectionAll.GetAll<PullRequest>(ApiUrls.PullRequests(owner,name)).Result;
         }
 
@@ -119,14 +119,14 @@ namespace SvnLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
             return connectionAll.GetAll<User>(ApiUrls.RepositoryContributors(owner, name)).Result;
         }
 
         protected User GetUserInfo(string username)
         {
             Ensure.ArgumentNotNullOrEmptyString(username, "username");
-            ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.Username, Policy.Password))));
+            ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
             return connection.Get<User>(ApiUrls.User(username)).Result;
         }
 
@@ -152,11 +152,11 @@ namespace SvnLogReporter
                 if (HasAuthor(commit) && !HasName(commit))
                     commit.Commit.Author.Name = GetUserInfo(commit.Author.Login).Name;
         }
-        protected List<GitHubCommit> GetReportCommits(Policy p, Options options)
+        protected List<GitHubCommit> GetReportCommits()
         {
-            string fromDate = Options.DateToISO(options.FromDate);
-            string toDate = Options.DateToISO(options.ToDate);
-            var commits = ConcatCommits(p.RepoOwner, p.RepoName, fromDate, toDate);
+            string fromDate = Options.DateToISO(Options.FromDate);
+            string toDate = Options.DateToISO(Options.ToDate);
+            var commits = ConcatCommits(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName, fromDate, toDate);
             commits = RemoveDuplicateCommits(commits);
 
             AddName(commits);

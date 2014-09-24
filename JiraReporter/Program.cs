@@ -18,7 +18,7 @@ namespace JiraReporter
         static void Main(string[] args)
         {
             Options options = GetCommandLineOptions(args);
-            Policy policy = Policy.CreateFromFile(options.PolicyPath);
+            SvnLogReporter.Model.Policy policy = SvnLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             policy.SetPermanentTaskLabel();
 
             options.LoadDates();
@@ -39,9 +39,9 @@ namespace JiraReporter
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
-        }   
- 
-        private static Report GetReport(Timesheet timesheet, Policy policy, Options options)
+        }
+
+        private static Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, Options options)
         {           
             var sprint = GetSprintReport(policy, options, timesheet);
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy);
@@ -49,7 +49,7 @@ namespace JiraReporter
             return report;
         }
 
-        private static SprintTasks GetSprintReport(Policy p, Options options, Timesheet timesheet)
+        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, Options options, Timesheet timesheet)
         {
             var report = new SprintTasks();
             report.SetSprintTasks(p, timesheet, options);

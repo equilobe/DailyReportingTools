@@ -11,10 +11,10 @@ namespace JiraReporter
 {
     class ReportEmailer
     {
-        Policy policy;
+        SvnLogReporter.Model.Policy policy;
         Options options;
 
-        public ReportEmailer(Policy p, Options o)
+        public ReportEmailer(SvnLogReporter.Model.Policy p, Options o)
         {
             this.policy = p;
             this.options = o;

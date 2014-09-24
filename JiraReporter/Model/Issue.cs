@@ -173,7 +173,7 @@ namespace JiraReporter.Model
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, Policy policy, Options options)
+        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, Options options)
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
@@ -185,7 +185,7 @@ namespace JiraReporter.Model
             }
         }
 
-        public void SetIssue(Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet)
+        public void SetIssue(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet)
         {
             
             this.Priority = newIssue.fields.priority;
@@ -226,7 +226,7 @@ namespace JiraReporter.Model
             this.SetIssueLink(policy);
         }
 
-        public void SetSubtasksIssues(Policy policy, Timesheet timesheet)
+        public void SetSubtasksIssues(SvnLogReporter.Model.Policy policy, Timesheet timesheet)
         {
             var issue = new AnotherJiraRestClient.Issue();
             this.SubtasksIssues = new List<Issue>();
@@ -256,7 +256,7 @@ namespace JiraReporter.Model
                          this.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(this.RemainingEstimateSeconds);
         }
 
-        private void SetIssueLink(Policy policy)
+        private void SetIssueLink(SvnLogReporter.Model.Policy policy)
         {
             Uri baseLink = new Uri(policy.BaseUrl);
             baseLink = new Uri(baseLink, "browse/");
@@ -271,7 +271,7 @@ namespace JiraReporter.Model
                 this.ExistsInTimesheet = false;
         }
 
-        private void SetLabel(Policy policy, AnotherJiraRestClient.Issue issue)
+        private void SetLabel(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue)
         {
             foreach (var label in issue.fields.labels)
                 if (label == policy.PermanentTaskLabel)
@@ -283,7 +283,7 @@ namespace JiraReporter.Model
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        private void SetParent(AnotherJiraRestClient.Issue issue, Policy policy)
+        private void SetParent(AnotherJiraRestClient.Issue issue, SvnLogReporter.Model.Policy policy)
         {    
             this.Parent = new Issue { Key = issue.fields.parent.key, Summary = issue.fields.parent.fields.summary };
             this.Parent.SetIssueLink(policy);

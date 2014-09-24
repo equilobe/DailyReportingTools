@@ -8,7 +8,7 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, Policy policy)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy)
         {
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();

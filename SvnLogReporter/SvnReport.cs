@@ -49,7 +49,6 @@ namespace SvnLogReporter
             reports = EmptyReports(logs, dates);
             foreach (var logDict in logs)
             {
-
                 report = LogProcessor.GetReport(logDict.Value);
                 report.ReportDate = logDict.Key;
                 reports.Add(report);
@@ -80,9 +79,9 @@ namespace SvnLogReporter
         private string GetCommandString()
         {
             return string.Format("svn log {0} --xml --username \"{1}\" --password \"{2}\" -r{{{3:yyyy-MM-ddTHH:mmZ}}}:{{{4:yyyy-MM-ddTHH:mmZ}}} > \"{5}\"",
-                            Policy.RepoUrl,
-                            Policy.Username,
-                            Policy.Password,
+                            Policy.SourceControl.RepoUrl,
+                            Policy.SourceControl.Username,
+                            Policy.SourceControl.Password,
                             Options.FromDate,
                             Options.ToDate,
                             PathToLog);

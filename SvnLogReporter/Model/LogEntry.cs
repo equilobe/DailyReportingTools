@@ -18,5 +18,7 @@ namespace SvnLogReporter.Model
         public string Message { get; set; }
         [XmlAttribute("revison")]
         public string Revision { get; set; }
+        [XmlIgnore]
+        public string Link { get; set; }
     }
 }
