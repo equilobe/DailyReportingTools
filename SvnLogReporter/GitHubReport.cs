@@ -97,19 +97,19 @@ namespace SvnLogReporter
             return commits;
         }
 
-        protected IReadOnlyList<User> GetAllContributors(string owner, string name)
+        protected IReadOnlyList<Octokit.User> GetAllContributors(string owner, string name)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
             ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
-            return connectionAll.GetAll<User>(ApiUrls.RepositoryContributors(owner, name)).Result;
+            return connectionAll.GetAll<Octokit.User>(ApiUrls.RepositoryContributors(owner, name)).Result;
         }
 
-        protected User GetUserInfo(string username)
+        protected Octokit.User GetUserInfo(string username)
         {
             Ensure.ArgumentNotNullOrEmptyString(username, "username");
             ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
-            return connection.Get<User>(ApiUrls.User(username)).Result;
+            return connection.Get<Octokit.User>(ApiUrls.User(username)).Result;
         }
 
         public static bool HasAuthor(GitHubCommit commit)

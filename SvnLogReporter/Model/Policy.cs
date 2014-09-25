@@ -34,6 +34,15 @@ namespace SvnLogReporter.Model
         public string Project { get; set; }
         public string ReopenedStatus { get; set; }
         public SourceControl SourceControl { get; set; }
+        public List<User> AuthorsCorrelation { get; set; }
+
+        public IDictionary<string, string> Users
+        {
+            get
+            {
+                return AuthorsCorrelation.ToDictionary(d => d.JiraAuthor, d => d.SourceControlAuthor);
+            }
+        }
 
         [XmlIgnore]
         public IEnumerable<string> EmailCollection

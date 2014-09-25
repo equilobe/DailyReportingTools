@@ -10,12 +10,54 @@
   <ReopenedStatus>Reopened</ReopenedStatus>
   <Username></Username>
   <Password></Password>
-  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <Emails></Emails>
   <SourceControl>
-    <Type></Type>
-    <RepoOwner></RepoOwner>
-    <RepoName></RepoName>
+    <Type>GitHub</Type>
+    <RepoOwner>BoardProspects</RepoOwner>
+    <RepoName>BPApp</RepoName>
     <Username></Username>
     <Password></Password>
   </SourceControl>
+  <AuthorsCorrelation>
+    <User>
+      <JiraAuthor>Bogdan Beda</JiraAuthor>
+      <SourceControlAuthor>Beda Bogdan</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Catalin Criveteanu [Administrator]</JiraAuthor>
+      <SourceControlAuthor>ccriveteanu</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Cristi Barbu</JiraAuthor>
+      <SourceControlAuthor>cristianbarbu</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Dan Badea</JiraAuthor>
+      <SourceControlAuthor>Dan Badea</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Gabriel Munteanu</JiraAuthor>
+      <SourceControlAuthor>Gabriel M.</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Iulian Hostiuc</JiraAuthor>
+      <SourceControlAuthor>Iulian Hostiuc</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Iulian Mina</JiraAuthor>
+      <SourceControlAuthor>Iulian Mina</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Laurentiu Stamate</JiraAuthor>
+      <SourceControlAuthor>Laurentiu Stamate</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Mihai Cosma</JiraAuthor>
+      <SourceControlAuthor></SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Radu Ungureanu</JiraAuthor>
+      <SourceControlAuthor>Radu Ungureanu</SourceControlAuthor>
+    </User>
+  </AuthorsCorrelation>
 </Policy>
