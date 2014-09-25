@@ -76,7 +76,7 @@ namespace JiraReporter
         private static Author OrderAuthorIssues(Author author)
         {
                 if(author.Issues!=null)
-                    author.Issues = Issue.OrderIssues(author.Issues);
+                    author.Issues = IssueAdapter.OrderIssues(author.Issues);
                 return author;
         }
 

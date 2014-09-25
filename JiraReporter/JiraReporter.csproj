@@ -60,6 +60,7 @@
     <Compile Include="ApiUrls.cs" />
     <Compile Include="AuthorsProcessing.cs" />
     <Compile Include="Deserialization.cs" />
+    <Compile Include="IssueAdapter.cs" />
     <Compile Include="Model\CompletedTasks.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\Summary.cs" />

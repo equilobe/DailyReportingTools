@@ -21,7 +21,8 @@ namespace JiraReporter
         {
             var sprint = GetSprintReport(policy, options, timesheet);
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy);
-            var report = new Report(policy, options) { Authors = authors, Sprint = sprint, Date = options.FromDate, Summary = new Summary(authors, sprint) };
+            var report = new Report(policy, options) { Authors = authors, Sprint = sprint, Date = options.FromDate, 
+                Summary = new Summary(authors, sprint), Commits = SourceControlProcessor.GetSourceControlLog(policy,options), Title = policy.ReportTitle};
             return report;
         }
 

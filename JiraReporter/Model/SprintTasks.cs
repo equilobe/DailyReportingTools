@@ -67,10 +67,10 @@ namespace JiraReporter.Model
                 tasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(tasks.Last().ResolutionDate);
             }
 
-            tasks.Last().Issue.SetIssue(policy, issue, timesheet);
+            IssueAdapter.SetIssue(tasks.Last().Issue, policy, issue, timesheet);
             if (tasks.Last().Issue.Subtasks != null)
             {
-                tasks.Last().Issue.SetSubtasksIssues(policy, timesheet);
+                IssueAdapter.SetSubtasksIssues(tasks.Last().Issue, policy, timesheet);
                 TasksService.HasTasksInProgress(tasks.Last());
             }
         }    
