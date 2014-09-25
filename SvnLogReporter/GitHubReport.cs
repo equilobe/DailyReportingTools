@@ -12,26 +12,26 @@ using System.Threading.Tasks;
 
 namespace SvnLogReporter
 {
-    class GitHubReport : ReportBase
+    public class GitHubReport : ReportBase
     {
         public GitHubReport(Policy p, Options o):base(p,o)
         {
 
         }
 
-        protected override Log CreateLog()
+        public override Log CreateLog()
         {           
             var report = GetReportCommits();
             return LoadLog(report);
         }
 
-        protected Log LoadLog(List<GitHubCommit> report)
+        protected Log LoadLog(List<GitHubCommit> commits)
         {
             var log = new Log();
             log.Entries = new List<LogEntry>();
 
-            foreach (var rep in report)
-                log.Entries.Add(new LogEntry { Author = rep.Commit.Author.Name, Date = rep.Commit.Author.Date, Message = rep.Commit.Message, Revision = rep.Sha, Link = rep.HtmlUrl });
+            foreach (var commit in commits)
+                log.Entries.Add(new LogEntry { Author = commit.Commit.Author.Name, Date = commit.Commit.Author.Date, Message = commit.Commit.Message, Revision = commit.Sha, Link = commit.HtmlUrl });
 
             log.RemoveWrongEntries(Options.FromDate);
             return log;
@@ -56,25 +56,7 @@ namespace SvnLogReporter
             reports.First().PullRequests = GetPullRequests(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName).ToList();
             return reports;
         }
-
-        //protected override string ProcessReport(Policy p, Report report)
-        //{
-        //    try
-        //    {
-        //        string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplateGitHub.cshtml");
-        //        report.Title = p.ReportTitle;
-        //        return Razor.Parse(template, report);
-        //    }
-        //    catch (TemplateCompilationException templateException)
-        //    {
-        //        foreach (var error in templateException.Errors)
-        //        {
-        //            Debug.WriteLine(error);
-        //        }
-        //        return "Error in template compilation";
-        //    }
-        //}           
-
+     
         protected IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SvnLogReporter
 {
-    abstract class ReportBase
+    public abstract class ReportBase
     {
         protected Policy Policy { get; private set; }
         protected Options Options { get; private set; }
@@ -133,6 +133,6 @@ namespace SvnLogReporter
             }
         }
 
-        protected abstract Log CreateLog();        
+        public abstract Log CreateLog();        
     }
 }
