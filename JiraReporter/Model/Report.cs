@@ -22,5 +22,6 @@ namespace JiraReporter.Model
         public DateTime Date { get; set; }
         public Summary Summary { get; set; }
         public SprintTasks Sprint { get; set; }
+        public SvnLogReporter.Model.Log Commits { get; set; }
     }
 }

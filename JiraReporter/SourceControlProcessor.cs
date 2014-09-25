@@ -15,5 +15,11 @@ namespace JiraReporter
             {SourceControlType.GitHub, ReportBase.Create<GitHubReport> },
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
+
+        public static Log GetSourceControlLog(Policy policy, Options options)
+        {
+            var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
+            return processors.CreateLog();
+        }
     }
 }
