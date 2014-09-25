@@ -56,16 +56,8 @@ namespace JiraReporter
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
             SetAuthorTimeFormat(author);
-            SetUnfinishedTasks(sprint, author);
-           // OrderAuthorsName(ref authors);               
+            SetUnfinishedTasks(sprint, author);            
         }
-
-        //private static void SetAuthorsTimeSpent(List<Author> authors)
-        //{
-        //    foreach (var author in authors)
-        //        if(author.Issues!=null)
-        //            SetAuthorTimeSpent(author);
-        //}
 
         private static void SetAuthorTimeSpent(Author author)
         {
@@ -80,16 +72,6 @@ namespace JiraReporter
         {
                 author.TimeLogged = TimeFormatting.SetTimeFormat(author.TimeSpent);
         }
-
-        //private static void OrderAuthorsName(ref List<Author> authors)
-        //{
-        //    authors = authors.OrderBy(a => a.Name).ToList();
-        //}
-
-        //private static List<Author> OrderAuthorsTime(List<Author> authors)
-        //{
-        //    return authors.OrderByDescending(a => a.TimeSpent).ToList();
-        //}
 
         private static Author OrderAuthorIssues(Author author)
         {

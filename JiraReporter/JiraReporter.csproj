@@ -74,8 +74,10 @@
     <Compile Include="Model\WorkLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportGenerator.cs" />
     <Compile Include="ReportProcessor.cs" />
     <Compile Include="RestApiRequests.cs" />
+    <Compile Include="SourceControlProcessor.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetService.cs" />

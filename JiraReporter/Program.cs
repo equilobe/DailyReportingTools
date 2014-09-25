@@ -22,12 +22,12 @@ namespace JiraReporter
             policy.SetPermanentTaskLabel();
 
             options.LoadDates();
-            
-            var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
-            var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(timesheet, policy, options);
 
-            var report = GetReport(timesheet,policy,options);
+            //var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
+            //var log = processors.CreateLog();
+
+            var report = ReportGenerator.GenerateReport(policy, options);
+            
             SaveReportToFile(report);
 
             SendReport(report, GetReportPath(report));
@@ -39,22 +39,7 @@ namespace JiraReporter
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
-        }
-
-        private static Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
-        {           
-            var sprint = GetSprintReport(policy, options, timesheet);
-            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy);
-            var report = new Report(policy, options) { Authors = authors, Sprint=sprint, Date = options.FromDate, Summary=new Summary(authors,sprint)};
-            return report;
-        }
-
-        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet)
-        {
-            var report = new SprintTasks();
-            report.SetSprintTasks(p, timesheet, options);
-            return report;
-        }
+        }        
 
         private static void SaveReportToFile(Report report)
         {
