@@ -69,7 +69,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public DateTime Created { get; set; }
         [XmlIgnore]
-        public SvnLogReporter.Model.LogEntry Commit { get; set; }
+        public List<SvnLogReporter.Model.LogEntry> Commits { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -123,7 +123,7 @@ namespace JiraReporter.Model
                 this.Subtasks = issue.Subtasks;
                 this.SubtasksIssues = issue.SubtasksIssues;
             }
-            this.Commit = issue.Commit;
+            this.Commits = issue.Commits;
         }       
     }
 }

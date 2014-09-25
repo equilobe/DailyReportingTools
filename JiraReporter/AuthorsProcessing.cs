@@ -114,5 +114,34 @@ namespace JiraReporter
                 return true;
             return false;
         }
+
+        public static void SetAuthorsCommits(Report report)
+        {            
+            var find = new List<SvnLogReporter.Model.LogEntry>();
+            foreach (var author in report.Authors)
+            {
+                author.Commits = new SvnLogReporter.Model.Log();
+                author.Commits.Entries = new List<SvnLogReporter.Model.LogEntry>();
+                find = report.Commits.Entries.FindAll(commit => commit.Author == report.policy.Users[author.Name]);
+                if (find != null)
+                {
+                    author.Commits.Entries = find;
+                    AdjustIssueCommits(author);
+                }
+            }
+        }
+
+        public static void AdjustIssueCommits(Author author)
+        {
+            var find = new List<SvnLogReporter.Model.LogEntry>();
+            if(author.Issues!=null)
+                foreach (var issue in author.Issues)
+                {
+                    issue.Commits = new List<SvnLogReporter.Model.LogEntry>();
+                    find = author.Commits.Entries.FindAll(commit => commit.Message.Contains(issue.Key)==true);
+                    if (find != null)
+                        issue.Commits = find;
+                }
+        }
     }
 }
