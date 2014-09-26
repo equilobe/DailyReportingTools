@@ -126,22 +126,9 @@ namespace JiraReporter
                 if (find != null)
                 {
                     author.Commits.Entries = find;
-                    AdjustIssueCommits(author);
+                    IssueAdapter.AdjustIssueCommits(author);
                 }
             }
-        }
-
-        public static void AdjustIssueCommits(Author author)
-        {
-            var find = new List<SvnLogReporter.Model.LogEntry>();
-            if(author.Issues!=null)
-                foreach (var issue in author.Issues)
-                {
-                    issue.Commits = new List<SvnLogReporter.Model.LogEntry>();
-                    find = author.Commits.Entries.FindAll(commit => commit.Message.Contains(issue.Key)==true);
-                    if (find != null)
-                        issue.Commits = find;
-                }
-        }
+        }        
     }
 }

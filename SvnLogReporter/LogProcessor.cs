@@ -12,7 +12,7 @@ using System.Security;
 
 namespace SvnLogReporter
 {
-    class LogProcessor
+    public class LogProcessor
     {
         //private static string DoubleNewLine = Environment.NewLine + Environment.NewLine;
         //private static string DateFormat = "dd.MM.yyy HH:mm";        
@@ -57,7 +57,7 @@ namespace SvnLogReporter
 
         static readonly string NoLogMessage = "*** NO LOG MESSAGE";
 
-        private static string GetNonEmptyTrimmedLines(string message)
+        public static string GetNonEmptyTrimmedLines(string message)
         {
             message = message ?? string.Empty;
             message = SecurityElement.Escape(message);

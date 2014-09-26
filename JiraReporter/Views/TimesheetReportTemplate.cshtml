@@ -13,6 +13,7 @@
         var color="black";
         var tasks="";
         var comma = "";
+        string[] delim = { "<br />" };
      }
   
     <div style="margin-top: 40px">
@@ -174,7 +175,7 @@
                                                         <span style="font-size:13px; color:red; font-weight:bold;">, @remainingEstimate from subtasks</span>
                                                     }
                                                 }                                              
-                                               <span style="font-size:13px;">)</span>
+                                               <span style="font-size:13px;">) </span>
                                             </span>                                                                                  
                                         }
 
@@ -211,8 +212,7 @@
                                     }
                                     @foreach (var entry in issue.Entries)
                                     {
-                                        <div>
-                                            @if (entry.Comment != "")
+                                            if (entry.Comment != "")
                                             {
                                                 <div>
                                                     @foreach (string comment in entry.Comment.Split('\n'))
@@ -221,7 +221,46 @@
                                                     }
                                                 </div>
                                             }
-                                        </div>
+                                    }
+                                    @if (issue.Commits.Count > 0)
+                                    {
+                                        <div>
+                                            <span>@issue.Commits.Count</span>
+                                            @if (issue.Commits.Count == 1)
+                                            { 
+                                                <span> commit </span>
+                                            }
+                                            else
+                                            {
+                                                <span> commits </span>
+                                            }
+                                        
+                                            <span style="font-size:0;">
+                                                <span style="font-size:13px;">(</span>
+                                                @foreach (var commit in issue.Commits)
+                                                {
+                                                    if (commit.Link != null)
+                                                    { <a href=@commit.Link style="text-decoration:none; font-size:13px;">@string.Format("{0:H:mm}", commit.Date)</a> }
+                                                    else
+                                                    { <span style="font-size:13px;">@string.Format("{0:H:mm}", commit.Date)</span> }
+                                                    if (commit != issue.Commits.Last())
+                                                    { <span style="font-size:13px">, </span> }
+                                                }
+                                                <span style="font-size:13px;">)</span>
+                                            </span>
+                                            @foreach (var commit in issue.Commits)
+                                            {
+                                                if (commit.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
+                                                {
+                                                    foreach (string line in commit.Message.Split(delim, StringSplitOptions.None).Skip(1))
+                                                    {
+                                                        <div style="margin-left:15px;">
+                                                            <span>@line</span>
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+                                        </div>                                        
                                     }
                                 </div>
                             }

@@ -174,5 +174,31 @@ namespace JiraReporter
             issue.Parent = new Issue { Key = newIssue.fields.parent.key, Summary = newIssue.fields.parent.fields.summary };
             SetIssueLink(issue.Parent, policy);
         }
+
+        public static void AdjustIssueCommits(Author author)
+        {
+            var find = new List<SvnLogReporter.Model.LogEntry>();
+            if (author.Issues != null)
+                foreach (var issue in author.Issues)
+                {
+                    issue.Commits = new List<SvnLogReporter.Model.LogEntry>();
+                    find = author.Commits.Entries.FindAll(commit => commit.Message.Contains(issue.Key) == true);
+                    if (find != null)
+                        issue.Commits = find;
+                    EditIssueCommit(issue);
+                }
+        }
+
+        private static void EditIssueCommit(Issue issue)
+        {
+            if (issue.Commits.Count > 0)
+                foreach (var commit in issue.Commits)
+                    commit.Message = EditMessage(commit.Message);
+        }
+
+        private static string EditMessage(string message)
+        {
+            return SvnLogReporter.LogProcessor.GetNonEmptyTrimmedLines(message);
+        }
     }
 }
