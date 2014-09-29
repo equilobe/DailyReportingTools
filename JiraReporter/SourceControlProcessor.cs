@@ -1,4 +1,5 @@
-﻿using SvnLogReporter;
+﻿using JiraReporter.Model;
+using SvnLogReporter;
 using SvnLogReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,27 @@ namespace JiraReporter
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
 
-        public static Log GetSourceControlLog(Policy policy, Options options)
+        public static List<Commit> GetSourceControlCommits(Policy policy, Options options)
         {
             var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
-            return processors.CreateLog();
+            var logs = processors.CreateLog();
+            return GetCommits(logs);            
+        }
+
+        private static List<Commit> GetCommits(Log log)
+        {
+            var commits = new List<Commit>();
+            foreach (var entry in log.Entries)
+            {
+                commits.Add(new Commit { Entry = entry });
+                commits.Last().Entry.Message = EditMessage(commits.Last().Entry.Message);
+            }
+            return commits;
+        }
+
+        public static string EditMessage(string message)
+        {
+            return SvnLogReporter.LogProcessor.GetNonEmptyTrimmedLines(message);
         }
     }
 }

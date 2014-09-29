@@ -117,15 +117,14 @@ namespace JiraReporter
 
         public static void SetAuthorsCommits(Report report)
         {            
-            var find = new List<SvnLogReporter.Model.LogEntry>();
+            var find = new List<Commit>();
             foreach (var author in report.Authors)
             {
-                author.Commits = new SvnLogReporter.Model.Log();
-                author.Commits.Entries = new List<SvnLogReporter.Model.LogEntry>();
-                find = report.Commits.Entries.FindAll(commit => commit.Author == report.policy.Users[author.Name]);
+                author.Commits = new List<Commit>();
+                find = report.Commits.FindAll(commit => commit.Entry.Author == report.policy.Users[author.Name]);
                 if (find != null)
                 {
-                    author.Commits.Entries = find;
+                    author.Commits = find;
                     IssueAdapter.AdjustIssueCommits(author);
                 }
             }

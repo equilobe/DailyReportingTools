@@ -177,28 +177,23 @@ namespace JiraReporter
 
         public static void AdjustIssueCommits(Author author)
         {
-            var find = new List<SvnLogReporter.Model.LogEntry>();
+            var find = new List<Commit>();
             if (author.Issues != null)
                 foreach (var issue in author.Issues)
                 {
-                    issue.Commits = new List<SvnLogReporter.Model.LogEntry>();
-                    find = author.Commits.Entries.FindAll(commit => commit.Message.Contains(issue.Key) == true);
-                    if (find != null)
-                        issue.Commits = find;
-                    EditIssueCommit(issue);
+                    issue.Commits = new List<Commit>();
+                    find = author.Commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
+                    if (find != null)                    
+                        issue.Commits = find;                  
+                    EditIssueCommits(issue);
                 }
         }
 
-        private static void EditIssueCommit(Issue issue)
+        private static void EditIssueCommits(Issue issue)
         {
             if (issue.Commits.Count > 0)
                 foreach (var commit in issue.Commits)
-                    commit.Message = EditMessage(commit.Message);
-        }
-
-        private static string EditMessage(string message)
-        {
-            return SvnLogReporter.LogProcessor.GetNonEmptyTrimmedLines(message);
+                    commit.TaskSynced = true;
         }
     }
 }

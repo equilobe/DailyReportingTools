@@ -69,7 +69,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public DateTime Created { get; set; }
         [XmlIgnore]
-        public List<SvnLogReporter.Model.LogEntry> Commits { get; set; }
+        public List<Commit> Commits { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }

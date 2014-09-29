@@ -14,6 +14,8 @@
         var tasks="";
         var comma = "";
         string[] delim = { "<br />" };
+        var openParentheses = "(";
+        var closedParentheses = ")";
      }
   
     <div style="margin-top: 40px">
@@ -101,7 +103,7 @@
                 </div>                
             }
     </div>
-    <div style="margin-top:40px">
+    <div style="margin-top:40px; line-height:1.4em;">
         @if(Model.Authors.Count>0)
         { 
               foreach (var author in Model.Authors)
@@ -136,17 +138,29 @@
                                 <span> upcoming tasks </span>
                             }                            
                         }
+                        @if (author.Commits.Count > 0)
+                        {
+                            <span> &#x25cf; @author.Commits.Count</span>
+                            if(author.Commits.Count==1)
+                            {
+                                <span> commit </span>
+                            }
+                            else
+                            {
+                                <span> commits </span>
+                            }
+                        }
                         @if(author.Issues!=null)
                         {
                          <div style="margin-top:20px; line-height:1.4em;">
                             <b> Worked  &#x25cf; @author.Issues.Count </b>
-                            @if(author.Issues.Count==0)
+                            @if(author.Issues.Count==1)
                             {
                                 <b> task </b>
                             }
                             else
                             {
-                                <b>task</b>
+                                <b>tasks</b>
                             }
                             <b> &#x25cf; @author.TimeLogged </b>
                             @foreach (var issue in author.Issues)
@@ -233,31 +247,48 @@
                                             else
                                             {
                                                 <span> commits </span>
-                                            }
-                                        
-                                            <span style="font-size:0;">
-                                                <span style="font-size:13px;">(</span>
+                                            }                                       
                                                 @foreach (var commit in issue.Commits)
                                                 {
-                                                    if (commit.Link != null)
-                                                    { <a href=@commit.Link style="text-decoration:none; font-size:13px;">@string.Format("{0:H:mm}", commit.Date)</a> }
+                                                    if(commit==issue.Commits.First())
+                                                    {
+                                                        openParentheses = "(";
+                                                    }
+                                                    else { openParentheses = ""; }
+                                                    if(commit==issue.Commits.Last())
+                                                    {
+                                                        closedParentheses = ")";
+                                                        comma = "";
+                                                    }
                                                     else
-                                                    { <span style="font-size:13px;">@string.Format("{0:H:mm}", commit.Date)</span> }
-                                                    if (commit != issue.Commits.Last())
-                                                    { <span style="font-size:13px">, </span> }
+                                                    { 
+                                                        closedParentheses = "";
+                                                        comma = ",";
+                                                    }
+                                                    
+                                                    if (commit.Entry.Link != null)
+                                                    { 
+                                                        <span>@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@string.Format("{0:H:mm}", commit.Entry.Date)</a>@comma @closedParentheses</span>
+                                                    }
+                                                    else
+                                                    { <span>@openParentheses @string.Format("{0:H:mm}", commit.Entry.Date) @comma @closedParentheses</span> }
                                                 }
-                                                <span style="font-size:13px;">)</span>
-                                            </span>
                                             @foreach (var commit in issue.Commits)
                                             {
-                                                if (commit.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
-                                                {
-                                                    foreach (string line in commit.Message.Split(delim, StringSplitOptions.None).Skip(1))
+                                                if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
+                                                {                                                    
+                                                    foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
                                                     {
                                                         <div style="margin-left:15px;">
                                                             <span>@line</span>
                                                         </div>
                                                     }
+                                                }
+                                                else if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 == 0)
+                                                {
+                                                    <div style="margin-left:15px;">
+                                                        <span>@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</span>
+                                                    </div>
                                                 }
                                             }
                                         </div>                                        
@@ -266,6 +297,41 @@
                             }
                          </div>
                         }
+                        
+                        @if (author.UnsyncedCommitsCount > 0)
+                        {
+                            <div style="margin-top:25px;">
+                                <b>Other commits: </b>                               
+                                    <ul style="padding:0px;">
+                                        @foreach (var commit in author.Commits)
+                                        {
+                                            if (commit.TaskSynced == false)
+                                            {
+                                                if(commit.Entry.Link!=null)
+                                                {
+                                                    <li>                                                      
+                                                         <div style="margin-left:15px;">
+                                                             <a href="@commit.Entry.Link">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
+                                                         </div>
+                                                         @foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
+                                                         {
+                                                             <div style="margin-left:15px;">
+                                                                 <span>@line</span>
+                                                             </div>
+                                                         }                                                   
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>@commit.Entry.Message</li>
+                                                }
+                                            }
+                                        }
+                                    </ul>
+                                                                  
+                            </div>
+                        }
+
                         @if(author.InProgressTasksCount>0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
