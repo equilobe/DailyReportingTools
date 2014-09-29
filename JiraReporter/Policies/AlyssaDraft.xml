@@ -6,11 +6,11 @@
   <TargetGroup>developers</TargetGroup>
   <Project>AL</Project>
   <BaseUrl>https://itandcare-humatix.atlassian.net</BaseUrl>
-  <PermanentTaskLabel>permanent</PermanentTaskLabel>
+  <PermanentTaskLabel></PermanentTaskLabel>
   <ReopenedStatus>Reopened</ReopenedStatus>
   <Username></Username>
   <Password></Password>
-  <Emails></Emails>
+  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
   <EmailSubject>Daily Report for</EmailSubject>
   <SourceControl>
     <Type>SVN</Type>

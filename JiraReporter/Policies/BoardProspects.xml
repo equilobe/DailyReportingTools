@@ -6,11 +6,11 @@
   <TargetGroup>BoardProspects</TargetGroup>
   <Project>BPRO</Project>
   <BaseUrl>https://equilobe.atlassian.net</BaseUrl>
-  <PermanentTaskLabel>Permanent</PermanentTaskLabel>
+  <PermanentTaskLabel></PermanentTaskLabel>
   <ReopenedStatus>Reopened</ReopenedStatus>
   <Username></Username>
   <Password></Password>
-  <Emails></Emails>
+  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
   <EmailSubject>Daily Report for</EmailSubject>
   <SourceControl>
     <Type>GitHub</Type>
