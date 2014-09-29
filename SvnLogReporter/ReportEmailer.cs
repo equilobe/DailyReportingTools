@@ -13,7 +13,7 @@ using SvnLogReporter.Model;
 
 namespace SvnLogReporter
 {
-    class ReportEmailer
+    public class ReportEmailer
     {
         Policy policy;
         Options options;
@@ -49,7 +49,7 @@ namespace SvnLogReporter
             }
         }
 
-        void TryEmailReport(string path)
+       public void TryEmailReport(string path)
         {
             try
             {
@@ -87,10 +87,9 @@ namespace SvnLogReporter
         private string GetReportSubject(string reportPath)
         {
             if ((options.ToDate - options.FromDate).Days > 1)
-                return policy.ReportTitle + " " + policy.SourceControl.Type + "Report for " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM yyyy");
+                return policy.ReportTitle + " " + policy.EmailSubject+ " " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM yyyy");
             else
-                return policy.ReportTitle + " " + policy.SourceControl.Type + " Report for " + DateTime.Parse(Path.GetFileNameWithoutExtension(reportPath)).ToString("dddd, dd MMMM yyyy");
-
+                return policy.ReportTitle + " " + policy.EmailSubject + " " + DateTime.Parse(Path.GetFileNameWithoutExtension(reportPath)).ToString("dddd, dd MMMM yyyy");
         }
 
         private void MoveToSent(string path)

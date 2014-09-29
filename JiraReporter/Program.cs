@@ -49,8 +49,8 @@ namespace JiraReporter
 
         private static void SendReport(Report report, string reportPath)
         {
-            var emailer = new ReportEmailer(report.policy, report.options);
-            emailer.EmailReport(reportPath);
+            var emailer = new SvnLogReporter.ReportEmailer(report.policy, report.options);
+            emailer.TryEmailReport(reportPath);
         }
 
         private static string GetReportPath(Report report)

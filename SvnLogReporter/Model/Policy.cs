@@ -31,6 +31,7 @@ namespace SvnLogReporter.Model
         public string Username { get; set; }
         public string Password { get; set; }
         public string Emails { get; set; }
+        public string EmailSubject { get; set; }
         public string Project { get; set; }
         public string ReopenedStatus { get; set; }
         public SourceControl SourceControl { get; set; }

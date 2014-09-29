@@ -11,6 +11,7 @@
   <Username></Username>
   <Password></Password>
   <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <EmailSubject>GitHub Report for</EmailSubject>
   <SourceControl>
     <Type>GitHub</Type>
     <RepoOwner>BoardProspects</RepoOwner>

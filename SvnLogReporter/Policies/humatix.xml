@@ -11,6 +11,7 @@
   <Username></Username>
   <Password></Password>
   <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <EmailSubject>SVN Report for</EmailSubject>
   <SourceControl>
     <Type>SVN</Type>
     <RepoUrl></RepoUrl>
