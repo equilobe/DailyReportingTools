@@ -13,6 +13,7 @@ namespace JiraReporter
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
+            var commits = SourceControlProcessor.GetSourceControlCommits(policy, options);
 
             foreach (var user in users)
             {
@@ -20,7 +21,7 @@ namespace JiraReporter
                     authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last(), policy, options);
+                SetAuthor(report, authorsNew.Last(), policy, commits);
             }
 
             authorsNew.RemoveAll(AuthorIsEmpty);
@@ -51,13 +52,13 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
             SetAuthorTimeFormat(author);
             SetUnfinishedTasks(sprint, author);
-            SetAuthorCommits(policy, options, author);
+            SetAuthorCommits(policy, author, commits);
         }
 
         private static void SetAuthorTimeSpent(Author author)
@@ -116,17 +117,16 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetAuthorCommits(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, Author author)
+        public static void SetAuthorCommits(SvnLogReporter.Model.Policy policy, Author author, List<Commit> commits)
         {            
-            var find = new List<Commit>();
-            var commits = SourceControlProcessor.GetSourceControlCommits(policy, options);
+            var find = new List<Commit>();             
             author.Commits = new List<Commit>();
-            find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
-            if (find != null)
-            {
-                author.Commits = find;
-                IssueAdapter.AdjustIssueCommits(author);
-            }            
+            if(policy.Users.ContainsKey(author.Name))
+                if(policy.Users[author.Name]!="")
+                  find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
+            author.Commits = find;
+            IssueAdapter.AdjustIssueCommits(author);
+           
         }        
     }
 }

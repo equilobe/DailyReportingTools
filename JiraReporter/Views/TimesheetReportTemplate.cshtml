@@ -301,8 +301,8 @@
                         @if (author.UnsyncedCommitsCount > 0)
                         {
                             <div style="margin-top:25px;">
-                                <b>Other commits: </b>                               
-                                    <ul style="padding:0px;">
+                                <b>Unrelated commits </b>                               
+                                    <ul style="padding:0px; margin:0px;">
                                         @foreach (var commit in author.Commits)
                                         {
                                             if (commit.TaskSynced == false)
@@ -310,12 +310,12 @@
                                                 if(commit.Entry.Link!=null)
                                                 {
                                                     <li>                                                      
-                                                         <div style="margin-left:15px;">
+                                                         <div>
                                                              <a href="@commit.Entry.Link">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
                                                          </div>
                                                          @foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
                                                          {
-                                                             <div style="margin-left:15px;">
+                                                             <div>
                                                                  <span>@line</span>
                                                              </div>
                                                          }                                                   
