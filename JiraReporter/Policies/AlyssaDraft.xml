@@ -52,6 +52,10 @@
       <SourceControlAuthor></SourceControlAuthor>
     </User>
     <User>
+      <JiraAuthor>Ton Verhulst</JiraAuthor>
+      <SourceControlAuthor></SourceControlAuthor>
+    </User>
+    <User>
       <JiraAuthor>Willem van der Gugten</JiraAuthor>
       <SourceControlAuthor></SourceControlAuthor>
     </User>

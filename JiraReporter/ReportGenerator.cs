@@ -20,10 +20,9 @@ namespace JiraReporter
         private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             var sprint = GetSprintReport(policy, options, timesheet);
-            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy);
+            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
             var report = new Report(policy, options) { Authors = authors, Sprint = sprint, Date = options.FromDate, 
-                Summary = new Summary(authors, sprint), Commits = SourceControlProcessor.GetSourceControlCommits(policy,options), Title = policy.ReportTitle};
-            AuthorsProcessing.SetAuthorsCommits(report);
+                Summary = new Summary(authors, sprint), Title = policy.ReportTitle};
             return report;
         }
 

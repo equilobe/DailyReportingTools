@@ -8,7 +8,7 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
@@ -20,7 +20,7 @@ namespace JiraReporter
                     authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last());
+                SetAuthor(report, authorsNew.Last(), policy, options);
             }
 
             authorsNew.RemoveAll(AuthorIsEmpty);
@@ -51,12 +51,13 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author)
+        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
             SetAuthorTimeFormat(author);
-            SetUnfinishedTasks(sprint, author);            
+            SetUnfinishedTasks(sprint, author);
+            SetAuthorCommits(policy, options, author);
         }
 
         private static void SetAuthorTimeSpent(Author author)
@@ -110,24 +111,22 @@ namespace JiraReporter
        
         private static bool AuthorIsEmpty(Author author)
         {
-            if (author.Issues == null && author.InProgressTasksCount == 0 && author.OpenTasksCount == 0)
+            if (author.Issues == null && author.InProgressTasksCount == 0 && author.OpenTasksCount == 0 && author.Commits.Count==0)
                 return true;
             return false;
         }
 
-        public static void SetAuthorsCommits(Report report)
+        public static void SetAuthorCommits(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, Author author)
         {            
             var find = new List<Commit>();
-            foreach (var author in report.Authors)
+            var commits = SourceControlProcessor.GetSourceControlCommits(policy, options);
+            author.Commits = new List<Commit>();
+            find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
+            if (find != null)
             {
-                author.Commits = new List<Commit>();
-                find = report.Commits.FindAll(commit => commit.Entry.Author == report.policy.Users[author.Name]);
-                if (find != null)
-                {
-                    author.Commits = find;
-                    IssueAdapter.AdjustIssueCommits(author);
-                }
-            }
+                author.Commits = find;
+                IssueAdapter.AdjustIssueCommits(author);
+            }            
         }        
     }
 }
