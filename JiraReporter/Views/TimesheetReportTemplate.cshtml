@@ -1,3 +1,29 @@
+ 
+@using RazorEngine;
+@using RazorEngine.Templating;
+@using System.IO;
+@using System.Web.Mvc;
+@using System.Web.Mvc.Html;
+
+
+@functions
+{
+       public static string RenderPartialToString(string viewPath, object model)
+        {
+            var viewSource = File.ReadAllText(viewPath);
+
+            string renderedText = Razor.Parse(viewSource, model);
+            return renderedText;
+        }
+}
+
+@{
+    var partial = RenderPartialToString(@"Views\_partial.cshtml", Model);
+}
+<div>
+    @partial
+</div>
+
 <div style="margin-top:15px;">
       @if((Model.options.ToDate - Model.options.FromDate).Days <=1)
         {
@@ -302,7 +328,7 @@
                         {
                             <div style="margin-top:25px;">
                                 <b>Unrelated commits </b>                               
-                                    <ul style="padding:0px; margin:0px;">
+                                    <ul style="padding:0; margin:0;">
                                         @foreach (var commit in author.Commits)
                                         {
                                             if (commit.TaskSynced == false)
@@ -311,7 +337,7 @@
                                                 {
                                                     <li>                                                      
                                                          <div>
-                                                             <a href="@commit.Entry.Link">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
+                                                             <a href="@commit.Entry.Link" style="text-decoration:none">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
                                                          </div>
                                                          @foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
                                                          {
