@@ -107,7 +107,7 @@ namespace JiraReporter
             SetIssueTimeFormat(issue);
             SetIssueExists(issue, timesheet.Worklog.Issues);
             if (issue.SubTask == true)
-                SetParent(issue, newIssue, policy);
+                SetParent(issue, newIssue, policy, timesheet);
 
             SetIssueLink(issue, policy);
         }
@@ -133,12 +133,8 @@ namespace JiraReporter
         public static void SetIssueTimeFormat(Issue issue)
         {
             issue.TimeLogged = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpent);
-            if (issue.Subtasks != null)
-            {
-                issue.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(issue.TotalRemainingSeconds);
-                if (issue.Subtasks.Count > 0)
-                    issue.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpentTotal);
-            }
+            issue.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(issue.TotalRemainingSeconds);
+            issue.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpentTotal);
             issue.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(issue.RemainingEstimateSeconds);
         }
 
@@ -169,10 +165,11 @@ namespace JiraReporter
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        private static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy)
+        private static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy, Timesheet timesheet)
         {
             issue.Parent = new Issue { Key = newIssue.fields.parent.key, Summary = newIssue.fields.parent.fields.summary };
-            SetIssueLink(issue.Parent, policy);
+            var parent = RestApiRequests.GetIssue(issue.Parent.Key, policy);
+            SetIssue(issue.Parent, policy, parent, timesheet);
         }
 
         public static void AdjustIssueCommits(Author author)

@@ -85,17 +85,17 @@ namespace JiraReporter.Model
                 this.UnassignedTasks = this.UnassignedTasks.OrderBy(priority => priority.Issue.Priority.id).ToList();
         }
 
-        private IEnumerable<IGrouping<int,Task>> GroupCompletedTasks(List<Task> completedTasks)
+        private IEnumerable<IGrouping<string,Task>> GroupCompletedTasks(List<Task> completedTasks)
         {
             var tasks = from task in completedTasks
-                            group task by task.ResolutionDate.Day into newGroup
-                            orderby newGroup.Key
+                            group task by task.CompletedTimeAgo into newGroup
+                            orderby  newGroup.Min(g=>g.ResolutionDate)
                             select newGroup;
-            tasks = tasks.OrderByDescending(d => d.Key);
+            tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
             return tasks;
         }
 
-        private void SetCompletedTasks(IEnumerable<IGrouping<int,Task>> tasks)
+        private void SetCompletedTasks(IEnumerable<IGrouping<string,Task>> tasks)
         {
             var completedTasksList = new List<CompletedTasks>();
             foreach(var task in tasks)
