@@ -21,8 +21,8 @@ namespace SvnLogReporter
 
         public override Log CreateLog()
         {           
-            var report = GetReportCommits();
-            return LoadLog(report);
+            var commits = GetReportCommits();
+            return LoadLog(commits);
         }
 
         protected Log LoadLog(List<GitHubCommit> commits)

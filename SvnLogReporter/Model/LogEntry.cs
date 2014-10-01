@@ -16,7 +16,7 @@ namespace SvnLogReporter.Model
         public DateTime Date { get; set; }
         [XmlElement("msg")]
         public string Message { get; set; }
-        [XmlAttribute("revison")]
+        [XmlAttribute("revision")]
         public string Revision { get; set; }
         [XmlIgnore]
         public string Link { get; set; }
