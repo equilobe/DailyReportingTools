@@ -13,7 +13,7 @@ namespace JiraReporter.Model
         public List<Task> InProgressTasks { get; set; }
         public List<Task> OpenTasks { get; set; }
         public List<Task> UnassignedTasks { get; set; }
-        public int UnassignedCount { get { return UnassignedTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null); } }
+        public int UnassignedCount { get { return UnassignedTasks.Count; } }
 
         public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, SvnLogReporter.Options options)
         {

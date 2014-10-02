@@ -22,6 +22,7 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeft { get; set; }
         public List<Commit> Commits { get; set; }
+        public int PullRequestsCount { get; set; }
 
         public int UnsyncedCommitsCount 
         { 

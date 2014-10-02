@@ -59,7 +59,7 @@ namespace JiraReporter
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
@@ -68,6 +68,7 @@ namespace JiraReporter
                 SetIssue(issue, policy, newIssue, timesheet);
                 if (issue.Subtasks != null)
                     SetSubtasksIssues(issue, policy, timesheet);
+                AdjustIssuePullRequests(issue, pullRequests);
             }
         }
 
@@ -108,7 +109,8 @@ namespace JiraReporter
             SetIssueExists(issue, timesheet.Worklog.Issues);
             if (issue.SubTask == true)
                 SetParent(issue, newIssue, policy, timesheet);
-
+            AuthorsProcessing.SetAuthorName(issue.Assignee);
+            
             SetIssueLink(issue, policy);
         }
 
@@ -191,6 +193,30 @@ namespace JiraReporter
             if (issue.Commits.Count > 0)
                 foreach (var commit in issue.Commits)
                     commit.TaskSynced = true;
+        }
+
+        private static void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
+        {
+            var find = new List<PullRequest>();
+            if(pullRequests!=null)
+            {
+                issue.PullRequests = new List<PullRequest>();
+                foreach(var pullRequest in pullRequests)
+                {
+                    find = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
+                    if (find != null)
+                        issue.PullRequests = find;
+                    EditIssuePullRequests(issue);
+                }
+            }
+        }
+
+       private static void EditIssuePullRequests(Issue issue)
+        {
+            if (issue.PullRequests != null)
+                if (issue.PullRequests.Count > 0)
+                    foreach (var pullRequest in issue.PullRequests)
+                        pullRequest.TaskSynced = true;
         }
     }
 }

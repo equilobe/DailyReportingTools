@@ -70,6 +70,8 @@ namespace JiraReporter.Model
         public DateTime Created { get; set; }
         [XmlIgnore]
         public List<Commit> Commits { get; set; }
+        [XmlIgnore]
+        public List<PullRequest> PullRequests { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }

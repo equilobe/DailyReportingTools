@@ -1,12 +1,12 @@
-<div style="margin-top:15px; font-size:14px">
+<div style="margin-top:15px; font-size:14px; color:black;">
       @if((Model.options.ToDate - Model.options.FromDate).Days <=1)
         {
-           <h2> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
+           <h2 style="color:black"> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
         }
-        else
-        {
-           <h2>@Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</h2>
-        }  
+      else
+      {
+        <h2 style="color:black">@Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</h2>
+      }  
     @{
         var bold = "";
         var remainingEstimate = "";
@@ -156,6 +156,18 @@
                                 <span> commits </span>
                             }
                         }
+                        @if(author.PullRequestsCount>0)
+                        {
+                            <span> &#x25cf; @author.PullRequestsCount</span>
+                            if(author.PullRequestsCount==1)
+                            {
+                                <span> pull request </span>
+                            }
+                            else
+                            {
+                                <span> pull requests </span>
+                            }
+                        }
                         @if(author.Issues!=null)
                         {
                          <div style="margin-top:20px; line-height:1.4em;">
@@ -220,9 +232,14 @@
                                     <a href=@issue.Link style="text-decoration: none; font-weight:bold"> @issue.Summary</a>
                                     <span style="color: #B8B8B8;"> &#x25cf; @issue.Key </span>
                                     <span> &#x25cf; @issue.TimeLoggedTotal total time spent</span>    
+                                    @if(issue.Label!=null)
+                                    {
+                                        color = "orange";
+                                    }
+                                    else { color = "red"; }
                                     @if(issue.TotalRemainingSeconds==0 && issue.Resolution == null)
                                     {
-                                        <span style="color:red; font-weight:bold"> &#x25cf; @remainingEstimate left</span>
+                                        <span style="color:@color; font-weight:bold"> &#x25cf; @remainingEstimate left</span>
                                     }
                                     @if (issue.TotalRemainingSeconds > 0)
                                     {
@@ -230,31 +247,20 @@
                                         {
                                             if (issue.Subtasks.Count > 0)
                                             {
-                                                <span style="color:red; font-weight:bold;"> &#x25cf; @remainingEstimate left from subtasks</span>
+                                                <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left from subtasks</span>
                                             }
                                             else
                                             {
-                                                <span style="color:red; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
+                                                <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
                                             }
                                         }
                                         else
                                         {
                                             <span> &#x25cf; @remainingEstimate left</span>
                                         }
-                                    }
-                                   
-                                    @{
-                                        tooltipWorked="";
-                                    }
-                                    @if (issue.Entries.Count > 0)
-                                    {
-                                        foreach (var entry in issue.Entries)
-                                        {
-                                                tooltipWorked += entry.Comment;                                           
-                                        }
-                                    }                                            
+                                    }                                                                         
                                         
-                                    <span title="@tooltipWorked"> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@issue.TimeLogged worked</span></span>
+                                    <span> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@issue.TimeLogged worked</span></span>
                                     @if (issue.Commits.Count > 0)
                                     {
                                         <span> &#x25cf; </span>
@@ -268,18 +274,7 @@
                                             <span> commits </span>
                                         }
                                         @foreach (var commit in issue.Commits)
-                                        {
-                                            tooltipCommit = "";
-                                            if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
-                                            {
-                                                foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
-                                                {
-
-                                                    tooltipCommit += line + "\n";
-                                                    
-                                                }
-                                                //tooltipCommit = tooltipCommit.Replace("<br />", "\n");
-                                            }
+                                        {                                           
 
                                             if (commit.Entry.Revision.Length > 6)
                                             {
@@ -308,15 +303,49 @@
 
                                             if (commit.Entry.Link != null)
                                             {
-                                                <span style="text-wrap:none">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;" title="@tooltipCommit">@revision</a>@comma @closedParentheses</span>
+                                                <span style="text-wrap:none">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma @closedParentheses</span>
                                             }
                                             else
-                                            { <span style="text-wrap:none">@openParentheses <span title="@tooltipCommit">@revision</span>@comma @closedParentheses</span> }
+                                            { <span style="text-wrap:none">@openParentheses <span>@revision</span>@comma @closedParentheses</span> }
                                         }
                                         </span>
                                     }
                                     
-                                        <div style="margin-left:35px; font-size:12px; font-family:Lucida Console">
+                                    @if (issue.PullRequests.Count > 0)
+                                    {
+                                        <span> &#x25cf; </span>
+                                        <span style="background-color:yellow; font-weight:bold"> @issue.PullRequests.Count
+                                        @if (issue.PullRequests.Count == 1)
+                                        {
+                                            <span> pull request </span>
+                                        }
+                                        else
+                                        {
+                                            <span> pull requests </span>
+                                        }
+                                        @foreach(var pullRequest in issue.PullRequests)
+                                        {
+                                            if (pullRequest == issue.PullRequests.First())
+                                            {
+                                                openParentheses = "(";
+                                            }
+                                            else { openParentheses = ""; }
+                                            if (pullRequest == issue.PullRequests.Last())
+                                            {
+                                                closedParentheses = ")";
+                                                comma = "";
+                                            }
+                                            else
+                                            {
+                                                closedParentheses = "";
+                                                comma = ",";
+                                            }
+                                            <span>@openParentheses<a style="text-decoration:none" href="@pullRequest.GithubPullRequest.HtmlUrl">@pullRequest.GithubPullRequest.Number</a>@comma @closedParentheses</span>
+                                        }
+                                       </span>
+                                    }
+                                    
+                                        <div style="margin-left:35px; font-size:12px; font-family:Lucida Console, 'Courier New'">
                                             @if (issue.Entries.Count > 0)
                                             {
                                                 foreach (var entry in issue.Entries)
@@ -346,7 +375,16 @@
                                                         }
                                                    }
                                                 }
-                                            }                                           
+                                            }  
+                                            @if(issue.PullRequests.Count>0)
+                                            {
+                                                foreach(var pullRequest in issue.PullRequests)
+                                                {
+                                                    <div>
+                                                        @pullRequest.GithubPullRequest.Title
+                                                    </div>
+                                                }
+                                            }                                         
                                         </div>  
                                                                                                                                         
                                 </div>                                                                                                                                                                 
@@ -412,8 +450,6 @@
                                 }
                                 @foreach (var task in author.InProgressTasks)
                                 {
-                                    if (task.Issue.Label != Model.policy.PermanentTaskLabel)
-                                    {
                                         if (task.Issue.SubTask == true)
                                         {
                                             identation = "margin-left:25px";
@@ -464,6 +500,11 @@
                                                 }                                                                
                                                 <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                                 <span style ="color: #B8B8B8"> &#x25cf; @task.Issue.Key </span>
+                                                @if(task.Issue.Label!=null)
+                                                { 
+                                                    color = "orange"; 
+                                                }
+                                                else { color="red"; }
                                                 @if(task.Issue.Subtasks.Count==0)
                                                 {
                                                     if (task.Issue.TimeSpent > 0)
@@ -472,7 +513,7 @@
                                                     }
                                                     if (task.Issue.RemainingEstimateSeconds == 0)
                                                     {
-                                                        <span style="color:red; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
+                                                        <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
                                                     }
                                                     else
                                                     {
@@ -487,7 +528,7 @@
                                                     }
                                                     if (task.Issue.TotalRemainingSeconds == 0)
                                                     {
-                                                        <span style="color:red; font-weight:bold">&#x25cf; @remainingEstimate left</span>
+                                                        <span style="color:@color; font-weight:bold">&#x25cf; @remainingEstimate left</span>
                                                     }
                                                     else
                                                     {
@@ -505,7 +546,14 @@
                                                         {                                                         
                                                            if (subtask.RemainingEstimateSeconds == 0)
                                                            {
-                                                               color = "red";
+                                                               if(subtask.Label!=null)
+                                                               {
+                                                                   color = "orange";
+                                                               }
+                                                               else
+                                                               {
+                                                                   color = "red";
+                                                               }                                                            
                                                            }
                                                            else
                                                            {
@@ -561,8 +609,6 @@
                                                     }
                                                 }
                                             }
-
-                                        }
                                 }
                                 
                            </div>
@@ -589,8 +635,6 @@
                                  </span>
                             @foreach (var task in author.OpenTasks)
                             {
-                                if (task.Issue.Label != Model.policy.PermanentTaskLabel)
-                                {
                                     if (task.Issue.SubTask == true)
                                     {
                                         identation = "margin-left:25px";
@@ -644,7 +688,14 @@
                                         
                                         <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                         <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
-
+                                        @if(task.Issue.Label!=null)
+                                        {
+                                            color = "orange";
+                                        }
+                                        else
+                                        {
+                                            color = "red";
+                                        }
                                         @if (task.Issue.Subtasks.Count == 0)
                                         {
                                             if (task.Issue.TimeSpent > 0)
@@ -653,7 +704,7 @@
                                             }
                                             if (task.Issue.RemainingEstimateSeconds == 0)
                                             {
-                                                <span style="color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
+                                                <span style="color:@color; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
                                             }
                                             else
                                             {
@@ -668,7 +719,7 @@
                                             }
                                             if (task.Issue.TotalRemainingSeconds == 0)
                                             {
-                                                <span style="color:red; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
+                                                <span style="color:@color; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
                                             }
                                             else
                                             {
@@ -691,7 +742,14 @@
                                                 {
                                                     if (subtask.RemainingEstimateSeconds == 0)
                                                     {
-                                                        color = "red";
+                                                        if(subtask.Label!=null)
+                                                        {
+                                                            color = "orange";
+                                                        }
+                                                        else
+                                                        {
+                                                            color = "red";
+                                                        }                                                       
                                                     }
                                                     else
                                                     {
@@ -747,7 +805,6 @@
                                             }
                                         }
                                     }
-                                }
                             }
                             </div>
                         }                    
@@ -770,8 +827,6 @@
                     <h2>Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
                     @foreach (var task in Model.Sprint.UnassignedTasks)
                     {
-                        if (task.Issue.Label != Model.policy.PermanentTaskLabel)
-                        {
                             if (task.Issue.SubTask == true)
                             {
                                 identation = "margin-left:25px";
@@ -825,7 +880,14 @@
 
                                 <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                 <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
-
+                                @if(task.Issue.Label!=null)
+                                {
+                                    color = "orange";
+                                }
+                                else
+                                {
+                                    color = "red";
+                                }
                                 @if (task.Issue.Subtasks.Count == 0)
                                 {
                                     if (task.Issue.TimeSpent > 0)
@@ -834,7 +896,7 @@
                                     }
                                     if (task.Issue.RemainingEstimateSeconds == 0)
                                     {
-                                        <span style="color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
+                                        <span style="color:@color; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
                                     }
                                     else
                                     {
@@ -849,7 +911,7 @@
                                     }
                                     if (task.Issue.TotalRemainingSeconds == 0)
                                     {
-                                        <span style="color:red; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
+                                        <span style="color:@color; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
                                     }
                                     else
                                     {
@@ -881,7 +943,14 @@
                                             }
                                             if (subtask.RemainingEstimateSeconds == 0)
                                             {
-                                                color = "red";
+                                                if(subtask.Label!=null)
+                                                {
+                                                    color = "orange";
+                                                }
+                                                else
+                                                {
+                                                    color = "red"; 
+                                                }                                                
                                             }
                                             else
                                             {
@@ -928,23 +997,24 @@
                                         }
                                 }
                             }
-
-                        }
                     }
                         
                 </div>
             }       
         
-        @if(Model.PullRequests!=null)
+        @if(Model.PullRequests.Count>0)
         {
             <div style="margin-top:60px;">
                 <h2>Pending Pull Requests</h2>
                 <div style="margin-top:20px;">
-                    @foreach(var pullRequest in Model.PullRequests)
+                    @foreach (var pullRequest in Model.PullRequests)
                     {
-                        <div>
-                            <a style="text-decoration:none" href=@pullRequest.HtmlUrl>@pullRequest.Title</a>
-                        </div>
+                        if (pullRequest.TaskSynced == false)
+                        {
+                            <div>
+                                <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
+                            </div>
+                        }
                     }
                 </div>
             </div>

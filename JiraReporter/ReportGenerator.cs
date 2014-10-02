@@ -11,25 +11,29 @@ namespace JiraReporter
     {
         public static  Report GenerateReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
+            var pullRequests = new List<PullRequest>();
+            GetPullRequests(pullRequests, policy, options);
+
             var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
             var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(timesheet, policy, options);
+            timesheetService.SetTimesheetIssues(timesheet, policy, options, pullRequests);
 
-            return GetReport(timesheet, policy, options);
+            return GetReport(timesheet, policy, options, pullRequests);
         }
-        private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
-        {
+        private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        {            
             var sprint = GetSprintReport(policy, options, timesheet);
-            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
+            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options, pullRequests);
             var report = new Report(policy, options)
             {
                 Authors = authors,
                 Sprint = sprint,
                 Date = options.FromDate,
                 Summary = new Summary(authors, sprint),
-                Title = policy.ReportTitle
+                Title = policy.ReportTitle,
+                PullRequests = pullRequests
             };
-            AddPullRequests(report);                
+                         
             return report;
         }
 
@@ -40,10 +44,22 @@ namespace JiraReporter
             return report;
         }
 
-        private static void AddPullRequests(Report report)
+        private static void GetPullRequests(List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
-            if (SvnLogReporter.SourceControlType.GitHub == report.policy.SourceControl.Type)
-                report.PullRequests = SourceControlProcessor.GetPullRequests(report.policy, report.options);
+            var pullRequestsOct = new List<Octokit.PullRequest>();
+            if (SvnLogReporter.SourceControlType.GitHub == policy.SourceControl.Type)
+            {
+                pullRequestsOct = SourceControlProcessor.GetPullRequests(policy, options);
+                AddPullRequests(pullRequests, pullRequestsOct);
+            }
         }
+
+        private static void AddPullRequests(List<PullRequest> pullRequests, List<Octokit.PullRequest> pullRequestsOct)
+        {
+            if (pullRequestsOct.Count > 0)
+                foreach (var pullRequest in pullRequestsOct)
+                    pullRequests.Add(new PullRequest { GithubPullRequest = pullRequest });
+        }
+
     }
 }

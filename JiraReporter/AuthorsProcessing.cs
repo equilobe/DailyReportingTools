@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
@@ -21,7 +22,7 @@ namespace JiraReporter
                     authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last(), policy, commits);
+                SetAuthor(report, authorsNew.Last(), policy, commits, pullRequests);
             }
 
             authorsNew.RemoveAll(AuthorIsEmpty);
@@ -52,13 +53,22 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits)
+        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits, List<PullRequest> pullRequests)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
             SetAuthorTimeFormat(author);
             SetUnfinishedTasks(sprint, author);
             SetAuthorCommits(policy, author, commits);
+            SetAuthorName(author.Name);
+            SetAuthorPullRequestsCount(author, pullRequests);
+        }
+
+        public static void SetAuthorName(string author)
+        {
+            string delimiter = "(\\[.*\\])";
+            if(author!=null)
+                author = Regex.Replace(author, delimiter, "");
         }
 
         private static void SetAuthorTimeSpent(Author author)
@@ -125,8 +135,15 @@ namespace JiraReporter
                 if(policy.Users[author.Name]!="")
                   find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
             author.Commits = find;
-            IssueAdapter.AdjustIssueCommits(author);
-           
-        }        
+            IssueAdapter.AdjustIssueCommits(author);           
+        }       
+ 
+        public static void SetAuthorPullRequestsCount(Author author, List<PullRequest> pullRequests)
+        {
+            if (author.Issues != null)
+                if (author.Issues.Count > 0)
+                    foreach (var issue in author.Issues)
+                        author.PullRequestsCount += issue.PullRequests.Count;
+        }
     }
 }
