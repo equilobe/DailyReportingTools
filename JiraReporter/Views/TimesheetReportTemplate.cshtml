@@ -1,4 +1,4 @@
-<div style="margin-top:15px;">
+<div style="margin-top:15px; font-size:14px">
       @if((Model.options.ToDate - Model.options.FromDate).Days <=1)
         {
            <h2> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
@@ -20,6 +20,8 @@
         var identation = "";
         var totalTimeSpent = "";
         var revision="";
+        var tooltipWorked = "";
+        var tooltipCommit = "";
      }
   
     <div style="margin-top: 40px">
@@ -240,7 +242,19 @@
                                             <span> &#x25cf; @remainingEstimate left</span>
                                         }
                                     }
-                                    <span> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@issue.TimeLogged worked</span></span>
+                                   
+                                    @{
+                                        tooltipWorked="";
+                                    }
+                                    @if (issue.Entries.Count > 0)
+                                    {
+                                        foreach (var entry in issue.Entries)
+                                        {
+                                                tooltipWorked += entry.Comment;                                           
+                                        }
+                                    }                                            
+                                        
+                                    <span title="@tooltipWorked"> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@issue.TimeLogged worked</span></span>
                                     @if (issue.Commits.Count > 0)
                                     {
                                         <span> &#x25cf; </span>
@@ -255,16 +269,27 @@
                                         }
                                         @foreach (var commit in issue.Commits)
                                         {
-                                      
-                                            if(commit.Entry.Revision.Length>6)
+                                            tooltipCommit = "";
+                                            if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
+                                            {
+                                                foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
+                                                {
+
+                                                    tooltipCommit += line + "\n";
+                                                    
+                                                }
+                                                //tooltipCommit = tooltipCommit.Replace("<br />", "\n");
+                                            }
+
+                                            if (commit.Entry.Revision.Length > 6)
                                             {
                                                 revision = commit.Entry.Revision.Substring(0, 6);
                                             }
                                             else
                                             {
-                                                revision = commit.Entry.Revision.Substring(0, commit.Entry.Revision.Length); 
+                                                revision = commit.Entry.Revision.Substring(0, commit.Entry.Revision.Length);
                                             }
-                                            
+
                                             if (commit == issue.Commits.First())
                                             {
                                                 openParentheses = "(";
@@ -283,14 +308,15 @@
 
                                             if (commit.Entry.Link != null)
                                             {
-                                                <span style="text-wrap:none">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma @closedParentheses</span>
+                                                <span style="text-wrap:none">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;" title="@tooltipCommit">@revision</a>@comma @closedParentheses</span>
                                             }
                                             else
-                                            { <span style="text-wrap:none">@openParentheses @revision @comma @closedParentheses</span> }
+                                            { <span style="text-wrap:none">@openParentheses <span title="@tooltipCommit">@revision</span>@comma @closedParentheses</span> }
                                         }
                                         </span>
                                     }
-                                        <div style="margin-left:35px; color:#909090">
+                                    
+                                        <div style="margin-left:35px; font-size:12px; font-family:Lucida Console">
                                             @if (issue.Entries.Count > 0)
                                             {
                                                 foreach (var entry in issue.Entries)
@@ -314,14 +340,15 @@
                                                     {
                                                         foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
                                                         {
-                                                            <div>
+                                                            <div style="color:#909090">
                                                                 @line
                                                             </div>
                                                         }
                                                    }
                                                 }
                                             }                                           
-                                        </div>                                                                                                      
+                                        </div>  
+                                                                                                                                        
                                 </div>                                                                                                                                                                 
                             }
                           }
@@ -387,7 +414,7 @@
                                 {
                                     if (task.Issue.Label != Model.policy.PermanentTaskLabel)
                                     {
-                                        if (task.Issue.SubTask == true && task.Issue.Parent.Assignee != author.Name)
+                                        if (task.Issue.SubTask == true)
                                         {
                                             identation = "margin-left:25px";
                                             <div>
@@ -409,7 +436,7 @@
                                             {
                                                 <span> &#x25cf; Unassigned</span>
                                             }
-                                            else
+                                            else if(task.Issue.Parent.Assignee!=author.Name)
                                             {
                                                 <span> &#x25cf; @task.Issue.Parent.Assignee</span>
                                             }
@@ -564,7 +591,7 @@
                             {
                                 if (task.Issue.Label != Model.policy.PermanentTaskLabel)
                                 {
-                                    if (task.Issue.SubTask == true && task.Issue.Parent.Assignee != author.Name)
+                                    if (task.Issue.SubTask == true)
                                     {
                                         identation = "margin-left:25px";
                                         <div>
@@ -586,7 +613,7 @@
                                             {
                                                 <span> &#x25cf; Unassigned</span>
                                             }
-                                            else
+                                            else if (task.Issue.Parent.Assignee != author.Name)
                                             {
                                                 <span> &#x25cf; @task.Issue.Parent.Assignee</span>
                                             }
@@ -626,11 +653,11 @@
                                             }
                                             if (task.Issue.RemainingEstimateSeconds == 0)
                                             {
-                                                <span style="color:red; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
+                                                <span style="color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
                                             }
                                             else
                                             {
-                                                <span> &#x25cf; @remainingEstimate left</span>
+                                                <span> &#x25cf; @task.Issue.RemainingEstimate left</span>
                                             }
                                         }
                                         else
@@ -641,11 +668,11 @@
                                             }
                                             if (task.Issue.TotalRemainingSeconds == 0)
                                             {
-                                                <span style="color:red; font-weight:bold">&#x25cf; @remainingEstimate left</span>
+                                                <span style="color:red; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
                                             }
                                             else
                                             {
-                                                <span> &#x25cf; @remainingEstimate left</span>
+                                                <span> &#x25cf; @task.Issue.TotalRemaining left</span>
                                             }
                                         }                                                                                                                                                                                                                                                                         
                                         @if (task.HasInProgressAuthor == true)
@@ -743,42 +770,39 @@
                     <h2>Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
                     @foreach (var task in Model.Sprint.UnassignedTasks)
                     {
-                        if (task.Issue.Label != Model.policy.PermanentTaskLabel && task.Issue.SubTask == false)
+                        if (task.Issue.Label != Model.policy.PermanentTaskLabel)
                         {
-                            if (task.Issue.ExistsInTimesheet == true)
+                            if (task.Issue.SubTask == true)
                             {
-                                bold = "font-weight: bold;";
+                                identation = "margin-left:25px";
+                                <div>
+                                    @if (task.Issue.Parent.Resolution != null)
+                                    {
+                                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
+                                    }
+                                    else if (task.Issue.Parent.StatusCategory.name == "In Progress")
+                                    {
+                                        <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
+                                    }
+                                    else if (task.Issue.Parent.Resolution == null)
+                                    {
+                                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal">&#10065;</span>
+                                    }
+                                    <a href=@task.Issue.Parent.Link style="text-decoration: none; font-weight:bold"> @task.Issue.Parent.Summary </a>
+                                    <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Parent.Key </span>
+                                    @if (task.Issue.Parent.Assignee == null)
+                                    {
+                                        <span> &#x25cf; Unassigned</span>
+                                    }
+                                    else
+                                    {
+                                        <span> &#x25cf; @task.Issue.Parent.Assignee</span>
+                                    }
+                                </div>
                             }
-                            else
-                            {
-                                bold = "font-weight: normal;";
-                            }
-
-                            if (task.Issue.Subtasks.Count > 0)
-                            {
-                                remainingEstimate = task.Issue.TotalRemaining;
-                            }
-                            else
-                            {
-                                remainingEstimate = task.Issue.RemainingEstimate;
-                            }
-                            if (task.Issue.RemainingEstimateSeconds == 0)
-                            {
-                                color = "red";
-                            }
-                            else
-                            {
-                                color = "black";
-                            }
-                            <div>
-                                @if(task.Issue.StatusCategory.name == "In Progress")
-                                {
-                                    <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                }
-                                else if(task.Issue.Resolution == null)
-                                {
-                                    <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
-                                }                                
+                            else { identation = ""; }
+                            <div style="@identation;">
+                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
                                 @if (DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
                                 {
                                     <b> NEW: </b>
@@ -794,13 +818,14 @@
                                         <b>Paused: </b>
                                     }
                                 }
-                                
-                                <a style="text-decoration: none; @bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span style="color: #B8B8B8"> &#x25cf; @task.Issue.Key </span>
-                                @if (task.Issue.Assignee != null)
+                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.Resolution == null)
                                 {
-                                    <span style="white-space: nowrap;"> &#x25cf; @task.Issue.Assignee</span>
+                                    <span style="font-weight:bold">Continue:</span>
                                 }
+
+                                <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
+                                <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
+
                                 @if (task.Issue.Subtasks.Count == 0)
                                 {
                                     if (task.Issue.TimeSpent > 0)
@@ -809,11 +834,11 @@
                                     }
                                     if (task.Issue.RemainingEstimateSeconds == 0)
                                     {
-                                        <span style="color:red; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
+                                        <span style="color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
                                     }
                                     else
                                     {
-                                        <span> &#x25cf; @remainingEstimate left</span>
+                                        <span> &#x25cf; @task.Issue.RemainingEstimate left</span>
                                     }
                                 }
                                 else
@@ -824,19 +849,20 @@
                                     }
                                     if (task.Issue.TotalRemainingSeconds == 0)
                                     {
-                                        <span style="color:red; font-weight:bold">&#x25cf; @remainingEstimate left</span>
+                                        <span style="color:red; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
                                     }
                                     else
                                     {
-                                        <span> &#x25cf; @remainingEstimate left</span>
+                                        <span> &#x25cf; @task.Issue.TotalRemaining left</span>
                                     }
-                                }                                                                
-                                                              
+                                }
                                 @if (task.HasInProgress == true)
                                 {
-                                    <span style="color:red; font-weight:bold"> &#x25cf; has sub-tasks in progress</span>
+                                    <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
                                 }
+
                             </div>
+
                             if (task.Issue.SubtasksIssues != null)
                             {
                                 if (task.Issue.SubtasksIssues.Count > 0)
@@ -900,7 +926,6 @@
 
                                             }
                                         }
-                                    
                                 }
                             }
 
@@ -909,7 +934,21 @@
                         
                 </div>
             }       
-
+        
+        @if(Model.PullRequests!=null)
+        {
+            <div style="margin-top:60px;">
+                <h2>Pending Pull Requests</h2>
+                <div style="margin-top:20px;">
+                    @foreach(var pullRequest in Model.PullRequests)
+                    {
+                        <div>
+                            <a style="text-decoration:none" href=@pullRequest.HtmlUrl>@pullRequest.Title</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
             
         @if (Model.Sprint.CompletedTasksList != null)
         {
@@ -932,6 +971,10 @@
                                     else
                                     {
                                         <span style="white-space:nowrap"> &#x25cf; Unassigned </span>
+                                    }
+                                    @if (task.Issue.RemainingEstimateSeconds == 0 && task.Issue.TotalRemainingSeconds > 0)
+                                    {
+                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.TotalRemaining left from subtasks </span>
                                     }
                                     @if (task.Issue.RemainingEstimateSeconds != 0)
                                     {

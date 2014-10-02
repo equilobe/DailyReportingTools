@@ -24,6 +24,12 @@ namespace JiraReporter
             return GetCommits(logs);            
         }
 
+        public static List<Octokit.PullRequest> GetPullRequests(Policy policy, Options options)
+        {
+                var processor = new GitHubReport(policy, options);
+                return processor.GetPullRequests(policy.SourceControl.RepoOwner, policy.SourceControl.RepoName).ToList();
+        }
+
         private static List<Commit> GetCommits(Log log)
         {
             var commits = new List<Commit>();

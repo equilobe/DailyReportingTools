@@ -35,6 +35,13 @@
     <Reference Include="AnotherJiraRestClient">
       <HintPath>libs\AnotherJiraRestClient.dll</HintPath>
     </Reference>
+    <Reference Include="Octokit, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SvnLogReporter\bin\Release\Octokit.dll</HintPath>
+    </Reference>
+    <Reference Include="Octokit.Reactive">
+      <HintPath>..\SvnLogReporter\bin\Release\Octokit.Reactive.dll</HintPath>
+    </Reference>
     <Reference Include="RazorEngine, Version=3.4.1.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SvnLogReporter\RazorEngine.dll</HintPath>

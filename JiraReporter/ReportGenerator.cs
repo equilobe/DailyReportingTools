@@ -21,16 +21,29 @@ namespace JiraReporter
         {
             var sprint = GetSprintReport(policy, options, timesheet);
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
-            var report = new Report(policy, options) { Authors = authors, Sprint = sprint, Date = options.FromDate, 
-                Summary = new Summary(authors, sprint), Title = policy.ReportTitle};
+            var report = new Report(policy, options)
+            {
+                Authors = authors,
+                Sprint = sprint,
+                Date = options.FromDate,
+                Summary = new Summary(authors, sprint),
+                Title = policy.ReportTitle
+            };
+            AddPullRequests(report);                
             return report;
         }
 
-        private static  SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet)
+        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet)
         {
             var report = new SprintTasks();
             report.SetSprintTasks(p, timesheet, options);
             return report;
+        }
+
+        private static void AddPullRequests(Report report)
+        {
+            if (SvnLogReporter.SourceControlType.GitHub == report.policy.SourceControl.Type)
+                report.PullRequests = SourceControlProcessor.GetPullRequests(report.policy, report.options);
         }
     }
 }
