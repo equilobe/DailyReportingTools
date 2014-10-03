@@ -96,6 +96,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <Content Include="Policies\BoardProspectsDraft.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Policies\BoardProspects.xml">
       <SubType>Designer</SubType>
     </Content>

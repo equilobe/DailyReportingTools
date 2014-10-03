@@ -21,6 +21,6 @@ namespace SvnLogReporter.Model
         [XmlIgnore]
         public string Link { get; set; }
         [XmlIgnore]
-        public List<Octokit.PullRequest> PullRequets { get; set; }
+        public List<Octokit.PullRequest> PullRequests { get; set; }
     }
 }
