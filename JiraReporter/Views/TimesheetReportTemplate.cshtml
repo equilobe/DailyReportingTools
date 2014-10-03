@@ -48,20 +48,20 @@
                     }
                    <span>in progress</span>
                    <span style="font-size:0;">
-                       <span style="font-size:13px;">(</span>
+                       <span style="font-size:14px;">(</span>
                        @if(Model.Summary.InProgressTasksTimeLeftSeconds==0)
                        {
-                           <span style="color:red;font-size:13px;">@Model.Summary.InProgressTasksTimeLeft left</span>
+                           <span style="color:red;font-size:14px;">@Model.Summary.InProgressTasksTimeLeft left</span>
                        }
                        else
                        {
-                           <span style="font-size:13px;">@Model.Summary.InProgressTasksTimeLeft left</span>
+                           <span style="font-size:14px;">@Model.Summary.InProgressTasksTimeLeft left</span>
                        }
                        @if(Model.Summary.InProgressUnassigned>0)
                        {
-                           <span style="font-size:13px">, @Model.Summary.InProgressUnassigned unassigned</span>
+                           <span style="font-size:14px">, @Model.Summary.InProgressUnassigned unassigned</span>
                        }
-                       <span style="font-size:13px;">)</span>
+                       <span style="font-size:14px;">)</span>
                    </span>
                 </div>
             }
@@ -86,17 +86,17 @@
                         }
                         @if(Model.Summary.OpenTasksTimeLeftSeconds>0 || Model.Summary.OpenUnassigned>0)
                         {
-                            <span style="font-size:13px;">(</span>
+                            <span style="font-size:14px;">(</span>
                             if(Model.Summary.OpenTasksTimeLeftSeconds>0)
                             {
-                                <span style="font-size:13px">@Model.Summary.OpenTasksTimeLeft left</span>
+                                <span style="font-size:14px">@Model.Summary.OpenTasksTimeLeft left</span>
                             }
-                            <span style="font-size:13px">@comma</span>
+                            <span style="font-size:14px">@comma</span>
                             if(Model.Summary.OpenUnassigned>0)
                             {
-                                <span style="font-size:13px">@Model.Summary.OpenUnassigned unassigned</span>
+                                <span style="font-size:14px">@Model.Summary.OpenUnassigned unassigned</span>
                             }
-                            <span style="font-size:13px">)</span>
+                            <span style="font-size:14px">)</span>
                         }
                     </span>
                 </div>
@@ -174,6 +174,16 @@
                         @if(author.Issues!=null)
                         {
                          <div style="margin-top:20px; line-height:1.4em;">
+                             <b style="color:#380000 "> Yesterday  &#x25cf; @author.Issues.Count </b>
+                             @if (author.Issues.Count == 1)
+                             {
+                                 <b style="color:#380000 "> task </b>
+                             }
+                             else
+                             {
+                                 <b style="color:#380000 ">tasks</b>
+                             }
+                             <b style="color:#380000 "> &#x25cf; @author.TimeLogged </b>
                           @if(author.Issues.Count > 0)
                           { 
                             foreach (var issue in author.Issues)
@@ -427,16 +437,15 @@
                                                 }
                                             }
                                         }
-                                    </ul>
-                                                                  
+                                    </ul>                                                                  
                             </div>
                         }
                         
                         @if (author.UnsyncedPullRequestsCount > 0)
                         {
                             <div style="margin-top:25px">
-                                <b>Unrelated pull requets</b>
-                                <ul style="padding-left:0px; margin-left:0px">
+                                <b>Unrelated pull requests</b>
+                                <ul style="padding:0px; margin:0px">
                                     @foreach (var pullRequest in author.PullRequests)
                                     {
                                         if (pullRequest.TaskSynced == false)
@@ -517,7 +526,7 @@
                                                 {
                                                     <b> NEW: </b>
                                                 }    
-                                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.Resolution==null)
+                                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.StatusCategory.name == "In Progress")
                                                 {
                                                     <span style="font-weight:bold">Continue:</span>
                                                 }                                                                
@@ -565,7 +574,7 @@
                                                 {
                                                     foreach (var subtask in task.Issue.SubtasksIssues)
                                                     {
-                                                        if(subtask.Assignee==author.Name)
+                                                        if(subtask.Assignee==author.Name && subtask.Resolution==null)
                                                         {                                                         
                                                            if (subtask.RemainingEstimateSeconds == 0)
                                                            {
@@ -583,20 +592,20 @@
                                                                color = "black";
                                                            }                                 
                                                         <div style="margin-left: 20px">
-                                                                @if (subtask.Resolution != null)
-                                                                {
-                                                                    <span style="font-size:10.5pt;">&#10004;</span>
-                                                                }
-                                                                else if(subtask.StatusCategory.name == "In Progress")
+                                                                @if(subtask.StatusCategory.name == "In Progress")
                                                                 {
                                                                     <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
                                                                     if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
                                                                     {
                                                                         <b> NEW: </b>
-                                                                    }                  
+                                                                    }
+                                                                    if (subtask.ExistsInTimesheet == true)
+                                                                    {
+                                                                        <b>Continue:</b>
+                                                                    }
                                                                 }
                                                                 else
-                                                                { 
+                                                                {
                                                                     <span style="font-size: 10.5pt; font-family: Segoe UI Symbol;">&#10065;</span>
                                                                     if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
                                                                     {
@@ -611,10 +620,7 @@
                                                                         <span style="font-weight:bold">Paused:</span>
                                                                     }                                                       
                                                                 }
-                                                                @if (subtask.ExistsInTimesheet == true && subtask.Resolution==null)
-                                                                {
-                                                                <b>Continue:</b>
-                                                                }
+                                                                
 
                                                             <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
                                                             <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
@@ -640,21 +646,21 @@
                         @if(author.OpenTasks.Count>0)
                         {
                             <div style="margin-top:20px;line-height:1.4em;">
-                                <span style="font-size:0; font-weight:bold;">
-                                    <span style="font-size:13px;">Upcoming (@author.OpenTasks.Count </span>
+                                <span style="font-size:0;">
+                                    <b style="font-size:14px;">Upcoming (@author.OpenTasks.Count </b>
                                     @if(author.OpenTasks.Count == 1)
                                     {
-                                        <span style="font-size:13px;"> task</span>
+                                        <b style="font-size:14px;"> task</b>
                                     }
                                     else
                                     {
-                                        <span style="font-size:13px;"> tasks</span>
+                                        <b style="font-size:14px;"> tasks</b>
                                     }
                                     @if (author.OpenTasksTimeLeftSeconds != 0)                     
                                     {
-                                        <span style="font-size:13px">, @author.OpenTasksTimeLeft left</span>
+                                        <b style="font-size:14px">, @author.OpenTasksTimeLeft left</b>
                                     }
-                                    <span style="font-size:13px;">)</span>
+                                    <b style="font-size:14px;">)</b>
                                  </span>
                             @foreach (var task in author.OpenTasks)
                             {
@@ -704,11 +710,6 @@
                                                    <b>Paused: </b>
                                             }
                                         }
-                                        @if (task.Issue.ExistsInTimesheet == true && task.Issue.Resolution == null)
-                                        {
-                                            <span style="font-weight:bold">Continue:</span>
-                                        }
-                                        
                                         <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
                                         <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
                                         @if(task.Issue.Label!=null)
@@ -761,7 +762,7 @@
                                         {
                                             foreach (var subtask in task.Issue.SubtasksIssues)
                                             {
-                                                if (subtask.Assignee == author.Name)
+                                                if (subtask.Assignee == author.Name && subtask.Resolution==null)
                                                 {
                                                     if (subtask.RemainingEstimateSeconds == 0)
                                                     {
@@ -779,16 +780,16 @@
                                                         color = "black";
                                                     }
                                                     <div style="margin-left: 20px">
-                                                        @if (subtask.Resolution != null)
-                                                        {
-                                                            <span style="font-size:10.5pt;">&#10004;</span>
-                                                        }
-                                                        else if (subtask.StatusCategory.name == "In Progress")
+                                                        @if (subtask.StatusCategory.name == "In Progress")
                                                         {
                                                             <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
                                                             if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
                                                             {
                                                                 <b> NEW: </b>
+                                                            }
+                                                            if (subtask.ExistsInTimesheet == true)
+                                                            {
+                                                                <b>Continue:</b>
                                                             }
                                                         }
                                                         else
@@ -806,10 +807,6 @@
                                                             {
                                                                 <span style="font-weight:bold">Paused:</span>
                                                             }
-                                                        }
-                                                        @if (subtask.ExistsInTimesheet == true && subtask.Resolution==null)
-                                                        {
-                                                            <b>Continue:</b>
                                                         }
 
                                                         <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
@@ -880,7 +877,14 @@
                             }
                             else { identation = ""; }
                             <div style="@identation;">
-                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
+                                @if (task.Issue.StatusCategory.name == "In Progress")
+                                {
+                                <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
+                                }
+                                else if (task.Issue.Resolution == null)
+                                {
+                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal">&#10065;</span>
+                                }
                                 @if (DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
                                 {
                                     <b> NEW: </b>
@@ -896,7 +900,7 @@
                                         <b>Paused: </b>
                                     }
                                 }
-                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.Resolution == null)
+                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.StatusCategory.name == "In Progress")
                                 {
                                     <span style="font-weight:bold">Continue:</span>
                                 }
@@ -986,6 +990,10 @@
                                                     if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
                                                     {
                                                         <b> NEW: </b>
+                                                    }
+                                                    if (subtask.ExistsInTimesheet == true)
+                                                    {
+                                                        <b>Continue:</b>
                                                     }
                                                 }
                                                 else

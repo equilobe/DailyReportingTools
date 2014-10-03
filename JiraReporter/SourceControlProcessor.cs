@@ -47,11 +47,13 @@ namespace JiraReporter
         private static List<Commit> GetCommits(Log log)
         {
             var commits = new List<Commit>();
-            foreach (var entry in log.Entries)
-            {
-                commits.Add(new Commit { Entry = entry });
-                commits.Last().Entry.Message = EditMessage(commits.Last().Entry.Message);
-            }
+            if(log.Entries!=null)
+                if(log.Entries.Count>0)
+                    foreach (var entry in log.Entries)
+                    {
+                        commits.Add(new Commit { Entry = entry });
+                        commits.Last().Entry.Message = EditMessage(commits.Last().Entry.Message);
+                    }
             return commits;
         }
 

@@ -26,11 +26,14 @@ namespace SvnLogReporter
             return LoadLog(commits, pullRequests);
         }
 
-        protected Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequets)
+        protected Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequests)
         {
             var log = new Log();
-            if(pullRequets!=null)
-                log.PullRequests = pullRequets;
+            if (pullRequests != null)
+            {
+                log.PullRequests = pullRequests;
+                SetPullRequestsAuthors(pullRequests);
+            }
             log.Entries = new List<LogEntry>();
             var find = new List<PullRequest>();
             foreach (var commit in commits)
@@ -43,21 +46,20 @@ namespace SvnLogReporter
                      Message = commit.Commit.Message,
                      Revision = commit.Sha,
                      Link = commit.HtmlUrl,
-                     PullRequets = pullRequets.FindAll(p => p.User.Login == commit.Author.Login)
-                 });
-                SetPullRequestsAuthors(log.Entries.Last());
+                     PullRequests = pullRequests.FindAll(p => p.User.Login == commit.Author.Login)
+                 });                
             }
 
             log.RemoveWrongEntries(Options.FromDate);
             return log;
         }
 
-        private void SetPullRequestsAuthors(LogEntry entry)
+        private void SetPullRequestsAuthors(List<PullRequest> pullRequests)
         {
-            if (entry.PullRequets != null)
-                if (entry.PullRequets.Count > 0)
-                    foreach (var pullRequest in entry.PullRequets)
-                        pullRequest.User.Name = entry.Author;
+            if (pullRequests != null)
+                if (pullRequests.Count > 0)
+                    foreach (var pullRequest in pullRequests)
+                        pullRequest.User.Name = GetUserInfo(pullRequest.User.Login).Name;
         }
 
         protected override List<Report> GetReports(Log log)
