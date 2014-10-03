@@ -27,15 +27,7 @@
         {           
             foreach (var author in Model.Authors)
             {
-                <div style="margin-top:40px">
-                    <b>@author.Name (@author.EntryCount entries)</b>
-                    <ul style="margin-top:10px">
-                        @foreach (var entry in author.Entries)
-                        {
-                            <li style="margin-top:10px">  @entry.Message</li>
-                        }
-                    </ul>
-                </div>
+                @Partial("Views/author.cshtml", author);
             }
         }
     </div>

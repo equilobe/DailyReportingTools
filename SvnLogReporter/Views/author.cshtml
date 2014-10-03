@@ -1,0 +1,9 @@
+﻿<div style="margin-top:40px">
+    <b>@Model.Name (@Model.EntryCount entries)</b>
+    <ul style="margin-top:10px">
+        @foreach (var entry in Model.Entries)
+        {
+            <li style="margin-top:10px">  @entry.Message</li>
+        }
+    </ul>
+</div>

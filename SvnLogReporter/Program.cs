@@ -35,6 +35,7 @@ namespace SvnLogReporter
         {
             try
             {
+                SetGlobalSettings();
                 ExecuteReporter(args);
             }
             catch (ArgumentException ae)
@@ -45,6 +46,11 @@ namespace SvnLogReporter
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private static void SetGlobalSettings()
+        {
+            Razor.SetTemplateBase(typeof(RazorEngine.ExtendedTemplateBase<>));
         }
 
         private static void ExecuteReporter(string[] args)
