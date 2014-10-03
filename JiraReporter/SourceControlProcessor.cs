@@ -17,17 +17,31 @@ namespace JiraReporter
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
 
-        public static List<Commit> GetSourceControlCommits(Policy policy, Options options)
+        public static List<Commit> GetSourceControlCommits(SvnLogReporter.Model.Log log)
         {
-            var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
-            var logs = processors.CreateLog();
-            return GetCommits(logs);            
+            return GetCommits(log);            
         }
 
-        public static List<Octokit.PullRequest> GetPullRequests(Policy policy, Options options)
+        public static List<PullRequest> GetSourceControlPullRequests(SvnLogReporter.Model.Log log)
         {
-                var processor = new GitHubReport(policy, options);
-                return processor.GetPullRequests(policy.SourceControl.RepoOwner, policy.SourceControl.RepoName).ToList();
+            return GetPullRequests(log);
+        }
+
+        public static SvnLogReporter.Model.Log GetSourceControlLog(Policy policy, Options options)
+        {
+            var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
+            var log = processors.CreateLog();
+            return log;
+        }
+
+        private static List<PullRequest> GetPullRequests(Log log)
+        {
+            var pullRequests = new List<PullRequest>();
+            if(log.PullRequests!=null)
+                if(log.PullRequests.Count>0)
+                    foreach (var pullRequest in log.PullRequests)
+                        pullRequests.Add(new PullRequest { GithubPullRequest = pullRequest });
+            return pullRequests;
         }
 
         private static List<Commit> GetCommits(Log log)

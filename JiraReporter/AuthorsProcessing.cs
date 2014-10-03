@@ -9,12 +9,15 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
+            var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            var commits = SourceControlProcessor.GetSourceControlCommits(policy, options);
+            var commits = SourceControlProcessor.GetSourceControlCommits(log);
+            var pullRequests = SourceControlProcessor.GetSourceControlPullRequests(log);
+            
 
             foreach (var user in users)
             {
@@ -60,15 +63,16 @@ namespace JiraReporter
             SetAuthorTimeFormat(author);
             SetUnfinishedTasks(sprint, author);
             SetAuthorCommits(policy, author, commits);
-            SetAuthorName(author.Name);
-            SetAuthorPullRequestsCount(author, pullRequests);
+            author.Name = SetName(author.Name);
+            SetAuthorPullRequests(author, pullRequests, policy);
         }
 
-        public static void SetAuthorName(string author)
+        public static string SetName(string name)
         {
             string delimiter = "(\\[.*\\])";
-            if(author!=null)
-                author = Regex.Replace(author, delimiter, "");
+            if(name!=null)
+                name = Regex.Replace(name, delimiter, "");
+            return name;
         }
 
         private static void SetAuthorTimeSpent(Author author)
@@ -137,13 +141,16 @@ namespace JiraReporter
             author.Commits = find;
             IssueAdapter.AdjustIssueCommits(author);           
         }       
- 
-        public static void SetAuthorPullRequestsCount(Author author, List<PullRequest> pullRequests)
+
+        public static void SetAuthorPullRequests(Author author, List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy)
         {
-            if (author.Issues != null)
-                if (author.Issues.Count > 0)
-                    foreach (var issue in author.Issues)
-                        author.PullRequestsCount += issue.PullRequests.Count;
+               var find = new List<PullRequest>();
+
+               if (policy.Users.ContainsKey(author.Name))
+                 if (policy.Users[author.Name] != "")
+                   find = pullRequests.FindAll(pullRequest => pullRequest.GithubPullRequest.User.Name == policy.Users[author.Name]);
+               author.PullRequests = find;
+               IssueAdapter.AdjustIssuePullRequests(author);     
         }
     }
 }

@@ -59,7 +59,7 @@ namespace JiraReporter
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
@@ -68,7 +68,6 @@ namespace JiraReporter
                 SetIssue(issue, policy, newIssue, timesheet);
                 if (issue.Subtasks != null)
                     SetSubtasksIssues(issue, policy, timesheet);
-                AdjustIssuePullRequests(issue, pullRequests);
             }
         }
 
@@ -109,7 +108,7 @@ namespace JiraReporter
             SetIssueExists(issue, timesheet.Worklog.Issues);
             if (issue.SubTask == true)
                 SetParent(issue, newIssue, policy, timesheet);
-            AuthorsProcessing.SetAuthorName(issue.Assignee);
+            issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
             
             SetIssueLink(issue, policy);
         }
@@ -195,15 +194,16 @@ namespace JiraReporter
                     commit.TaskSynced = true;
         }
 
-        private static void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
+        public static void AdjustIssuePullRequests(Author author)
         {
             var find = new List<PullRequest>();
-            if(pullRequests!=null)
+            if(author.PullRequests!=null)
             {
-                issue.PullRequests = new List<PullRequest>();
-                foreach(var pullRequest in pullRequests)
+              if(author.Issues!=null)
+                foreach(var issue in author.Issues)
                 {
-                    find = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
+                    issue.PullRequests = new List<PullRequest>();
+                    find = author.PullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
                     if (find != null)
                         issue.PullRequests = find;
                     EditIssuePullRequests(issue);

@@ -22,13 +22,24 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeft { get; set; }
         public List<Commit> Commits { get; set; }
-        public int PullRequestsCount { get; set; }
+        public List<PullRequest> PullRequests { get; set; }
 
         public int UnsyncedCommitsCount 
         { 
             get
             {
-                return Commits.Count(com => com.TaskSynced == false);
+                if (Commits != null)
+                    return Commits.Count(com => com.TaskSynced == false);
+                else return 0;
+            }
+        }
+        public int UnsyncedPullRequestsCount
+        {
+            get
+            {
+                if (PullRequests != null)
+                    return PullRequests.Count(p => p.TaskSynced == false);
+                else return 0;
             }
         }
     }

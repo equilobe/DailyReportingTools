@@ -19,13 +19,13 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        public void SetTimesheetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             var issues = new List<Issue>(timesheet.Worklog.Issues);
             foreach (var issue in issues)
                 IssueAdapter.SetIssueEntries(issue.Entries, issue, timesheet.Worklog.Issues);
             IssueAdapter.RemoveEntries(timesheet.Worklog.Issues);
-            IssueAdapter.SetIssues(timesheet, policy, options, pullRequests);
+            IssueAdapter.SetIssues(timesheet, policy, options);
         }  
     }
 }

@@ -1,4 +1,4 @@
-<div style="margin-top:15px; font-size:14px; color:black;">
+<div style="margin-top:15px; font-size:14px; color:#000000;">
       @if((Model.options.ToDate - Model.options.FromDate).Days <=1)
         {
            <h2 style="color:black"> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
@@ -156,18 +156,21 @@
                                 <span> commits </span>
                             }
                         }
-                        @if(author.PullRequestsCount>0)
+                        @if (author.PullRequests != null)
                         {
-                            <span> &#x25cf; @author.PullRequestsCount</span>
-                            if(author.PullRequestsCount==1)
+                            if (author.PullRequests.Count > 0)
                             {
-                                <span> pull request </span>
+                                <span> &#x25cf; @author.PullRequests.Count</span>
+                                if (author.PullRequests.Count == 1)
+                                {
+                                    <span> pull request </span>
+                                }
+                                else
+                                {
+                                    <span> pull requests </span>
+                                }
                             }
-                            else
-                            {
-                                <span> pull requests </span>
-                            }
-                        }
+                        }                       
                         @if(author.Issues!=null)
                         {
                          <div style="margin-top:20px; line-height:1.4em;">
@@ -303,48 +306,50 @@
 
                                             if (commit.Entry.Link != null)
                                             {
-                                                <span style="text-wrap:none">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma @closedParentheses</span>
+                                                <span style="text-wrap:none; white-space:nowrap">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma @closedParentheses</span>
                                             }
                                             else
-                                            { <span style="text-wrap:none">@openParentheses <span>@revision</span>@comma @closedParentheses</span> }
+                                            { <span style="text-wrap:none; white-space:nowrap">@openParentheses <span>@revision</span>@comma @closedParentheses</span> }
                                         }
                                         </span>
                                     }
-                                    
-                                    @if (issue.PullRequests.Count > 0)
+                                    @if (issue.PullRequests != null)
                                     {
-                                        <span> &#x25cf; </span>
-                                        <span style="background-color:yellow; font-weight:bold"> @issue.PullRequests.Count
-                                        @if (issue.PullRequests.Count == 1)
+                                        if (issue.PullRequests.Count > 0)
                                         {
-                                            <span> pull request </span>
+                                            <span> &#x25cf; </span>
+                                            <span style="background-color:yellow; font-weight:bold">
+                                                @issue.PullRequests.Count
+                                                @if (issue.PullRequests.Count == 1)
+                                                {
+                                                    <span> pull request </span>
+                                                }
+                                                else
+                                                {
+                                                    <span> pull requests </span>
+                                                }
+                                                @foreach (var pullRequest in issue.PullRequests)
+                                                {
+                                                    if (pullRequest == issue.PullRequests.First())
+                                                    {
+                                                        openParentheses = "(";
+                                                    }
+                                                    else { openParentheses = ""; }
+                                                    if (pullRequest == issue.PullRequests.Last())
+                                                    {
+                                                        closedParentheses = ")";
+                                                        comma = "";
+                                                    }
+                                                    else
+                                                    {
+                                                        closedParentheses = "";
+                                                        comma = ",";
+                                                    }
+                                                    <span style="white-space:nowrap">@openParentheses<a style="text-decoration:none" href="@pullRequest.GithubPullRequest.HtmlUrl">@pullRequest.GithubPullRequest.Number</a>@comma @closedParentheses</span>
+                                                }
+                                            </span>
                                         }
-                                        else
-                                        {
-                                            <span> pull requests </span>
-                                        }
-                                        @foreach(var pullRequest in issue.PullRequests)
-                                        {
-                                            if (pullRequest == issue.PullRequests.First())
-                                            {
-                                                openParentheses = "(";
-                                            }
-                                            else { openParentheses = ""; }
-                                            if (pullRequest == issue.PullRequests.Last())
-                                            {
-                                                closedParentheses = ")";
-                                                comma = "";
-                                            }
-                                            else
-                                            {
-                                                closedParentheses = "";
-                                                comma = ",";
-                                            }
-                                            <span>@openParentheses<a style="text-decoration:none" href="@pullRequest.GithubPullRequest.HtmlUrl">@pullRequest.GithubPullRequest.Number</a>@comma @closedParentheses</span>
-                                        }
-                                       </span>
-                                    }
-                                    
+                                    }                                                                      
                                         <div style="margin-left:35px; font-size:12px; font-family:Lucida Console, 'Courier New'">
                                             @if (issue.Entries.Count > 0)
                                             {
@@ -424,6 +429,24 @@
                                         }
                                     </ul>
                                                                   
+                            </div>
+                        }
+                        
+                        @if (author.UnsyncedPullRequestsCount > 0)
+                        {
+                            <div style="margin-top:25px">
+                                <b>Unrelated pull requets</b>
+                                <ul style="padding-left:0px; margin-left:0px">
+                                    @foreach (var pullRequest in author.PullRequests)
+                                    {
+                                        if (pullRequest.TaskSynced == false)
+                                        {
+                                            <li>
+                                                <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
+                                            </li>
+                                        }
+                                    }                                                                    
+                                </ul>
                             </div>
                         }
 
@@ -1000,25 +1023,7 @@
                     }
                         
                 </div>
-            }       
-        
-        @if(Model.PullRequests.Count>0)
-        {
-            <div style="margin-top:60px;">
-                <h2>Pending Pull Requests</h2>
-                <div style="margin-top:20px;">
-                    @foreach (var pullRequest in Model.PullRequests)
-                    {
-                        if (pullRequest.TaskSynced == false)
-                        {
-                            <div>
-                                <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-        }
+            }             
             
         @if (Model.Sprint.CompletedTasksList != null)
         {

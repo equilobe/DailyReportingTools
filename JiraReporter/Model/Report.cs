@@ -22,6 +22,5 @@ namespace JiraReporter.Model
         public DateTime Date { get; set; }
         public Summary Summary { get; set; }
         public SprintTasks Sprint { get; set; }
-        public List<PullRequest> PullRequests { get; set; } 
     }
 }

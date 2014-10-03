@@ -21,7 +21,7 @@ namespace JiraReporter
             SvnLogReporter.Model.Policy policy = SvnLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             policy.SetPermanentTaskLabel();
 
-            options.LoadDates();           
+            options.LoadDates(policy);           
 
             var report = ReportGenerator.GenerateReport(policy, options);
             
