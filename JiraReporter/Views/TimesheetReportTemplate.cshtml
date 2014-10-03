@@ -24,342 +24,39 @@
         var tooltipCommit = "";
      }
   
-    <div style="margin-top: 40px">
-        <h2>Summary</h2>
-            @if (Model.Summary.TotalTimeSeconds == 0)
-            {
-               <h2 style="font-weight:normal">No work logged</h2>
-            }
-            else
-            {
-                <h2 style="font-weight:normal"> @Model.Summary.TotalTime worked</h2>
-            }
-            @if(Model.Summary.InProgressTasksCount>0)
-            {
-                <div style="margin-top:10px;">
-                    <span>@Model.Summary.InProgressTasksCount </span>
-                    @if(Model.Summary.InProgressTasksCount==1)
-                    {
-                        <span> task </span>
-                    }
-                    else
-                    {
-                         <span> tasks </span>
-                    }
-                   <span>in progress</span>
-                   <span style="font-size:0;">
-                       <span style="font-size:14px;">(</span>
-                       @if(Model.Summary.InProgressTasksTimeLeftSeconds==0)
-                       {
-                           <span style="color:red;font-size:14px;">@Model.Summary.InProgressTasksTimeLeft left</span>
-                       }
-                       else
-                       {
-                           <span style="font-size:14px;">@Model.Summary.InProgressTasksTimeLeft left</span>
-                       }
-                       @if(Model.Summary.InProgressUnassigned>0)
-                       {
-                           <span style="font-size:14px">, @Model.Summary.InProgressUnassigned unassigned</span>
-                       }
-                       <span style="font-size:14px;">)</span>
-                   </span>
-                </div>
-            }
-            
-            @if(Model.Summary.OpenTasksCount>0)
-            {
-                <div style="margin-top:10px;">
-                    <span>@Model.Summary.OpenTasksCount </span>
-                    @if (Model.Summary.OpenTasksCount == 1)
-                    {
-                        <span> task </span>
-                    }
-                    else
-                    {
-                        <span> tasks </span>
-                    }
-                    <span>upcoming</span>
-                    <span style="font-size:0;">
-                        @if (Model.Summary.OpenTasksTimeLeftSeconds > 0 && Model.Summary.OpenUnassigned > 0)
-                        {
-                            comma = ", ";
-                        }
-                        @if(Model.Summary.OpenTasksTimeLeftSeconds>0 || Model.Summary.OpenUnassigned>0)
-                        {
-                            <span style="font-size:14px;">(</span>
-                            if(Model.Summary.OpenTasksTimeLeftSeconds>0)
-                            {
-                                <span style="font-size:14px">@Model.Summary.OpenTasksTimeLeft left</span>
-                            }
-                            <span style="font-size:14px">@comma</span>
-                            if(Model.Summary.OpenUnassigned>0)
-                            {
-                                <span style="font-size:14px">@Model.Summary.OpenUnassigned unassigned</span>
-                            }
-                            <span style="font-size:14px">)</span>
-                        }
-                    </span>
-                </div>
-            }
-            
-            @if (Model.Summary.AuthorsInvolved>0)
-            {
-                <div style="margin-top:10px">
-                    <span>@Model.Summary.AuthorsInvolved people involved</span>
-                </div>                
-            }
-    </div>
+<div>
+    @Partial("Views/summary.cshtml", Model)
+</div>
+
     <div style="margin-top:40px; line-height:1.4em;">
         @if(Model.Authors.Count>0)
         { 
               foreach (var author in Model.Authors)
-                {
+              {
                     <div style="margin-top:40px;">
-                        <b style="font-size:large;">@author.Name </b>
+                        @Partial("Views/authorHeader.cshtml", author)
                         @if(author.Issues!=null)
                         {
-                            <span> &#x25cf; @author.TimeLogged worked </span>
-                        }                        
-                        @if (author.InProgressTasks.Count>0)
-                        {
-                            <span> &#x25cf; @author.InProgressTasks.Count </span>
-                            if (author.InProgressTasks.Count==1)
+                           if(author.Issues.Count > 0)
+                           {
+                             <div style="margin-top:20px; line-height:1.4em;">
+                              @Partial("Views/workedHeader.cshtml", author)
+                          
+                            @foreach (var issue in author.Issues)
                             {
-                                <span> task in progress</span>
-                            }
-                            else
-                            {
-                                <span> tasks in progress</span>
-                            }
-                        }
-                        @if(author.OpenTasks.Count>0)
-                        {
-                            <span> &#x25cf; @author.OpenTasks.Count </span>
-                            if(author.OpenTasks.Count==1)
-                            {
-                                <span> upcoming task </span>
-                            }
-                            else
-                            {
-                                <span> upcoming tasks </span>
-                            }                            
-                        }
-                        @if (author.Commits.Count > 0)
-                        {
-                            <span> &#x25cf; @author.Commits.Count</span>
-                            if(author.Commits.Count==1)
-                            {
-                                <span> commit </span>
-                            }
-                            else
-                            {
-                                <span> commits </span>
-                            }
-                        }
-                        @if (author.PullRequests != null)
-                        {
-                            if (author.PullRequests.Count > 0)
-                            {
-                                <span> &#x25cf; @author.PullRequests.Count</span>
-                                if (author.PullRequests.Count == 1)
-                                {
-                                    <span> pull request </span>
-                                }
-                                else
-                                {
-                                    <span> pull requests </span>
-                                }
-                            }
-                        }                       
-                        @if(author.Issues!=null)
-                        {
-                         <div style="margin-top:20px; line-height:1.4em;">
-                             <b style="color:#380000 "> Yesterday  &#x25cf; @author.Issues.Count </b>
-                             @if (author.Issues.Count == 1)
-                             {
-                                 <b style="color:#380000 "> task </b>
-                             }
-                             else
-                             {
-                                 <b style="color:#380000 ">tasks</b>
-                             }
-                             <b style="color:#380000 "> &#x25cf; @author.TimeLogged </b>
-                          @if(author.Issues.Count > 0)
-                          { 
-                            foreach (var issue in author.Issues)
-                            {
-                                if (issue.Subtasks.Count > 0)
-                                {
-                                    remainingEstimate = issue.TotalRemaining;
-                                }
-                                else
-                                {
-                                    remainingEstimate = issue.RemainingEstimate;
-                                }
                                 if (issue.SubTask == true)
                                 {
                                     identation = "margin-left:25px";
-                                    <div>
-                                        @if (issue.Parent.Resolution != null)
-                                        {
-                                            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
-                                        }
-                                        else if (issue.Parent.StatusCategory.name == "In Progress")
-                                        {
-                                            <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                        }
-                                        else if (issue.Parent.Resolution == null)
-                                        {
-                                            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
-                                        }  
-                                                                          
-                                        <a href=@issue.Parent.Link style="text-decoration: none; font-weight:bold"> @issue.Parent.Summary </a>
-                                        <span style="color: #B8B8B8;"> &#x25cf; @issue.Parent.Key </span> 
-                                        @if (issue.Parent.Assignee == null)
-                                        {
-                                            <span> &#x25cf; Unassigned</span>
-                                        }
-                                        else if (issue.Parent.Assignee != author.Name)
-                                        { 
-                                            <span> &#x25cf; @issue.Parent.Assignee</span> 
-                                        }                                       
-                                    </div>                                  
+                                    @*@Partial("Views/parentTask.cshtml", issue.Parent, author)*@             
                                 }                                                                                                     
                                 else
                                 {
                                     identation = "";
                                 }
                                 <div style="@identation;">
-                                    @if (issue.Resolution != null)
-                                    {
-                                    <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
-                                    }
-                                    else if (issue.StatusCategory.name == "In Progress")
-                                    {
-                                    <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                    }
-                                    else if (issue.Resolution == null)
-                                    {
-                                    <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
-                                    }
-                                    <a href=@issue.Link style="text-decoration: none; font-weight:bold"> @issue.Summary</a>
-                                    <span style="color: #B8B8B8;"> &#x25cf; @issue.Key </span>
-                                    <span> &#x25cf; @issue.TimeLoggedTotal total time spent</span>    
-                                    @if(issue.Label!=null)
-                                    {
-                                        color = "orange";
-                                    }
-                                    else { color = "red"; }
-                                    @if(issue.TotalRemainingSeconds==0 && issue.Resolution == null)
-                                    {
-                                        <span style="color:@color; font-weight:bold"> &#x25cf; @remainingEstimate left</span>
-                                    }
-                                    @if (issue.TotalRemainingSeconds > 0)
-                                    {
-                                        if (issue.Resolution != null)
-                                        {
-                                            if (issue.Subtasks.Count > 0)
-                                            {
-                                                <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left from subtasks</span>
-                                            }
-                                            else
-                                            {
-                                                <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <span> &#x25cf; @remainingEstimate left</span>
-                                        }
-                                    }                                                                         
-                                        
-                                    <span> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@issue.TimeLogged worked</span></span>
-                                    @if (issue.Commits.Count > 0)
-                                    {
-                                        <span> &#x25cf; </span>
-                                        <span style="background-color:yellow; font-weight:bold;"> @issue.Commits.Count
-                                        @if (issue.Commits.Count == 1)
-                                        {
-                                            <span> commit </span>
-                                        }
-                                        else
-                                        {
-                                            <span> commits </span>
-                                        }
-                                        @foreach (var commit in issue.Commits)
-                                        {                                           
-
-                                            if (commit.Entry.Revision.Length > 6)
-                                            {
-                                                revision = commit.Entry.Revision.Substring(0, 6);
-                                            }
-                                            else
-                                            {
-                                                revision = commit.Entry.Revision.Substring(0, commit.Entry.Revision.Length);
-                                            }
-
-                                            if (commit == issue.Commits.First())
-                                            {
-                                                openParentheses = "(";
-                                            }
-                                            else { openParentheses = ""; }
-                                            if (commit == issue.Commits.Last())
-                                            {
-                                                closedParentheses = ")";
-                                                comma = "";
-                                            }
-                                            else
-                                            {
-                                                closedParentheses = "";
-                                                comma = ",";
-                                            }
-
-                                            if (commit.Entry.Link != null)
-                                            {
-                                                <span style="text-wrap:none; white-space:nowrap">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma @closedParentheses</span>
-                                            }
-                                            else
-                                            { <span style="text-wrap:none; white-space:nowrap">@openParentheses <span>@revision</span>@comma @closedParentheses</span> }
-                                        }
-                                        </span>
-                                    }
-                                    @if (issue.PullRequests != null)
-                                    {
-                                        if (issue.PullRequests.Count > 0)
-                                        {
-                                            <span> &#x25cf; </span>
-                                            <span style="background-color:yellow; font-weight:bold">
-                                                @issue.PullRequests.Count
-                                                @if (issue.PullRequests.Count == 1)
-                                                {
-                                                    <span> pull request </span>
-                                                }
-                                                else
-                                                {
-                                                    <span> pull requests </span>
-                                                }
-                                                @foreach (var pullRequest in issue.PullRequests)
-                                                {
-                                                    if (pullRequest == issue.PullRequests.First())
-                                                    {
-                                                        openParentheses = "(";
-                                                    }
-                                                    else { openParentheses = ""; }
-                                                    if (pullRequest == issue.PullRequests.Last())
-                                                    {
-                                                        closedParentheses = ")";
-                                                        comma = "";
-                                                    }
-                                                    else
-                                                    {
-                                                        closedParentheses = "";
-                                                        comma = ",";
-                                                    }
-                                                    <span style="white-space:nowrap">@openParentheses<a style="text-decoration:none" href="@pullRequest.GithubPullRequest.HtmlUrl">@pullRequest.GithubPullRequest.Number</a>@comma @closedParentheses</span>
-                                                }
-                                            </span>
-                                        }
-                                    }                                                                      
+                                    @Partial("Views/workedTask.cshtml", issue)
+                                    @Partial("Views/commits.cshtml", issue.Commits)
+                                    @Partial("Views/pullRequests.cshtml", issue.PullRequests)                                                          
                                         <div style="margin-left:35px; font-size:12px; font-family:Lucida Console, 'Courier New'">
                                             @if (issue.Entries.Count > 0)
                                             {
@@ -400,14 +97,12 @@
                                                     </div>
                                                 }
                                             }                                         
-                                        </div>  
-                                                                                                                                        
+                                        </div>                                                                                                                                        
                                 </div>                                                                                                                                                                 
                             }
-                          }
-                         </div>
+                            </div>
                         }
-                        
+                        }
                         @if (author.UnsyncedCommitsCount > 0)
                         {
                             <div style="margin-top:25px;">
@@ -462,7 +157,7 @@
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b>In Progress (@author.InProgressTasks.Count </b>
+                                <b>Today (@author.InProgressTasks.Count </b>
                                     @if(author.InProgressTasks.Count==1)
                                     {
                                     <b> task, </b>
@@ -1033,40 +728,5 @@
                 </div>
             }             
             
-        @if (Model.Sprint.CompletedTasksList != null)
-        {
-            <div style="margin-top:60px">
-                <h2>Completed last 7 days</h2>
-                @foreach (var completedTasks in Model.Sprint.CompletedTasksList)
-                {
-                        <div style="margin-top:20px; line-height:1.4em;">
-                            <b>Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
-                            @foreach (var task in completedTasks.Tasks)
-                            {
-                                <div>
-                                    <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
-                                    <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                    <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
-                                    @if (task.Issue.Assignee != null)
-                                    {
-                                        <span style="white-space:nowrap"> &#x25cf; @task.Issue.Assignee </span>
-                                    }
-                                    else
-                                    {
-                                        <span style="white-space:nowrap"> &#x25cf; Unassigned </span>
-                                    }
-                                    @if (task.Issue.RemainingEstimateSeconds == 0 && task.Issue.TotalRemainingSeconds > 0)
-                                    {
-                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.TotalRemaining left from subtasks </span>
-                                    }
-                                    @if (task.Issue.RemainingEstimateSeconds != 0)
-                                    {
-                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left </span>
-                                    }    
-                                </div>
-                            }
-                        </div>
-                }
-           </div>
-        } 
+        @Partial("Views/completedTasks.cshtml", Model.Sprint)
 </div>

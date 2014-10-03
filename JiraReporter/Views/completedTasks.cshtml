@@ -1,0 +1,44 @@
+﻿@if (Model.CompletedTasksList != null)
+{
+    <div style="margin-top:60px">
+        <h2 style="color:black">Completed last 7 days</h2>
+        @foreach (var completedTasks in Model.CompletedTasksList)
+        {
+            <div style="margin-top:20px; line-height:1.4em;">
+                <b style="color:black">Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
+                @foreach (var task in completedTasks.Tasks)
+                {
+                    <div>
+                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
+                        <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
+                        <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
+                        @if(task.Issue.Subtasks.Count>0)
+                        {
+                            <span style="color:black"> &#x25cf; @task.Issue.TimeLoggedTotal worked</span>
+                        }
+                        else
+                        {
+                            <span style="color:black"> &#x25cf; @task.Issue.TimeLogged worked</span>
+                        }
+                        @if (task.Issue.RemainingEstimateSeconds == 0 && task.Issue.TotalRemainingSeconds > 0)
+                        {
+                            <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.TotalRemaining left from subtasks </span>
+                        }
+                        @if (task.Issue.RemainingEstimateSeconds != 0)
+                        {
+                            <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left </span>
+                        }
+                        @if (task.Issue.Assignee != null)
+                        {
+                            <span style="white-space:nowrap; color:black"> &#x25cf; @task.Issue.Assignee </span>
+                        }
+                        else
+                        {
+                            <span style="white-space:nowrap; color:black"> &#x25cf; Unassigned </span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+} 

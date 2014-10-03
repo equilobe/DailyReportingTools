@@ -1,0 +1,60 @@
+﻿@{
+    var bold = "";
+    var remainingEstimate = "";
+    var colorTotal = "black";
+    var color = "black";
+}
+        @if (Model.Subtasks.Count > 0)
+        {
+            remainingEstimate = Model.TotalRemaining;
+        }
+        else
+        {
+            remainingEstimate = Model.RemainingEstimate;
+        }
+        @if (Model.Resolution != null)
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
+        }
+        else if (Model.StatusCategory.name == "In Progress")
+        {
+            <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
+        }
+        else if (Model.Resolution == null)
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
+        }
+        <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
+        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
+        <span> &#x25cf; @Model.TimeLoggedTotal total time spent</span>
+        @if (Model.Label != null)
+        {
+            color = "orange";
+        }
+        else 
+        { 
+            color = "red"; 
+        }
+        @if (Model.TotalRemainingSeconds == 0 && Model.Resolution == null)
+        {
+            <span style="color:@color; font-weight:bold"> &#x25cf; @remainingEstimate left</span>
+        }
+        @if (Model.TotalRemainingSeconds > 0)
+        {
+            if (Model.Resolution != null)
+            {
+                if (Model.Subtasks.Count > 0)
+                {
+                    <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left from subtasks</span>
+                }
+                else
+                {
+                    <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
+                }
+            }
+            else
+            {
+                <span> &#x25cf; @remainingEstimate left</span>
+            }
+        }
+        <span> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@Model.TimeLogged worked</span></span>

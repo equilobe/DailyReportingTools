@@ -20,6 +20,7 @@ namespace JiraReporter
             SvnLogReporter.Options options = GetCommandLineOptions(args);
             SvnLogReporter.Model.Policy policy = SvnLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             policy.SetPermanentTaskLabel();
+            SetTemplateGlobal();
 
             options.LoadDates(policy);           
 
@@ -28,6 +29,11 @@ namespace JiraReporter
             SaveReportToFile(report);
 
             SendReport(report, GetReportPath(report));
+        }
+
+        private static void SetTemplateGlobal()
+        {
+            Razor.SetTemplateBase(typeof(SvnLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
 
         private static SvnLogReporter.Options GetCommandLineOptions(string[] args)

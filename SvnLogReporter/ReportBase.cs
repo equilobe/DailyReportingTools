@@ -70,17 +70,20 @@ namespace SvnLogReporter
         {
             var reportContent = "";
             var reports = GetReports(log);
-                foreach (var report in reports)
-                        reportContent += ProcessReport(Policy, report);         
+            var viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplate.cshtml";
+            foreach (var report in reports)
+            {
+                report.Title = Policy.ReportTitle;
+                reportContent += ProcessReport(report, viewPath);
+            }
             return reportContent;
         }
 
-        protected string ProcessReport(Policy p, Report report)
+        public static string ProcessReport <T>(T report, string viewPath)
         {
             try
             {
-                string template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplate.cshtml");
-                report.Title = p.ReportTitle;
+                string template = File.ReadAllText(viewPath);
                 return Razor.Parse(template, report);
             }
             catch (TemplateCompilationException templateException)

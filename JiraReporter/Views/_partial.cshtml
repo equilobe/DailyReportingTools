@@ -1,0 +1,10 @@
+<div style="margin-top:15px;">
+      @if((Model.options.ToDate - Model.options.FromDate).Days <=1)
+        {
+           <h2> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
+        }
+        else
+        {
+           <h2>@Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</h2>
+        }  
+</div>

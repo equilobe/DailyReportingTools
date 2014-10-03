@@ -1,0 +1,58 @@
+﻿<div>
+    <b style="font-size:large; color:black">@Model.Name </b>
+    @if (Model.Issues != null)
+    {
+        <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
+    }
+    @if (Model.InProgressTasks.Count > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.InProgressTasks.Count </span>
+        if (Model.InProgressTasks.Count == 1)
+        {
+            <span style="color:black"> task in progress</span>
+        }
+        else
+        {
+            <span style="color:black"> tasks in progress</span>
+        }
+    }
+    @if (Model.OpenTasks.Count > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.OpenTasks.Count </span>
+        if (Model.OpenTasks.Count == 1)
+        {
+            <span style="color:black"> upcoming task </span>
+        }
+        else
+        {
+            <span style="color:black"> upcoming tasks </span>
+        }
+    }
+    @if (Model.Commits.Count > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.Commits.Count</span>
+        if (Model.Commits.Count == 1)
+        {
+            <span style="color:black"> commit </span>
+        }
+        else
+        {
+            <span style="color:black"> commits </span>
+        }
+    }
+    @if (Model.PullRequests != null)
+    {
+        if (Model.PullRequests.Count > 0)
+        {
+            <span style="color:black"> &#x25cf; @Model.PullRequests.Count</span>
+            if (Model.PullRequests.Count == 1)
+            {
+                <span style="color:black"> pull request </span>
+            }
+            else
+            {
+                <span style="color:black"> pull requests </span>
+            }
+        }
+    }
+</div>
