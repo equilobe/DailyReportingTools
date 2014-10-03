@@ -51,7 +51,7 @@ namespace SvnLogReporter
         {
             Options options = GetCommandLineOptions(args);
             Policy p = Policy.CreateFromFile(options.PolicyPath);
-            options.LoadDates();
+            options.LoadDates(p);
 
             var processor = Processors[p.SourceControl.Type](p, options);
             var report = processor.GenerateReport();
