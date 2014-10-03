@@ -14,6 +14,9 @@ namespace SvnLogReporter.Model
         [XmlElement("logentry")]
         public List<LogEntry> Entries { get; set; }
 
+        [XmlIgnore]
+        public List<Octokit.PullRequest> PullRequests { get; set; }
+
         public void RemoveWrongEntries(DateTime fromDate)
         {
             if (!Entries.Any())

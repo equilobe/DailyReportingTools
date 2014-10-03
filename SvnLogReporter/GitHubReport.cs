@@ -20,21 +20,44 @@ namespace SvnLogReporter
         }
 
         public override Log CreateLog()
-        {           
+        {
+            var pullRequests = GetPullRequests(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName).ToList();
             var commits = GetReportCommits();
-            return LoadLog(commits);
+            return LoadLog(commits, pullRequests);
         }
 
-        protected Log LoadLog(List<GitHubCommit> commits)
+        protected Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequets)
         {
             var log = new Log();
+            if(pullRequets!=null)
+                log.PullRequests = pullRequets;
             log.Entries = new List<LogEntry>();
-
+            var find = new List<PullRequest>();
             foreach (var commit in commits)
-                log.Entries.Add(new LogEntry { Author = commit.Commit.Author.Name, Date = commit.Commit.Author.Date, Message = commit.Commit.Message, Revision = commit.Sha, Link = commit.HtmlUrl });
+            {
+                log.Entries.Add(
+                 new LogEntry
+                 {
+                     Author = commit.Commit.Author.Name,
+                     Date = commit.Commit.Author.Date,
+                     Message = commit.Commit.Message,
+                     Revision = commit.Sha,
+                     Link = commit.HtmlUrl,
+                     PullRequets = pullRequets.FindAll(p => p.User.Login == commit.Author.Login)
+                 });
+                SetPullRequestsAuthors(log.Entries.Last());
+            }
 
             log.RemoveWrongEntries(Options.FromDate);
             return log;
+        }
+
+        private void SetPullRequestsAuthors(LogEntry entry)
+        {
+            if (entry.PullRequets != null)
+                if (entry.PullRequets.Count > 0)
+                    foreach (var pullRequest in entry.PullRequets)
+                        pullRequest.User.Name = entry.Author;
         }
 
         protected override List<Report> GetReports(Log log)
@@ -53,7 +76,7 @@ namespace SvnLogReporter
                 reports.Add(report);
             }
             reports = reports.OrderBy(r => r.ReportDate).ToList();
-            reports.First().PullRequests = GetPullRequests(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName).ToList();
+            reports.First().PullRequests = log.PullRequests;
             return reports;
         }
      
@@ -97,7 +120,7 @@ namespace SvnLogReporter
             return commits;
         }
 
-        protected IReadOnlyList<Octokit.User> GetAllContributors(string owner, string name)
+        public IReadOnlyList<Octokit.User> GetAllContributors(string owner, string name)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
@@ -105,7 +128,7 @@ namespace SvnLogReporter
             return connectionAll.GetAll<Octokit.User>(ApiUrls.RepositoryContributors(owner, name)).Result;
         }
 
-        protected Octokit.User GetUserInfo(string username)
+        public Octokit.User GetUserInfo(string username)
         {
             Ensure.ArgumentNotNullOrEmptyString(username, "username");
             ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));

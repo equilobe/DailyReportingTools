@@ -20,5 +20,7 @@ namespace SvnLogReporter.Model
         public string Revision { get; set; }
         [XmlIgnore]
         public string Link { get; set; }
+        [XmlIgnore]
+        public List<Octokit.PullRequest> PullRequets { get; set; }
     }
 }
