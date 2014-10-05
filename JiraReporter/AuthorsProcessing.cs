@@ -36,22 +36,26 @@ namespace JiraReporter
         {
             var authors = new Dictionary<string, List<Issue>>();
             foreach (var issue in timesheet.Worklog.Issues)
+            {
                 Add(authors, issue.Entries.First().AuthorFullName, issue);
+                issue.LoggedAuthor = issue.Entries.First().AuthorFullName;
+            }
+               
             return authors;
 
         }
 
-        private static void Add(Dictionary<string, List<Issue>> dict, string key, Issue value)
+        private static void Add(Dictionary<string, List<Issue>> dict, string key, Issue issue)
         {
             if (dict.ContainsKey(key))
             {
                 List<Issue> list = dict[key];
-                list.Add(value);
+                list.Add(issue);
             }
             else
             {
                 List<Issue> list = new List<Issue>();
-                list.Add(value);
+                list.Add(issue);
                 dict.Add(key, list);
             }
         }

@@ -33,6 +33,8 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string Assignee { get; set; }
         [XmlIgnore]
+        public string LoggedAuthor { get; set; }
+        [XmlIgnore]
         public AnotherJiraRestClient.Priority Priority { get; set; }
         [XmlIgnore]
         public int RemainingEstimateSeconds { get; set; }
