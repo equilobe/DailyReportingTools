@@ -88,23 +88,23 @@
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b style="color:black">Today (@author.InProgressTasks.Count </b>
+                                <b style="color:sienna">Today &#x25cf; @author.InProgressTasks.Count </b>
                                     @if(author.InProgressTasks.Count==1)
                                     {
-                                    <b style="color:black"> task, </b>
+                                    <b style="color: sienna"> task </b>
                                     }
                                     else
                                     {
-                                    <b style="color:black"> tasks, </b>
+                                    <b style="color: sienna"> tasks </b>
                                     }
                                 @if (author.InProgressTasksTimeLeftSeconds == 0)
                                 {
                                     
-                                    <b style="color:red"> @author.InProgressTasksTimeLeft left</b><b>)</b>
+                                    <b style="color:red"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
                                 }
                                 else
                                 {
-                                    <b style="color:black"> @author.InProgressTasksTimeLeft left)</b>
+                                    <b style="color:sienna"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
                                 }
                                 @foreach (var task in author.InProgressTasks)
                                 {
@@ -132,23 +132,24 @@
                         
                         @if(author.OpenTasks.Count>0)
                         {
-                            <div style="margin-top:20px;line-height:1.4em;">
-                                <span style="font-size:0;">
-                                    <b style="font-size:14px; color:black">Upcoming (@author.OpenTasks.Count </b>
+                            <div style="line-height:1.4em; color:sienna; margin-top:20px;">
+                                    <b style="font-size: 14px; color: sienna">Upcoming &#x25cf; @author.OpenTasks.Count </b>
                                     @if(author.OpenTasks.Count == 1)
                                     {
-                                        <b style="font-size:14px; color:black"> task</b>
+                                        <b style="color: sienna"> &#x25cf; task</b>
                                     }
                                     else
                                     {
-                                        <b style="font-size:14px; color:black"> tasks</b>
+                                        <b style="color: sienna"> &#x25cf; tasks</b>
                                     }
                                     @if (author.OpenTasksTimeLeftSeconds != 0)                     
                                     {
-                                        <b style="font-size:14px; color:black">, @author.OpenTasksTimeLeft left</b>
+                                        <b style="color: sienna"> &#x25cf; @author.OpenTasksTimeLeft left</b>
                                     }
-                                    <b style="font-size:14px; color:black">)</b>
-                                 </span>
+                                    else
+                                    {
+                                        <b style="color:red">&#x25cf; @author.OpenTasksTimeLeft left</b>
+                                    }
                             @foreach (var task in author.OpenTasks)
                             {
                                     if (task.Issue.SubTask == true)
