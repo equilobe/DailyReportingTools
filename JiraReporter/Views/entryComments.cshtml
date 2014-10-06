@@ -1,0 +1,14 @@
+﻿@foreach (var entry in Model)
+{
+    if (entry.Comment != "")
+    {
+        <div>
+            @foreach (string comment in entry.Comment.Split('\n'))
+            {
+                <div> 
+              <span style="color:black">@comment</span> 
+                </div>
+            }
+        </div>
+    }
+}

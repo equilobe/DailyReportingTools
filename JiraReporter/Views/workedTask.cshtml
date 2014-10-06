@@ -14,19 +14,19 @@
         }
         @if (Model.Resolution != null)
         {
-            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
         }
         else if (Model.StatusCategory.name == "In Progress")
         {
-            <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
+            <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
         }
         else if (Model.Resolution == null)
         {
-            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10065;</span>
         }
         <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
         <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
-        <span> &#x25cf; @Model.TimeLoggedTotal total time spent</span>
+        <span style="color:black;"> &#x25cf; @Model.TimeLoggedTotal total time spent</span>
         @if (Model.Label != null)
         {
             color = "orange";
@@ -54,7 +54,7 @@
             }
             else
             {
-                <span> &#x25cf; @remainingEstimate left</span>
+                <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
             }
         }
-        <span> &#x25cf; <span style="background-color:yellow; font-weight:bold;">@Model.TimeLogged worked</span></span>
+        <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:black;">@Model.TimeLogged worked</span></span>

@@ -1,0 +1,32 @@
+﻿@{
+    string[] delim = { "<br />" };
+}
+<div style="margin-top:25px;">
+    <b style="color:black">Unrelated commits </b>
+    <ul style="padding:0; margin-left:15px;">
+        @foreach (var commit in Model)
+        {
+            if (commit.TaskSynced == false)
+            {
+                if (commit.Entry.Link != null)
+                {
+                    <li>
+                        <div>
+                            <a href="@commit.Entry.Link" style="text-decoration:none">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
+                        </div>
+                        @foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
+                        {
+                            <div>
+                                <span style="color:black">@line</span>
+                            </div>
+                        }
+                    </li>
+                }
+                else
+                {
+                    <li style="color:black">@commit.Entry.Message</li>
+                }
+            }
+        }
+    </ul>
+</div>

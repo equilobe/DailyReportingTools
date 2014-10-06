@@ -14,7 +14,6 @@
         var color="black";
         var tasks="";
         var comma = "";
-        string[] delim = { "<br />" };
         var openParentheses = "(";
         var closedParentheses = ")";
         var identation = "";
@@ -47,7 +46,7 @@
                                 if (issue.SubTask == true)
                                 {
                                     identation = "margin-left:25px";
-                                    @Partial("Views/parentTask.cshtml", issue.Parent)          
+                                    @Partial("Views/parentTask.cshtml", issue)          
                                 }                                                                                                     
                                 else
                                 {
@@ -60,42 +59,15 @@
                                         <div style="margin-left:35px; font-size:12px; font-family:Lucida Console, 'Courier New'">
                                             @if (issue.Entries.Count > 0)
                                             {
-                                                foreach (var entry in issue.Entries)
-                                                {
-                                                    if (entry.Comment != "")
-                                                    {
-                                                        <div>
-                                                            @foreach (string comment in entry.Comment.Split('\n'))
-                                                            {
-                                                                <div> @comment</div>
-                                                            }
-                                                        </div>
-                                                    }
-                                                }
+                                                @Partial("Views/entryComments.cshtml", issue.Entries)
                                             }                                            
                                             @if (issue.Commits.Count > 0)
                                             {
-                                                foreach (var commit in issue.Commits)
-                                                {
-                                                    if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
-                                                    {
-                                                        foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
-                                                        {
-                                                            <div style="color:#909090">
-                                                                @line
-                                                            </div>
-                                                        }
-                                                   }
-                                                }
+                                               @Partial("Views/commitsComments.cshtml", issue.Commits)
                                             }  
                                             @if(issue.PullRequests.Count>0)
                                             {
-                                                foreach(var pullRequest in issue.PullRequests)
-                                                {
-                                                    <div>
-                                                        @pullRequest.GithubPullRequest.Title
-                                                    </div>
-                                                }
+                                             @Partial("Views/pullRequestsTitle.cshtml", issue.PullRequests)
                                             }                                         
                                         </div>                                                                                                                                        
                                 </div>                                                                                                                                                                 
@@ -105,66 +77,25 @@
                         }
                         @if (author.UnsyncedCommitsCount > 0)
                         {
-                            <div style="margin-top:25px;">
-                                <b>Unrelated commits </b>                               
-                                    <ul style="padding:0; margin:0;">
-                                        @foreach (var commit in author.Commits)
-                                        {
-                                            if (commit.TaskSynced == false)
-                                            {
-                                                if(commit.Entry.Link!=null)
-                                                {
-                                                    <li>                                                      
-                                                         <div>
-                                                             <a href="@commit.Entry.Link" style="text-decoration:none">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
-                                                         </div>
-                                                         @foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
-                                                         {
-                                                             <div>
-                                                                 <span>@line</span>
-                                                             </div>
-                                                         }                                                   
-                                                    </li>
-                                                }
-                                                else
-                                                {
-                                                    <li>@commit.Entry.Message</li>
-                                                }
-                                            }
-                                        }
-                                    </ul>                                                                  
-                            </div>
+                            @Partial("Views/unrelatedCommits.cshtml", author.Commits)
                         }
                         
                         @if (author.UnsyncedPullRequestsCount > 0)
                         {
-                            <div style="margin-top:25px">
-                                <b>Unrelated pull requests</b>
-                                <ul style="padding:0px; margin:0px">
-                                    @foreach (var pullRequest in author.PullRequests)
-                                    {
-                                        if (pullRequest.TaskSynced == false)
-                                        {
-                                            <li>
-                                                <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
-                                            </li>
-                                        }
-                                    }                                                                    
-                                </ul>
-                            </div>
+                          @Partial("Views/unrelatedPullRequests.cshtml", author.PullRequests)
                         }
 
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b>Today (@author.InProgressTasks.Count </b>
+                                <b style="color:black">Today (@author.InProgressTasks.Count </b>
                                     @if(author.InProgressTasks.Count==1)
                                     {
-                                    <b> task, </b>
+                                    <b style="color:black"> task, </b>
                                     }
                                     else
                                     {
-                                    <b> tasks, </b>
+                                    <b style="color:black"> tasks, </b>
                                     }
                                 @if (author.InProgressTasksTimeLeftSeconds == 0)
                                 {
@@ -173,164 +104,25 @@
                                 }
                                 else
                                 {
-                                    <b> @author.InProgressTasksTimeLeft left)</b>
+                                    <b style="color:black"> @author.InProgressTasksTimeLeft left)</b>
                                 }
                                 @foreach (var task in author.InProgressTasks)
                                 {
                                         if (task.Issue.SubTask == true)
                                         {
                                             identation = "margin-left:25px";
-                                            <div>
-                                            @if (task.Issue.Parent.Resolution != null)
-                                            {
-                                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
-                                            }
-                                            else if (task.Issue.Parent.StatusCategory.name == "In Progress")
-                                            {
-                                                <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                            }
-                                            else if (task.Issue.Parent.Resolution == null)
-                                            {
-                                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal">&#10065;</span>
-                                            }
-                                            <a href=@task.Issue.Parent.Link style="text-decoration: none; font-weight:bold"> @task.Issue.Parent.Summary </a>
-                                            <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Parent.Key </span>
-                                            @if (task.Issue.Parent.Assignee == null)
-                                            {
-                                                <span> &#x25cf; Unassigned</span>
-                                            }
-                                            else if(task.Issue.Parent.Assignee!=author.Name)
-                                            {
-                                                <span> &#x25cf; @task.Issue.Parent.Assignee</span>
-                                            }
-                                           </div>
+                                            @Partial("Views/parentTask.cshtml", task.Issue)
                                         }
                                         else { identation = ""; }                                                                              
                                          
-                                            if (task.Issue.Subtasks.Count > 0)
-                                            {
-                                                remainingEstimate = task.Issue.TotalRemaining;
-                                            }
-                                            else
-                                            {
-                                                remainingEstimate = task.Issue.RemainingEstimate;
-                                            }
                                             <div style="@identation;">
-                                                <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                                @if(DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1))>=0)
-                                                {
-                                                    <b> NEW: </b>
-                                                }    
-                                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.StatusCategory.name == "In Progress")
-                                                {
-                                                    <span style="font-weight:bold">Continue:</span>
-                                                }                                                                
-                                                <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                                <span style ="color: #B8B8B8"> &#x25cf; @task.Issue.Key </span>
-                                                @if(task.Issue.Label!=null)
-                                                { 
-                                                    color = "orange"; 
-                                                }
-                                                else { color="red"; }
-                                                @if(task.Issue.Subtasks.Count==0)
-                                                {
-                                                    if (task.Issue.TimeSpent > 0)
-                                                    {
-                                                        <span> &#x25cf; @task.Issue.TimeLogged worked </span>
-                                                    }
-                                                    if (task.Issue.RemainingEstimateSeconds == 0)
-                                                    {
-                                                        <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span> &#x25cf; @remainingEstimate left</span>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (task.Issue.TimeSpentTotal > 0)
-                                                    {
-                                                        <span> &#x25cf; @task.Issue.TimeLoggedTotal worked </span>
-                                                    }
-                                                    if (task.Issue.TotalRemainingSeconds == 0)
-                                                    {
-                                                        <span style="color:@color; font-weight:bold">&#x25cf; @remainingEstimate left</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span> &#x25cf; @remainingEstimate left</span>
-                                                    }
-                                                }                                                                                                                                                                                            
+                                                 @Partial("Views/inProgress.cshtml", task.Issue)                                                                                                                                                                             
                                             </div>
                                             if (task.Issue.SubtasksIssues != null)
                                             {
                                                 if (task.Issue.SubtasksIssues.Count > 0)
                                                 {
-                                                    foreach (var subtask in task.Issue.SubtasksIssues)
-                                                    {
-                                                        if(subtask.Assignee==author.Name && subtask.Resolution==null)
-                                                        {                                                         
-                                                           if (subtask.RemainingEstimateSeconds == 0)
-                                                           {
-                                                               if(subtask.Label!=null)
-                                                               {
-                                                                   color = "orange";
-                                                               }
-                                                               else
-                                                               {
-                                                                   color = "red";
-                                                               }                                                            
-                                                           }
-                                                           else
-                                                           {
-                                                               color = "black";
-                                                           }                                 
-                                                        <div style="margin-left: 20px">
-                                                                @if(subtask.StatusCategory.name == "In Progress")
-                                                                {
-                                                                    <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
-                                                                    if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
-                                                                    {
-                                                                        <b> NEW: </b>
-                                                                    }
-                                                                    if (subtask.ExistsInTimesheet == true)
-                                                                    {
-                                                                        <b>Continue:</b>
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span style="font-size: 10.5pt; font-family: Segoe UI Symbol;">&#10065;</span>
-                                                                    if(DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1))>=0)
-                                                                    {
-                                                                        <b> NEW: </b>
-                                                                    }                  
-                                                                    if(subtask.Status == Model.policy.ReopenedStatus)
-                                                                    {
-                                                                         <span style="font-weight:bold">Reopened:</span>
-                                                                    }                                                         
-                                                                    else if(subtask.TimeSpent>0)
-                                                                    {
-                                                                        <span style="font-weight:bold">Paused:</span>
-                                                                    }                                                       
-                                                                }
-                                                                
-
-                                                            <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
-                                                            <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
-
-                                                            @if (subtask.TimeSpent > 0)
-                                                            {
-                                                                <span> &#x25cf; @subtask.TimeLogged worked </span>                                                                
-                                                            }
-                                                            @if (subtask.Resolution == null)
-                                                            {
-                                                            <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
-                                                            }
-                                                        </div>  
-                                                        }                                                       
-                                                    }
+                                                   @Partial("Views/subtasks.cshtml", task.Issue)
                                                 }
                                             }
                                 }
@@ -342,182 +134,37 @@
                         {
                             <div style="margin-top:20px;line-height:1.4em;">
                                 <span style="font-size:0;">
-                                    <b style="font-size:14px;">Upcoming (@author.OpenTasks.Count </b>
+                                    <b style="font-size:14px; color:black">Upcoming (@author.OpenTasks.Count </b>
                                     @if(author.OpenTasks.Count == 1)
                                     {
-                                        <b style="font-size:14px;"> task</b>
+                                        <b style="font-size:14px; color:black"> task</b>
                                     }
                                     else
                                     {
-                                        <b style="font-size:14px;"> tasks</b>
+                                        <b style="font-size:14px; color:black"> tasks</b>
                                     }
                                     @if (author.OpenTasksTimeLeftSeconds != 0)                     
                                     {
-                                        <b style="font-size:14px">, @author.OpenTasksTimeLeft left</b>
+                                        <b style="font-size:14px; color:black">, @author.OpenTasksTimeLeft left</b>
                                     }
-                                    <b style="font-size:14px;">)</b>
+                                    <b style="font-size:14px; color:black">)</b>
                                  </span>
                             @foreach (var task in author.OpenTasks)
                             {
                                     if (task.Issue.SubTask == true)
                                     {
                                         identation = "margin-left:25px";
-                                        <div>
-                                            @if (task.Issue.Parent.Resolution != null)
-                                            {
-                                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
-                                            }
-                                            else if (task.Issue.Parent.StatusCategory.name == "In Progress")
-                                            {
-                                                <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                            }
-                                            else if (task.Issue.Parent.Resolution == null)
-                                            {
-                                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal">&#10065;</span>
-                                            }
-                                            <a href=@task.Issue.Parent.Link style="text-decoration: none; font-weight:bold"> @task.Issue.Parent.Summary </a>
-                                            <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Parent.Key </span>
-                                            @if (task.Issue.Parent.Assignee == null)
-                                            {
-                                                <span> &#x25cf; Unassigned</span>
-                                            }
-                                            else if (task.Issue.Parent.Assignee != author.Name)
-                                            {
-                                                <span> &#x25cf; @task.Issue.Parent.Assignee</span>
-                                            }
-                                        </div>
+                                        @Partial("Views/parentTask.cshtml", task.Issue)
                                     }
                                     else { identation = ""; }
                                     <div style="@identation;">
-                                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
-                                        @if (DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
-                                        {
-                                            <b> NEW: </b>
-                                        }                  
-                                        @if (task.Issue.Status == Model.policy.ReopenedStatus)
-                                        {
-                                                <b>Reopened: </b>
-                                        }
-                                        else
-                                        {
-                                            if (task.Issue.TimeSpent > 0)
-                                            {
-                                                   <b>Paused: </b>
-                                            }
-                                        }
-                                        <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                        <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
-                                        @if(task.Issue.Label!=null)
-                                        {
-                                            color = "orange";
-                                        }
-                                        else
-                                        {
-                                            color = "red";
-                                        }
-                                        @if (task.Issue.Subtasks.Count == 0)
-                                        {
-                                            if (task.Issue.TimeSpent > 0)
-                                            {
-                                                <span> &#x25cf; @task.Issue.TimeLogged worked </span>
-                                            }
-                                            if (task.Issue.RemainingEstimateSeconds == 0)
-                                            {
-                                                <span style="color:@color; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
-                                            }
-                                            else
-                                            {
-                                                <span> &#x25cf; @task.Issue.RemainingEstimate left</span>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (task.Issue.TimeSpentTotal > 0)
-                                            {
-                                                <span> &#x25cf; @task.Issue.TimeLoggedTotal worked </span>
-                                            }
-                                            if (task.Issue.TotalRemainingSeconds == 0)
-                                            {
-                                                <span style="color:@color; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
-                                            }
-                                            else
-                                            {
-                                                <span> &#x25cf; @task.Issue.TotalRemaining left</span>
-                                            }
-                                        }                                                                                                                                                                                                                                                                         
-                                        @if (task.HasInProgressAuthor == true)
-                                        {
-                                             <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
-                                        }
-                                                                
+                                       @Partial("Views/openTasks.cshtml", task)                   
                                     </div>
                                     if (task.Issue.SubtasksIssues != null)
                                     {
                                         if (task.Issue.SubtasksIssues.Count > 0)
                                         {
-                                            foreach (var subtask in task.Issue.SubtasksIssues)
-                                            {
-                                                if (subtask.Assignee == author.Name && subtask.Resolution==null)
-                                                {
-                                                    if (subtask.RemainingEstimateSeconds == 0)
-                                                    {
-                                                        if(subtask.Label!=null)
-                                                        {
-                                                            color = "orange";
-                                                        }
-                                                        else
-                                                        {
-                                                            color = "red";
-                                                        }                                                       
-                                                    }
-                                                    else
-                                                    {
-                                                        color = "black";
-                                                    }
-                                                    <div style="margin-left: 20px">
-                                                        @if (subtask.StatusCategory.name == "In Progress")
-                                                        {
-                                                            <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
-                                                            if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                                                            {
-                                                                <b> NEW: </b>
-                                                            }
-                                                            if (subtask.ExistsInTimesheet == true)
-                                                            {
-                                                                <b>Continue:</b>
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            <span style="font-size: 10.5pt; font-family: Segoe UI Symbol;">&#10065;</span>
-                                                            if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                                                            {
-                                                                <b> NEW: </b>
-                                                            }
-                                                            if (subtask.Status == Model.policy.ReopenedStatus)
-                                                            {
-                                                                <span style="font-weight:bold">Reopened:</span>
-                                                            }
-                                                            else if (subtask.TimeSpent > 0)
-                                                            {
-                                                                <span style="font-weight:bold">Paused:</span>
-                                                            }
-                                                        }
-
-                                                        <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
-                                                        <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
-
-                                                        @if (subtask.TimeSpent > 0)
-                                                        {
-                                                            <span> &#x25cf; @subtask.TimeLogged worked </span>
-                                                        }
-                                                        @if (subtask.Resolution == null)
-                                                        {
-                                                            <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
-                                                        }
-                                                    </div>
-                                                }
-                                            }
+                                           @Partial("Views/subtasks.cshtml", task.Issue)
                                         }
                                     }
                             }
@@ -539,188 +186,24 @@
                     tasks = "tasks";
                 }
                 <div style="margin-top:60px; line-height:1.4em;">
-                    <h2>Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
+                    <h2 style="color:black">Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
                     @foreach (var task in Model.Sprint.UnassignedTasks)
                     {
                             if (task.Issue.SubTask == true)
                             {
                                 identation = "margin-left:25px";
-                                <div>
-                                    @if (task.Issue.Parent.Resolution != null)
-                                    {
-                                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10004;</span>
-                                    }
-                                    else if (task.Issue.Parent.StatusCategory.name == "In Progress")
-                                    {
-                                        <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                    }
-                                    else if (task.Issue.Parent.Resolution == null)
-                                    {
-                                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal">&#10065;</span>
-                                    }
-                                    <a href=@task.Issue.Parent.Link style="text-decoration: none; font-weight:bold"> @task.Issue.Parent.Summary </a>
-                                    <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Parent.Key </span>
-                                    @if (task.Issue.Parent.Assignee == null)
-                                    {
-                                        <span> &#x25cf; Unassigned</span>
-                                    }
-                                    else
-                                    {
-                                        <span> &#x25cf; @task.Issue.Parent.Assignee</span>
-                                    }
-                                </div>
+                                @Partial("Views/parentTask.cshtml", task.Issue)
                             }
                             else { identation = ""; }
                             <div style="@identation;">
-                                @if (task.Issue.StatusCategory.name == "In Progress")
-                                {
-                                <span style="font-family: Wolfram Alpha; font-size:10.5pt">&#9658;</span>
-                                }
-                                else if (task.Issue.Resolution == null)
-                                {
-                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal">&#10065;</span>
-                                }
-                                @if (DateTime.Compare(task.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
-                                {
-                                    <b> NEW: </b>
-                                }
-                                @if (task.Issue.Status == Model.policy.ReopenedStatus)
-                                {
-                                    <b>Reopened: </b>
-                                }
-                                else
-                                {
-                                    if (task.Issue.TimeSpent > 0)
-                                    {
-                                        <b>Paused: </b>
-                                    }
-                                }
-                                @if (task.Issue.ExistsInTimesheet == true && task.Issue.StatusCategory.name == "In Progress")
-                                {
-                                    <span style="font-weight:bold">Continue:</span>
-                                }
-
-                                <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
-                                @if(task.Issue.Label!=null)
-                                {
-                                    color = "orange";
-                                }
-                                else
-                                {
-                                    color = "red";
-                                }
-                                @if (task.Issue.Subtasks.Count == 0)
-                                {
-                                    if (task.Issue.TimeSpent > 0)
-                                    {
-                                        <span> &#x25cf; @task.Issue.TimeLogged worked </span>
-                                    }
-                                    if (task.Issue.RemainingEstimateSeconds == 0)
-                                    {
-                                        <span style="color:@color; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left</span>
-                                    }
-                                    else
-                                    {
-                                        <span> &#x25cf; @task.Issue.RemainingEstimate left</span>
-                                    }
-                                }
-                                else
-                                {
-                                    if (task.Issue.TimeSpentTotal > 0)
-                                    {
-                                        <span> &#x25cf; @task.Issue.TimeLoggedTotal worked </span>
-                                    }
-                                    if (task.Issue.TotalRemainingSeconds == 0)
-                                    {
-                                        <span style="color:@color; font-weight:bold">&#x25cf; @task.Issue.TotalRemaining left</span>
-                                    }
-                                    else
-                                    {
-                                        <span> &#x25cf; @task.Issue.TotalRemaining left</span>
-                                    }
-                                }
-                                @if (task.HasInProgress == true)
-                                {
-                                    <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
-                                }
-
+                               @Partial("Views/unassignedTasks.cshtml", task)
                             </div>
 
                             if (task.Issue.SubtasksIssues != null)
                             {
                                 if (task.Issue.SubtasksIssues.Count > 0)
                                 {                                    
-                                    foreach (var subtask in task.Issue.SubtasksIssues)
-                                    {
-                                        if (subtask.Resolution == null && subtask.Assignee == null)                                       
-                                        {
-                                            if (subtask.ExistsInTimesheet == true)
-                                            {
-                                                bold = "font-weight: bold;";
-                                            }
-                                            else
-                                            {
-                                                bold = "font-weight: normal;";
-                                            }
-                                            if (subtask.RemainingEstimateSeconds == 0)
-                                            {
-                                                if(subtask.Label!=null)
-                                                {
-                                                    color = "orange";
-                                                }
-                                                else
-                                                {
-                                                    color = "red"; 
-                                                }                                                
-                                            }
-                                            else
-                                            {
-                                                color = "black";
-                                            }
-                                            <div style="margin-left: 20px">
-                                                @if (subtask.StatusCategory.name == "In Progress")
-                                                {
-                                                    <span style="font-size: 10.5pt; font-family: Wolfram Alpha;">&#9658;</span>
-                                                    if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                                                    {
-                                                        <b> NEW: </b>
-                                                    }
-                                                    if (subtask.ExistsInTimesheet == true)
-                                                    {
-                                                        <b>Continue:</b>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <span style="font-size: 10.5pt; font-family: Segoe UI Symbol;">&#10065;</span>
-                                                    if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                                                    {
-                                                        <b> NEW: </b>
-                                                    }
-                                                    if (subtask.Status == Model.policy.ReopenedStatus)
-                                                    {
-                                                        <span style="font-weight:bold">Reopened:</span>
-                                                    }
-                                                    else if (subtask.TimeSpent > 0)
-                                                    {
-                                                        <span style="font-weight:bold">Paused:</span>
-                                                    }
-                                                }
-                                                <a style="text-decoration: none; @bold;" href="@subtask.Link">@subtask.Summary</a>
-                                                <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
-                                                @if (subtask.TimeSpent > 0)
-                                                {
-                                                    <span> &#x25cf; @subtask.TimeLogged worked </span>
-                                                }
-                                                @if (subtask.Resolution == null)
-                                                {
-                                                    <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
-                                                }
-                                            </div>
-
-                                            }
-                                        }
+                                 @Partial("Views/subtasks.cshtml", task.Issue)
                                 }
                             }
                     }

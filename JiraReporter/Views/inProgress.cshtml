@@ -1,0 +1,59 @@
+﻿@{
+    var remainingEstimate = "";
+    var color = "";
+}
+@if (Model.Subtasks.Count > 0)
+{
+    remainingEstimate = Model.TotalRemaining;
+}
+else
+{
+    remainingEstimate = Model.RemainingEstimate;
+}
+
+<span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black">&#9658;</span>
+@if (DateTime.Compare(Model.Created, DateTime.Today.AddDays(-1)) >= 0)
+{
+    <b style="color:black"> NEW: </b>
+}
+@if (Model.ExistsInTimesheet == true)
+{
+    <span style="font-weight:bold; color:black">Continue:</span>
+}
+<a style="text-decoration: none; font-weight:bold;" href="@Model.Link">@Model.Summary</a>
+<span style="color: #B8B8B8"> &#x25cf; @Model.Key </span>
+@if (Model.Label != null)
+{
+    color = "orange";
+}
+else { color = "red"; }
+@if (Model.Subtasks.Count == 0)
+{
+    if (Model.TimeSpent > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
+    }
+    if (Model.RemainingEstimateSeconds == 0)
+    {
+        <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left</span>
+    }
+    else
+    {
+        <span style="color:black"> &#x25cf; @remainingEstimate left</span>
+    }
+}
+else
+{
+    if (Model.TimeSpentTotal > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.TimeLoggedTotal worked </span>
+    }
+    if (Model.TotalRemainingSeconds == 0)
+    {
+        <span style="color:@color; font-weight:bold">&#x25cf; @remainingEstimate left</span>
+    }
+    else
+    {
+        <span style="color:black"> &#x25cf; @remainingEstimate left</span>
+    }
+}              

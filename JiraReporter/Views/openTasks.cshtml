@@ -1,0 +1,64 @@
+﻿@{
+    var color = "";
+}
+
+<span style="font-family: Segoe UI Symbol; font-size: 10.5pt">&#10065;</span>
+@if (DateTime.Compare(Model.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
+{
+    <b style="color:black"> NEW: </b>
+}
+@if (Model.Issue.Status == Model.Issue.ReopenedStatus)
+{
+    <b style="color:black">Reopened: </b>
+}
+else
+{
+    if (Model.Issue.TimeSpent > 0)
+    {
+        <b style="color:black">Paused: </b>
+    }
+}
+<a style="text-decoration: none; font-weight:bold;" href="@Model.Issue.Link">@Model.Issue.Summary</a>
+<span style="color: #B8B8B8;"> &#x25cf; @Model.Issue.Key </span>
+@if (Model.Issue.Label != null)
+{
+    color = "orange";
+}
+else
+{
+    color = "red";
+}
+@if (Model.Issue.Subtasks.Count == 0)
+{
+    if (Model.Issue.TimeSpent > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.Issue.TimeLogged worked </span>
+    }
+    if (Model.Issue.RemainingEstimateSeconds == 0)
+    {
+        <span style="color:@color; font-weight:bold;"> &#x25cf; @Model.Issue.RemainingEstimate left</span>
+    }
+    else
+    {
+        <span style="color:black"> &#x25cf; @Model.Issue.RemainingEstimate left</span>
+    }
+}
+else
+{
+    if (Model.Issue.TimeSpentTotal > 0)
+    {
+        <span style="color:black"> &#x25cf; @Model.Issue.TimeLoggedTotal worked </span>
+    }
+    if (Model.Issue.TotalRemainingSeconds == 0)
+    {
+        <span style="color:@color; font-weight:bold">&#x25cf; @Model.Issue.TotalRemaining left</span>
+    }
+    else
+    {
+        <span style="color:black"> &#x25cf; @Model.Issue.TotalRemaining left</span>
+    }
+}
+@if (Model.HasInProgressAuthor == true)
+{
+    <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
+}

@@ -1,0 +1,14 @@
+﻿<div style="margin-top:25px">
+    <b style="color:black">Unrelated pull requests</b>
+    <ul style="padding:0; margin-left:15px">
+        @foreach (var pullRequest in Model)
+        {
+            if (pullRequest.TaskSynced == false)
+            {
+                <li>
+                    <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
+                </li>
+            }
+        }
+    </ul>
+</div>
