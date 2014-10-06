@@ -20,7 +20,7 @@ namespace JiraReporter
 
         public static string ResolvedIssues(string fromDate, string endDate)
         {
-            return string.Format("resolved >= '{0}' & resolved <= '{1}'", fromDate, endDate);
+            return string.Format("resolved >= '{0}' & resolved <= '{1}' & statusCategory='Done'", fromDate, endDate);
         }
 
         public static string IssuesInOpenSprints(string project)
