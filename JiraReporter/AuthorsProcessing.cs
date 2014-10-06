@@ -105,7 +105,6 @@ namespace JiraReporter
             author.InProgressTasks = GetAuthorTasks(report.InProgressTasks, author);
             if (author.InProgressTasks != null)
             {
-            //    author.InProgressTasksCount = author.InProgressTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
                 author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
@@ -113,7 +112,6 @@ namespace JiraReporter
             author.OpenTasks = GetAuthorTasks(report.OpenTasks, author);
             if (author.OpenTasks != null)
             {
-              //  author.OpenTasksCount = author.OpenTasks.Count(tasks => tasks.Issue.SubTask == false && tasks.Issue.Label == null);
                 author.OpenTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
@@ -124,13 +122,16 @@ namespace JiraReporter
             var unfinishedTasks = new List<Task>();
             foreach (var task in tasks)
                 if (task.Issue.Assignee == author.Name)
+                {
                     unfinishedTasks.Add(task);
+                    unfinishedTasks.Last().Issue.LoggedAuthor = author.Name;
+                }
             return unfinishedTasks;
         } 
        
         private static bool AuthorIsEmpty(Author author)
         {
-            if (author.Issues == null && author.InProgressTasksCount == 0 && author.OpenTasksCount == 0 && author.Commits.Count==0)
+            if (author.Issues == null && author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.Commits.Count==0)
                 return true;
             return false;
         }

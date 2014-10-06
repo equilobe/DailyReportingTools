@@ -74,6 +74,8 @@ namespace JiraReporter.Model
         public List<Commit> Commits { get; set; }
         [XmlIgnore]
         public List<PullRequest> PullRequests { get; set; }
+        [XmlIgnore]
+        public string ReopenedStatus { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -128,6 +130,9 @@ namespace JiraReporter.Model
                 this.SubtasksIssues = issue.SubtasksIssues;
             }
             this.Commits = issue.Commits;
+            this.PullRequests = issue.PullRequests;
+            this.LoggedAuthor = issue.LoggedAuthor;
+            this.ReopenedStatus = issue.ReopenedStatus;
         }       
     }
 }
