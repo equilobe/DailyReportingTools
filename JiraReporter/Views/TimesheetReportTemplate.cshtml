@@ -43,20 +43,23 @@
                           
                                 @foreach (var issue in author.Issues)
                                 {
-                                    if (issue.SubTask == true)
-                                    {
+                                    <div style="margin-left:10px">
+                                        @if (issue.SubTask == true)
+                                        {
                                         identation = "margin-left:25px";
-                                        @Partial("Views/parentTask.cshtml", issue)          
-                                    }                                                                                                     
-                                    else
-                                    {
+                                        @Partial("Views/parentTask.cshtml", issue)
+                                        }
+                                        else
+                                        {
                                         identation = "";
-                                    }
-                                    <div style="@identation;">
-                                        <div style="margin-top:15px;">
-                                            @Partial("Views/workedTask.cshtml", issue)
-                                        </div>                                                                                                                                                                                                                           
-                                    </div>                                                                                                                                                                 
+                                        }
+                                        <div style="@identation;">
+                                            <div style="margin-top:15px;">
+                                                @Partial("Views/workedTask.cshtml", issue)
+                                            </div>
+                                        </div>      
+                                    </div>
+                                                                                                                                                                                               
                                 }
                             </div>
                         }
