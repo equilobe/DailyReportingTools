@@ -1,4 +1,4 @@
-<div style="margin-top:15px; font-size:14px; color:#000000;">
+<div style="margin-top:15px; font-size:12px; color:#000000;">
       @if((Model.options.ToDate - Model.options.FromDate).Days <=1)
         {
            <h2 style="color:black"> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
@@ -33,48 +33,31 @@
               foreach (var author in Model.Authors)
               {
                     <div style="margin-top:40px;">
-                        @Partial("Views/authorHeader.cshtml", author)
+                        <h1 style="color:black">@author.Name</h1>
                         @if(author.Issues!=null)
                         {
                            if(author.Issues.Count > 0)
                            {
-                             <div style="margin-top:20px; line-height:1.4em;">
+                             <div style="margin-top:25px; line-height:1.4em;">
                               @Partial("Views/workedHeader.cshtml", author)
                           
-                            @foreach (var issue in author.Issues)
-                            {
-                                if (issue.SubTask == true)
+                                @foreach (var issue in author.Issues)
                                 {
-                                    identation = "margin-left:25px";
-                                    @Partial("Views/parentTask.cshtml", issue)          
-                                }                                                                                                     
-                                else
-                                {
-                                    identation = "";
+                                    if (issue.SubTask == true)
+                                    {
+                                        identation = "margin-left:25px";
+                                        @Partial("Views/parentTask.cshtml", issue)          
+                                    }                                                                                                     
+                                    else
+                                    {
+                                        identation = "";
+                                    }
+                                    <div style="@identation;">
+                                        <div style="margin-top:15px;">
+                                            @Partial("Views/workedTask.cshtml", issue)
+                                        </div>                                                                                                                                                                                                                           
+                                    </div>                                                                                                                                                                 
                                 }
-                                <div style="@identation;">
-                                        @Partial("Views/workedTask.cshtml", issue)
-                                        @Partial("Views/commits.cshtml", issue.Commits)
-                                        @Partial("Views/pullRequests.cshtml", issue.PullRequests)                                                                                          
-                                        <div style="margin-left:35px; font-size:12px; font-family:Lucida Console, 'Courier New'">
-                                            @if (issue.Entries != null)
-                                            {
-                                                if (issue.Entries.Count > 0)
-                                                {
-                                                    @Partial("Views/entryComments.cshtml", issue.Entries)
-                                                }
-                                            }                                                                                 
-                                            @if (issue.Commits.Count > 0)
-                                            {
-                                               @Partial("Views/commitsComments.cshtml", issue.Commits)
-                                            }  
-                                            @if(issue.PullRequests.Count>0)
-                                            {
-                                             @Partial("Views/pullRequestsTitle.cshtml", issue.PullRequests)
-                                            }                                         
-                                        </div>                                                                                                                                        
-                                </div>                                                                                                                                                                 
-                            }
                             </div>
                         }
                         }
@@ -91,7 +74,7 @@
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b style="color:sienna">Today &#x25cf; @author.InProgressTasks.Count </b>
+                                <b style="color:sienna; font-size:13px;">Today &#x25cf; @author.InProgressTasks.Count </b>
                                     @if(author.InProgressTasks.Count==1)
                                     {
                                     <b style="color: sienna"> task </b>
@@ -136,7 +119,7 @@
                         @if(author.OpenTasks.Count>0)
                         {
                             <div style="line-height:1.4em; color:sienna; margin-top:20px;">
-                                    <b style="font-size: 14px; color: sienna">Upcoming &#x25cf; @author.OpenTasks.Count </b>
+                                    <b style="font-size: 13px; color: sienna">Upcoming &#x25cf; @author.OpenTasks.Count </b>
                                     @if(author.OpenTasks.Count == 1)
                                     {
                                         <b style="color: sienna"> task</b>
