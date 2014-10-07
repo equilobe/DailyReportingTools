@@ -49,8 +49,10 @@ namespace JiraReporter
             return false;
         }
 
-        private static void AddIssue(Issue issue, List<Issue> issues)
+        public static void AddIssue(Issue issue, List<Issue> issues)
         {
+            if (issues == null)
+                issues = new List<Issue>();
             issues.Add(issue);
         }
 
@@ -97,14 +99,12 @@ namespace JiraReporter
             issue.TimeSpentTotal = newIssue.fields.aggregatetimespent;
             issue.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
             if (newIssue.fields.subtasks != null)
-            {
                 issue.Subtasks = newIssue.fields.subtasks;
-            }
 
             if (issue.Entries != null)
                 SetIssueTimeSpent(issue);
-            else
-                issue.TimeSpent = newIssue.fields.timespent;
+            
+            issue.TimeSpentOnTask = newIssue.fields.timespent;
             SetIssueTimeFormat(issue);
             SetIssueExists(issue, timesheet.Worklog.Issues);
             if (issue.SubTask == true)
@@ -134,7 +134,10 @@ namespace JiraReporter
 
         public static void SetIssueTimeFormat(Issue issue)
         {
-            issue.TimeLogged = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpent);
+            if (issue.TimeSpent > 0)
+                issue.TimeLogged = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpent);
+            else
+                issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpentOnTask);
             issue.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(issue.TotalRemainingSeconds);
             issue.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpentTotal);
             issue.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(issue.RemainingEstimateSeconds);
@@ -176,16 +179,21 @@ namespace JiraReporter
 
         public static void AdjustIssueCommits(Author author)
         {
-            var find = new List<Commit>();
             if (author.Issues != null)
                 foreach (var issue in author.Issues)
                 {
-                    issue.Commits = new List<Commit>();
-                    find = author.Commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
-                    if (find != null)                    
-                        issue.Commits = find;                  
-                    EditIssueCommits(issue);
+                    AdjustIssueCommits(issue, author.Commits);
                 }
+        }
+
+        public static void AdjustIssueCommits(Issue issue, List<Commit> commits)
+        {
+            var find = new List<Commit>();
+            issue.Commits = new List<Commit>();
+            find = commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
+            if (find.Count>0)
+                issue.Commits = find;
+            EditIssueCommits(issue);
         }
 
         private static void EditIssueCommits(Issue issue)
@@ -196,20 +204,23 @@ namespace JiraReporter
         }
 
         public static void AdjustIssuePullRequests(Author author)
-        {
-            var find = new List<PullRequest>();
+        {           
             if(author.PullRequests!=null)
             {
-              if(author.Issues!=null)
-                foreach(var issue in author.Issues)
-                {
-                    issue.PullRequests = new List<PullRequest>();
-                    find = author.PullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
-                    if (find != null)
-                        issue.PullRequests = find;
-                    EditIssuePullRequests(issue);
-                }
+                if (author.Issues != null)
+                    foreach (var issue in author.Issues)
+                        AdjustIssuePullRequests(issue, author.PullRequests);
             }
+        }
+
+        public static void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
+        {
+            var find = new List<PullRequest>();
+            issue.PullRequests = new List<PullRequest>();
+            find = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
+            if (find != null)
+                issue.PullRequests = find;
+            EditIssuePullRequests(issue);
         }
 
        private static void EditIssuePullRequests(Issue issue)
@@ -219,5 +230,6 @@ namespace JiraReporter
                     foreach (var pullRequest in issue.PullRequests)
                         pullRequest.TaskSynced = true;
         }
+
     }
 }

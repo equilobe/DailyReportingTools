@@ -64,11 +64,11 @@ namespace JiraReporter
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
-            SetAuthorTimeFormat(author);
-            SetUnfinishedTasks(sprint, author);
+            SetAuthorTimeFormat(author);           
             SetAuthorCommits(policy, author, commits);
             author.Name = SetName(author.Name);
             SetAuthorPullRequests(author, pullRequests, policy);
+            SetUnfinishedTasks(sprint, author);
         }
 
         public static string SetName(string name)
@@ -125,6 +125,19 @@ namespace JiraReporter
                 {
                     unfinishedTasks.Add(task);
                     unfinishedTasks.Last().Issue.LoggedAuthor = author.Name;
+                    if (unfinishedTasks.Last().Issue.ExistsInTimesheet == false)
+                    {
+                        IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last().Issue, author.Commits);
+                        IssueAdapter.AdjustIssuePullRequests(unfinishedTasks.Last().Issue, author.PullRequests);
+                        if (unfinishedTasks.Last().Issue.Commits.Count > 0 || unfinishedTasks.Last().Issue.PullRequests.Count > 0) 
+                        {
+                            if (author.Issues == null)
+                                author.Issues = new List<Issue>();
+                            author.Issues.Add(unfinishedTasks.Last().Issue);
+                        }
+                           
+                    }
+                    //acceasi chestie pull- requests;
                 }
             return unfinishedTasks;
         } 

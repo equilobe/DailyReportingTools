@@ -53,14 +53,17 @@
                                     identation = "";
                                 }
                                 <div style="@identation;">
-                                    @Partial("Views/workedTask.cshtml", issue)
-                                    @Partial("Views/commits.cshtml", issue.Commits)
-                                    @Partial("Views/pullRequests.cshtml", issue.PullRequests)                                                          
+                                        @Partial("Views/workedTask.cshtml", issue)
+                                        @Partial("Views/commits.cshtml", issue.Commits)
+                                        @Partial("Views/pullRequests.cshtml", issue.PullRequests)                                                                                          
                                         <div style="margin-left:35px; font-size:12px; font-family:Lucida Console, 'Courier New'">
-                                            @if (issue.Entries.Count > 0)
+                                            @if (issue.Entries != null)
                                             {
-                                                @Partial("Views/entryComments.cshtml", issue.Entries)
-                                            }                                            
+                                                if (issue.Entries.Count > 0)
+                                                {
+                                                    @Partial("Views/entryComments.cshtml", issue.Entries)
+                                                }
+                                            }                                                                                 
                                             @if (issue.Commits.Count > 0)
                                             {
                                                @Partial("Views/commitsComments.cshtml", issue.Commits)
@@ -136,11 +139,11 @@
                                     <b style="font-size: 14px; color: sienna">Upcoming &#x25cf; @author.OpenTasks.Count </b>
                                     @if(author.OpenTasks.Count == 1)
                                     {
-                                        <b style="color: sienna"> &#x25cf; task</b>
+                                        <b style="color: sienna"> task</b>
                                     }
                                     else
                                     {
-                                        <b style="color: sienna"> &#x25cf; tasks</b>
+                                        <b style="color: sienna"> tasks</b>
                                     }
                                     @if (author.OpenTasksTimeLeftSeconds != 0)                     
                                     {

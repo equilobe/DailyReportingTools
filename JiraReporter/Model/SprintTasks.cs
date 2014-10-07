@@ -59,8 +59,12 @@ namespace JiraReporter.Model
             DateTime updatedDate;
             updatedDate = Convert.ToDateTime(issue.fields.updated);
             
-            tasks.Add(new Task { Issue = new Issue { Key = issue.key, Summary = issue.fields.summary, TimeSpent = issue.fields.timespent, 
-                RemainingEstimateSeconds = issue.fields.timeestimate }, UpdatedDate = updatedDate});
+            tasks.Add(new Task { 
+                Issue = new Issue { 
+                    Key = issue.key, 
+                    Summary = issue.fields.summary, 
+                    RemainingEstimateSeconds = issue.fields.timeestimate }, 
+               UpdatedDate = updatedDate});
             if (issue.fields.resolutiondate != null)
             {
                 tasks.Last().ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate);

@@ -57,4 +57,12 @@
                 <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
             }
         }
-        <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:black;">@Model.TimeLogged worked</span></span>
+        @if (Model.TimeSpent > 0)
+        {
+            <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:black;">@Model.TimeLogged worked</span></span>
+        }
+        else
+        {
+            <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:red;">no work logged</span></span>
+        }
+        

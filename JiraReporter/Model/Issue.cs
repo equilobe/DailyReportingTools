@@ -27,6 +27,8 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public int TimeSpentTotal { get; set; }
         [XmlIgnore]
+        public int TimeSpentOnTask { get; set; }
+        [XmlIgnore]
         public string Resolution { get; set; }
         [XmlIgnore]
         public string Status { get; set; }
@@ -119,6 +121,7 @@ namespace JiraReporter.Model
             this.TimeLoggedTotal = issue.TimeLoggedTotal;
             this.TimeSpentTotal = issue.TimeSpentTotal;
             this.TimeSpent = issue.TimeSpent;
+            this.TimeSpentOnTask = issue.TimeSpentOnTask;
             this.Type = issue.Type;
             this.StatusCategory = issue.StatusCategory;
             this.Created = issue.Created;
