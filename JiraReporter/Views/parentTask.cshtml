@@ -1,25 +1,34 @@
 ﻿<div>
-    @if (Model.Parent.Resolution != null)
-    {
-        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
-    }
-    else if (Model.Parent.StatusCategory.name == "In Progress")
-    {
-        <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
-    }
-    else if (Model.Parent.Resolution == null)
-    {
-        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10065;</span>
-    }
-
-    <a href=@Model.Parent.Link style="text-decoration: none; font-weight:bold"> @Model.Parent.Summary </a>
-    <span style="color: #B8B8B8;"> &#x25cf; @Model.Parent.Key </span>
-    @if (Model.Parent.Assignee == null)
-    {
-        <span style="color:black;"> &#x25cf; Unassigned</span>
-    }
-    else if (Model.Parent.Assignee != Model.LoggedAuthor)
-    {
-        <span style="color:black;"> &#x25cf; @Model.Parent.Assignee</span>
-    }
+    <table style="margin-left:10px">
+        <tbody>
+            <tr>
+                <th style="vertical-align:top">
+                    @if (Model.Parent.Resolution != null)
+                    {
+                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
+                    }
+                    else if (Model.Parent.StatusCategory.name == "In Progress")
+                    {
+                        <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
+                    }
+                    else if (Model.Parent.Resolution == null)
+                    {
+                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal">&#10065;</span>
+                    }
+                </th>
+                <td>
+                    <a href=@Model.Parent.Link style="text-decoration: none; font-weight:bold"> @Model.Parent.Summary </a>
+                    <span style="color: #B8B8B8;"> &#x25cf; @Model.Parent.Key </span>
+                    @if (Model.Parent.Assignee == null)
+                    {
+                        <span style="color:black;"> &#x25cf; Unassigned</span>
+                    }
+                    else if (Model.Parent.Assignee != Model.LoggedAuthor)
+                    {
+                        <span style="color:black;"> &#x25cf; @Model.Parent.Assignee</span>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>                     

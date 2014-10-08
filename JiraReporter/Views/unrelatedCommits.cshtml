@@ -10,7 +10,7 @@
             {
                 if (commit.Entry.Link != null)
                 {
-                    <li>
+                    <li style="margin-left:15px">
                         <div>
                             <a href="@commit.Entry.Link" style="text-decoration:none">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
                         </div>
@@ -24,7 +24,7 @@
                 }
                 else
                 {
-                    <li style="color:black">@commit.Entry.Message</li>
+                    <li style="color:black; margin-left:15px;">@commit.Entry.Message</li>
                 }
             }
         }
