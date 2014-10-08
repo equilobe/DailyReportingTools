@@ -67,9 +67,7 @@ namespace SvnLogReporter
             var reports = new List<Report>();
             var logs = GetDayLogs(log);
             var report = new Report();
-            var dates = new List<DateTime>();
-            Options.GetDates(dates);
-            reports = EmptyReports(logs, dates);
+            reports = EmptyReports(logs, Options.ReportDates);
             foreach (var logDict in logs)
             {
 

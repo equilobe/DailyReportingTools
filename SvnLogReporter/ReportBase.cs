@@ -113,7 +113,7 @@ namespace SvnLogReporter
         var date = new DateTime();
         foreach (var entry in log.Entries)
         {
-            date = Options.FloorToDay(entry.Date);
+            date = entry.Date.Date;
             Add(logs, date, entry);
         }
         logs = logs.OrderBy(k => k.Key).ToDictionary(k => k.Key, k => k.Value);

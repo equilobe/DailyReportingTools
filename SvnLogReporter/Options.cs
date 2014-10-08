@@ -24,6 +24,13 @@ namespace SvnLogReporter
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
 
+        public List<DateTime> ReportDates {
+            get
+            {
+                return GetDates();
+            }
+        }
+
         public bool HasToDate
         {
             get
@@ -58,20 +65,22 @@ namespace SvnLogReporter
         //    return date.ToString("yyyy'-'MM'-'dd' 'HH':'mm", DateTimeFormatInfo.InvariantInfo);
         //}
 
-        public static DateTime FloorToDay(DateTime dateTime)
-        {
-            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
-        }
+        //public static DateTime FloorToDay(DateTime dateTime)
+        //{
+        //    return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
+        //}
 
-        public void  GetDates(List<DateTime> dates)
+        public List<DateTime>  GetDates()
         {
+            var dates = new List<DateTime>();
             var startDate = FromDate;
             while (startDate.AddDays(1) <= ToDate)
             {
-                startDate = FloorToDay(startDate);
+                startDate = startDate.Date;
                 dates.Add(startDate);
                 startDate = startDate.AddDays(1);
             }
+            return dates;
         }
 
 
