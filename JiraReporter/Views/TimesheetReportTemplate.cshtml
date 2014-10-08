@@ -77,44 +77,47 @@
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b style="color:sienna; font-size:13px;">Today &#x25cf; @author.InProgressTasks.Count </b>
-                                    @if(author.InProgressTasks.Count==1)
-                                    {
-                                    <b style="color: sienna"> task </b>
-                                    }
-                                    else
-                                    {
-                                    <b style="color: sienna"> tasks </b>
-                                    }
-                                @if (author.InProgressTasksTimeLeftSeconds == 0)
+                                <b style="color:sienna; font-size:14px;">Today &#x25cf; @author.InProgressTasks.Count </b>
+                                @if(author.InProgressTasks.Count==1)
                                 {
-                                    
-                                    <b style="color:red"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
+                                <b style="color: sienna; font-size:14px;"> task </b>
                                 }
                                 else
                                 {
-                                    <b style="color:sienna"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
+                                <b style="color: sienna; font-size:14px;"> tasks </b>
                                 }
-                                @foreach (var task in author.InProgressTasks)
+                                @if (author.InProgressTasksTimeLeftSeconds == 0)
                                 {
+                                    
+                                    <b style="color:red; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
+                                }
+                                else
+                                {
+                                    <b style="color:sienna; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
+                                }
+                                <div style="margin-top:10px;">
+                                    @foreach (var task in author.InProgressTasks)
+                                    {
                                         if (task.Issue.SubTask == true)
                                         {
                                             identation = "margin-left:25px";
                                             @Partial("Views/parentTask.cshtml", task.Issue)
                                         }
-                                        else { identation = ""; }                                                                              
-                                         
-                                            <div style="@identation;">
-                                                 @Partial("Views/inProgress.cshtml", task.Issue)                                                                                                                                                                             
-                                            </div>
-                                            if (task.Issue.SubtasksIssues != null)
+                                        else { identation = ""; }
+
+                                        <div style="@identation;">
+                                            @Partial("Views/inProgress.cshtml", task.Issue)
+                                        </div>
+                                        if (task.Issue.SubtasksIssues != null)
+                                        {
+                                            if (task.Issue.SubtasksIssues.Count > 0)
                                             {
-                                                if (task.Issue.SubtasksIssues.Count > 0)
-                                                {
-                                                   @Partial("Views/subtasks.cshtml", task.Issue)
-                                                }
+                                                @Partial("Views/subtasks.cshtml", task.Issue)
                                             }
-                                }
+                                        }
+                                    }
+                                </div>
+                                
                                 
                            </div>
                         }   
@@ -122,42 +125,45 @@
                         @if(author.OpenTasks.Count>0)
                         {
                             <div style="line-height:1.4em; color:sienna; margin-top:20px;">
-                                    <b style="font-size: 13px; color: sienna">Upcoming &#x25cf; @author.OpenTasks.Count </b>
+                                    <b style="font-size: 14px; color: sienna">Upcoming &#x25cf; @author.OpenTasks.Count </b>
                                     @if(author.OpenTasks.Count == 1)
                                     {
-                                        <b style="color: sienna"> task</b>
+                                        <b style="color: sienna; font-size:14px;"> task</b>
                                     }
                                     else
                                     {
-                                        <b style="color: sienna"> tasks</b>
+                                        <b style="color: sienna; font-size:14px;"> tasks</b>
                                     }
                                     @if (author.OpenTasksTimeLeftSeconds != 0)                     
                                     {
-                                        <b style="color: sienna"> &#x25cf; @author.OpenTasksTimeLeft left</b>
+                                        <b style="color: sienna; font-size:14px;"> &#x25cf; @author.OpenTasksTimeLeft left</b>
                                     }
                                     else
                                     {
-                                        <b style="color:red">&#x25cf; @author.OpenTasksTimeLeft left</b>
+                                        <b style="color:red; font-size:14px;">&#x25cf; @author.OpenTasksTimeLeft left</b>
                                     }
-                            @foreach (var task in author.OpenTasks)
-                            {
-                                    if (task.Issue.SubTask == true)
+                                <div style="margin-top:10px;">
+                                    @foreach (var task in author.OpenTasks)
                                     {
-                                        identation = "margin-left:25px";
-                                        @Partial("Views/parentTask.cshtml", task.Issue)
-                                    }
-                                    else { identation = ""; }
-                                    <div style="@identation;">
-                                       @Partial("Views/openTasks.cshtml", task)                   
-                                    </div>
-                                    if (task.Issue.SubtasksIssues != null)
-                                    {
-                                        if (task.Issue.SubtasksIssues.Count > 0)
+                                        if (task.Issue.SubTask == true)
                                         {
-                                           @Partial("Views/subtasks.cshtml", task.Issue)
+                                            identation = "margin-left:25px";
+                                            @Partial("Views/parentTask.cshtml", task.Issue)
+                                        }
+                                        else { identation = ""; }
+                                        <div style="@identation;">
+                                            @Partial("Views/openTasks.cshtml", task)
+                                        </div>
+                                        if (task.Issue.SubtasksIssues != null)
+                                        {
+                                            if (task.Issue.SubtasksIssues.Count > 0)
+                                            {
+                                                @Partial("Views/subtasks.cshtml", task.Issue)
+                                            }
                                         }
                                     }
-                            }
+                                </div>
+                            
                             </div>
                         }                    
                     </div>                       

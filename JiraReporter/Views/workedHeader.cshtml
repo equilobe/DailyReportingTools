@@ -1,17 +1,17 @@
-﻿<b style="color:Sienna; font-size:13px; "> Yesterday  &#x25cf; @Model.Issues.Count </b>
+﻿<b style="color:Sienna; font-size:14px; "> Yesterday  &#x25cf; @Model.Issues.Count </b>
 @if (Model.Issues.Count == 1)
 {
-    <b style="color:Sienna "> task </b>
+    <b style="color:Sienna; font-size:14px;"> task </b>
 }
 else
 {
-    <b style="color:Sienna ">tasks</b>
+    <b style="color:Sienna; font-size:14px; ">tasks</b>
 }
 @if (Model.TimeSpent > 0)
 {
-    <b style="color:Sienna "> &#x25cf; @Model.TimeLogged worked </b>
+    <b style="color:Sienna; font-size:14px;"> &#x25cf; @Model.TimeLogged worked </b>
 }
 else
 {
-    <b style="color:red "> &#x25cf; no work logged </b>
+    <b style="color:red; font-size:14px;"> &#x25cf; no work logged </b>
 }
