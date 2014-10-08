@@ -43,8 +43,7 @@
                           
                                 @foreach (var issue in author.Issues)
                                 {
-                                    <div>
-                                        @if (issue.SubTask == true)
+                                        if (issue.SubTask == true)
                                         {
                                         identation = "margin-left:25px";
                                         @Partial("Views/parentTask.cshtml", issue)
@@ -54,11 +53,10 @@
                                         identation = "";
                                         }
                                         <div style="@identation;">
-                                            <div style="margin-top:15px;">
+                                            <div style="margin-top:7px;">
                                                 @Partial("Views/workedTask.cshtml", issue)
                                             </div>
                                         </div>      
-                                    </div>
                                                                                                                                                                                                
                                 }
                             </div>
@@ -95,7 +93,7 @@
                                 {
                                     <b style="color:sienna; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
                                 }
-                                <div style="margin-top:10px;">
+                                <div>
                                     @foreach (var task in author.InProgressTasks)
                                     {
                                         if (task.Issue.SubTask == true)
@@ -117,8 +115,6 @@
                                         }
                                     }
                                 </div>
-                                
-                                
                            </div>
                         }   
                         
@@ -142,7 +138,7 @@
                                     {
                                         <b style="color:red; font-size:14px;">&#x25cf; @author.OpenTasksTimeLeft left</b>
                                     }
-                                <div style="margin-top:10px;">
+                                <div>
                                     @foreach (var task in author.OpenTasks)
                                     {
                                         if (task.Issue.SubTask == true)

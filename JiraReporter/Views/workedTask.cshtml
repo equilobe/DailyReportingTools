@@ -71,7 +71,7 @@ else
                 {
                     <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:red;">no work logged</span></span>
                 }*@
-                <div style="margin-top:15px; margin-left:10px;">
+                <div style="margin-top:5px; margin-left:10px;">
                     @if (Model.TimeSpent > 0)
                     {
                         <b style="color:black">Work log: @Model.TimeLogged</b>
@@ -90,9 +90,7 @@ else
 
                 </div>
 
-
-
-                <div style="margin-top:15px; margin-left:10px;">
+                <div style="margin-top:5px; margin-left:10px;">
                     @Partial("Views/commits.cshtml", Model.Commits)
                     @if (Model.Commits.Count > 0)
                     {
@@ -100,7 +98,7 @@ else
                     }
                 </div>
 
-                <div style="margin-top:15px; margin-left:10px;">
+                <div style="margin-top:5px; margin-left:10px;">
                     @Partial("Views/pullRequests.cshtml", Model.PullRequests)
                     @if (Model.PullRequests != null)
                     {
