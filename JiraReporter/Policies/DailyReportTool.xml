@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RootPath>Daily Report Tool</RootPath>
+  <DayStartHour>9</DayStartHour>
+  <ReportTitle>DailyReportTool</ReportTitle>
+  <TargetGroup>DailyReportToolDevs</TargetGroup>
+  <Project>DRT</Project>
+  <BaseUrl>https://equilobe.atlassian.net</BaseUrl>
+  <PermanentTaskLabel></PermanentTaskLabel>
+  <ReopenedStatus>Reopened</ReopenedStatus>
+  <Username></Username>
+  <Password></Password>
+  <Emails>sebastian.dumitrascu@equilobe.com</Emails>
+  <EmailSubject>Daily Report for</EmailSubject>
+  <SourceControl>
+    <Type>GitHub</Type>
+    <RepoUrl></RepoUrl>
+    <Username></Username>
+    <Password></Password>
+  </SourceControl>
+  <AuthorsCorrelation>
+    <User>
+      <JiraAuthor>Dan Badea</JiraAuthor>
+      <SourceControlAuthor>Dan Badea</SourceControlAuthor>
+    </User>
+    <User>
+      <JiraAuthor>Sebastian Dumitrascu</JiraAuthor>
+      <SourceControlAuthor>Sebastian Dumitrascu</SourceControlAuthor>
+    </User>
+  </AuthorsCorrelation>
+</Policy>
