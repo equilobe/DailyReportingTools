@@ -46,20 +46,20 @@ namespace JiraReporter
             return timeFormat;
         }
 
-        public static string GetCompletedTime(DateTime completedDate)
+        public static string GetStringDay(DateTime date)
         {
-            var completedTime = "";
-            completedDate = new DateTime(completedDate.Year, completedDate.Month, completedDate.Day, 0, 0, 0);            
-            int days = (int)SetTimeSpan(completedDate).TotalDays;
+            var day = "";
+            date = date.Date;         
+            int days = (int)SetTimeSpan(date).TotalDays;
             var d = TimeSpan.FromDays(days);
             if (d.Days == 0)
-                completedTime = "today";
+                day = "today";
             else
                 if (d.Days == 1)
-                    completedTime = "yesterday";
+                    day = "yesterday";
                 else
-                    completedTime = string.Format("{0} days ago", d.Days);
-            return completedTime;
+                    day = string.Format("{0} days ago", d.Days);
+            return day;
         }
 
         private static TimeSpan SetTimeSpan(DateTime date)

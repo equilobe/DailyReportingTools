@@ -68,7 +68,7 @@ namespace JiraReporter.Model
             if (issue.fields.resolutiondate != null)
             {
                 tasks.Last().ResolutionDate = Convert.ToDateTime(issue.fields.resolutiondate);
-                tasks.Last().CompletedTimeAgo = TimeFormatting.GetCompletedTime(tasks.Last().ResolutionDate);
+                tasks.Last().CompletedTimeAgo = TimeFormatting.GetStringDay(tasks.Last().ResolutionDate);
             }
 
             IssueAdapter.SetIssue(tasks.Last().Issue, policy, issue, timesheet);

@@ -24,7 +24,7 @@ namespace JiraReporter
             var issues = new List<Issue>(timesheet.Worklog.Issues);
             foreach (var issue in issues)
                 IssueAdapter.SetIssueEntries(issue.Entries, issue, timesheet.Worklog.Issues);
-            IssueAdapter.RemoveEntries(timesheet.Worklog.Issues);
+            IssueAdapter.RemoveWrongEntries(timesheet.Worklog.Issues);
             IssueAdapter.SetIssues(timesheet, policy, options);
         }  
     }

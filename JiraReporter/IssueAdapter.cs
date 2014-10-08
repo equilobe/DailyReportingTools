@@ -18,10 +18,15 @@ namespace JiraReporter
                 }
         }
 
-        public static void RemoveEntries(List<Issue> issues)
+        public static void RemoveWrongEntries(List<Issue> issues)
         {
             foreach (var issue in issues)
                 issue.Entries.RemoveAll(e => e.AuthorFullName != issue.Entries.First().AuthorFullName);
+        }
+
+        public static void RemoveWrongEntries(Issue issue, DateTime date)
+        {
+            issue.Entries.RemoveAll(e => e.Updated.Date != date.Date);
         }
 
         private static void AddEntries(List<Issue> issues, Entries entry, Issue issue)
@@ -126,10 +131,11 @@ namespace JiraReporter
             }
         }
 
-        private static void SetIssueTimeSpent(Issue issue)
+        public static void SetIssueTimeSpent(Issue issue)
         {
-            foreach (var entry in issue.Entries)
-                issue.TimeSpent += entry.TimeSpent;
+            //foreach (var entry in issue.Entries)
+            //    issue.TimeSpent += entry.TimeSpent;
+            issue.TimeSpent += issue.Entries.Sum(e => e.TimeSpent);
         }
 
         public static void SetIssueTimeFormat(Issue issue)

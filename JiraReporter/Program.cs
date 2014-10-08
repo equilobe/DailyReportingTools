@@ -22,7 +22,7 @@ namespace JiraReporter
             policy.SetPermanentTaskLabel();
             SetTemplateGlobal();
 
-            options.LoadDates(policy);           
+            options.LoadDates(policy);
 
             var report = ReportGenerator.GenerateReport(policy, options);
             

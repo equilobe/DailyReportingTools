@@ -25,7 +25,7 @@ namespace JiraReporter
                     authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last(), policy, commits, pullRequests);
+                SetAuthor(report, authorsNew.Last(), policy, commits, pullRequests, options);
             }
 
             authorsNew.RemoveAll(AuthorIsEmpty);
@@ -60,7 +60,7 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits, List<PullRequest> pullRequests)
+        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits, List<PullRequest> pullRequests, SvnLogReporter.Options options)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
@@ -69,6 +69,7 @@ namespace JiraReporter
             author.Name = SetName(author.Name);
             SetAuthorPullRequests(author, pullRequests, policy);
             SetUnfinishedTasks(sprint, author);
+            SetAuthorDayLogs(author, options);
         }
 
         public static string SetName(string name)
@@ -169,6 +170,13 @@ namespace JiraReporter
                    find = pullRequests.FindAll(pullRequest => pullRequest.GithubPullRequest.User.Name == policy.Users[author.Name]);
                author.PullRequests = find;
                IssueAdapter.AdjustIssuePullRequests(author);     
+        }
+
+        public static void SetAuthorDayLogs(Author author, SvnLogReporter.Options options)
+        {
+            author.DayLogs = new List<DayLog>();
+            foreach (var day in options.ReportDates)
+                author.DayLogs.Add(new DayLog(author, day));
         }
     }
 }
