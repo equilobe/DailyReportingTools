@@ -5,7 +5,7 @@
         }
       else
       {
-        <h2 style="color:black">@Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.ToString("dddd, dd MMMM yyyy")</h2>
+        <h2 style="color:black">@Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") - @Model.options.ToDate.AddDays(-1).ToString("dddd, dd MMMM yyyy")</h2>
       }  
     @{
         var bold = "";
@@ -34,7 +34,7 @@
               {
                     <div style="margin-top:40px;">
                         <h1 style="color:black">@author.Name</h1>
-                        @if(author.Issues!=null)
+                        @*@if(author.Issues!=null)
                         {
                            if(author.Issues.Count > 0)
                            {
@@ -56,11 +56,42 @@
                                             <div style="margin-top:7px;">
                                                 @Partial("Views/workedTask.cshtml", issue)
                                             </div>
-                                        </div>      
-                                                                                                                                                                                               
+                                        </div>                                                                                                                                                                                                     
                                 }
                             </div>
                         }
+                        }*@
+                        @if (author.DayLogs.Count > 0)
+                        {
+                            foreach (var dayLog in author.DayLogs)
+                            {
+                                if (dayLog.Issues != null)
+                                {
+                                    <div style="margin-top:15px; line-height:1.4em">
+                                        @Partial("Views/workedHeader.cshtml", dayLog)
+                                        @if (dayLog.Issues != null)
+                                        {
+                                            foreach (var issue in dayLog.Issues)
+                                            {
+                                                if (issue.SubTask == true)
+                                                {
+                                                    identation = "margin-left:25px";
+                                                    @Partial("Views/parentTask.cshtml", issue)
+                                                }
+                                                else
+                                                {
+                                                    identation = "";
+                                                }
+                                                <div style="@identation;">
+                                                    <div style="margin-top:7px;">
+                                                        @Partial("Views/workedTask.cshtml", issue)
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            }
                         }
                         @if (author.UnsyncedCommitsCount > 0)
                         {

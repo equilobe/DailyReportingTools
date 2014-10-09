@@ -26,7 +26,15 @@ namespace JiraReporter
 
         public static void RemoveWrongEntries(Issue issue, DateTime date)
         {
-            issue.Entries.RemoveAll(e => e.Updated.Date != date.Date);
+            var newEntries = new List<Entries>(issue.Entries);
+            newEntries.RemoveAll(e => e.StartDate.Date != date.Date);
+            issue.Entries = newEntries;
+        }
+
+        public static void RemoveWrongIssues(List<Issue> issues)
+        {
+            if(issues!=null)
+                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests.Count==0 && i.Commits.Count==0);     
         }
 
         private static void AddEntries(List<Issue> issues, Entries entry, Issue issue)
@@ -133,15 +141,13 @@ namespace JiraReporter
 
         public static void SetIssueTimeSpent(Issue issue)
         {
-            //foreach (var entry in issue.Entries)
-            //    issue.TimeSpent += entry.TimeSpent;
-            issue.TimeSpent += issue.Entries.Sum(e => e.TimeSpent);
+            issue.TimeSpent = issue.Entries.Sum(e => e.TimeSpent);
         }
 
         public static void SetIssueTimeFormat(Issue issue)
         {
             if (issue.TimeSpent > 0)
-                issue.TimeLogged = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpent);
+                issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpent);
             else
                 issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpentOnTask);
             issue.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(issue.TotalRemainingSeconds);

@@ -16,24 +16,26 @@ namespace JiraReporter.Model
         public List<PullRequest> PullRequests { get; set; }
         public string Title { get; set; }
 
-        public DayLog(Author author, DateTime date)
+        public DayLog(List<Issue> issues, DateTime date)
         {
-            if(author.Issues!=null)
-                if(author.Issues.Count>0)
+            if(issues!=null)
+                if(issues.Count>0)
                 {
                     this.Issues = new List<Issue>();
-                    foreach (var issue in author.Issues)
+                    foreach (var issue in issues)
                     {
-                        this.Issues.Add(issue);
+                        this.Issues.Add(new Issue(issue));
                         IssueAdapter.RemoveWrongEntries(this.Issues.Last(), date);
                         IssueAdapter.SetIssueTimeSpent(this.Issues.Last());
                         IssueAdapter.SetIssueTimeFormat(this.Issues.Last());
                         this.TimeSpent += this.Issues.Last().Entries.Sum(x => x.TimeSpent);                      
                     }
                 }
-            this.TimeLogged = TimeFormatting.SetTimeFormat8Hour(this.TimeSpent);
+            IssueAdapter.RemoveWrongIssues(this.Issues);
+            this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
+            this.Title = this.Title.First().ToString().ToUpper() + this.Title.Substring(1);
         }        
     }
 }

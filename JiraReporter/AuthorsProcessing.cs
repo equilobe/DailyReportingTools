@@ -138,7 +138,6 @@ namespace JiraReporter
                         }
                            
                     }
-                    //acceasi chestie pull- requests;
                 }
             return unfinishedTasks;
         } 
@@ -176,7 +175,8 @@ namespace JiraReporter
         {
             author.DayLogs = new List<DayLog>();
             foreach (var day in options.ReportDates)
-                author.DayLogs.Add(new DayLog(author, day));
+                author.DayLogs.Add(new DayLog(author.Issues, day));
+            author.DayLogs = author.DayLogs.OrderBy(d => d.Date).ToList();
         }
     }
 }
