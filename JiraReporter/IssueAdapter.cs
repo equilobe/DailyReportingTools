@@ -1,6 +1,7 @@
 ﻿using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace JiraReporter
         public static void RemoveWrongIssues(List<Issue> issues)
         {
             if(issues!=null)
-                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests.Count==0 && i.Commits.Count==0);     
+                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests.Count == 0 && i.Commits.Count == 0);                    
         }
 
         private static void AddEntries(List<Issue> issues, Entries entry, Issue issue)
@@ -189,23 +190,41 @@ namespace JiraReporter
             SetIssue(issue.Parent, policy, parent, timesheet);
         }
 
-        public static void AdjustIssueCommits(Author author)
+        //public static void AdjustIssueCommits(Author author)
+        //{
+        //    if (author.Issues != null)
+        //        foreach (var issue in author.Issues)
+        //        {
+        //            AdjustIssueCommits(issue, author.Commits);
+        //        }
+        //}
+
+        public static void AdjustIssueCommits(DayLog dayLog)
         {
-            if (author.Issues != null)
-                foreach (var issue in author.Issues)
+            if(dayLog.Issues!=null)
+                foreach(var issue in dayLog.Issues)
                 {
-                    AdjustIssueCommits(issue, author.Commits);
+                    AdjustIssueCommits(issue, dayLog.Commits);
+                    RemoveWrongCommits(issue, dayLog.Date.Date);
                 }
         }
 
         public static void AdjustIssueCommits(Issue issue, List<Commit> commits)
         {
-            var find = new List<Commit>();
+            //var find = new List<Commit>();
             issue.Commits = new List<Commit>();
-            find = commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
-            if (find.Count>0)
-                issue.Commits = find;
+            issue.Commits = commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
+            //if (find.Count > 0)
+            //    issue.Commits = find;
             EditIssueCommits(issue);
+        }
+
+        public static void RemoveWrongCommits(Issue issue, DateTime date)
+        {
+            var commits = new List<Commit>(issue.Commits);
+            if (commits != null)
+                commits.RemoveAll(c => c.Entry.Date.Date != date.Date);
+            issue.Commits = commits;
         }
 
         private static void EditIssueCommits(Issue issue)
@@ -216,8 +235,8 @@ namespace JiraReporter
         }
 
         public static void AdjustIssuePullRequests(Author author)
-        {           
-            if(author.PullRequests!=null)
+        {
+            if (author.PullRequests != null)
             {
                 if (author.Issues != null)
                     foreach (var issue in author.Issues)
@@ -227,11 +246,11 @@ namespace JiraReporter
 
         public static void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
         {
-            var find = new List<PullRequest>();
+            //var find = new List<PullRequest>();
             issue.PullRequests = new List<PullRequest>();
-            find = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
-            if (find != null)
-                issue.PullRequests = find;
+            issue.PullRequests = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
+            //if (find != null)
+            //    issue.PullRequests = find;
             EditIssuePullRequests(issue);
         }
 

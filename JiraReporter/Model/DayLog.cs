@@ -16,8 +16,10 @@ namespace JiraReporter.Model
         public List<PullRequest> PullRequests { get; set; }
         public string Title { get; set; }
 
-        public DayLog(List<Issue> issues, DateTime date)
+        public DayLog(Author author, List<Issue> issues, DateTime date)
         {
+            this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
+            this.PullRequests = AuthorsProcessing.GetDayLogPullRequests(author);
             if(issues!=null)
                 if(issues.Count>0)
                 {
@@ -30,7 +32,8 @@ namespace JiraReporter.Model
                         IssueAdapter.SetIssueTimeFormat(this.Issues.Last());
                         this.TimeSpent += this.Issues.Last().Entries.Sum(x => x.TimeSpent);                      
                     }
-                }
+                }            
+            IssueAdapter.AdjustIssueCommits(this);
             IssueAdapter.RemoveWrongIssues(this.Issues);
             this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
             this.Date = date;

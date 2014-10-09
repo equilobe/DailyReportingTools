@@ -1,17 +1,26 @@
-﻿<b style="color:Sienna; font-size:14px; "> @Model.Title  &#x25cf; @Model.Issues.Count </b>
-@if (Model.Issues.Count == 1)
+﻿@if (Model.Issues.Count > 0 || Model.Commits.Count > 0 || Model.PullRequests.Count > 0)
 {
-    <b style="color:Sienna; font-size:14px;"> task </b>
+    <b style="color:Sienna; font-size:14px; "> @Model.Title  &#x25cf; @Model.Issues.Count </b>
+    if (Model.Issues.Count == 1)
+    {
+        <b style="color:Sienna; font-size:14px;"> task </b>
+    }
+    else
+    {
+        <b style="color:Sienna; font-size:14px; ">tasks</b>
+    }
+    if (Model.TimeSpent > 0)
+    {
+        <b style="color:Sienna; font-size:14px;"> &#x25cf; @Model.TimeLogged worked </b>
+    }
+    else
+    {
+        <b style="color:red; font-size:14px;"> &#x25cf; no work logged </b>
+    }
 }
 else
 {
-    <b style="color:Sienna; font-size:14px; ">tasks</b>
+    <b style="color:Sienna; font-size:14px; "> @Model.Title  &#x25cf; no work logged </b>
 }
-@if (Model.TimeSpent > 0)
-{
-    <b style="color:Sienna; font-size:14px;"> &#x25cf; @Model.TimeLogged worked </b>
-}
-else
-{
-    <b style="color:red; font-size:14px;"> &#x25cf; no work logged </b>
-}
+
+

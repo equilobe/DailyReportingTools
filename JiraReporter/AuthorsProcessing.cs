@@ -157,7 +157,7 @@ namespace JiraReporter
                 if(policy.Users[author.Name]!="")
                   find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
             author.Commits = find;
-            IssueAdapter.AdjustIssueCommits(author);           
+           // IssueAdapter.AdjustIssueCommits(author);           
         }       
 
         public static void SetAuthorPullRequests(Author author, List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy)
@@ -175,8 +175,24 @@ namespace JiraReporter
         {
             author.DayLogs = new List<DayLog>();
             foreach (var day in options.ReportDates)
-                author.DayLogs.Add(new DayLog(author.Issues, day));
+                author.DayLogs.Add(new DayLog(author, author.Issues, day));
             author.DayLogs = author.DayLogs.OrderBy(d => d.Date).ToList();
+        }
+
+        public static List<Commit> GetDayLogCommits(Author author, DateTime date)
+        {
+            var commits = new List<Commit>();
+            if (author.Commits != null)
+                commits = author.Commits.FindAll(c => c.Entry.Date.Date == date.Date);
+            return commits;
+        }
+
+        public static List<PullRequest> GetDayLogPullRequests(Author author)
+        {
+            var pullRequests = new List<PullRequest>();
+            if (author.PullRequests != null)
+                pullRequests = author.PullRequests.FindAll(p => p.TaskSynced == true);
+            return pullRequests;
         }
     }
 }
