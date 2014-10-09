@@ -27,7 +27,12 @@ namespace SvnLogReporter.RazorEngine
                     Debug.WriteLine(error);
                 }
                 return "Error in partial view compilation";
-            }        
+            } 
+            catch (NullReferenceException nullException)
+            {
+                Debug.WriteLine(nullException);
+                return "Error in partial view compilation";
+            }
         }
     }
 }
