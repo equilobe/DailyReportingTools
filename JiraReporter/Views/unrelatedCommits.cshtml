@@ -6,8 +6,6 @@
     <ul style="padding:0; margin-left:15px; margin-top:0px; color:black">
         @foreach (var commit in Model)
         {
-            if (commit.TaskSynced == false)
-            {
                 if (commit.Entry.Link != null)
                 {
                     <li style="margin-left:15px">
@@ -26,7 +24,6 @@
                 {
                     <li style="color:black; margin-left:15px;">@commit.Entry.Message</li>
                 }
-            }
         }
     </ul>
 </div>

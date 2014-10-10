@@ -19,6 +19,8 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public int OpenUnassigned { get; set; }
         public int AuthorsInvolved { get; set; }
+        public int CommitsCount { get; set; }
+        public int PullRequestsCount { get; set; }
 
         public Summary(List<Author> authors, SprintTasks sprint)
         {
@@ -29,7 +31,9 @@ namespace JiraReporter.Model
             this.OpenUnassigned = sprint.OpenTasks.Count(tasks =>tasks.Issue.Assignee == null);
             this.InProgressTasksCount = sprint.InProgressTasks.Count;
             this.OpenTasksCount = sprint.OpenTasks.Count;
-            this.AuthorsInvolved = authors.Count;          
+            this.AuthorsInvolved = authors.Count;
+            this.CommitsCount = authors.Sum(a => a.Commits.Count);
+            this.PullRequestsCount = authors.Sum(a => a.PullRequests.Count);
         }
 
         private void SetSummaryTasksTimeLeft(List<Author> authors)

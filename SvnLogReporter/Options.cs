@@ -109,6 +109,8 @@ namespace SvnLogReporter
 
             if (ToDate < FromDate)
                 throw new ArgumentException("ToDate < FromDate");
+            if (ToDate > DateTime.Today.AddDays(1))
+                ToDate = DateTime.Today.AddDays(1);
         }
 
         private void SwitchToUniversalTime()

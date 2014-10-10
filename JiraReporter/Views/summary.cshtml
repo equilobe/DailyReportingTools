@@ -3,19 +3,19 @@
 }
 <div style="margin-top: 40px">
     <h2 style="color:black">Summary</h2>
-    @if (Model.Summary.TotalTimeSeconds == 0)
+    @if (Model.TotalTimeSeconds == 0)
     {
         <h2 style="font-weight:normal; color:black">No work logged</h2>
     }
     else
     {
-        <h2 style="font-weight:normal; color:black;"> @Model.Summary.TotalTime worked</h2>
+        <h2 style="font-weight:normal; color:black;"> @Model.TotalTime worked</h2>
     }
-    @if (Model.Summary.InProgressTasksCount > 0)
+    @if (Model.InProgressTasksCount > 0)
     {
         <div style="margin-top:10px;">
-            <span style="color:black">@Model.Summary.InProgressTasksCount </span>
-            @if (Model.Summary.InProgressTasksCount == 1)
+            <span style="color:black">@Model.InProgressTasksCount </span>
+            @if (Model.InProgressTasksCount == 1)
             {
                 <span style="color:black"> task </span>
             }
@@ -26,28 +26,28 @@
             <span style="color:black">in progress</span>
             <span style="font-size:0; color:black">
                 <span style="font-size:14px; color:black">(</span>
-                @if (Model.Summary.InProgressTasksTimeLeftSeconds == 0)
+                @if (Model.InProgressTasksTimeLeftSeconds == 0)
                 {
-                    <span style="color:red;font-size:14px;">@Model.Summary.InProgressTasksTimeLeft left</span>
+                    <span style="color:red;font-size:14px;">@Model.InProgressTasksTimeLeft left</span>
                 }
                 else
                 {
-                    <span style="font-size:14px; color:black">@Model.Summary.InProgressTasksTimeLeft left</span>
+                    <span style="font-size:14px; color:black">@Model.InProgressTasksTimeLeft left</span>
                 }
-                @if (Model.Summary.InProgressUnassigned > 0)
+                @if (Model.InProgressUnassigned > 0)
                 {
-                    <span style="font-size:14px; color:black">, @Model.Summary.InProgressUnassigned unassigned</span>
+                    <span style="font-size:14px; color:black">, @Model.InProgressUnassigned unassigned</span>
                 }
                 <span style="font-size:14px; color:black">)</span>
             </span>
         </div>
     }
 
-    @if (Model.Summary.OpenTasksCount > 0)
+    @if (Model.OpenTasksCount > 0)
     {
         <div style="margin-top:10px;">
-            <span style="color:black">@Model.Summary.OpenTasksCount </span>
-            @if (Model.Summary.OpenTasksCount == 1)
+            <span style="color:black">@Model.OpenTasksCount </span>
+            @if (Model.OpenTasksCount == 1)
             {
                 <span style="color:black"> task </span>
             }
@@ -57,32 +57,61 @@
             }
             <span style="color:black">upcoming</span>
             <span style="font-size:0; color:black">
-                @if (Model.Summary.OpenTasksTimeLeftSeconds > 0 && Model.Summary.OpenUnassigned > 0)
+                @if (Model.OpenTasksTimeLeftSeconds > 0 && Model.OpenUnassigned > 0)
                 {
                     comma = ", ";
                 }
-                @if (Model.Summary.OpenTasksTimeLeftSeconds > 0 || Model.Summary.OpenUnassigned > 0)
+                @if (Model.OpenTasksTimeLeftSeconds > 0 || Model.OpenUnassigned > 0)
                 {
                     <span style="font-size:14px; color:black">(</span>
-                    if (Model.Summary.OpenTasksTimeLeftSeconds > 0)
+                    if (Model.OpenTasksTimeLeftSeconds > 0)
                     {
-                        <span style="font-size:14px; color:black">@Model.Summary.OpenTasksTimeLeft left</span>
+                        <span style="font-size:14px; color:black">@Model.OpenTasksTimeLeft left</span>
                     }
                     <span style="font-size:14px; color:black">@comma</span>
-                    if (Model.Summary.OpenUnassigned > 0)
+                    if (Model.OpenUnassigned > 0)
                     {
-                        <span style="font-size:14px; color:black">@Model.Summary.OpenUnassigned unassigned</span>
+                        <span style="font-size:14px; color:black">@Model.OpenUnassigned unassigned</span>
                     }
                     <span style="font-size:14px; color:black">)</span>
                 }
             </span>
         </div>
     }
+    @if (Model.CommitsCount>0)
+    {
+        <div style="margin-top:10px;">
+            <span style="color:black"> @Model.CommitsCount </span>
+            @if(Model.CommitsCount==1)
+            {
+                <span style="color:black"> commit </span>
+            }
+            else
+            {
+                <span style="color:black"> commits </span>
+            }
+        </div>
+    }
+    
+    @if (Model.PullRequestsCount > 0)
+    {
+        <div style="margin-top:10px;">
+            <span style="color:black"> @Model.PullRequestsCount </span>
+            @if (Model.PullRequestsCount == 1)
+            {
+                <span style="color:black"> pending pull request </span>
+            }
+            else
+            {
+                <span style="color:black"> pending pull requests </span>
+            }
+        </div>
+    }
 
-    @if (Model.Summary.AuthorsInvolved > 0)
+    @if (Model.AuthorsInvolved > 0)
     {
         <div style="margin-top:10px">
-            <span style="color:black">@Model.Summary.AuthorsInvolved people involved</span>
+            <span style="color:black">@Model.AuthorsInvolved people involved</span>
         </div>
     }
 </div>

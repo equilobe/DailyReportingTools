@@ -205,7 +205,8 @@ namespace JiraReporter
                 foreach(var issue in dayLog.Issues)
                 {
                     AdjustIssueCommits(issue, dayLog.Commits);
-                    RemoveWrongCommits(issue, dayLog.Date.Date);
+                    if(issue.Commits.Count>0)
+                        RemoveWrongCommits(issue, dayLog.Date.Date);
                 }
         }
 
@@ -222,7 +223,6 @@ namespace JiraReporter
         public static void RemoveWrongCommits(Issue issue, DateTime date)
         {
             var commits = new List<Commit>(issue.Commits);
-            if (commits != null)
                 commits.RemoveAll(c => c.Entry.Date.Date != date.Date);
             issue.Commits = commits;
         }

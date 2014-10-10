@@ -176,6 +176,8 @@ namespace JiraReporter
             author.DayLogs = new List<DayLog>();
             foreach (var day in options.ReportDates)
                 author.DayLogs.Add(new DayLog(author, author.Issues, day));
+            author.DayLogs.Last().PullRequests = author.PullRequests;
+            author.DayLogs.Last().UnsyncedPullRequests = author.PullRequests.FindAll(p => p.TaskSynced == false);
             author.DayLogs = author.DayLogs.OrderBy(d => d.Date).ToList();
         }
 
@@ -187,12 +189,12 @@ namespace JiraReporter
             return commits;
         }
 
-        public static List<PullRequest> GetDayLogPullRequests(Author author)
-        {
-            var pullRequests = new List<PullRequest>();
-            if (author.PullRequests != null)
-                pullRequests = author.PullRequests.FindAll(p => p.TaskSynced == true);
-            return pullRequests;
-        }
+        //public static List<PullRequest> GetDayLogPullRequests(Author author)
+        //{
+        //    var pullRequests = new List<PullRequest>();
+        //    if (author.PullRequests != null)
+        //        pullRequests = author.PullRequests.FindAll(p => p.TaskSynced == true);
+        //    return pullRequests;
+        //}
     }
 }

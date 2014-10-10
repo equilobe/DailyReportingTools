@@ -24,7 +24,7 @@
      }
   
 <div>
-    @Partial("Views/summary.cshtml", Model)
+    @Partial("Views/summary.cshtml", Model.Summary)
 </div>
 
     <div style="margin-top:40px; line-height:1.4em;">
@@ -84,27 +84,31 @@
                                                         {
                                                         identation = "";
                                                         }
-                                                        <tr style="@identation;">
+
+                                                        <tr>
                                                                 @Partial("Views/workedTask.cshtml", issue)
                                                         </tr>
                                                         }
                                                 </tbody>
-                                            </table>
-                                            
+                                            </table>                                            
                                         }
                                     </div>
                                 }
+                                if(dayLog.UnsyncedCommits.Count>0)
+                                {
+                                    @Partial("Views/unrelatedCommits.cshtml", dayLog.UnsyncedCommits)
+                                }
+                                if (dayLog.UnsyncedPullRequests != null)
+                                {
+                                    if (dayLog.UnsyncedPullRequests.Count > 0)
+                                    {
+                                        @Partial("Views/unrelatedPullRequests.cshtml", dayLog.PullRequests)
+                                    }
+                                }
                             }
-                        }
-                        @if (author.UnsyncedCommitsCount > 0)
-                        {
-                            @Partial("Views/unrelatedCommits.cshtml", author.Commits)
-                        }
+                        }                        
                         
-                        @if (author.UnsyncedPullRequestsCount > 0)
-                        {
-                          @Partial("Views/unrelatedPullRequests.cshtml", author.PullRequests)
-                        }
+                    
 
                         @if (author.InProgressTasks.Count > 0)
                         {
