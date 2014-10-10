@@ -1,6 +1,9 @@
 ﻿@foreach (var pullRequest in Model)
 {
-    <div>
+  if(pullRequest.GithubPullRequest.Title!=null)
+  {
+      <div>
           <span style="color:black">@pullRequest.GithubPullRequest.Title</span>
     </div>
+  }
 }
