@@ -77,17 +77,11 @@
                                                         {
                                                         if (issue.SubTask == true)
                                                         {
-                                                        identation = "margin-left:25px";
                                                         @Partial("Views/parentTask.cshtml", issue)
                                                         }
-                                                        else
-                                                        {
-                                                        identation = "";
-                                                        }
-
-                                                        <tr>
+                                                            <tr>
                                                                 @Partial("Views/workedTask.cshtml", issue)
-                                                        </tr>
+                                                            </tr>                                         
                                                         }
                                                 </tbody>
                                             </table>                                            
