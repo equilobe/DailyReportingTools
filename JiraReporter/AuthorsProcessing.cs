@@ -168,16 +168,14 @@ namespace JiraReporter
                  if (policy.Users[author.Name] != "")
                    find = pullRequests.FindAll(pullRequest => pullRequest.GithubPullRequest.User.Name == policy.Users[author.Name]);
                author.PullRequests = find;
-               IssueAdapter.AdjustIssuePullRequests(author);     
+            //   IssueAdapter.AdjustIssuePullRequests(author);     
         }
 
         public static void SetAuthorDayLogs(Author author, SvnLogReporter.Options options)
         {
             author.DayLogs = new List<DayLog>();
             foreach (var day in options.ReportDates)
-                author.DayLogs.Add(new DayLog(author, author.Issues, day));
-            author.DayLogs.Last().PullRequests = author.PullRequests;
-            author.DayLogs.Last().UnsyncedPullRequests = author.PullRequests.FindAll(p => p.TaskSynced == false);
+                author.DayLogs.Add(new DayLog(author, author.Issues, day, options));
             author.DayLogs = author.DayLogs.OrderBy(d => d.Date).ToList();
         }
 

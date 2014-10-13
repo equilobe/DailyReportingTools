@@ -19,14 +19,19 @@ namespace JiraReporter.Model
 
         public List<Commit> UnsyncedCommits { get; set; }
 
-        public DayLog(Author author, List<Issue> issues, DateTime date)
+        public DayLog(Author author, List<Issue> issues, DateTime date, SvnLogReporter.Options options)
         {
             this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
-            this.UnsyncedCommits = new List<Commit>(Commits.FindAll(c => c.TaskSynced == false));
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
             this.Title = this.Title.First().ToString().ToUpper() + this.Title.Substring(1);
-          //  this.PullRequests = AuthorsProcessing.GetDayLogPullRequests(author);
+            if(options.ToDate.AddDays(1).Date == date.Date)
+            {
+                this.PullRequests = author.PullRequests;
+                this.UnsyncedPullRequests = author.PullRequests.FindAll(p => p.TaskSynced == false);
+                IssueAdapter.AdjustIssuePullRequests(this);
+            }
+           
             if(issues!=null)
                 if(issues.Count>0)
                 {
@@ -42,6 +47,7 @@ namespace JiraReporter.Model
                 }            
             IssueAdapter.AdjustIssueCommits(this);
             IssueAdapter.RemoveWrongIssues(this.Issues);
+            this.UnsyncedCommits = new List<Commit>(Commits.FindAll(c => c.TaskSynced == false));
             this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);          
         }        
     }

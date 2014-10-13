@@ -35,7 +35,7 @@ namespace JiraReporter
         public static void RemoveWrongIssues(List<Issue> issues)
         {
             if(issues!=null)
-                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests.Count == 0 && i.Commits.Count == 0);                    
+                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests == null && i.Commits.Count == 0);                    
         }
 
         private static void AddEntries(List<Issue> issues, Entries entry, Issue issue)
@@ -242,6 +242,14 @@ namespace JiraReporter
                     foreach (var issue in author.Issues)
                         AdjustIssuePullRequests(issue, author.PullRequests);
             }
+        }
+
+        public static void AdjustIssuePullRequests(DayLog dayLog)
+        {
+            if(dayLog.Issues!=null)
+                if(dayLog.Issues.Count>0)
+                    foreach(var issue in dayLog.Issues)
+                    AdjustIssuePullRequests(issue, dayLog.PullRequests);
         }
 
         public static void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
