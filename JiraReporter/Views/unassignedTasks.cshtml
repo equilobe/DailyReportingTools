@@ -1,6 +1,8 @@
 ﻿@{
     var color = "";
 }
+    <table>
+        <tr>
             <th style="vertical-align:top">
                 @if (Model.Issue.StatusCategory.name == "In Progress")
                 {
@@ -77,5 +79,5 @@
                     <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
                 }
             </td>
-
-
+        </tr>
+    </table>

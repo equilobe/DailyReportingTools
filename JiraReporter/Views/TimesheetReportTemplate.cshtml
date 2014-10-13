@@ -16,7 +16,7 @@
         var comma = "";
         var openParentheses = "(";
         var closedParentheses = ")";
-        var identation = "";
+        var indentation = "";
         var totalTimeSpent = "";
         var revision="";
         var tooltipWorked = "";
@@ -45,14 +45,14 @@
                                 {
                                         if (issue.SubTask == true)
                                         {
-                                        identation = "margin-left:25px";
+                                        indentation = "margin-left:25px";
                                         @Partial("Views/parentTask.cshtml", issue)
                                         }
                                         else
                                         {
-                                        identation = "";
+                                        indentation = "";
                                         }
-                                        <div style="@identation;">
+                                        <div style="@indentation;">
                                             <div style="margin-top:7px;">
                                                 @Partial("Views/workedTask.cshtml", issue)
                                             </div>
@@ -65,30 +65,28 @@
                         {
                             foreach (var dayLog in author.DayLogs)
                             {
-                                if (dayLog.Issues != null)
-                                {
-                                    <div style="margin-top:15px; line-height:1.4em">
-                                        @Partial("Views/workedHeader.cshtml", dayLog)
-                                        @if (dayLog.Issues != null)
+                                <div style="margin-top:15px; line-height:1.4em">
+                                    @Partial("Views/workedHeader.cshtml", dayLog)
+                                    @if (dayLog.Issues != null)
+                                    {
+                                        if (dayLog.Issues.Count > 0)
                                         {
-                                            <table style="margin-left:10px;">
-                                                <tbody>
-                                                        @foreach (var issue in dayLog.Issues)
-                                                        {
-                                                        if (issue.SubTask == true)
-                                                        {
-                                                        @Partial("Views/parentTask.cshtml", issue)
-                                                        }
-                                                            <tr>
-                                                                @Partial("Views/workedTask.cshtml", issue)
-                                                            </tr>                                         
-                                                        }
-                                                </tbody>
-                                            </table>                                            
+                                            @*<table style="margin-left:10px;" cellpadding="0" cellspacing="0">
+                                                <tbody>*@
+                                            foreach (var issue in dayLog.Issues)
+                                            {
+
+                                                        @*@Partial("Views/parentTask.cshtml", issue)*@
+                                                    @Partial("Views/workedTask.cshtml", issue)
+                                                    
+                                            }
+                                            @*</tbody>
+                                                </table>*@
                                         }
-                                    </div>
-                                }
-                                if(dayLog.UnsyncedCommits.Count>0)
+                                    }
+                                </div>
+
+                                if (dayLog.UnsyncedCommits.Count > 0)
                                 {
                                     @Partial("Views/unrelatedCommits.cshtml", dayLog.UnsyncedCommits)
                                 }
@@ -125,30 +123,25 @@
                                 {
                                     <b style="color:sienna; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
                                 }
-                                <table style="margin-left:10px;">
-                                    <tbody>
+                                @*<table style="margin-left:10px;">
+                                    <tbody>*@
                                         @foreach (var task in author.InProgressTasks)
                                         {
-                                            if (task.Issue.SubTask == true)
+                                            @*if (task.Issue.SubTask == true)
                                             {
-                                                identation = "margin-left:25px";
                                                 @Partial("Views/parentTask.cshtml", task.Issue)
-                                            }
-                                            else { identation = ""; }
-
-                                            <tr style="@identation;">
+                                            }*@
                                                 @Partial("Views/inProgress.cshtml", task.Issue)
-                                            </tr>
-                                            if (task.Issue.SubtasksIssues != null)
-                                            {
-                                                if (task.Issue.SubtasksIssues.Count > 0)
+                                                if (task.Issue.SubtasksIssues != null)
                                                 {
+                                                    if (task.Issue.SubtasksIssues.Count > 0)
+                                                    {
                                                     @Partial("Views/subtasks.cshtml", task.Issue)
                                                 }
-                                            }
+                                                }                                                                                                                      
                                         }
-                                    </tbody>                                    
-                                </table>
+                                    @*</tbody>                                    
+                                </table>*@
                            </div>
                         }   
                         
@@ -172,30 +165,27 @@
                                     {
                                         <b style="color:red; font-size:14px;">&#x25cf; @author.OpenTasksTimeLeft left</b>
                                     }
-                                <table style="margin-left:10px;">
-                                    <tbody>
+                                @*<table style="margin-left:10px;">
+                                    <tbody>*@
                                         @foreach (var task in author.OpenTasks)
                                         {
 
-                                            if (task.Issue.SubTask == true)
+                                            @*if (task.Issue.SubTask == true)
                                             {
-                                                identation = "margin-left:25px";
                                                 @Partial("Views/parentTask.cshtml", task.Issue)
-                                            }
-                                            else { identation = ""; }
-                                            <tr style="@identation;">
+                                            }*@
                                                 @Partial("Views/openTasks.cshtml", task)
-                                            </tr>
-                                            if (task.Issue.SubtasksIssues != null)
-                                            {
+                                                if (task.Issue.SubtasksIssues != null)
+                                                {
                                                 if (task.Issue.SubtasksIssues.Count > 0)
                                                 {
-                                                    @Partial("Views/subtasks.cshtml", task.Issue)
+                                                @Partial("Views/subtasks.cshtml", task.Issue)
                                                 }
-                                            }
+                                                }
+                                            
                                         }
-                                    </tbody>                                 
-                                </table>
+                                    @*</tbody>                                 
+                                </table>*@
                             
                             </div>
                         }                    
@@ -216,30 +206,26 @@
                 }
                 <div style="margin-top:60px; line-height:1.4em;">
                     <h2 style="color:black">Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
-                    <table style="margin-left:10px;">
-                        <tbody>
+                    @*<table style="margin-left:10px;">
+                        <tbody>*@
                             @foreach (var task in Model.Sprint.UnassignedTasks)
                             {
-                                if (task.Issue.SubTask == true)
+                                @*if (task.Issue.SubTask == true)
                                 {
-                                    identation = "margin-left:25px";
                                     @Partial("Views/parentTask.cshtml", task.Issue)
-                                }
-                                else { identation = ""; }
-                                <tr style="@identation;">
+                                }*@   
                                     @Partial("Views/unassignedTasks.cshtml", task)
-                                </tr>
-
-                                if (task.Issue.SubtasksIssues != null)
-                                {
+                                    if (task.Issue.SubtasksIssues != null)
+                                    {
                                     if (task.Issue.SubtasksIssues.Count > 0)
                                     {
-                                        @Partial("Views/subtasks.cshtml", task.Issue)
+                                    @Partial("Views/subtasks.cshtml", task.Issue)
                                     }
-                                }
+                                    }                                                      
+                               
                             }
-                        </tbody>
-                    </table>                                          
+                        @*</tbody>
+                    </table>*@                                          
                 </div>
             }             
             

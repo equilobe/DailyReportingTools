@@ -10,11 +10,14 @@ else
 {
     remainingEstimate = Model.RemainingEstimate;
 }
-                <th style="font-family: Wolfram Alpha; font-size:10.5pt; color:black; vertical-align:top">
-                    <span>&#9658;</span>
-                </th>
-                <td>
-                    <span>
+<table>
+    <tbody>
+        <tr>
+            <th style="font-family: Wolfram Alpha; font-size:10.5pt; color:black; vertical-align:top">
+                <span>&#9658;</span>
+            </th>
+            <td>
+                <span>
                     @if (DateTime.Compare(Model.Created, DateTime.Today.AddDays(-1)) >= 0)
                     {
                         <b style="color:black"> NEW: </b>
@@ -60,9 +63,11 @@ else
                             <span style="color:black"> &#x25cf; @remainingEstimate left</span>
                         }
                     }
-                        </span>
-                </td>
+                </span>
+            </td>
+        </tr>
+
+    </tbody>
     
-
-
-             
+</table>
+                

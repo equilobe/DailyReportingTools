@@ -1,4 +1,29 @@
-﻿@if (Model.Issues.Count > 0 || Model.Commits.Count > 0 || Model.PullRequests.Count > 0)
+﻿@{
+    var test=false;
+}
+@if(Model.Issues!=null)
+{
+    if (Model.PullRequests != null)
+    {
+        if (Model.PullRequests.Count > 0)
+        {
+            test = true;
+        }
+    }
+    else if (Model.Issues.Count > 0 || Model.Commits.Count > 0)
+    {
+        test = true;
+    }
+    else 
+    {
+        test = false;
+    }
+}
+else
+{
+    test = false;
+}
+@if (test==true)
 {
     <b style="color:Sienna; font-size:14px; "> @Model.Title  &#x25cf; @Model.Issues.Count </b>
     if (Model.Issues.Count == 1)

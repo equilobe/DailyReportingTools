@@ -1,7 +1,7 @@
 ﻿ @{
      var color="";
  }
-<table style="margin-left:10px;">
+
     @foreach (var subtask in Model.SubtasksIssues)
     {
         if (subtask.Assignee == Model.LoggedAuthor && subtask.Resolution == null)
@@ -21,54 +21,55 @@
             {
                 color = "black";
             }
-            <tr>
-                <th style="vertical-align:top;">
-                    @if (subtask.StatusCategory.name == "In Progress")
-                    {
-                        <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
-                        if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
+            <table style="margin-left:10px">
+                <tr>
+                    <th style="vertical-align:top;">
+                        @if (subtask.StatusCategory.name == "In Progress")
                         {
-                            <b style="color:black"> NEW: </b>
+                            <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
+                            if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
+                            {
+                                <b style="color:black"> NEW: </b>
+                            }
+                            if (subtask.ExistsInTimesheet == true)
+                            {
+                                <b style="color:black">Continue:</b>
+                            }
                         }
-                        if (subtask.ExistsInTimesheet == true)
+                        else
                         {
-                            <b style="color:black">Continue:</b>
+                            <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
+                            if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
+                            {
+                                <b style="color:black"> NEW: </b>
+                            }
+                            if (subtask.Status == Model.ReopenedStatus)
+                            {
+                                <span style="font-weight:bold; color:black">Reopened:</span>
+                            }
+                            else if (subtask.TimeSpent > 0)
+                            {
+                                <span style="font-weight:bold; color:black">Paused:</span>
+                            }
                         }
-                    }
-                    else
-                    {
-                        <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black">&#10065;</span>
-                        if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                        {
-                            <b style="color:black"> NEW: </b>
-                        }
-                        if (subtask.Status == Model.ReopenedStatus)
-                        {
-                            <span style="font-weight:bold; color:black">Reopened:</span>
-                        }
-                        else if (subtask.TimeSpent > 0)
-                        {
-                            <span style="font-weight:bold; color:black">Paused:</span>
-                        }
-                    }
-                </th>
-                <td>
-                    <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
-                    <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
+                    </th>
+                    <td>
+                        <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
+                        <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
 
-                    @if (subtask.TimeSpent > 0)
-                    {
-                        <span style="color:black"> &#x25cf; @subtask.TimeLogged worked </span>
-                    }
-                    @if (subtask.Resolution == null)
-                    {
-                        <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
-                    }
-                </td>
-            </tr>
-               
+                        @if (subtask.TimeSpent > 0)
+                        {
+                            <span style="color:black"> &#x25cf; @subtask.TimeLogged worked </span>
+                        }
+                        @if (subtask.Resolution == null)
+                        {
+                            <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
+                        }
+                    </td>
+                </tr>
+            </table>
 
-                
+
+
         }
     }
-</table>
