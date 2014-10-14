@@ -5,7 +5,7 @@
         @foreach (var completedTasks in Model.CompletedTasksList)
         {
             <div style="margin-top:20px; line-height:1.4em;">
-                <b style="color:black">Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
+                <b style="color:sienna">Completed @completedTasks.CompletedTimeAgo (@completedTasks.Tasks.Count)</b>
                 <table style="margin-left:10px;">
                     <tbody>
                         @foreach (var task in completedTasks.Tasks)
