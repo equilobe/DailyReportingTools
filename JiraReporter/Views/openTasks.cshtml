@@ -1,11 +1,31 @@
 ﻿@{
     var color = "";
-    var indentation = "";
+    var colspan = "colspan=2";
+    var test = false;
 }
-<table>
+@if (Model.Issue.SubTask == true)
+{
+    @Partial("Views/parentTask.cshtml", Model.Issue)
+    colspan = "";
+    test = true;
+}
+else
+{
+    colspan = "colspan = 2";
+    test = false;
+}
+
     <tr>
-        <th style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal; vertical-align:top">&#10065;</th>
-        <td>
+        @if(test==true)
+        {
+            <td>
+
+            </td>
+        }
+        <td style="vertical-align:top; padding-right:5px">
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal; ">&#10065;</span>       
+        </td>
+        <td @colspan>
             @if (DateTime.Compare(Model.Issue.Created, DateTime.Today.AddDays(-1)) >= 0)
             {
                 <b style="color:black"> NEW: </b>
@@ -66,9 +86,13 @@
                 <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
             }
         </td>
+        @if(test==false)
+        {
+            <td>
 
+            </td>
+        }
     </tr>
-    
-</table>
+
                 
 

@@ -1,6 +1,8 @@
 ﻿@{
     var remainingEstimate = "";
     var color = "";
+    var colspan = "colspan=2";
+    var test = false;
 }
 @if (Model.Subtasks.Count > 0)
 {
@@ -10,13 +12,29 @@ else
 {
     remainingEstimate = Model.RemainingEstimate;
 }
-<table>
-    <tbody>
+@if (Model.SubTask == true)
+{
+    @Partial("Views/parentTask.cshtml", Model)
+    colspan = "";
+    test = true;
+}
+else
+{
+    colspan = "colspan = 2";
+    test = false;
+}
+
         <tr>
-            <th style="font-family: Wolfram Alpha; font-size:10.5pt; color:black; vertical-align:top">
-                <span>&#9658;</span>
-            </th>
-            <td>
+            @if(test==true)
+            {
+                <td>
+
+                </td>
+            }
+            <td style="vertical-align:top; padding-right:5px">
+                <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black; ">&#9658;</span>
+            </td>
+            <td @colspan>
                 <span>
                     @if (DateTime.Compare(Model.Created, DateTime.Today.AddDays(-1)) >= 0)
                     {
@@ -65,9 +83,11 @@ else
                     }
                 </span>
             </td>
-        </tr>
+            @if (test == false)
+            {
+                <td>
 
-    </tbody>
-    
-</table>
+                </td>
+            }
+        </tr>
                 

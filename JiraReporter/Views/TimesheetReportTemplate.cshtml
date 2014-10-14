@@ -34,33 +34,6 @@
               {
                     <div style="margin-top:40px;">
                         <h1 style="color:black">@author.Name</h1>
-                        @*@if(author.Issues!=null)
-                        {
-                           if(author.Issues.Count > 0)
-                           {
-                             <div style="margin-top:25px; line-height:1.4em;">
-                              @Partial("Views/workedHeader.cshtml", author)
-                          
-                                @foreach (var issue in author.Issues)
-                                {
-                                        if (issue.SubTask == true)
-                                        {
-                                        indentation = "margin-left:25px";
-                                        @Partial("Views/parentTask.cshtml", issue)
-                                        }
-                                        else
-                                        {
-                                        indentation = "";
-                                        }
-                                        <div style="@indentation;">
-                                            <div style="margin-top:7px;">
-                                                @Partial("Views/workedTask.cshtml", issue)
-                                            </div>
-                                        </div>                                                                                                                                                                                                     
-                                }
-                            </div>
-                        }
-                        }*@
                         @if (author.DayLogs.Count > 0)
                         {
                             foreach (var dayLog in author.DayLogs)
@@ -71,21 +44,18 @@
                                     {
                                         if (dayLog.Issues.Count > 0)
                                         {
-                                            @*<table style="margin-left:10px;" cellpadding="0" cellspacing="0">
-                                                <tbody>*@
-                                            foreach (var issue in dayLog.Issues)
-                                            {
-
-                                                        @*@Partial("Views/parentTask.cshtml", issue)*@
-                                                    @Partial("Views/workedTask.cshtml", issue)
-                                                    
-                                            }
-                                            @*</tbody>
-                                                </table>*@
+                                            <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
+                                                <tbody>
+                                                @foreach (var issue in dayLog.Issues)
+                                                {
+                                                        @Partial("Views/workedTask.cshtml", issue)
+                                                }
+                                                </tbody>
+                                            </table>
                                         }
                                     }
                                 </div>
-
+                             
                                 if (dayLog.UnsyncedCommits.Count > 0)
                                 {
                                     @Partial("Views/unrelatedCommits.cshtml", dayLog.UnsyncedCommits)
@@ -123,22 +93,11 @@
                                 {
                                     <b style="color:sienna; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</b>
                                 }
-                                @*<table style="margin-left:10px;">
-                                    <tbody>*@
+                                <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
+                                    <tbody>
                                         @foreach (var task in author.InProgressTasks)
                                         {
-                                            if (task.Issue.SubTask == true)
-                                            {
-                                                @Partial("Views/parentTask.cshtml", task.Issue)
-                                                indentation = "margin-left:15px;";
-                                            }
-                                            else
-                                            {
-                                                indentation = "";
-                                            }
-                                            <div style="@indentation">
-                                                @Partial("Views/inProgress.cshtml", task.Issue)
-                                            </div>                                               
+                                            @Partial("Views/inProgress.cshtml", task.Issue)                                         
                                                
                                              @*if (task.Issue.SubtasksIssues != null)
                                                 {
@@ -148,8 +107,8 @@
                                                     }
                                                 }*@                                                                                                                      
                                         }
-                                    @*</tbody>                                    
-                                </table>*@
+                                    </tbody>                                    
+                                </table>
                            </div>
                         }   
                         
@@ -173,24 +132,11 @@
                                     {
                                         <b style="color:red; font-size:14px;">&#x25cf; @author.OpenTasksTimeLeft left</b>
                                     }
-                                @*<table style="margin-left:10px;">
-                                    <tbody>*@
+                                <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
+                                    <tbody>
                                         @foreach (var task in author.OpenTasks)
                                         {
-
-                                            if (task.Issue.SubTask == true)
-                                            {
-                                                @Partial("Views/parentTask.cshtml", task.Issue)
-                                                indentation = "margin-left:15px";
-                                            }
-                                            else
-                                            {
-                                                indentation = "";
-                                            }
-                                            <div style="@indentation">
                                                 @Partial("Views/openTasks.cshtml", task)
-                                            </div>                                            
-                                                
                                             @*if (task.Issue.SubtasksIssues != null)
                                                 {
                                                 if (task.Issue.SubtasksIssues.Count > 0)
@@ -200,8 +146,8 @@
                                                 }*@
                                             
                                         }
-                                    @*</tbody>                                 
-                                </table>*@
+                                    </tbody>                                 
+                                </table>
                             
                             </div>
                         }                    
@@ -222,33 +168,22 @@
                 }
                 <div style="margin-top:60px; line-height:1.4em;">
                     <h2 style="color:black">Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
-                    @*<table style="margin-left:10px;">
-                        <tbody>*@
+                    <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
+                        <tbody>
                             @foreach (var task in Model.Sprint.UnassignedTasks)
                             {
-                                if (task.Issue.SubTask == true)
-                                {
-                                    @Partial("Views/parentTask.cshtml", task.Issue)
-                                    indentation = "margin-left:15px";
-                                }   
-                                else
-                                {
-                                    indentation = "";
-                                }
-                                <div style="@indentation">
                                     @Partial("Views/unassignedTasks.cshtml", task)
-                                </div>                                    
+                               
                                     @*if (task.Issue.SubtasksIssues != null)
                                     {
                                     if (task.Issue.SubtasksIssues.Count > 0)
                                     {
                                     @Partial("Views/subtasks.cshtml", task.Issue)
                                     }
-                                    }*@                                                      
-                               
+                                    }*@                                                                                     
                             }
-                        @*</tbody>
-                    </table>*@                                          
+                        </tbody>
+                    </table>                                          
                 </div>
             }             
             
