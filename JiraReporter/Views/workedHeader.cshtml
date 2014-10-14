@@ -1,5 +1,5 @@
 ﻿@{
-    var test=false;
+    var test = false;
 }
 @if(Model.Issues!=null)
 {
@@ -25,22 +25,14 @@ else
 }
 @if (test==true)
 {
-    <b style="color:Sienna; font-size:14px; "> @Model.Title (@Model.Date.ToString("dddd"))  &#x25cf; @Model.Issues.Count </b>
-    if (Model.Issues.Count == 1)
-    {
-        <b style="color:Sienna; font-size:14px;"> task </b>
-    }
-    else
-    {
-        <b style="color:Sienna; font-size:14px; ">tasks</b>
-    }
+    <b style="color:Sienna; font-size:14px; "> @Model.Title (@Model.Date.ToString("dddd")) </b>
     if (Model.TimeSpent > 0)
     {
-        <b style="color:Sienna; font-size:14px;"> &#x25cf; @Model.TimeLogged worked </b>
+        <span style="color:Sienna; font-size:14px;"> &#x25cf; @Model.TimeLogged worked </span>
     }
     else
     {
-        <b style="color:red; font-size:14px;"> &#x25cf; no work logged </b>
+        <span style="color:red; font-size:14px;"> &#x25cf; no work logged </span>
     }
 }
 
