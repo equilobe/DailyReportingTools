@@ -25,7 +25,7 @@ else
 }
 @if (test==true)
 {
-    <b style="color:Sienna; font-size:14px; "> @Model.Title  &#x25cf; @Model.Issues.Count </b>
+    <b style="color:Sienna; font-size:14px; "> @Model.Title (@Model.Date.ToString("dddd"))  &#x25cf; @Model.Issues.Count </b>
     if (Model.Issues.Count == 1)
     {
         <b style="color:Sienna; font-size:14px;"> task </b>
@@ -43,9 +43,6 @@ else
         <b style="color:red; font-size:14px;"> &#x25cf; no work logged </b>
     }
 }
-else
-{
-    <b style="color:Sienna; font-size:14px; "> @Model.Title  &#x25cf; no work logged </b>
-}
+
 
 

@@ -49,7 +49,7 @@ namespace JiraReporter.Model
                 else
                     if (issue.fields.resolution == null)
                         SetTasks(policy, issue, timesheet, this.OpenTasks);
-                if (issue.fields.assignee == null && issue.fields.resolution==null)
+                if (issue.fields.assignee == null && issue.fields.status.statusCategory.name!="Done")
                     SetTasks(policy, issue, timesheet, this.UnassignedTasks);
             }
         }

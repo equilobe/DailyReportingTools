@@ -27,15 +27,18 @@ namespace JiraReporter
 
         public static void RemoveWrongEntries(Issue issue, DateTime date)
         {
-            var newEntries = new List<Entries>(issue.Entries);
-            newEntries.RemoveAll(e => e.StartDate.Date != date.Date);
-            issue.Entries = newEntries;
+            if(issue.Entries!=null)
+            {
+                var newEntries = new List<Entries>(issue.Entries);
+                newEntries.RemoveAll(e => e.StartDate.Date != date.Date);
+                issue.Entries = newEntries;
+            }            
         }
 
         public static void RemoveWrongIssues(List<Issue> issues)
         {
             if(issues!=null)
-                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests == null && i.Commits.Count == 0);                    
+                issues.RemoveAll(i => i.Entries.Count == 0 && i.PullRequests == null && i.Commits.Count == 0);   
         }
 
         private static void AddEntries(List<Issue> issues, Entries entry, Issue issue)
@@ -88,8 +91,9 @@ namespace JiraReporter
         }
 
         public static void SetIssue(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet)
-        {
-
+        {    
+            if (issue.Entries == null)
+                issue.Entries = new List<Entries>();
             issue.Priority = newIssue.fields.priority;
             issue.ReopenedStatus = policy.ReopenedStatus;
             if (newIssue.fields.assignee != null)
@@ -113,11 +117,8 @@ namespace JiraReporter
             issue.TimeSpentTotal = newIssue.fields.aggregatetimespent;
             issue.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
             if (newIssue.fields.subtasks != null)
-                issue.Subtasks = newIssue.fields.subtasks;
-
-            if (issue.Entries != null)
-                SetIssueTimeSpent(issue);
-            
+                issue.Subtasks = newIssue.fields.subtasks;        
+            SetIssueTimeSpent(issue);
             issue.TimeSpentOnTask = newIssue.fields.timespent;
             SetIssueTimeFormat(issue);
             SetIssueExists(issue, timesheet.Worklog.Issues);
@@ -142,7 +143,7 @@ namespace JiraReporter
 
         public static void SetIssueTimeSpent(Issue issue)
         {
-            issue.TimeSpent = issue.Entries.Sum(e => e.TimeSpent);
+                issue.TimeSpent = issue.Entries.Sum(e => e.TimeSpent);             
         }
 
         public static void SetIssueTimeFormat(Issue issue)

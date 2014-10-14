@@ -42,7 +42,7 @@ namespace JiraReporter.Model
                         IssueAdapter.RemoveWrongEntries(this.Issues.Last(), date);
                         IssueAdapter.SetIssueTimeSpent(this.Issues.Last());
                         IssueAdapter.SetIssueTimeFormat(this.Issues.Last());
-                        this.TimeSpent += this.Issues.Last().Entries.Sum(x => x.TimeSpent);                      
+                        this.TimeSpent += this.Issues.Last().TimeSpent;                      
                     }
                 }            
             IssueAdapter.AdjustIssueCommits(this);

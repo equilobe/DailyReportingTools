@@ -127,18 +127,26 @@
                                     <tbody>*@
                                         @foreach (var task in author.InProgressTasks)
                                         {
-                                            @*if (task.Issue.SubTask == true)
+                                            if (task.Issue.SubTask == true)
                                             {
                                                 @Partial("Views/parentTask.cshtml", task.Issue)
-                                            }*@
+                                                indentation = "margin-left:15px;";
+                                            }
+                                            else
+                                            {
+                                                indentation = "";
+                                            }
+                                            <div style="@indentation">
                                                 @Partial("Views/inProgress.cshtml", task.Issue)
-                                                if (task.Issue.SubtasksIssues != null)
+                                            </div>                                               
+                                               
+                                             @*if (task.Issue.SubtasksIssues != null)
                                                 {
                                                     if (task.Issue.SubtasksIssues.Count > 0)
                                                     {
                                                     @Partial("Views/subtasks.cshtml", task.Issue)
-                                                }
-                                                }                                                                                                                      
+                                                    }
+                                                }*@                                                                                                                      
                                         }
                                     @*</tbody>                                    
                                 </table>*@
@@ -170,18 +178,26 @@
                                         @foreach (var task in author.OpenTasks)
                                         {
 
-                                            @*if (task.Issue.SubTask == true)
+                                            if (task.Issue.SubTask == true)
                                             {
                                                 @Partial("Views/parentTask.cshtml", task.Issue)
-                                            }*@
+                                                indentation = "margin-left:15px";
+                                            }
+                                            else
+                                            {
+                                                indentation = "";
+                                            }
+                                            <div style="@indentation">
                                                 @Partial("Views/openTasks.cshtml", task)
-                                                if (task.Issue.SubtasksIssues != null)
+                                            </div>                                            
+                                                
+                                            @*if (task.Issue.SubtasksIssues != null)
                                                 {
                                                 if (task.Issue.SubtasksIssues.Count > 0)
                                                 {
                                                 @Partial("Views/subtasks.cshtml", task.Issue)
                                                 }
-                                                }
+                                                }*@
                                             
                                         }
                                     @*</tbody>                                 
@@ -210,18 +226,25 @@
                         <tbody>*@
                             @foreach (var task in Model.Sprint.UnassignedTasks)
                             {
-                                @*if (task.Issue.SubTask == true)
+                                if (task.Issue.SubTask == true)
                                 {
                                     @Partial("Views/parentTask.cshtml", task.Issue)
-                                }*@   
+                                    indentation = "margin-left:15px";
+                                }   
+                                else
+                                {
+                                    indentation = "";
+                                }
+                                <div style="@indentation">
                                     @Partial("Views/unassignedTasks.cshtml", task)
-                                    if (task.Issue.SubtasksIssues != null)
+                                </div>                                    
+                                    @*if (task.Issue.SubtasksIssues != null)
                                     {
                                     if (task.Issue.SubtasksIssues.Count > 0)
                                     {
                                     @Partial("Views/subtasks.cshtml", task.Issue)
                                     }
-                                    }                                                      
+                                    }*@                                                      
                                
                             }
                         @*</tbody>
