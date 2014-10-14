@@ -75,16 +75,15 @@
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b style="color:sienna; font-size:14px;">Today</b>
+                                <b style="color:sienna; font-size:16px;">Today</b>
 
                                 @if (author.InProgressTasksTimeLeftSeconds == 0)
-                                {
-                                    
-                                    <span style="color:red; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</span>
+                                { 
+                                    <span style="color:red; font-size:12px;"> &#x25cf; @author.InProgressTasksTimeLeft left</span>
                                 }
                                 else
                                 {
-                                    <span style="color:sienna; font-size:14px;"> &#x25cf; @author.InProgressTasksTimeLeft left</span>
+                                    <span style="color:sienna; font-size:12px;"> &#x25cf; @author.InProgressTasksTimeLeft left</span>
                                 }
                                 <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
                                     <tbody>
@@ -108,14 +107,14 @@
                         @if(author.OpenTasks.Count>0)
                         {
                             <div style="line-height:1.4em; color:sienna; margin-top:20px;">
-                                    <b style="font-size: 14px; color: sienna">Upcoming </b>
+                                    <b style="font-size: 16px; color: sienna">Upcoming </b>
                                     @if (author.OpenTasksTimeLeftSeconds != 0)                     
                                     {
-                                        <span style="color: sienna; font-size:14px;"> &#x25cf; @author.OpenTasksTimeLeft left</span>
+                                        <span style="color: sienna; font-size:12px;"> &#x25cf; @author.OpenTasksTimeLeft left</span>
                                     }
                                     else
                                     {
-                                        <span style="color:red; font-size:14px;">&#x25cf; @author.OpenTasksTimeLeft left</span>
+                                        <span style="color:red; font-size:12px;">&#x25cf; @author.OpenTasksTimeLeft left</span>
                                     }
                                 <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
                                     <tbody>
