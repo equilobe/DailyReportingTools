@@ -158,16 +158,8 @@
 
             @if (Model.Sprint.UnassignedCount>0)
             {
-                if(Model.Sprint.UnassignedCount==1)
-                {
-                    tasks = "task";
-                }
-               else
-                {
-                    tasks = "tasks";
-                }
                 <div style="margin-top:60px; line-height:1.4em;">
-                    <h2 style="color:black">Unassigned (@Model.Sprint.UnassignedCount @tasks)</h2>
+                    <h2 style="color:black">Unassigned </h2>
                     <table style="margin-left:10px;" cellpadding="0" cellspacing="0">
                         <tbody>
                             @foreach (var task in Model.Sprint.UnassignedTasks)
