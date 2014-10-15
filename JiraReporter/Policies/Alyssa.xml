@@ -2,7 +2,7 @@
 <Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <RootPath>Alyssa</RootPath>
   <DayStartHour>5</DayStartHour>
-  <ReportTitle>DRAFT Alyssa</ReportTitle>
+  <ReportTitle>Alyssa</ReportTitle>
   <TargetGroup>developers</TargetGroup>
   <Project>AL</Project>
   <BaseUrl>https://itandcare-humatix.atlassian.net</BaseUrl>
@@ -18,7 +18,7 @@
     <Username></Username>
     <Password></Password>
   </SourceControl>
-  <AuthorsCorrelation>   
+  <AuthorsCorrelation>
     <User>
       <JiraAuthor>Annabel Eigenhuis</JiraAuthor>
       <SourceControlAuthor></SourceControlAuthor>

@@ -2,7 +2,7 @@
 <Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <RootPath>BoardProspects</RootPath>
   <DayStartHour>3</DayStartHour>
-  <ReportTitle>Board Prospects</ReportTitle>
+  <ReportTitle>DRAFT Board Prospects</ReportTitle>
   <TargetGroup>BoardProspects</TargetGroup>
   <Project>BPRO</Project>
   <BaseUrl>https://equilobe.atlassian.net</BaseUrl>
@@ -15,7 +15,7 @@
   <SourceControl>
     <Type>GitHub</Type>
     <RepoOwner>BoardProspects</RepoOwner>
-    <RepoName>BPApp</RepoName>
+    <RepoName></RepoName>
     <Username></Username>
     <Password></Password>
   </SourceControl>
