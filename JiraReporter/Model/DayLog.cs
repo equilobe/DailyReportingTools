@@ -13,9 +13,7 @@ namespace JiraReporter.Model
         public string TimeLogged { get; set; }
         public List<Issue> Issues { get; set; }
         public List<Commit> Commits { get; set; }
-        public List<PullRequest> PullRequests { get; set; }
         public string Title { get; set; }
-        public List<PullRequest> UnsyncedPullRequests { get; set; }
 
         public List<Commit> UnsyncedCommits { get; set; }
 
@@ -25,13 +23,7 @@ namespace JiraReporter.Model
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
             this.Title = this.Title.First().ToString().ToUpper() + this.Title.Substring(1);
-            if(options.ToDate.AddDays(1).Date == date.Date)
-            {
-                this.PullRequests = author.PullRequests;
-                this.UnsyncedPullRequests = author.PullRequests.FindAll(p => p.TaskSynced == false);
-                IssueAdapter.AdjustIssuePullRequests(this);
-            }
-           
+
             if(issues!=null)
                 if(issues.Count>0)
                 {

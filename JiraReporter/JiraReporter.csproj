@@ -132,9 +132,6 @@
     <None Include="Views\pullRequests.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\pullRequestTitle.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Views\subtasks.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

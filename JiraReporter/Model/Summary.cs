@@ -22,7 +22,7 @@ namespace JiraReporter.Model
         public int CommitsCount { get; set; }
         public int PullRequestsCount { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprint)
+        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests)
         {
             this.TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
             this.TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
@@ -33,7 +33,7 @@ namespace JiraReporter.Model
             this.OpenTasksCount = sprint.OpenTasks.Count;
             this.AuthorsInvolved = authors.Count;
             this.CommitsCount = authors.Sum(a => a.Commits.Count);
-            this.PullRequestsCount = authors.Sum(a => a.PullRequests.Count);
+            this.PullRequestsCount = pullRequests.Count;
         }
 
         private void SetSummaryTasksTimeLeft(List<Author> authors)

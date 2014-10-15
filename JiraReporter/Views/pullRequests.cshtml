@@ -1,35 +1,4 @@
-﻿@{
-    var openParentheses = "";
-    var closedParentheses = "";
-    var comma = "";
-}
-     <span style="font-weight:bold;">
-         @Model.Count
-         @if (Model.Count == 1)
-         {
-          <span style="color:black;"> pull request </span>
-         }
-         else
-         {
-          <span style="color:black;"> pull requests </span>
-         }
-         @foreach (var pullRequest in Model)
-         {
-             if (pullRequest == Model.First())
-             {
-                 openParentheses = "(";
-             }
-             else { openParentheses = ""; }
-             if (pullRequest == Model.Last())
-             {
-                 closedParentheses = ")";
-                 comma = "";
-             }
-             else
-             {
-                 closedParentheses = "";
-                 comma = ",";
-             }
-          <span style="white-space:nowrap; color:black;">@openParentheses<a style="text-decoration:none" href="@pullRequest.GithubPullRequest.HtmlUrl">@pullRequest.GithubPullRequest.Number</a>@comma @closedParentheses</span>
-         }
-     </span>
+﻿@foreach (var pullRequest in Model)
+ {
+    <span style="color:green"> &#x25cf; <a style="text-decoration:none; color:green; font-weight:bold" href="@pullRequest.GithubPullRequest.HtmlUrl"> pull request </a> </span>   
+ }       

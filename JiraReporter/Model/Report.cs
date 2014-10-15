@@ -22,5 +22,13 @@ namespace JiraReporter.Model
         public DateTime Date { get; set; }
         public Summary Summary { get; set; }
         public SprintTasks Sprint { get; set; }
+        public List<PullRequest> PullRequests { get; set; }
+        public List<PullRequest> UnrelatedPullRequests
+        {
+            get
+            {
+                return PullRequests.FindAll(p => p.TaskSynced == false);
+            }
+        }
     }
 }

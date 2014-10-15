@@ -3,12 +3,9 @@
     <ul style="padding:0; margin-left:15px; margin-top:0px; color:black">
         @foreach (var pullRequest in Model)
         {
-            if (pullRequest.TaskSynced == false)
-            {
                 <li style="margin-left:15px;">
                     <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
                 </li>
-            }
         }
     </ul>
 </div>

@@ -35,7 +35,6 @@ namespace SvnLogReporter
                 SetPullRequestsAuthors(pullRequests);
             }
             log.Entries = new List<LogEntry>();
-            var find = new List<PullRequest>();
             foreach (var commit in commits)
             {
                 log.Entries.Add(
@@ -45,8 +44,7 @@ namespace SvnLogReporter
                      Date = commit.Commit.Author.Date,
                      Message = commit.Commit.Message,
                      Revision = commit.Sha,
-                     Link = commit.HtmlUrl,
-                     PullRequests = pullRequests.FindAll(p => p.User.Login == commit.Author.Login)
+                     Link = commit.HtmlUrl
                  });                
             }
 

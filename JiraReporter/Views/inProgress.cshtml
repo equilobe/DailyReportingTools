@@ -35,7 +35,6 @@ else
                 <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black; ">&#9658;</span>
             </td>
             <td @colspan>
-                <span>
                     @if (DateTime.Compare(Model.Created, DateTime.Today.AddDays(-1)) >= 0)
                     {
                         <b style="color:black"> NEW: </b>
@@ -81,7 +80,13 @@ else
                             <span style="color:black"> &#x25cf; @remainingEstimate left</span>
                         }
                     }
-                </span>
+                    @if(Model.PullRequests!=null)
+                    {
+                        if(Model.PullRequests.Count>0)
+                        {
+                            <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+                        }
+                    }
             </td>
             @if (test == false)
             {

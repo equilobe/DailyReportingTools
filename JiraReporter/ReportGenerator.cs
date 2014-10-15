@@ -13,30 +13,33 @@ namespace JiraReporter
         {
             var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
             var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(timesheet, policy, options);
+            var log = SourceControlProcessor.GetSourceControlLog(policy, options);
+            var pullRequests = SourceControlProcessor.GetPullRequests(log);
+            timesheetService.SetTimesheetIssues(timesheet, policy, options, pullRequests);
 
-            return GetReport(timesheet, policy, options);
+            return GetReport(timesheet, policy, options, pullRequests);
         }
-        private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {            
-            var sprint = GetSprintReport(policy, options, timesheet);
+            var sprint = GetSprintReport(policy, options, timesheet, pullRequests);           
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
             var report = new Report(policy, options)
             {
                 Authors = authors,
                 Sprint = sprint,
+                PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = new Summary(authors, sprint),
+                Summary = new Summary(authors, sprint, pullRequests),
                 Title = policy.ReportTitle
             };
                          
             return report;
         }
 
-        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet)
+        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();
-            report.SetSprintTasks(p, timesheet, options);
+            report.SetSprintTasks(p, timesheet, options, pullRequests);
             return report;
         }
     }

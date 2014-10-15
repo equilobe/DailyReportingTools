@@ -24,6 +24,13 @@
             {
                 <span style="color:black;"> &#x25cf; @Model.Parent.Assignee</span>
             }
+            @if (Model.PullRequests != null)
+            {
+                if (Model.PullRequests.Count > 0)
+                {
+                    <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+                }
+            }
         </td>
         <td>
 

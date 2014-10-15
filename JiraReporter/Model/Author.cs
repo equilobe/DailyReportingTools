@@ -22,26 +22,6 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeft { get; set; }
         public List<Commit> Commits { get; set; }
-        public List<PullRequest> PullRequests { get; set; }
         public List<DayLog> DayLogs { get; set; }
-
-        //public int UnsyncedCommitsCount 
-        //{ 
-        //    get
-        //    {
-        //        if (Commits != null)
-        //            return Commits.Count(com => com.TaskSynced == false);
-        //        else return 0;
-        //    }
-        //}
-        //public int UnsyncedPullRequestsCount
-        //{
-        //    get
-        //    {
-        //        if (PullRequests != null)
-        //            return PullRequests.Count(p => p.TaskSynced == false);
-        //        else return 0;
-        //    }
-        //}
     }
 }

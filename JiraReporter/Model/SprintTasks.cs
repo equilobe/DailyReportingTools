@@ -15,10 +15,10 @@ namespace JiraReporter.Model
         public List<Task> UnassignedTasks { get; set; }
         public int UnassignedCount { get { return UnassignedTasks.Count; } }
 
-        public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, SvnLogReporter.Options options)
+        public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var issues = RestApiRequests.GetSprintTasks(policy);
-            GetUnfinishedTasks(policy, issues, timesheet);
+            GetUnfinishedTasks(policy, issues, timesheet, pullRequests);
             var completedTasks = GetCompletedTasks(policy,options,timesheet);
             SetCompletedTasks(GroupCompletedTasks(completedTasks));
             SortTasks();
@@ -31,13 +31,13 @@ namespace JiraReporter.Model
             foreach(var issue in issues.issues)
             {
                 if(issue.fields.issuetype.subtask==false)
-                    SetTasks(policy, issue, timesheet, completedTasks);             
+                    SetTasks(policy, issue, timesheet, completedTasks, null);             
             }
             completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
             return completedTasks; 
         }
 
-        private void GetUnfinishedTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet)
+        private void GetUnfinishedTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issues issues, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             this.InProgressTasks = new List<Task>();
             this.OpenTasks = new List<Task>();
@@ -45,16 +45,16 @@ namespace JiraReporter.Model
             foreach (var issue in issues.issues)
             {
                 if (issue.fields.status.statusCategory.name == "In Progress")
-                    SetTasks(policy, issue, timesheet, this.InProgressTasks);
+                    SetTasks(policy, issue, timesheet, this.InProgressTasks, pullRequests);
                 else
                     if (issue.fields.resolution == null)
-                        SetTasks(policy, issue, timesheet, this.OpenTasks);
+                        SetTasks(policy, issue, timesheet, this.OpenTasks, pullRequests);
                 if (issue.fields.assignee == null && issue.fields.status.statusCategory.name!="Done")
-                    SetTasks(policy, issue, timesheet, this.UnassignedTasks);
+                    SetTasks(policy, issue, timesheet, this.UnassignedTasks, pullRequests);
             }
         }
 
-        private void SetTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> tasks)
+        private void SetTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Task> tasks, List<PullRequest> pullRequests)
         {
             DateTime updatedDate;
             updatedDate = Convert.ToDateTime(issue.fields.updated);
@@ -71,10 +71,10 @@ namespace JiraReporter.Model
                 tasks.Last().CompletedTimeAgo = TimeFormatting.GetStringDay(tasks.Last().ResolutionDate);
             }
 
-            IssueAdapter.SetIssue(tasks.Last().Issue, policy, issue, timesheet);
+            IssueAdapter.SetIssue(tasks.Last().Issue, policy, issue, timesheet, pullRequests);
             if (tasks.Last().Issue.Subtasks != null)
             {
-                IssueAdapter.SetSubtasksIssues(tasks.Last().Issue, policy, timesheet);
+                IssueAdapter.SetSubtasksIssues(tasks.Last().Issue, policy, timesheet, pullRequests);
                 TasksService.HasTasksInProgress(tasks.Last());
             }
         }    

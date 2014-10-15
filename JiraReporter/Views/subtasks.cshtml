@@ -23,7 +23,7 @@
             }
             <table style="margin-left:10px">
                 <tr>
-                    <th style="vertical-align:top;">
+                    <td style="vertical-align:top;">
                         @if (subtask.StatusCategory.name == "In Progress")
                         {
                             <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
@@ -52,7 +52,7 @@
                                 <span style="font-weight:bold; color:black">Paused:</span>
                             }
                         }
-                    </th>
+                    </td>
                     <td>
                         <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
                         <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
@@ -64,6 +64,13 @@
                         @if (subtask.Resolution == null)
                         {
                             <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
+                        }
+                        @if (Model.PullRequests != null)
+                        {
+                            if (Model.PullRequests.Count > 0)
+                            {
+                                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+                            }
                         }
                     </td>
                 </tr>

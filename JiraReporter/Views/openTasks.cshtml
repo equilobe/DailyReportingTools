@@ -85,6 +85,13 @@ else
             {
                 <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
             }
+            @if (Model.Issue.PullRequests != null)
+            {
+                if (Model.Issue.PullRequests.Count > 0)
+                {
+                    <span> @Partial("Views/pullRequests.cshtml", Model.Issue.PullRequests) </span>
+                }
+            }
         </td>
         @if(test==false)
         {

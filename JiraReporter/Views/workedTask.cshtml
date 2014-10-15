@@ -80,6 +80,13 @@ else
                     <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
                 }
             }
+            @if (Model.PullRequests != null)
+            {
+                if (Model.PullRequests.Count > 0)
+                {
+                    <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+                }
+            }
             @*@if (Model.TimeSpent > 0)
             {
                 <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:black;">@Model.TimeLogged worked</span></span>
@@ -112,18 +119,6 @@ else
                 @if (Model.Commits.Count > 0)
                 {
                     @Partial("Views/commitsComments.cshtml", Model.Commits)
-                }
-            </div>
-
-            <div style="margin-top:5px; margin-left:10px;">
-
-                @if (Model.PullRequests != null)
-                {
-                    if (Model.PullRequests.Count > 0)
-                    {
-                        @Partial("Views/pullRequests.cshtml", Model.PullRequests)
-                        @Partial("Views/pullRequestTitle.cshtml", Model.PullRequests);
-                    }
                 }
             </div>
         </td>

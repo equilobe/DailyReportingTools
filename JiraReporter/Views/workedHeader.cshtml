@@ -3,14 +3,7 @@
 }
 @if(Model.Issues!=null)
 {
-    if (Model.PullRequests != null)
-    {
-        if (Model.PullRequests.Count > 0)
-        {
-            test = true;
-        }
-    }
-    else if (Model.Issues.Count > 0 || Model.Commits.Count > 0)
+    if (Model.Issues.Count > 0 || Model.Commits.Count > 0)
     {
         test = true;
     }
@@ -18,10 +11,6 @@
     {
         test = false;
     }
-}
-else
-{
-    test = false;
 }
 @if (test==true)
 {

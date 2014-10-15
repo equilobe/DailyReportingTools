@@ -15,9 +15,7 @@ namespace JiraReporter
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            var commits = SourceControlProcessor.GetSourceControlCommits(log);
-            var pullRequests = SourceControlProcessor.GetSourceControlPullRequests(log);
-            
+            var commits = SourceControlProcessor.GetCommits(log);            
 
             foreach (var user in users)
             {
@@ -25,7 +23,7 @@ namespace JiraReporter
                     authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last(), policy, commits, pullRequests, options);
+                SetAuthor(report, authorsNew.Last(), policy, commits, options);
             }
 
             authorsNew.RemoveAll(AuthorIsEmpty);
@@ -60,14 +58,13 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits, List<PullRequest> pullRequests, SvnLogReporter.Options options)
+        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits, SvnLogReporter.Options options)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
             SetAuthorTimeFormat(author);           
             SetAuthorCommits(policy, author, commits);
             author.Name = SetName(author.Name);
-            SetAuthorPullRequests(author, pullRequests, policy);
             SetUnfinishedTasks(sprint, author);
             SetAuthorDayLogs(author, options);
         }
@@ -129,8 +126,7 @@ namespace JiraReporter
                     if (unfinishedTasks.Last().Issue.ExistsInTimesheet == false)
                     {
                         IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last().Issue, author.Commits);
-                        IssueAdapter.AdjustIssuePullRequests(unfinishedTasks.Last().Issue, author.PullRequests);
-                        if (unfinishedTasks.Last().Issue.Commits.Count > 0 || unfinishedTasks.Last().Issue.PullRequests.Count > 0) 
+                        if (unfinishedTasks.Last().Issue.Commits.Count > 0) 
                         {
                             if (author.Issues == null)
                                 author.Issues = new List<Issue>();
@@ -159,18 +155,6 @@ namespace JiraReporter
             author.Commits = find;
            // IssueAdapter.AdjustIssueCommits(author);           
         }       
-
-        public static void SetAuthorPullRequests(Author author, List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy)
-        {
-               var find = new List<PullRequest>();
-
-               if (policy.Users.ContainsKey(author.Name))
-                 if (policy.Users[author.Name] != "")
-                   find = pullRequests.FindAll(pullRequest => pullRequest.GithubPullRequest.User.Name == policy.Users[author.Name]);
-               author.PullRequests = find;
-            //   IssueAdapter.AdjustIssuePullRequests(author);     
-        }
-
         public static void SetAuthorDayLogs(Author author, SvnLogReporter.Options options)
         {
             author.DayLogs = new List<DayLog>();
@@ -187,12 +171,5 @@ namespace JiraReporter
             return commits;
         }
 
-        //public static List<PullRequest> GetDayLogPullRequests(Author author)
-        //{
-        //    var pullRequests = new List<PullRequest>();
-        //    if (author.PullRequests != null)
-        //        pullRequests = author.PullRequests.FindAll(p => p.TaskSynced == true);
-        //    return pullRequests;
-        //}
     }
 }

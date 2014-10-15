@@ -78,19 +78,19 @@ namespace JiraReporter
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
                 var newIssue = new AnotherJiraRestClient.Issue();
                 newIssue = RestApiRequests.GetIssue(issue.Key, policy);
-                SetIssue(issue, policy, newIssue, timesheet);
+                SetIssue(issue, policy, newIssue, timesheet, pullRequests);
                 if (issue.Subtasks != null)
-                    SetSubtasksIssues(issue, policy, timesheet);
+                    SetSubtasksIssues(issue, policy, timesheet, pullRequests);
             }
         }
 
-        public static void SetIssue(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet)
+        public static void SetIssue(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {    
             if (issue.Entries == null)
                 issue.Entries = new List<Entries>();
@@ -123,13 +123,14 @@ namespace JiraReporter
             SetIssueTimeFormat(issue);
             SetIssueExists(issue, timesheet.Worklog.Issues);
             if (issue.SubTask == true)
-                SetParent(issue, newIssue, policy, timesheet);
+                SetParent(issue, newIssue, policy, timesheet, pullRequests);
             issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
+            AdjustIssuePullRequests(issue, pullRequests);
             
             SetIssueLink(issue, policy);
         }
 
-        public static void SetSubtasksIssues(Issue issue, SvnLogReporter.Model.Policy policy, Timesheet timesheet)
+        public static void SetSubtasksIssues(Issue issue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             var newIssue = new AnotherJiraRestClient.Issue();
             issue.SubtasksIssues = new List<Issue>();
@@ -137,7 +138,7 @@ namespace JiraReporter
             {
                 newIssue = RestApiRequests.GetIssue(task.key, policy);
                 issue.SubtasksIssues.Add(new Issue { Key = task.key, Summary = newIssue.fields.summary });
-                SetIssue(issue.SubtasksIssues.Last(), policy, newIssue, timesheet);
+                SetIssue(issue.SubtasksIssues.Last(), policy, newIssue, timesheet, pullRequests);
             }
         }
 
@@ -184,21 +185,12 @@ namespace JiraReporter
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        private static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy, Timesheet timesheet)
+        private static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             issue.Parent = new Issue { Key = newIssue.fields.parent.key, Summary = newIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(issue.Parent.Key, policy);
-            SetIssue(issue.Parent, policy, parent, timesheet);
+            SetIssue(issue.Parent, policy, parent, timesheet, pullRequests);
         }
-
-        //public static void AdjustIssueCommits(Author author)
-        //{
-        //    if (author.Issues != null)
-        //        foreach (var issue in author.Issues)
-        //        {
-        //            AdjustIssueCommits(issue, author.Commits);
-        //        }
-        //}
 
         public static void AdjustIssueCommits(DayLog dayLog)
         {
@@ -213,11 +205,8 @@ namespace JiraReporter
 
         public static void AdjustIssueCommits(Issue issue, List<Commit> commits)
         {
-            //var find = new List<Commit>();
             issue.Commits = new List<Commit>();
             issue.Commits = commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
-            //if (find.Count > 0)
-            //    issue.Commits = find;
             EditIssueCommits(issue);
         }
 
@@ -235,32 +224,14 @@ namespace JiraReporter
                     commit.TaskSynced = true;
         }
 
-        public static void AdjustIssuePullRequests(Author author)
-        {
-            if (author.PullRequests != null)
-            {
-                if (author.Issues != null)
-                    foreach (var issue in author.Issues)
-                        AdjustIssuePullRequests(issue, author.PullRequests);
-            }
-        }
-
-        public static void AdjustIssuePullRequests(DayLog dayLog)
-        {
-            if(dayLog.Issues!=null)
-                if(dayLog.Issues.Count>0)
-                    foreach(var issue in dayLog.Issues)
-                    AdjustIssuePullRequests(issue, dayLog.PullRequests);
-        }
-
         public static void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
         {
-            //var find = new List<PullRequest>();
-            issue.PullRequests = new List<PullRequest>();
-            issue.PullRequests = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
-            //if (find != null)
-            //    issue.PullRequests = find;
-            EditIssuePullRequests(issue);
+            if (pullRequests != null)
+            {
+                issue.PullRequests = new List<PullRequest>();
+                issue.PullRequests = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
+                EditIssuePullRequests(issue);
+            }
         }
 
        private static void EditIssuePullRequests(Issue issue)
@@ -270,6 +241,5 @@ namespace JiraReporter
                     foreach (var pullRequest in issue.PullRequests)
                         pullRequest.TaskSynced = true;
         }
-
     }
 }

@@ -17,16 +17,6 @@ namespace JiraReporter
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
 
-        public static List<Commit> GetSourceControlCommits(SvnLogReporter.Model.Log log)
-        {
-            return GetCommits(log);            
-        }
-
-        public static List<PullRequest> GetSourceControlPullRequests(SvnLogReporter.Model.Log log)
-        {
-            return GetPullRequests(log);
-        }
-
         public static SvnLogReporter.Model.Log GetSourceControlLog(Policy policy, Options options)
         {
             var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
@@ -34,7 +24,7 @@ namespace JiraReporter
             return log;
         }
 
-        private static List<PullRequest> GetPullRequests(Log log)
+        public static List<PullRequest> GetPullRequests(Log log)
         {
             var pullRequests = new List<PullRequest>();
             if(log.PullRequests!=null)
@@ -44,7 +34,7 @@ namespace JiraReporter
             return pullRequests;
         }
 
-        private static List<Commit> GetCommits(Log log)
+        public static List<Commit> GetCommits(Log log)
         {
             var commits = new List<Commit>();
             if(log.Entries!=null)
