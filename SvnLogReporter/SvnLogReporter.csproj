@@ -84,6 +84,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="GitHubReport.cs" />
     <Compile Include="Model\Author.cs" />
+    <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Log.cs" />
     <Compile Include="Model\LogEntry.cs" />
     <Compile Include="Model\Policy.cs" />

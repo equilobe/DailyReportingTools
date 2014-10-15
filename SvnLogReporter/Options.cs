@@ -76,7 +76,7 @@ namespace SvnLogReporter
             var startDate = FromDate;
             while (startDate.AddDays(1) <= ToDate)
             {
-                startDate = startDate.Date;
+                //startDate = startDate.Date;
                 dates.Add(startDate);
                 startDate = startDate.AddDays(1);
             }

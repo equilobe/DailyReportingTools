@@ -39,23 +39,6 @@ namespace SvnLogReporter
             }
         }
 
-        protected override List<Report> GetReports(Log log)
-        {
-            var reports = new List<Report>();
-            var logs = GetDayLogs(log);
-            var report = new Report();
-            reports = EmptyReports(logs, Options.ReportDates);
-            foreach (var logDict in logs)
-            {
-                report = LogProcessor.GetReport(logDict.Value);
-                report.ReportDate = logDict.Key;
-                reports.Add(report);
-                report.PullRequests = null;
-            }
-            reports = reports.OrderBy(r => r.ReportDate).ToList();
-            return reports;
-        }      
-
         private string GetCommandString()
         {
             return string.Format("svn log {0} --xml --username \"{1}\" --password \"{2}\" -r{{{3:yyyy-MM-ddTHH:mmZ}}}:{{{4:yyyy-MM-ddTHH:mmZ}}} > \"{5}\"",
