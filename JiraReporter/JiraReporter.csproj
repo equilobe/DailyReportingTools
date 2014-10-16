@@ -96,15 +96,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <Content Include="Policies\Alyssa.xml" />
-    <Content Include="Policies\BoardProspectsDraft.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Policies\BoardProspects.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Policies\AlyssaDraft.xml" />
-    <Content Include="Policies\DailyReportTool.xml" />
     <Content Include="Views\TimesheetReportTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -162,6 +153,9 @@
       <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>
       <Name>SvnLogReporter</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Policies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

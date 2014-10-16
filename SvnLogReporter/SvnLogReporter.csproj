@@ -129,18 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DeploymentSteps.txt" />
-    <Content Include="Policies\BoardProspects.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Policies\humatix.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Policies\equilobe.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Policies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
