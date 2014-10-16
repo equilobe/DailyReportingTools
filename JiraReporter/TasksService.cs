@@ -8,37 +8,37 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public static int GetTasksTimeLeftSeconds(List<Task> tasks)
+        public static int GetTasksTimeLeftSeconds(List<Issue> tasks)
         {
             int seconds = 0;
             foreach (var task in tasks)
-                if(task.Issue.SubTask==false)
-                        if (task.Issue.Subtasks.Count > 0)
-                            seconds += task.Issue.TotalRemainingSeconds;
+                if(task.SubTask==false)
+                        if (task.Subtasks.Count > 0)
+                            seconds += task.TotalRemainingSeconds;
                         else
-                            seconds += task.Issue.RemainingEstimateSeconds;
+                            seconds += task.RemainingEstimateSeconds;
             return seconds;
         }
 
-        public static void HasTasksInProgress(Task task)
+        public static void HasTasksInProgress(Issue task)
         {
-            if (task.Issue.Subtasks.Count > 0)
+            if (task.Subtasks.Count > 0)
             {
-                task.HasInProgress = HasInProgress(task);
-                task.HasInProgressAuthor = HasInProgressAuthor(task);
+                task.HasSubtasksInProgress = HasSubtasksInProgress(task);
+                task.HasAssignedSubtasksInProgress = HasAssignedSubtasksInProgress(task);
             }
         }
 
-        public static bool HasInProgress(Task task)
+        public static bool HasSubtasksInProgress(Issue task)
         {
-            if (task.Issue.Resolution == null && task.Issue.StatusCategory.name != "In Progess" && task.Issue.SubtasksIssues.Exists(s => s.StatusCategory.name == "In Progress"))
+            if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksIssues.Exists(s => s.StatusCategory.name == "In Progress"))
                 return true;
             return false;
         }
 
-        public static bool HasInProgressAuthor(Task task)
+        public static bool HasAssignedSubtasksInProgress(Issue task)
         {
-            if (HasInProgress(task)==true && task.Issue.SubtasksIssues.Exists(s=>s.Assignee == task.Issue.Assignee))
+            if (HasSubtasksInProgress(task)==true && task.SubtasksIssues.Exists(s=>s.Assignee == task.Assignee))
                 return true;
             return false;
         }

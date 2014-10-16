@@ -59,11 +59,15 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string Label { get; set; }
         [XmlIgnore]
-        public string ResolutionDate { get; set; }
+        public string StringResolutionDate { get; set; }
+        [XmlIgnore]
+        public DateTime ResolutionDate { get; set; }
         [XmlIgnore]
         public StatusCategory StatusCategory { get; set; }
         [XmlIgnore]
         public string Updated { get; set; }
+        [XmlIgnore]
+        public DateTime UpdatedDate { get; set; }
         [XmlIgnore]
         public List<AnotherJiraRestClient.Subtask> Subtasks { get; set; }
         [XmlIgnore]
@@ -78,6 +82,13 @@ namespace JiraReporter.Model
         public List<PullRequest> PullRequests { get; set; }
         [XmlIgnore]
         public string ReopenedStatus { get; set; }
+
+        [XmlIgnore]
+        public string CompletedTimeAgo { get; set; }
+        [XmlIgnore]
+        public bool HasSubtasksInProgress { get; set; }
+        [XmlIgnore]
+        public bool HasAssignedSubtasksInProgress { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -113,6 +124,7 @@ namespace JiraReporter.Model
             {
                 this.Resolution = issue.Resolution;
                 this.ResolutionDate = issue.ResolutionDate;
+                this.StringResolutionDate = issue.StringResolutionDate;
             }
             this.Status = issue.Status;
             this.SubTask = issue.SubTask;
@@ -126,6 +138,7 @@ namespace JiraReporter.Model
             this.StatusCategory = issue.StatusCategory;
             this.Created = issue.Created;
             this.Updated = issue.Updated;
+            this.UpdatedDate = issue.UpdatedDate;
             this.ExistsInTimesheet = issue.ExistsInTimesheet;
             if (issue.Subtasks != null)
             {
@@ -136,6 +149,11 @@ namespace JiraReporter.Model
             this.PullRequests = issue.PullRequests;
             this.LoggedAuthor = issue.LoggedAuthor;
             this.ReopenedStatus = issue.ReopenedStatus;
+
+            this.HasAssignedSubtasksInProgress = issue.HasAssignedSubtasksInProgress;
+            this.HasSubtasksInProgress = issue.HasSubtasksInProgress;
+            this.CompletedTimeAgo = issue.CompletedTimeAgo;
+
         }       
     }
 }

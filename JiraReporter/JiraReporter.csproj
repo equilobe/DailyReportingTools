@@ -73,7 +73,6 @@
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\Summary.cs" />
-    <Compile Include="Model\Task.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\Author.cs" />
     <Compile Include="Model\Entries.cs" />

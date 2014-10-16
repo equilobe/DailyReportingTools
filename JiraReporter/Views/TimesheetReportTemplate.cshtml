@@ -80,7 +80,7 @@
                                     <tbody>
                                         @foreach (var task in author.InProgressTasks)
                                         {
-                                            @Partial("Views/inProgress.cshtml", task.Issue)                                         
+                                            @Partial("Views/inProgress.cshtml", task)                                         
                                                
                                              @*if (task.Issue.SubtasksIssues != null)
                                                 {
@@ -131,7 +131,7 @@
             }
         </div>
 
-            @if (Model.Sprint.UnassignedCount>0)
+            @if (Model.Sprint.UnassignedTasks.Count > 0)
             {
                 <div style="margin-top:60px; line-height:1.4em;">
                     <h1 style="color:black">Unassigned </h1>

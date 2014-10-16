@@ -3,7 +3,7 @@
 }
 @if(Model.Issues!=null)
 {
-    if (Model.Issues.Count > 0 || Model.Commits.Count > 0)
+    if (Model.Issues.Count > 0)
     {
         test = true;
     }
@@ -11,6 +11,10 @@
     {
         test = false;
     }
+}
+@if(Model.Commits.Count>0)
+{
+    test = true;
 }
 @if (test==true)
 {

@@ -8,7 +8,7 @@ namespace JiraReporter
 {
     public class CompletedTasks
     {
-        public List<Task> Tasks { get; set; }
+        public List<Issue> Tasks { get; set; }
         public string CompletedTimeAgo { get; set; }
     }
 }

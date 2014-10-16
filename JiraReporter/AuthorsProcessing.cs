@@ -115,22 +115,22 @@ namespace JiraReporter
             }
         }
 
-        private static List<Task> GetAuthorTasks(List<Task> tasks, Author author)
+        private static List<Issue> GetAuthorTasks(List<Issue> tasks, Author author)
         {
-            var unfinishedTasks = new List<Task>();
+            var unfinishedTasks = new List<Issue>();
             foreach (var task in tasks)
-                if (task.Issue.Assignee == author.Name)
+                if (task.Assignee == author.Name)
                 {
                     unfinishedTasks.Add(task);
-                    unfinishedTasks.Last().Issue.LoggedAuthor = author.Name;
-                    if (unfinishedTasks.Last().Issue.ExistsInTimesheet == false)
+                    unfinishedTasks.Last().LoggedAuthor = author.Name;
+                    if (unfinishedTasks.Last().ExistsInTimesheet == false)
                     {
-                        IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last().Issue, author.Commits);
-                        if (unfinishedTasks.Last().Issue.Commits.Count > 0) 
+                        IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last(), author.Commits);
+                        if (unfinishedTasks.Last().Commits.Count > 0) 
                         {
                             if (author.Issues == null)
                                 author.Issues = new List<Issue>();
-                            author.Issues.Add(unfinishedTasks.Last().Issue);
+                            author.Issues.Add(unfinishedTasks.Last());
                         }
                            
                     }

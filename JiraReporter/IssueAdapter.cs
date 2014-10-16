@@ -14,9 +14,7 @@ namespace JiraReporter
         {
             foreach (var entry in entries)
                 if (entry.AuthorFullName != entries.First().AuthorFullName)
-                {
                     AddEntries(issues, entry, issue);
-                }
         }
 
         public static void RemoveWrongEntries(List<Issue> issues)
@@ -105,7 +103,7 @@ namespace JiraReporter
             if (newIssue.fields.resolution != null)
             {
                 issue.Resolution = newIssue.fields.resolution.name;
-                issue.ResolutionDate = newIssue.fields.resolutiondate;
+                issue.StringResolutionDate = newIssue.fields.resolutiondate;
             }
             issue.Status = newIssue.fields.status.name;
             issue.Type = newIssue.fields.issuetype.name;

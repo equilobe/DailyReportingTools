@@ -15,27 +15,27 @@
                                     <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
                                 </th>
                                 <td>
-                                    <a style="text-decoration: none; font-weight:bold;" href="@task.Issue.Link">@task.Issue.Summary</a>
-                                    <span style="color: #B8B8B8;"> &#x25cf; @task.Issue.Key </span>
-                                    @if (task.Issue.Subtasks.Count > 0)
+                                    <a style="text-decoration: none; font-weight:bold;" href="@task.Link">@task.Summary</a>
+                                    <span style="color: #B8B8B8;"> &#x25cf; @task.Key </span>
+                                    @if (task.Subtasks.Count > 0)
                                     {
-                                        <span style="color:black"> &#x25cf; @task.Issue.TimeLoggedTotal worked</span>
+                                        <span style="color:black"> &#x25cf; @task.TimeLoggedTotal worked</span>
                                     }
                                     else
                                     {
-                                        <span style="color:black"> &#x25cf; @task.Issue.TimeLogged worked</span>
+                                        <span style="color:black"> &#x25cf; @task.TimeLogged worked</span>
                                     }
-                                    @if (task.Issue.RemainingEstimateSeconds == 0 && task.Issue.TotalRemainingSeconds > 0)
+                                    @if (task.RemainingEstimateSeconds == 0 && task.TotalRemainingSeconds > 0)
                                     {
-                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.TotalRemaining left from subtasks </span>
+                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.TotalRemaining left from subtasks </span>
                                     }
-                                    @if (task.Issue.RemainingEstimateSeconds != 0)
+                                    @if (task.RemainingEstimateSeconds != 0)
                                     {
-                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.Issue.RemainingEstimate left </span>
+                                        <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.RemainingEstimate left </span>
                                     }
-                                    @if (task.Issue.Assignee != null)
+                                    @if (task.Assignee != null)
                                     {
-                                        <span style="color:black"> &#x25cf; @task.Issue.Assignee </span>
+                                        <span style="color:black"> &#x25cf; @task.Assignee </span>
                                     }
                                     else
                                     {

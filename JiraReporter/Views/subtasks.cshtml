@@ -65,11 +65,11 @@
                         {
                             <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
                         }
-                        @if (Model.PullRequests != null)
+                        @if (subtask.PullRequests != null)
                         {
-                            if (Model.PullRequests.Count > 0)
+                            if (subtask.PullRequests.Count > 0)
                             {
-                                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+                                <span> @Partial("Views/pullRequests.cshtml", subtask.PullRequests) </span>
                             }
                         }
                     </td>
