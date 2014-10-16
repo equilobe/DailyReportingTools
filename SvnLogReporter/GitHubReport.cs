@@ -60,22 +60,9 @@ namespace SvnLogReporter
                         pullRequest.User.Name = GetUserInfo(pullRequest.User.Login).Name;
         }
 
-        protected override List<Report> GetReports(Log log)
+        protected override void AddPullRequests(Report report, Log log)
         {
-            var reports = new List<Report>();
-            var logs = GetDayLogs(log);
-            var report = new Report();
-            reports = EmptyReports(logs, Options.ReportDates);
-            foreach (var logDict in logs)
-            {
-
-                report = LogProcessor.GetReport(logDict.Value);
-                report.ReportDate = logDict.Key;
-                reports.Add(report);
-            }
-            reports = reports.OrderBy(r => r.ReportDate).ToList();
-            reports.First().PullRequests = log.PullRequests;
-            return reports;
+            report.PullRequests = log.PullRequests;
         }
      
         protected IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)
