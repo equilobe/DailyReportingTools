@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RootPath></RootPath> <!-- e.g. BoardProspects -->
+  <Emails></Emails> <!-- e-mail address of the recipient, e.g. contact@equilobe.com -->
+  <EmailSubject></EmailSubject> <!-- e-mail subject, e.g. Daily Report for -->
+  <ReportTitle></ReportTitle> <!-- e-mail report title, e.g. Board Prospects -->
+  <SourceControl>
+    <Type></Type> <!-- type of the Source Control System, e.g. SVN, GitHub -->
+    <RepoOwner></RepoOwner> <!-- owner of the repository, e.g. EQUILOBE -->
+		<RepoName></RepoName> <!-- name of the repository -->
+		<RepoUrl></RepoUrl> <!-- url address of the repository, e.g. svn://10.0.0.1/repos -->
+    <Username></Username> <!-- username to access repository -->
+    <Password></Password> <!-- password of username to access repository -->
+  </SourceControl>
+</Policy>
