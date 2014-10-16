@@ -9,11 +9,10 @@ namespace JiraReporter.Model
 {
     public class SprintTasks
     {
-        public List<CompletedTasks> CompletedTasksList { get; set; } 
+        public Dictionary<string, List<Issue>> CompletedTasks { get; set; }
         public List<Issue> InProgressTasks { get; set; }
         public List<Issue> OpenTasks { get; set; }
         public List<Issue> UnassignedTasks { get; set; }
-       // public int UnassignedCount { get { return UnassignedTasks.Count; } }
 
         public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {
@@ -100,18 +99,14 @@ namespace JiraReporter.Model
 
         private void SetCompletedTasks(IEnumerable<IGrouping<string,Issue>> tasks)
         {
-            var completedTasksList = new List<CompletedTasks>();
+            var completedTasks = new Dictionary<string, List<Issue>>();
+            var issues = new List<Issue>();
             foreach(var task in tasks)
             {
-                completedTasksList.Add(new CompletedTasks());
-                completedTasksList.Last().Tasks = new List<Issue>();
-                  foreach(var item in task)
-                   {
-                      completedTasksList.Last().Tasks.Add(item);
-                      completedTasksList.Last().CompletedTimeAgo = item.CompletedTimeAgo;
-                   }
+                issues = tasks.SelectMany(group => group).Where(group=>group.CompletedTimeAgo == task.Key).ToList();
+                completedTasks.Add(task.Key, issues);
             }
-            this.CompletedTasksList = completedTasksList;            
+            this.CompletedTasks = completedTasks;            
         }
 
     }

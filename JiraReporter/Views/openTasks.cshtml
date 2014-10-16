@@ -22,7 +22,7 @@ else
 
             </td>
         }
-        <td style="vertical-align:top; padding-right:5px">
+        <td style="vertical-align:top; padding-right:5px; width:15px">
             <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal; ">&#10065;</span>       
         </td>
         <td @colspan>
@@ -30,7 +30,7 @@ else
             {
                 <b style="color:black"> NEW: </b>
             }
-            @if (Model.Status == Model.ReopenedStatus)
+            @if (Model.Status == Model.PolicyReopenedStatus)
             {
                 <b style="color:black">Reopened: </b>
             }

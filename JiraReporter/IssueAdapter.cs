@@ -93,7 +93,7 @@ namespace JiraReporter
             if (issue.Entries == null)
                 issue.Entries = new List<Entries>();
             issue.Priority = newIssue.fields.priority;
-            issue.ReopenedStatus = policy.ReopenedStatus;
+            issue.PolicyReopenedStatus = policy.ReopenedStatus;
             if (newIssue.fields.assignee != null)
                 issue.Assignee = newIssue.fields.assignee.displayName;
             if (newIssue.fields.timetracking != null)

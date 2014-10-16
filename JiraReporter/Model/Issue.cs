@@ -81,7 +81,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public List<PullRequest> PullRequests { get; set; }
         [XmlIgnore]
-        public string ReopenedStatus { get; set; }
+        public string PolicyReopenedStatus { get; set; }
 
         [XmlIgnore]
         public string CompletedTimeAgo { get; set; }
@@ -148,7 +148,7 @@ namespace JiraReporter.Model
             this.Commits = issue.Commits;
             this.PullRequests = issue.PullRequests;
             this.LoggedAuthor = issue.LoggedAuthor;
-            this.ReopenedStatus = issue.ReopenedStatus;
+            this.PolicyReopenedStatus = issue.PolicyReopenedStatus;
 
             this.HasAssignedSubtasksInProgress = issue.HasAssignedSubtasksInProgress;
             this.HasSubtasksInProgress = issue.HasSubtasksInProgress;

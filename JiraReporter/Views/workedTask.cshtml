@@ -32,7 +32,7 @@ else
             </td>
         }
       
-        <td style="vertical-align:top; padding-right:5px;">
+        <td style="vertical-align:top; padding-right:5px; width:15px">
             @if (Model.Resolution != null && Model.StatusCategory.name == "Done")
             {
                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
@@ -78,6 +78,17 @@ else
                 else
                 {
                     <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
+                }
+            }
+            @if(Model.Assignee==null)
+            {
+                <span> &#x25cf; Unassigned</span>
+            }
+            else
+            {
+                if(Model.Assignee!=Model.LoggedAuthor)
+                {
+                    <span> &#x25cf; @Model.Assignee</span>
                 }
             }
             @if (Model.PullRequests != null)
