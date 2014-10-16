@@ -21,8 +21,6 @@ namespace SvnLogReporter.Model
         [XmlIgnore]
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
 
-        public int DayStartHour { get; set; }
-
         public string ReportTitle { get; set; }
         public string BaseUrl { get; set; }
         public string TargetGroup { get; set; }

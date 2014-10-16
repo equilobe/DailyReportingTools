@@ -76,7 +76,7 @@ namespace SvnLogReporter
             var startDate = FromDate;
             while (startDate.AddDays(1) <= ToDate)
             {
-                //startDate = startDate.Date;
+                startDate = startDate.Date;
                 dates.Add(startDate);
                 startDate = startDate.AddDays(1);
             }
@@ -123,10 +123,7 @@ namespace SvnLogReporter
         {
             if (!HasToDate && !HasFromDate)
             {
-                var now = DateTime.Now;
-                ToDate = now.Hour < StartHour ? now.Date.AddDays(-1) : now.Date;                               
-                ToDate = ToDate.AddHours(StartHour);
-              //  ToDate = DateTime.Today;
+                ToDate = DateTime.Today;
                 FromDate = ToDate.AddDays(-1);              
             }
             else if (!HasToDate)
@@ -144,27 +141,11 @@ namespace SvnLogReporter
         {
             DateTime date;
             if (DateTime.TryParse(dateString, out date))
-            {
-                if (dateString.Length <= 10)
-                    return date.AddHours(StartHour);
                 return date;
-            }
 
             throw new ArgumentException("Date is not in the correct format");
         }
 
         Policy Policy { get; set; }
-
-        private int StartHour
-        {
-            get
-            {
-                int defaultTime = Policy.DayStartHour;
-
-                if (defaultTime < 0 || defaultTime > 23)
-                    defaultTime = 5;
-                return defaultTime;
-            }
-        }
     }
 }

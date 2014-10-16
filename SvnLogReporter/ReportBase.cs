@@ -119,48 +119,13 @@ namespace SvnLogReporter
         {
             report.PullRequests = null;
         }
-
-        //protected List<Report> EmptyReports (Dictionary<DateTime, List<LogEntry>> logs, List<DateTime> dates)
-        //{
-        //    List<Report> reports = new List<Report>();
-        //    foreach (var date in dates)
-        //        if (!logs.ContainsKey(date))
-        //            reports.Add(new Report() { ReportDate = date, Title = Policy.ReportTitle});
-        //    return reports;
-        //}
-
         protected List<DayLog> GetDayLogs (Log log, List<DateTime> dates)
         {
-            //var logs = new Dictionary<DateTime, List<LogEntry>>();
-            //var date = new DateTime();
-            //foreach (var entry in log.Entries)
-            //{
-            //    date = entry.Date.Date;
-            //    Add(logs, date, entry);
-            //}
-            //logs = logs.OrderBy(k => k.Key).ToDictionary(k => k.Key, k => k.Value);
-            //return logs;
             var dayLogs = new List<DayLog>();
             foreach(var date in dates)
                 dayLogs.Add(new DayLog { Date = date, LogEntries = log.Entries.FindAll(e => e.Date >= date && e.Date < date.AddDays(1)) });
             return dayLogs;
         }
-
-        //protected void Add(Dictionary<DateTime, List<LogEntry>> dict, DateTime key, LogEntry value)
-        //{
-        //    if (dict.ContainsKey(key))
-        //    {
-        //        List<LogEntry> list = dict[key];
-        //        if (list.Contains(value) == false)
-        //            list.Add(value);
-        //    }
-        //    else
-        //    {
-        //        List<LogEntry> list = new List<LogEntry>();
-        //        list.Add(value);
-        //        dict.Add(key, list);
-        //    }
-        //}
 
         public abstract Log CreateLog();        
     }
