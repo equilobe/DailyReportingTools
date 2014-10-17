@@ -32,7 +32,7 @@ else
             </td>
         }
       
-        <td style="vertical-align:top; padding-right:5px; width:15px">
+        <td style="vertical-align:top; width:15px">
             @if (Model.Resolution != null && Model.StatusCategory.name == "Done")
             {
                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
@@ -98,14 +98,6 @@ else
                     <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
                 }
             }
-            @*@if (Model.TimeSpent > 0)
-            {
-                <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:black;">@Model.TimeLogged worked</span></span>
-            }
-            else
-            {
-                <span> &#x25cf; <span style="background-color:yellow; font-weight:bold; color:red;">no work logged</span></span>
-            }*@
             <div style="margin-top:5px; margin-left:10px;">
                 @if (Model.TimeSpent > 0)
                 {
@@ -125,7 +117,7 @@ else
 
             </div>
 
-            <div style="margin-top:5px; margin-left:10px;">
+            <div style="margin-top:5px; margin-left:10px; margin-bottom:5px">
                 @Partial("Views/commits.cshtml", Model.Commits)
                 @if (Model.Commits.Count > 0)
                 {

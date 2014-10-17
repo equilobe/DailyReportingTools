@@ -1,10 +1,10 @@
 ﻿<div style="margin-top:25px">
-    <h2 style="color:black">Unrelated pull requests</h2>
+    <h2 style="color:black; margin-bottom:10px">Unrelated pull requests</h2>
     <ul style="padding:0; margin-left:15px; margin-top:0px; color:black">
         @foreach (var pullRequest in Model)
         {
-                <li style="margin-left:15px;">
-                    <a style="text-decoration:none" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
+                <li style="margin-left:15px; color:black">
+                    <a style="text-decoration:none; color:green" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
                 </li>
         }
     </ul>
