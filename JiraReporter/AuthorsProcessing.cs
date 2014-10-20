@@ -37,6 +37,7 @@ namespace JiraReporter
             {
                 Add(authors, issue.Entries.First().AuthorFullName, issue);
                 issue.LoggedAuthor = issue.Entries.First().AuthorFullName;
+                issue.LoggedAuthor = SetName(issue.LoggedAuthor);
             }
                
             return authors;
