@@ -26,7 +26,7 @@ namespace JiraReporter.Model
         private List<Issue> GetCompletedTasks(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, Timesheet timesheet)
         {
             var completedTasks = new List<Issue>();
-            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Today.AddDays(-7), DateTime.Now);
+            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Today.AddDays(-6), DateTime.Now);
             foreach(var issue in issues.issues)
             {
                 if(issue.fields.issuetype.subtask==false)

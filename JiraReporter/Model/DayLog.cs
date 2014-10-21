@@ -22,7 +22,6 @@ namespace JiraReporter.Model
             this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
-            this.Title = this.Title.First().ToString().ToUpper() + this.Title.Substring(1);
 
             if(issues!=null)
                 if(issues.Count>0)

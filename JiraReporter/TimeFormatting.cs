@@ -53,12 +53,12 @@ namespace JiraReporter
             int days = (int)SetTimeSpan(date).TotalDays;
             var d = TimeSpan.FromDays(days);
             if (d.Days == 0)
-                day = "today";
+                day = "Today";
             else
                 if (d.Days == 1)
-                    day = "yesterday";
+                    day = "Yesterday";
                 else
-                    day = string.Format("{0} days ago", d.Days);
+                    day = date.ToString("dddd");
             return day;
         }
 
