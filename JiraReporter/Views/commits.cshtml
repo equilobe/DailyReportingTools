@@ -46,10 +46,10 @@
 
             if (commit.Entry.Link != null)
             {
-                <span style="text-wrap:none; white-space:nowrap; color:black;">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma @closedParentheses</span>
+                <span style="text-wrap:none; white-space:nowrap; color:black;">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;">@revision</a>@comma@closedParentheses</span>
             }
             else
-            { <span style="text-wrap:none; white-space:nowrap; color:black;">@openParentheses <span style="color:black;">@revision</span>@comma @closedParentheses</span> }
+            { <span style="text-wrap:none; white-space:nowrap; color:black;">@openParentheses<span style="color:black;">@revision</span>@comma@closedParentheses</span> }
         }
     </span>
 }
