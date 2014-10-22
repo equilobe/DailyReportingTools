@@ -15,7 +15,7 @@ using Octokit;
 
 namespace SvnLogReporter
 {
-    class Reporter
+    public class Reporter
     {
 
         public static void WriteReport(Policy p, string report, string path)
@@ -36,7 +36,7 @@ namespace SvnLogReporter
 
             Validation.EnsureDirectoryExists(p.UnsentReportsPath);
 
-            var reportPath = Path.Combine(p.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".txt");
+            var reportPath = Path.Combine(p.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
 
             File.WriteAllText(reportPath, report);
         }

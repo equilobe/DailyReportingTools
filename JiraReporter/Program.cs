@@ -28,7 +28,7 @@ namespace JiraReporter
             
             SaveReportToFile(report);
 
-            SendReport(report, GetReportPath(report));
+            SendReport(report);
         }
 
         private static void SetTemplateGlobal()
@@ -49,14 +49,13 @@ namespace JiraReporter
             string reportPath = GetReportPath(report);
 
             var repCont = ReportProcessor.ProcessReport(report);
-
-            File.WriteAllText(reportPath, repCont);
+            SvnLogReporter.Reporter.WriteReport(report.policy, repCont, reportPath);
         }
 
-        private static void SendReport(Report report, string reportPath)
+        private static void SendReport(Report report)
         {
             var emailer = new SvnLogReporter.ReportEmailer(report.policy, report.options);
-            emailer.TryEmailReport(reportPath);
+            emailer.TrySendEmails();
         }
 
         private static string GetReportPath(Report report)
