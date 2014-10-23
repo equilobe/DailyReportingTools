@@ -106,6 +106,7 @@
     <Compile Include="Reporter.cs" />
     <Compile Include="SvnNotAvailableException.cs" />
     <Compile Include="SvnReport.cs" />
+    <Compile Include="TimeZone\DateTimeExtensions.cs" />
     <Compile Include="ValidateNotNullAttribute.cs" />
     <Compile Include="Validation.cs" />
   </ItemGroup>
