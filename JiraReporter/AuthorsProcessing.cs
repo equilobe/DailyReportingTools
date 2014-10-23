@@ -160,7 +160,7 @@ namespace JiraReporter
         {
             author.DayLogs = new List<DayLog>();
             foreach (var day in options.ReportDates)
-                author.DayLogs.Add(new DayLog(author, author.Issues, day, options));
+                author.DayLogs.Add(new DayLog(author, day, options));
             author.DayLogs = author.DayLogs.OrderBy(d => d.Date).ToList();
         }
 

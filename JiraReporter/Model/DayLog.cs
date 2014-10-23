@@ -17,17 +17,17 @@ namespace JiraReporter.Model
 
         public List<Commit> UnsyncedCommits { get; set; }
 
-        public DayLog(Author author, List<Issue> issues, DateTime date, SvnLogReporter.Options options)
+        public DayLog(Author author, DateTime date, SvnLogReporter.Options options)
         {
             this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
 
-            if(issues!=null)
-                if(issues.Count>0)
+            if(author.Issues!=null)
+                if (author.Issues.Count > 0)
                 {
                     this.Issues = new List<Issue>();
-                    foreach (var issue in issues)
+                    foreach (var issue in author.Issues)
                     {
                         this.Issues.Add(new Issue(issue));
                         IssueAdapter.RemoveWrongEntries(this.Issues.Last(), date);
