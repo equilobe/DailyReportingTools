@@ -89,6 +89,8 @@ namespace JiraReporter.Model
         public bool HasSubtasksInProgress { get; set; }
         [XmlIgnore]
         public bool HasAssignedSubtasksInProgress { get; set; }
+        [XmlIgnore]
+        public bool HasWorkLoggedByAssignee { get; set; }
 
         [XmlElement("summary")]
         public string Summary { get; set; }
@@ -153,6 +155,7 @@ namespace JiraReporter.Model
             this.HasAssignedSubtasksInProgress = issue.HasAssignedSubtasksInProgress;
             this.HasSubtasksInProgress = issue.HasSubtasksInProgress;
             this.CompletedTimeAgo = issue.CompletedTimeAgo;
+            this.HasWorkLoggedByAssignee = issue.HasWorkLoggedByAssignee;
 
         }       
     }

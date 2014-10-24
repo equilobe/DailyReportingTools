@@ -126,6 +126,7 @@ namespace JiraReporter
             AdjustIssuePullRequests(issue, pullRequests);
             
             SetIssueLink(issue, policy);
+            HasWorkLoggedByAssignee(issue);
         }
 
         public static void SetSubtasksIssues(Issue issue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
@@ -238,6 +239,16 @@ namespace JiraReporter
                 if (issue.PullRequests.Count > 0)
                     foreach (var pullRequest in issue.PullRequests)
                         pullRequest.TaskSynced = true;
+        }
+
+        private static void HasWorkLoggedByAssignee(Issue issue)
+        {
+            if (issue != null)
+                if (issue.Assignee != null)
+                {
+                    issue.HasWorkLoggedByAssignee = issue.Entries.Exists(e => e.AuthorFullName == issue.Assignee);
+                }
+              //  else issue.HasWorkLoggedByAssignee = false;
         }
     }
 }
