@@ -12,6 +12,11 @@ namespace JiraReporter
         public static  Report GenerateReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
+
+            //DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheet.StartDate);
+
+            //options.FromDate = options.FromDate.ToOriginalTimeZone();
+
             var timesheetService = new TimesheetService();
             var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var pullRequests = SourceControlProcessor.GetPullRequests(log);

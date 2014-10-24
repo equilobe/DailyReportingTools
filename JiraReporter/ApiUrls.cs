@@ -13,6 +13,11 @@ namespace JiraReporter
             return string.Format("/rest/timesheet-gadget/1.0/raw-timesheet.xml?targetGroup={0}&startDate={1}&endDate={2}", targetGroup, fromDate, toDate);
         }
 
+        public static string User(string userName)
+        {
+            return string.Format("/rest/api/latest/user?username={0}", userName);
+        }
+
         public static string Users(string project)
         {
             return string.Format("/rest/api/2/user/assignable/search?project={0}", project);

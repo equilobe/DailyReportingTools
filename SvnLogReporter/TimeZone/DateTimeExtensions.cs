@@ -30,7 +30,7 @@ namespace System
 
             if(referenceDay.AddHours(12) < universalDate )
                 referenceDay = referenceDay.AddDays(1);
-
+           // OffsetFromUtc = new DateTimeOffset(dateAtMidnight).Offset;
             OffsetFromUtc = referenceDay - universalDate;
         }
     }
