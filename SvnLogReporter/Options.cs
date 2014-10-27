@@ -60,16 +60,6 @@ namespace SvnLogReporter
             return date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", DateTimeFormatInfo.InvariantInfo);
         }
 
-        //public static string DateToISO(DateTime date)
-        //{
-        //    return date.ToString("yyyy'-'MM'-'dd' 'HH':'mm", DateTimeFormatInfo.InvariantInfo);
-        //}
-
-        //public static DateTime FloorToDay(DateTime dateTime)
-        //{
-        //    return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0);
-        //}
-
         public List<DateTime>  GetDates()
         {
             var dates = new List<DateTime>();
@@ -105,6 +95,8 @@ namespace SvnLogReporter
 
             SetDefaultDates();
 
+            SetDates();
+
            // SwitchToUniversalTime();
 
             if (ToDate < FromDate)
@@ -137,6 +129,16 @@ namespace SvnLogReporter
             }
         }
 
+        private void SetDates()
+        {
+            if(Policy.IsWeekendReportActive==true)
+                if (DateTime.Today.DayOfWeek == DayOfWeek.Monday)
+                {
+                    FromDate = DateTime.Today.AddDays(-3);
+                    ToDate = DateTime.Today;
+                }
+        }
+
         private DateTime GetDate(string dateString)
         {
             DateTime date;
@@ -144,6 +146,13 @@ namespace SvnLogReporter
                 return date;
 
             throw new ArgumentException("Date is not in the correct format");
+        }
+
+        public bool IsWeekend()
+        {
+            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)
+                return true;
+            return false;
         }
 
         Policy Policy { get; set; }

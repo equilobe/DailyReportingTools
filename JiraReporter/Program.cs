@@ -20,12 +20,23 @@ namespace JiraReporter
             SvnLogReporter.Options options = GetCommandLineOptions(args);
             SvnLogReporter.Model.Policy policy = SvnLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             policy.SetPermanentTaskLabel();
+            if (policy.IsWeekendReportActive == true)
+            {
+                if (options.IsWeekend() == false)
+                    RunReportTool(args, policy, options);
+            }
+            else RunReportTool(args, policy, options);
+
+        }
+
+        private static void RunReportTool(string[] args, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        {
             SetTemplateGlobal();
 
             options.LoadDates(policy);
 
             var report = ReportGenerator.GenerateReport(policy, options);
-            
+
             SaveReportToFile(report);
 
             SendReport(report);

@@ -7,6 +7,7 @@
   <PermanentTaskLabel></PermanentTaskLabel> <!-- label of permanent tasks in Jira, e.g. permanent -->
   <ReopenedStatus></ReopenedStatus> <!-- label of reopened tasks in Jira, e.g. reopened -->
   <RootPath></RootPath> <!-- e.g. BoardProspects -->
+  <IsWeekendReportActive></IsWeekendReportActive> <!-- runs report for weekend on mondays, e.g true -->
   <TargetGroup></TargetGroup> <!-- target group, e.g. BoardProspects -->
   <Emails></Emails> <!-- e-mail address of the recipient, e.g. contact@equilobe.com -->
   <EmailSubject></EmailSubject> <!-- e-mail subject, e.g. Daily Report for -->
