@@ -28,7 +28,7 @@ namespace JiraReporter
             if(issue.Entries!=null)
             {
                 var newEntries = new List<Entries>(issue.Entries);
-                newEntries.RemoveAll(e => e.StartDate.Date != date.Date);
+                newEntries.RemoveAll(e => e.StartDate < date && e.StartDate >= date.AddDays(1));
                 issue.Entries = newEntries;
             }            
         }

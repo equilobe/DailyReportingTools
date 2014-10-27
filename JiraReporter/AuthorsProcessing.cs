@@ -168,9 +168,8 @@ namespace JiraReporter
         {
             var commits = new List<Commit>();
             if (author.Commits != null)
-                commits = author.Commits.FindAll(c => c.Entry.Date.Date == date.Date);
+                commits = author.Commits.FindAll(c => c.Entry.Date >= date && c.Entry.Date < date.AddDays(1));
             return commits;
         }
-
     }
 }

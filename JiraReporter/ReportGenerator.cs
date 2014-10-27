@@ -12,15 +12,14 @@ namespace JiraReporter
         public static  Report GenerateReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
             var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
-
-            //DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheet.StartDate);
-
-            //options.FromDate = options.FromDate.ToOriginalTimeZone();
+            SetReportDates(timesheet.StartDate, options);
 
             var timesheetService = new TimesheetService();
             var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var pullRequests = SourceControlProcessor.GetPullRequests(log);
             timesheetService.SetTimesheetIssues(timesheet, policy, options, pullRequests);
+           
+            
 
             return GetReport(timesheet, policy, options, pullRequests);
         }
@@ -46,6 +45,17 @@ namespace JiraReporter
             var report = new SprintTasks();
             report.SetSprintTasks(p, timesheet, options, pullRequests);
             return report;
+        }
+
+        private static void SetReportDates(DateTime referenceDate, SvnLogReporter.Options options)
+        {
+            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
+            options.FromDate = options.FromDate.ToOriginalTimeZone();
+            options.ToDate = options.ToDate.ToOriginalTimeZone();
+            var dates = new List<DateTime>();
+            foreach (var date in options.ReportDates)
+                dates.Add(date.ToOriginalTimeZone());
+            options.ReportDates = dates;
         }
     }
 }

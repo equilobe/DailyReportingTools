@@ -24,12 +24,7 @@ namespace SvnLogReporter
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
 
-        public List<DateTime> ReportDates {
-            get
-            {
-                return GetDates();
-            }
-        }
+        public List<DateTime> ReportDates { get; set; }
 
         public bool HasToDate
         {
@@ -103,6 +98,8 @@ namespace SvnLogReporter
                 throw new ArgumentException("ToDate < FromDate");
             if (ToDate > DateTime.Today.AddDays(1))
                 ToDate = DateTime.Today.AddDays(1);
+
+            ReportDates = GetDates();
         }
 
         private void SwitchToUniversalTime()

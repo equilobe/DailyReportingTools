@@ -18,7 +18,8 @@ namespace System
 
         public static DateTime ToOriginalTimeZone(this DateTime date)
         {
-            return date.ToUniversalTime().Add(OffsetFromUtc);
+         //   return date.ToUniversalTime().Add(OffsetFromUtc);
+            return TimeZoneInfo.ConvertTimeToUtc(date).Add(OffsetFromUtc);
         }
 
 
