@@ -124,9 +124,8 @@ namespace JiraReporter
                 SetParent(issue, newIssue, policy, timesheet, pullRequests);
             issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
             AdjustIssuePullRequests(issue, pullRequests);
-            
             SetIssueLink(issue, policy);
-            HasWorkLoggedByAssignee(issue);
+            HasWorkLoggedByAssignee(issue, timesheet);
         }
 
         public static void SetSubtasksIssues(Issue issue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
@@ -166,10 +165,7 @@ namespace JiraReporter
 
         private static void SetIssueExists(Issue issue, List<Issue> issues)
         {
-            if (IssueExistsTimesheet(issue, issues) == true)
-                issue.ExistsInTimesheet = true;
-            else
-                issue.ExistsInTimesheet = false;
+            issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
         private static void SetLabel(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue)
@@ -241,14 +237,17 @@ namespace JiraReporter
                         pullRequest.TaskSynced = true;
         }
 
-        private static void HasWorkLoggedByAssignee(Issue issue)
+        private static void HasWorkLoggedByAssignee(Issue issue, Timesheet timesheet)
         {
             if (issue != null)
                 if (issue.Assignee != null)
-                {
-                    issue.HasWorkLoggedByAssignee = issue.Entries.Exists(e => e.AuthorFullName == issue.Assignee);
-                }
+                    if(issue.ExistsInTimesheet == true)
+                    {
+                        var newIssue = timesheet.Worklog.Issues.Find(i => i.Key == issue.Key);
+                        issue.HasWorkLoggedByAssignee = newIssue.Entries.Exists(e => e.AuthorFullName == issue.Assignee);
+                    }
               //  else issue.HasWorkLoggedByAssignee = false;
         }
+
     }
 }
