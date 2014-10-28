@@ -22,8 +22,11 @@ namespace JiraReporter.Model
         public int CommitsCount { get; set; }
         public int PullRequestsCount { get; set; }
         public List<PullRequest> UnrelatedPullRequests { get; set; }
+        public int MonthlyHours { get; set; }
+        public int RemainingMonthlyHours { get; set; }
+        public int AverageWorkRate { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests)
+        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy)
         {
             this.TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
             this.TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
@@ -36,6 +39,7 @@ namespace JiraReporter.Model
             this.CommitsCount = authors.Sum(a => a.Commits.Count);
             this.PullRequestsCount = pullRequests.Count;
             this.UnrelatedPullRequests = pullRequests.FindAll(p => p.TaskSynced == false);
+            this.MonthlyHours = policy.AllocatedHoursPerMonth;
         }
 
         private void SetSummaryTasksTimeLeft(List<Author> authors)
