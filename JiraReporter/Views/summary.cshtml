@@ -107,6 +107,12 @@
             }
         </div>
     }
+    @if(Model.UnrelatedPullRequests.Count>0)
+    {
+        <div style="margin-top:10px">
+            @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
+        </div>
+    }
 
     @if (Model.AuthorsInvolved > 0)
     {

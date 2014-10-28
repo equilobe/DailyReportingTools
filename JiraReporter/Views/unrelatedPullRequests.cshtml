@@ -1,11 +1,38 @@
-﻿<div style="margin-top:25px">
-    <h2 style="color:black; margin-bottom:10px">Unrelated pull requests</h2>
-    <ul style="padding:0; margin-left:15px; margin-top:0px; color:black">
-        @foreach (var pullRequest in Model)
-        {
-                <li style="margin-left:15px; color:black">
-                    <a style="text-decoration:none; color:green" href=@pullRequest.GithubPullRequest.HtmlUrl>@pullRequest.GithubPullRequest.Title</a>
-                </li>
-        }
-    </ul>
-</div>
+﻿@{
+    var openParentheses = "(";
+    var closedParentheses = ")";
+    var comma = ",";
+}
+
+<span style="color:black"> @Model.Count</span>
+@if(Model.Count==1)
+{
+    <span style="color:black">unrelated pull request</span>
+}
+else
+{
+    <span style="color:black">unrelated pull requests</span>
+}
+
+@foreach(var pullRequest in Model)
+{
+    if(pullRequest == Model.First())
+    {
+        openParentheses = "(";
+    }
+    else
+    {
+        openParentheses = "";
+    }
+    if(pullRequest == Model.Last())
+    {
+        comma = "";
+        closedParentheses = ")";
+    }
+    else
+    {
+        closedParentheses = "";
+        comma = ", ";
+    }
+    <span style="color:black">@openParentheses<a style="text-decoration:none; color:green" href="@pullRequest.GithubPullRequest.HtmlUrl">@pullRequest.GithubPullRequest.Number</a>@comma@closedParentheses</span>
+}

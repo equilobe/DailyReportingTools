@@ -21,6 +21,7 @@ namespace JiraReporter.Model
         public int AuthorsInvolved { get; set; }
         public int CommitsCount { get; set; }
         public int PullRequestsCount { get; set; }
+        public List<PullRequest> UnrelatedPullRequests { get; set; }
 
         public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests)
         {
@@ -34,6 +35,7 @@ namespace JiraReporter.Model
             this.AuthorsInvolved = authors.Count;
             this.CommitsCount = authors.Sum(a => a.Commits.Count);
             this.PullRequestsCount = pullRequests.Count;
+            this.UnrelatedPullRequests = pullRequests.FindAll(p => p.TaskSynced == false);
         }
 
         private void SetSummaryTasksTimeLeft(List<Author> authors)

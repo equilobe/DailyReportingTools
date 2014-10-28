@@ -145,14 +145,7 @@
                         </tbody>
                     </table>                                          
                 </div>
-            } 
-    
-         @if(Model.UnrelatedPullRequests.Count>0)
-         {
-             <div style="margin-top:60px">
-                 @Partial("Views/unrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
-             </div>
-         }       
+            }     
             
         @Partial("Views/completedTasks.cshtml", Model.Sprint)
 </div>
