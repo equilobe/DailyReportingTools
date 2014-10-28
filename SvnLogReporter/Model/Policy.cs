@@ -33,6 +33,7 @@ namespace SvnLogReporter.Model
         public string Project { get; set; }
         public string ReopenedStatus { get; set; }
         public bool IsWeekendReportActive { get; set; }
+        public int AllocatedHoursPerMonth { get; set; }
         public SourceControl SourceControl { get; set; }
         public List<User> AuthorsCorrelation { get; set; }
 
