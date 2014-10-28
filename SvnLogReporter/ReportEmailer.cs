@@ -86,9 +86,6 @@ namespace SvnLogReporter
 
         private string GetReportSubject(string reportPath)
         {
-            if ((options.ToDate - options.FromDate).Days > 1)
-                return policy.ReportTitle + " " + policy.EmailSubject+ " " + options.FromDate.ToString("dddd, dd MMMM yyyy") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM yyyy");
-            else
                 return policy.ReportTitle + " " + policy.EmailSubject + " " + DateTime.Parse(Path.GetFileNameWithoutExtension(reportPath)).ToString("dddd, dd MMMM yyyy");
         }
 
