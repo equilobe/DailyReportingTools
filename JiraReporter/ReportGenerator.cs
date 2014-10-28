@@ -50,12 +50,12 @@ namespace JiraReporter
         private static void SetReportDates(DateTime referenceDate, SvnLogReporter.Options options)
         {
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
-            options.FromDate = options.FromDate.ToOriginalTimeZone();
-            options.ToDate = options.ToDate.ToOriginalTimeZone();
-            var dates = new List<DateTime>();
-            foreach (var date in options.ReportDates)
-                dates.Add(date.ToOriginalTimeZone());
-            options.ReportDates = dates;
+            //options.FromDate = options.FromDate.ToOriginalTimeZone();
+            //options.ToDate = options.ToDate.ToOriginalTimeZone();
+            //var dates = new List<DateTime>();
+            //foreach (var date in options.ReportDates)
+            //    dates.Add(date.ToOriginalTimeZone());
+            //options.ReportDates = dates;
         }
     }
 }
