@@ -24,7 +24,7 @@ namespace JiraReporter.Model
         public List<PullRequest> UnrelatedPullRequests { get; set; }
         public int MonthlyHours { get; set; }
         public int RemainingMonthlyHours { get; set; }
-        public int AverageWorkRate { get; set; }
+        public int AverageWorkRateToComplete { get; set; }
 
         public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy)
         {

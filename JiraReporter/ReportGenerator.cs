@@ -11,16 +11,15 @@ namespace JiraReporter
     {
         public static  Report GenerateReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
         {
-            var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
+            var timesheetService = new TimesheetService();
+            var timesheet = timesheetService.GenerateTimehseet(options, policy);
+            var monthTimesheet = timesheetService.GenerateMonthTimesheet(options, policy);
             SetReportDates(timesheet.StartDate, options);
 
-            var timesheetService = new TimesheetService();
             var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var pullRequests = SourceControlProcessor.GetPullRequests(log);
             timesheetService.SetTimesheetIssues(timesheet, policy, options, pullRequests);
-           
-            
-
+                      
             return GetReport(timesheet, policy, options, pullRequests);
         }
         private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
