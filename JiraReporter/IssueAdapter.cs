@@ -83,8 +83,6 @@ namespace JiraReporter
                 var newIssue = new AnotherJiraRestClient.Issue();
                 newIssue = RestApiRequests.GetIssue(issue.Key, policy);
                 SetIssue(issue, policy, newIssue, timesheet, pullRequests);
-                if (issue.Subtasks != null)
-                    SetSubtasksIssues(issue, policy, timesheet, pullRequests);
             }
         }
 
@@ -96,14 +94,15 @@ namespace JiraReporter
             issue.PolicyReopenedStatus = policy.ReopenedStatus;
             if (newIssue.fields.assignee != null)
                 issue.Assignee = newIssue.fields.assignee.displayName;
-            if (newIssue.fields.timetracking != null)
-                issue.RemainingEstimateSeconds = newIssue.fields.timetracking.remainingEstimateSeconds;
+            issue.RemainingEstimateSeconds = newIssue.fields.timeestimate;
             issue.OriginalEstimateSecondsTotal = newIssue.fields.aggregatetimeoriginalestimate;
             issue.OriginalEstimateSeconds = newIssue.fields.timeoriginalestimate;
             if (newIssue.fields.resolution != null)
             {
                 issue.Resolution = newIssue.fields.resolution.name;
                 issue.StringResolutionDate = newIssue.fields.resolutiondate;
+                issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
+                issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate);
             }
             issue.Status = newIssue.fields.status.name;
             issue.Type = newIssue.fields.issuetype.name;
@@ -112,10 +111,13 @@ namespace JiraReporter
             issue.StatusCategory = newIssue.fields.status.statusCategory;
             issue.Created = Convert.ToDateTime(newIssue.fields.created);
             issue.Updated = newIssue.fields.updated;
+            issue.UpdatedDate = Convert.ToDateTime(issue.Updated);
             issue.TimeSpentTotal = newIssue.fields.aggregatetimespent;
             issue.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
             if (newIssue.fields.subtasks != null)
-                issue.Subtasks = newIssue.fields.subtasks;        
+                issue.Subtasks = newIssue.fields.subtasks;
+            if (issue.Subtasks != null)
+                SetSubtasksIssues(issue, policy, timesheet, pullRequests);
             SetIssueTimeSpent(issue);
             issue.TimeSpentOnTask = newIssue.fields.timespent;
             SetIssueTimeFormat(issue);
@@ -247,6 +249,41 @@ namespace JiraReporter
                         issue.HasWorkLoggedByAssignee = newIssue.Entries.Exists(e => e.AuthorFullName == issue.Assignee);
                     }
               //  else issue.HasWorkLoggedByAssignee = false;
+        }
+
+        public static int GetTasksTimeLeftSeconds(List<Issue> tasks)
+        {
+            int seconds = 0;
+            foreach (var task in tasks)
+                if (task.SubTask == false)
+                    if (task.Subtasks.Count > 0)
+                        seconds += task.TotalRemainingSeconds;
+                    else
+                        seconds += task.RemainingEstimateSeconds;
+            return seconds;
+        }
+
+        public static void HasTasksInProgress(Issue task)
+        {
+            if (task.Subtasks.Count > 0)
+            {
+                task.HasSubtasksInProgress = HasSubtasksInProgress(task);
+                task.HasAssignedSubtasksInProgress = HasAssignedSubtasksInProgress(task);
+            }
+        }
+
+        public static bool HasSubtasksInProgress(Issue task)
+        {
+            if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksIssues.Exists(s => s.StatusCategory.name == "In Progress"))
+                return true;
+            return false;
+        }
+
+        public static bool HasAssignedSubtasksInProgress(Issue task)
+        {
+            if (HasSubtasksInProgress(task) == true && task.SubtasksIssues.Exists(s => s.Assignee == task.Assignee))
+                return true;
+            return false;
         }
 
     }

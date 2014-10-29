@@ -49,9 +49,9 @@ namespace JiraReporter.Model
             foreach (var author in authors)
             {
                 if(author.InProgressTasks!=null)
-                     this.InProgressTasksTimeLeftSeconds += TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
+                    this.InProgressTasksTimeLeftSeconds += IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 if(author.OpenTasks!=null)
-                     this.OpenTasksTimeLeftSeconds += TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
+                    this.OpenTasksTimeLeftSeconds += IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
             }
 
             this.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.InProgressTasksTimeLeftSeconds);

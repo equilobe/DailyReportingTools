@@ -39,10 +39,10 @@ namespace JiraReporter
             return report;
         }
 
-        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy p, SvnLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
+        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();
-            report.SetSprintTasks(p, timesheet, options, pullRequests);
+            report.SetSprintTasks(policy, timesheet, options, pullRequests);
             return report;
         }
 

@@ -1,4 +1,6 @@
 ﻿using JiraReporter.Model;
+using SvnLogReporter;
+using SvnLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,39 +10,82 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public static int GetTasksTimeLeftSeconds(List<Issue> tasks)
+        public List<Issue> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
         {
-            int seconds = 0;
-            foreach (var task in tasks)
-                if(task.SubTask==false)
-                        if (task.Subtasks.Count > 0)
-                            seconds += task.TotalRemainingSeconds;
-                        else
-                            seconds += task.RemainingEstimateSeconds;
-            return seconds;
+            var completedTasks = new List<Issue>();
+            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Today.AddDays(-6), DateTime.Now);
+            foreach (var issue in issues.issues)
+            {
+                if (issue.fields.issuetype.subtask == false)
+                    SetTasks(policy, issue, timesheet, completedTasks, null);
+            }
+            completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
+            return completedTasks; 
         }
 
-        public static void HasTasksInProgress(Issue task)
+        public AnotherJiraRestClient.Issues GetUnfinishedTasks (Policy policy)
         {
-            if (task.Subtasks.Count > 0)
+            return RestApiRequests.GetSprintTasks(policy);
+        }
+
+        public void SetUnfinishedTasks(AnotherJiraRestClient.Issues issues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
+        {
+            tasks.InProgressTasks = new List<Issue>();
+            tasks.OpenTasks = new List<Issue>();
+            tasks.UnassignedTasks = new List<Issue>();
+            foreach (var issue in issues.issues)
             {
-                task.HasSubtasksInProgress = HasSubtasksInProgress(task);
-                task.HasAssignedSubtasksInProgress = HasAssignedSubtasksInProgress(task);
+                if (issue.fields.status.statusCategory.name == "In Progress")
+                    SetTasks(policy, issue, timesheet, tasks.InProgressTasks, pullRequests);
+                else
+                    if (issue.fields.resolution == null)
+                        SetTasks(policy, issue, timesheet, tasks.OpenTasks, pullRequests);
+                if (issue.fields.assignee == null && issue.fields.status.statusCategory.name != "Done")
+                    SetTasks(policy, issue, timesheet, tasks.UnassignedTasks, pullRequests);
             }
         }
 
-        public static bool HasSubtasksInProgress(Issue task)
+        public void SetTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
         {
-            if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksIssues.Exists(s => s.StatusCategory.name == "In Progress"))
-                return true;
-            return false;
+            tasks.Add(new Issue
+            {
+                Key = issue.key,
+                Summary = issue.fields.summary
+            });
+
+            IssueAdapter.SetIssue(tasks.Last(), policy, issue, timesheet, pullRequests);
         }
 
-        public static bool HasAssignedSubtasksInProgress(Issue task)
+        public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)
         {
-            if (HasSubtasksInProgress(task)==true && task.SubtasksIssues.Exists(s=>s.Assignee == task.Assignee))
-                return true;
-            return false;
+            var tasks = from task in completedTasks
+                        group task by task.CompletedTimeAgo into newGroup
+                        orderby newGroup.Min(g => g.ResolutionDate)
+                        select newGroup;
+            tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
+            return tasks;
+        }
+
+        public void SetCompletedTasks(IEnumerable<IGrouping<string, Issue>> tasks, SprintTasks sprintTasks)
+        {
+            var completedTasks = new Dictionary<string, List<Issue>>();
+            var issues = new List<Issue>();
+            foreach (var task in tasks)
+            {
+                issues = tasks.SelectMany(group => group).Where(group => group.CompletedTimeAgo == task.Key).ToList();
+                completedTasks.Add(task.Key, issues);
+            }
+            sprintTasks.CompletedTasks = completedTasks;
+        }
+
+        public void SortTasks(SprintTasks sprintTasks)
+        {
+            if (sprintTasks.InProgressTasks != null)
+                sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
+            if (sprintTasks.OpenTasks != null)
+                sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
+            if (sprintTasks.UnassignedTasks != null)
+                sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
     }
 }

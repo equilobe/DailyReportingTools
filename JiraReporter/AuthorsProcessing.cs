@@ -104,14 +104,14 @@ namespace JiraReporter
             author.InProgressTasks = GetAuthorTasks(report.InProgressTasks, author);
             if (author.InProgressTasks != null)
             {
-                author.InProgressTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.InProgressTasks);
+                author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
 
             author.OpenTasks = GetAuthorTasks(report.OpenTasks, author);
             if (author.OpenTasks != null)
             {
-                author.OpenTasksTimeLeftSeconds = TasksService.GetTasksTimeLeftSeconds(author.OpenTasks);
+                author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
         }
