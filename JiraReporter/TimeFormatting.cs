@@ -50,7 +50,7 @@ namespace JiraReporter
         {
             var day = "";
             date = date.Date;         
-            int days = (int)SetTimeSpan(date).TotalDays;
+            int days = (int)SetTimeSpan(DateTime.Today, date).TotalDays;
             var d = TimeSpan.FromDays(days);
             if (d.Days == 0)
                 day = "Today";
@@ -62,11 +62,9 @@ namespace JiraReporter
             return day;
         }
 
-        private static TimeSpan SetTimeSpan(DateTime date)
+        public static TimeSpan SetTimeSpan(DateTime startDate, DateTime endDate)
         {
-            var dateNow = DateTime.Today;
-            var resolutionDate = date;
-            TimeSpan timeAgo = dateNow - date;
+            TimeSpan timeAgo = endDate - startDate;
             return timeAgo;
         }
 

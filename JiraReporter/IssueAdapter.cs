@@ -83,51 +83,51 @@ namespace JiraReporter
                 var newIssue = new AnotherJiraRestClient.Issue();
                 newIssue = RestApiRequests.GetIssue(issue.Key, policy);
                 SetIssue(issue, policy, newIssue, timesheet, pullRequests);
+                if (issue.SubTask == true)
+                    SetParent(issue, newIssue, policy, timesheet, pullRequests);
+                if (issue.Subtasks != null)
+                    SetSubtasksIssues(issue, policy, timesheet, pullRequests);
             }
         }
 
         public static void SetIssue(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {    
-            if (issue.Entries == null)
-                issue.Entries = new List<Entries>();
-            issue.Priority = newIssue.fields.priority;
-            issue.PolicyReopenedStatus = policy.ReopenedStatus;
-            if (newIssue.fields.assignee != null)
-                issue.Assignee = newIssue.fields.assignee.displayName;
-            issue.RemainingEstimateSeconds = newIssue.fields.timeestimate;
-            issue.OriginalEstimateSecondsTotal = newIssue.fields.aggregatetimeoriginalestimate;
-            issue.OriginalEstimateSeconds = newIssue.fields.timeoriginalestimate;
-            if (newIssue.fields.resolution != null)
-            {
-                issue.Resolution = newIssue.fields.resolution.name;
-                issue.StringResolutionDate = newIssue.fields.resolutiondate;
-                issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
-                issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate);
-            }
-            issue.Status = newIssue.fields.status.name;
-            issue.Type = newIssue.fields.issuetype.name;
-            issue.SubTask = newIssue.fields.issuetype.subtask;
-            SetLabel(issue, policy, newIssue);
-            issue.StatusCategory = newIssue.fields.status.statusCategory;
-            issue.Created = Convert.ToDateTime(newIssue.fields.created);
-            issue.Updated = newIssue.fields.updated;
-            issue.UpdatedDate = Convert.ToDateTime(issue.Updated);
-            issue.TimeSpentTotal = newIssue.fields.aggregatetimespent;
-            issue.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
-            if (newIssue.fields.subtasks != null)
-                issue.Subtasks = newIssue.fields.subtasks;
-            if (issue.Subtasks != null)
-                SetSubtasksIssues(issue, policy, timesheet, pullRequests);
-            SetIssueTimeSpent(issue);
-            issue.TimeSpentOnTask = newIssue.fields.timespent;
-            SetIssueTimeFormat(issue);
-            SetIssueExists(issue, timesheet.Worklog.Issues);
-            if (issue.SubTask == true)
-                SetParent(issue, newIssue, policy, timesheet, pullRequests);
-            issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
-            AdjustIssuePullRequests(issue, pullRequests);
-            SetIssueLink(issue, policy);
-            HasWorkLoggedByAssignee(issue, timesheet);
+                if (issue.Entries == null)
+                    issue.Entries = new List<Entries>();
+                issue.Priority = newIssue.fields.priority;
+                issue.PolicyReopenedStatus = policy.ReopenedStatus;
+                if (newIssue.fields.assignee != null)
+                    issue.Assignee = newIssue.fields.assignee.displayName;
+                issue.RemainingEstimateSeconds = newIssue.fields.timeestimate;
+                issue.OriginalEstimateSecondsTotal = newIssue.fields.aggregatetimeoriginalestimate;
+                issue.OriginalEstimateSeconds = newIssue.fields.timeoriginalestimate;
+                if (newIssue.fields.resolution != null)
+                {
+                    issue.Resolution = newIssue.fields.resolution.name;
+                    issue.StringResolutionDate = newIssue.fields.resolutiondate;
+                    issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
+                    issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate);
+                }
+                issue.Status = newIssue.fields.status.name;
+                issue.Type = newIssue.fields.issuetype.name;
+                issue.SubTask = newIssue.fields.issuetype.subtask;
+                SetLabel(issue, policy, newIssue);
+                issue.StatusCategory = newIssue.fields.status.statusCategory;
+                issue.Created = Convert.ToDateTime(newIssue.fields.created);
+                issue.Updated = newIssue.fields.updated;
+                issue.UpdatedDate = Convert.ToDateTime(issue.Updated);
+                issue.TimeSpentTotal = newIssue.fields.aggregatetimespent;
+                issue.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
+                if (newIssue.fields.subtasks != null)
+                    issue.Subtasks = newIssue.fields.subtasks;
+                SetIssueTimeSpent(issue);
+                issue.TimeSpentOnTask = newIssue.fields.timespent;
+                SetIssueTimeFormat(issue);
+                SetIssueExists(issue, timesheet.Worklog.Issues);                
+                issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
+                AdjustIssuePullRequests(issue, pullRequests);
+                SetIssueLink(issue, policy);
+                HasWorkLoggedByAssignee(issue, timesheet);
         }
 
         public static void SetSubtasksIssues(Issue issue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
@@ -182,7 +182,7 @@ namespace JiraReporter
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        private static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             issue.Parent = new Issue { Key = newIssue.fields.parent.key, Summary = newIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(issue.Parent.Key, policy);

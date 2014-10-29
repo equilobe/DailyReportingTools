@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SvnLogReporter.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,10 +24,15 @@ namespace JiraReporter.Model
         public int PullRequestsCount { get; set; }
         public List<PullRequest> UnrelatedPullRequests { get; set; }
         public int MonthlyHours { get; set; }
+        public string MonthlyHoursString { get; set; }
+        public int MonthHoursWorked { get; set; }
+        public string MonthHoursWorkedString { get; set; }
         public int RemainingMonthlyHours { get; set; }
+        public string RemainingMonthlyHoursString { get; set; }
         public int AverageWorkRateToComplete { get; set; }
+        public string AverageWorkRateToCompleteString { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, SvnLogReporter.Model.Policy policy)
+        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Timesheet monthTimesheet)
         {
             this.TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
             this.TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
@@ -40,7 +46,10 @@ namespace JiraReporter.Model
             this.PullRequestsCount = pullRequests.Count;
             this.UnrelatedPullRequests = pullRequests.FindAll(p => p.TaskSynced == false);
             this.MonthlyHours = policy.AllocatedHoursPerMonth;
-        }
+            this.MonthlyHoursString = TimeFormatting.SetTimeFormat(MonthlyHours);
+            if(MonthlyHours!=0)
+              SetMonthlyHours(monthTimesheet);
+        }   
 
         private void SetSummaryTasksTimeLeft(List<Author> authors)
         {
@@ -56,6 +65,25 @@ namespace JiraReporter.Model
 
             this.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.InProgressTasksTimeLeftSeconds);
             this.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.OpenTasksTimeLeftSeconds);
+        }
+
+        private void SetMonthlyHours(Timesheet monthTimesheet)
+        {
+            MonthHoursWorked = monthTimesheet.Worklog.Issues.Sum(i => i.Entries.Sum(e => e.TimeSpent)) / 3600;
+            MonthHoursWorkedString = TimeFormatting.SetTimeFormat(MonthHoursWorked * 3600);
+            RemainingMonthlyHours = MonthlyHours - MonthHoursWorked;
+            RemainingMonthlyHoursString = TimeFormatting.SetTimeFormat(RemainingMonthlyHours * 3600);
+            SetAverageHourRate();
+        }
+
+        private void SetAverageHourRate()
+        {
+            var now = DateTime.Now;
+            DateTime endOfMonth = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month));
+            int days = (int)TimeFormatting.SetTimeSpan(now, endOfMonth).TotalDays;
+            var d = TimeSpan.FromDays(days+1);
+            AverageWorkRateToComplete = RemainingMonthlyHours / d.Days;
+            AverageWorkRateToCompleteString = TimeFormatting.SetTimeFormat(AverageWorkRateToComplete * 3600);
         }
     }
 }

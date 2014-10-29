@@ -20,9 +20,9 @@ namespace JiraReporter
             var pullRequests = SourceControlProcessor.GetPullRequests(log);
             timesheetService.SetTimesheetIssues(timesheet, policy, options, pullRequests);
                       
-            return GetReport(timesheet, policy, options, pullRequests);
+            return GetReport(timesheet, monthTimesheet, policy, options, pullRequests);
         }
-        private static  Report GetReport(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        private static  Report GetReport(Timesheet timesheet, Timesheet monthTimesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
         {            
             var sprint = GetSprintReport(policy, options, timesheet, pullRequests);           
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
@@ -32,7 +32,7 @@ namespace JiraReporter
                 Sprint = sprint,
                 PullRequests = pullRequests,
                 Date = DateTime.Today,
-                Summary = new Summary(authors, sprint, pullRequests, policy),
+                Summary = new Summary(authors, sprint, pullRequests, policy, monthTimesheet),
                 Title = policy.ReportTitle
             };
                          

@@ -54,6 +54,10 @@ namespace JiraReporter
             });
 
             IssueAdapter.SetIssue(tasks.Last(), policy, issue, timesheet, pullRequests);
+            if (tasks.Last().SubTask == true)
+                IssueAdapter.SetParent(tasks.Last(), issue, policy, timesheet, pullRequests);
+            if (tasks.Last().Subtasks != null)
+                IssueAdapter.SetSubtasksIssues(tasks.Last(), policy, timesheet, pullRequests);
         }
 
         public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)

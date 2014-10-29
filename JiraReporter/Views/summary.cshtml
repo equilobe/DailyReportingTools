@@ -120,4 +120,20 @@
             <span style="color:black">@Model.AuthorsInvolved people involved</span>
         </div>
     }
+    @if (Model.MonthlyHours > 0)
+    {
+        if (Model.RemainingMonthlyHours > 0)
+        {
+            <div style="margin-top:10px">
+                <span style="color:black"> @Model.RemainingMonthlyHoursString remaining monthly hours </span>
+            </div>
+            <div style="margin-top:10px">
+                <span style="color:black"> @Model.AverageWorkRateToCompleteString average per day </span>
+            </div>
+        }
+        @*else
+        {
+            <div style="color:black"> </div>
+        }*@
+    }
 </div>
