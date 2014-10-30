@@ -34,7 +34,7 @@ namespace JiraReporter
         {
             var now = DateTime.Now;
             var startOfMonth = new DateTime(now.Year, now.Month,1);
-            return RestApiRequests.GetTimesheet(policy, startOfMonth, DateTime.Now);
+            return RestApiRequests.GetTimesheet(policy, startOfMonth, DateTime.Today);
         }
 
         public Timesheet GenerateTimehseet(Options options, Policy policy)

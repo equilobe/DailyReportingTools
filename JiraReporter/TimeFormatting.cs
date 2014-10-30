@@ -50,7 +50,7 @@ namespace JiraReporter
         {
             var day = "";
             date = date.Date;         
-            int days = (int)SetTimeSpan(DateTime.Today, date).TotalDays;
+            int days = (int)SetTimeSpan(date, DateTime.Today).TotalDays;
             var d = TimeSpan.FromDays(days);
             if (d.Days == 0)
                 day = "Today";
