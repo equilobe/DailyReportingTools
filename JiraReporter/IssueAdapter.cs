@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace JiraReporter
@@ -203,8 +204,19 @@ namespace JiraReporter
         public static void AdjustIssueCommits(Issue issue, List<Commit> commits)
         {
             issue.Commits = new List<Commit>();
-            issue.Commits = commits.FindAll(commit => commit.Entry.Message.Contains(issue.Key) == true);
+            issue.Commits = commits.FindAll(commit => ContainsKey(commit.Entry.Message, issue.Key) == true);
             EditIssueCommits(issue);
+        }
+
+        private static bool ContainsKey(string message, string key)
+        {
+            string msg = message.ToLower();
+            string keyLower = key.ToLower();
+            keyLower = Regex.Replace(keyLower, "[^A-Za-z0-9 ]", "");
+            msg = Regex.Replace(msg, "[^A-Za-z0-9 ]", "");
+            keyLower = keyLower.Replace(" ","");
+            msg = msg.Replace(" ", "");
+            return msg.Contains(keyLower);
         }
 
         public static void RemoveWrongCommits(Issue issue, DateTime date)
@@ -226,7 +238,7 @@ namespace JiraReporter
             if (pullRequests != null)
             {
                 issue.PullRequests = new List<PullRequest>();
-                issue.PullRequests = pullRequests.FindAll(pr => pr.GithubPullRequest.Title.Contains(issue.Key) == true);
+                issue.PullRequests = pullRequests.FindAll(pr => ContainsKey(pr.GithubPullRequest.Title, issue.Key) == true);
                 EditIssuePullRequests(issue);
             }
         }
