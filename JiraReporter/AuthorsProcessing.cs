@@ -141,7 +141,7 @@ namespace JiraReporter
        
         private static bool AuthorIsEmpty(Author author)
         {
-            if (author.Issues == null && author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.Commits.Count==0)
+            if (author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.DayLogs.Count==0)
                 return true;
             return false;
         }
@@ -162,6 +162,7 @@ namespace JiraReporter
             foreach (var day in options.ReportDates)
                 author.DayLogs.Add(new DayLog(author, day, options));
             author.DayLogs = author.DayLogs.OrderBy(d => d.Date).ToList();
+            author.DayLogs.RemoveAll(d => d.Commits.Count == 0 && d.Issues == null);
         }
 
         public static List<Commit> GetDayLogCommits(Author author, DateTime date)
