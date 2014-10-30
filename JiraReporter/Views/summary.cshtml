@@ -122,6 +122,9 @@
     }
     @if (Model.MonthlyHours > 0)
     {
+        <div style="margin-top:10px">
+            <span style="color:black"> @Model.MonthHoursWorkedString / @Model.MonthlyHoursString worked</span>
+        </div>
         if (Model.RemainingMonthlyHours > 0)
         {
             <div style="margin-top:10px">

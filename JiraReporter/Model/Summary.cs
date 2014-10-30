@@ -29,7 +29,7 @@ namespace JiraReporter.Model
         public string MonthHoursWorkedString { get; set; }
         public int RemainingMonthlyHours { get; set; }
         public string RemainingMonthlyHoursString { get; set; }
-        public int AverageWorkRateToComplete { get; set; }
+        public double AverageWorkRateToComplete { get; set; }
         public string AverageWorkRateToCompleteString { get; set; }
 
         public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Timesheet monthTimesheet)
@@ -46,7 +46,7 @@ namespace JiraReporter.Model
             this.PullRequestsCount = pullRequests.Count;
             this.UnrelatedPullRequests = pullRequests.FindAll(p => p.TaskSynced == false);
             this.MonthlyHours = policy.AllocatedHoursPerMonth;
-            this.MonthlyHoursString = TimeFormatting.SetTimeFormat(MonthlyHours);
+            this.MonthlyHoursString = TimeFormatting.SetTimeFormat(MonthlyHours * 3600);
             if(MonthlyHours!=0)
               SetMonthlyHours(monthTimesheet);
         }   
@@ -80,10 +80,10 @@ namespace JiraReporter.Model
         {
             var now = DateTime.Now;
             DateTime endOfMonth = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month));
-            int days = (int)TimeFormatting.SetTimeSpan(now, endOfMonth).TotalDays;
-            var d = TimeSpan.FromDays(days+1);
-            AverageWorkRateToComplete = RemainingMonthlyHours / d.Days;
-            AverageWorkRateToCompleteString = TimeFormatting.SetTimeFormat(AverageWorkRateToComplete * 3600);
+            int days = (int)TimeFormatting.SetTimeSpan(DateTime.Today, endOfMonth).TotalDays;
+            var d = TimeSpan.FromDays(days + 1);
+            AverageWorkRateToComplete = RemainingMonthlyHours / (double)d.Days;
+            AverageWorkRateToCompleteString = TimeFormatting.SetTimeFormat((int)(AverageWorkRateToComplete * 3600));
         }
     }
 }
