@@ -17,14 +17,7 @@
                                 <td>
                                     <a style="text-decoration: none; font-weight:bold;" href="@task.Link">@task.Summary</a>
                                     <span style="color: #B8B8B8;"> &#x25cf; @task.Key </span>
-                                    @if (task.Subtasks.Count > 0)
-                                    {
-                                        <span style="color:black"> &#x25cf; @task.TimeLoggedTotal worked</span>
-                                    }
-                                    else
-                                    {
-                                        <span style="color:black"> &#x25cf; @task.TimeLogged worked</span>
-                                    }
+                                    <span style="color:black"> &#x25cf; @task.TimeLoggedTotal worked</span>
                                     @if (task.RemainingEstimateSeconds == 0 && task.TotalRemainingSeconds > 0)
                                     {
                                         <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.TotalRemaining left from subtasks </span>
