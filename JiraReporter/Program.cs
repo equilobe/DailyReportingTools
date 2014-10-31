@@ -17,8 +17,8 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
-            SvnLogReporter.Options options = GetCommandLineOptions(args);
-            SvnLogReporter.Model.Policy policy = SvnLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
+            SourceControlLogReporter.Options options = GetCommandLineOptions(args);
+            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             policy.SetPermanentTaskLabel();
             if (policy.IsWeekendReportActive == true)
             {
@@ -29,7 +29,7 @@ namespace JiraReporter
 
         }
 
-        private static void RunReportTool(string[] args, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        private static void RunReportTool(string[] args, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             SetTemplateGlobal();
 
@@ -44,12 +44,12 @@ namespace JiraReporter
 
         private static void SetTemplateGlobal()
         {
-            Razor.SetTemplateBase(typeof(SvnLogReporter.RazorEngine.ExtendedTemplateBase<>));
+            Razor.SetTemplateBase(typeof(SourceControlLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
 
-        private static SvnLogReporter.Options GetCommandLineOptions(string[] args)
+        private static SourceControlLogReporter.Options GetCommandLineOptions(string[] args)
         {
-            SvnLogReporter.Options options = new SvnLogReporter.Options();
+            SourceControlLogReporter.Options options = new SourceControlLogReporter.Options();
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
@@ -60,12 +60,12 @@ namespace JiraReporter
             string reportPath = GetReportPath(report);
 
             var repCont = ReportProcessor.ProcessReport(report);
-            SvnLogReporter.Reporter.WriteReport(report.policy, repCont, reportPath);
+            SourceControlLogReporter.Reporter.WriteReport(report.policy, repCont, reportPath);
         }
 
         private static void SendReport(Report report)
         {
-            var emailer = new SvnLogReporter.ReportEmailer(report.policy, report.options);
+            var emailer = new SourceControlLogReporter.ReportEmailer(report.policy, report.options);
             emailer.TrySendEmails();
         }
 

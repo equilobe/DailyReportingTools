@@ -14,7 +14,7 @@ namespace JiraReporter.Model
         public List<Issue> OpenTasks { get; set; }
         public List<Issue> UnassignedTasks { get; set; }
 
-        public void SetSprintTasks(SvnLogReporter.Model.Policy policy, Timesheet timesheet, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        public void SetSprintTasks(SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var tasksService = new TasksService();
             var issues = RestApiRequests.GetSprintTasks(policy);

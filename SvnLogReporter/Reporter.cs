@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using SvnLogReporter.Model;
+using SourceControlLogReporter.Model;
 using RazorEngine;
 using System.Diagnostics;
 using System.Net;
@@ -13,7 +13,7 @@ using System.Configuration;
 using RazorEngine.Templating;
 using Octokit;
 
-namespace SvnLogReporter
+namespace SourceControlLogReporter
 {
     public class Reporter
     {

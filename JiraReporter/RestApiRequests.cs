@@ -11,7 +11,7 @@ namespace JiraReporter
 {
     class RestApiRequests
     {
-        public static Timesheet GetTimesheet(SvnLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
+        public static Timesheet GetTimesheet(SourceControlLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = TimeFormatting.DateToString(startDate);
             string toDate = TimeFormatting.DateToString(endDate);
@@ -23,7 +23,7 @@ namespace JiraReporter
             return Deserialization.XmlDeserialize<Timesheet>(xmlString);
         }
 
-        public static List<User> GetUsers(SvnLogReporter.Model.Policy policy)
+        public static List<User> GetUsers(SourceControlLogReporter.Model.Policy policy)
         {
             var client = new RestClient(policy.BaseUrl);
             client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
@@ -33,7 +33,7 @@ namespace JiraReporter
             return Deserialization.JsonDeserialize<List<User>>(contentString);
         }
 
-        public static AnotherJiraRestClient.Issues GetCompletedIssues(SvnLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
+        public static AnotherJiraRestClient.Issues GetCompletedIssues(SourceControlLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
         {
             string fromDate = TimeFormatting.DateToISO(startDate);
             string toDate = TimeFormatting.DateToISO(endDate);
@@ -43,7 +43,7 @@ namespace JiraReporter
             return issues;
         }
 
-        public static AnotherJiraRestClient.Issues GetSprintTasks(SvnLogReporter.Model.Policy policy)
+        public static AnotherJiraRestClient.Issues GetSprintTasks(SourceControlLogReporter.Model.Policy policy)
         {
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);
@@ -51,7 +51,7 @@ namespace JiraReporter
             return tasks;
         }
 
-        public static AnotherJiraRestClient.Issue GetIssue(string issueKey, SvnLogReporter.Model.Policy policy)
+        public static AnotherJiraRestClient.Issue GetIssue(string issueKey, SourceControlLogReporter.Model.Policy policy)
         {
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);

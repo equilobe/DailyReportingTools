@@ -1,4 +1,4 @@
-﻿using SvnLogReporter.Model;
+﻿using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

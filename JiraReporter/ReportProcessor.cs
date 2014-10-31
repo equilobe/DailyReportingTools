@@ -14,7 +14,7 @@ namespace JiraReporter
         public static string ProcessReport(Report report)
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
-            return SvnLogReporter.ReportBase.ProcessReport(report, viewPath);
+            return SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
         }      
     }
 }

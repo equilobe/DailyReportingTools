@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using SvnLogReporter.Model;
+using SourceControlLogReporter.Model;
 using System.Configuration;
 using RazorEngine;
 using System.Net.Mail;
@@ -19,7 +19,7 @@ using Octokit;
 using Octokit.Internal;
 using System.Globalization;
 
-namespace SvnLogReporter
+namespace SourceControlLogReporter
 {
     public enum SourceControlType { GitHub, SVN };
     class Program

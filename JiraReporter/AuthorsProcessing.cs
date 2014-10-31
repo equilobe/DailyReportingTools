@@ -9,7 +9,7 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var authors = GetAuthorsDict(timesheet);
@@ -59,7 +59,7 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SvnLogReporter.Model.Policy policy, List<Commit> commits, SvnLogReporter.Options options)
+        private static void SetAuthor(SprintTasks sprint, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
@@ -146,7 +146,7 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetAuthorCommits(SvnLogReporter.Model.Policy policy, Author author, List<Commit> commits)
+        public static void SetAuthorCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
         {            
             var find = new List<Commit>();             
             author.Commits = new List<Commit>();
@@ -156,7 +156,7 @@ namespace JiraReporter
             author.Commits = find;
            // IssueAdapter.AdjustIssueCommits(author);           
         }       
-        public static void SetAuthorDayLogs(Author author, SvnLogReporter.Options options)
+        public static void SetAuthorDayLogs(Author author, SourceControlLogReporter.Options options)
         {
             author.DayLogs = new List<DayLog>();
             foreach (var day in options.ReportDates)

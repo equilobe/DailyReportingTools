@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
-using SvnLogReporter.Model;
+using SourceControlLogReporter.Model;
 using System.Globalization;
 
-namespace SvnLogReporter
+namespace SourceControlLogReporter
 {
     public class Options
     {

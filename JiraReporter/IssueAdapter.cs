@@ -77,7 +77,7 @@ namespace JiraReporter
             issue.Entries.Add(entry);
         }
 
-        public static void SetIssues(Timesheet timesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        public static void SetIssues(Timesheet timesheet, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
@@ -91,7 +91,7 @@ namespace JiraReporter
             }
         }
 
-        public static void SetIssue(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {    
                 if (issue.Entries == null)
                     issue.Entries = new List<Entries>();
@@ -131,7 +131,7 @@ namespace JiraReporter
                 HasWorkLoggedByAssignee(issue, timesheet);
         }
 
-        public static void SetSubtasksIssues(Issue issue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetSubtasksIssues(Issue issue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             var newIssue = new AnotherJiraRestClient.Issue();
             issue.SubtasksIssues = new List<Issue>();
@@ -159,7 +159,7 @@ namespace JiraReporter
             issue.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(issue.RemainingEstimateSeconds);
         }
 
-        private static void SetIssueLink(Issue issue, SvnLogReporter.Model.Policy policy)
+        private static void SetIssueLink(Issue issue, SourceControlLogReporter.Model.Policy policy)
         {
             Uri baseLink = new Uri(policy.BaseUrl);
             baseLink = new Uri(baseLink, "browse/");
@@ -171,7 +171,7 @@ namespace JiraReporter
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
-        private static void SetLabel(Issue issue, SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue)
+        private static void SetLabel(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue)
         {
             foreach (var label in newIssue.fields.labels)
                 if (label == policy.PermanentTaskLabel)
@@ -183,7 +183,7 @@ namespace JiraReporter
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        public static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SvnLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             issue.Parent = new Issue { Key = newIssue.fields.parent.key, Summary = newIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(issue.Parent.Key, policy);

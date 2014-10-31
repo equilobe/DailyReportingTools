@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SvnLogReporter.Model
+namespace SourceControlLogReporter.Model
 {
     public class Report
     {

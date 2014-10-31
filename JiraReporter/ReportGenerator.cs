@@ -9,7 +9,7 @@ namespace JiraReporter
 {
     class ReportGenerator
     {
-        public static  Report GenerateReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options)
+        public static  Report GenerateReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var timesheetService = new TimesheetService();
             var timesheet = timesheetService.GenerateTimehseet(options, policy);
@@ -22,7 +22,7 @@ namespace JiraReporter
                       
             return GetReport(timesheet, monthTimesheet, policy, options, pullRequests);
         }
-        private static  Report GetReport(Timesheet timesheet, Timesheet monthTimesheet, SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, List<PullRequest> pullRequests)
+        private static  Report GetReport(Timesheet timesheet, Timesheet monthTimesheet, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {            
             var sprint = GetSprintReport(policy, options, timesheet, pullRequests);           
             var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
@@ -39,14 +39,14 @@ namespace JiraReporter
             return report;
         }
 
-        private static SprintTasks GetSprintReport(SvnLogReporter.Model.Policy policy, SvnLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
+        private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();
             report.SetSprintTasks(policy, timesheet, options, pullRequests);
             return report;
         }
 
-        private static void SetReportDates(DateTime referenceDate, SvnLogReporter.Options options)
+        private static void SetReportDates(DateTime referenceDate, SourceControlLogReporter.Options options)
         {
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
             //options.FromDate = options.FromDate.ToOriginalTimeZone();

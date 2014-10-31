@@ -9,9 +9,9 @@ using System.Threading;
 using System.Net.Mail;
 using System.Globalization;
 using System.Diagnostics;
-using SvnLogReporter.Model;
+using SourceControlLogReporter.Model;
 
-namespace SvnLogReporter
+namespace SourceControlLogReporter
 {
     public class ReportEmailer
     {

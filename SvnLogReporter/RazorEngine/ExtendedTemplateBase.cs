@@ -8,7 +8,7 @@ using RazorEngine;
 using RazorEngine.Templating;
 using System.Diagnostics;
 
-namespace SvnLogReporter.RazorEngine
+namespace SourceControlLogReporter.RazorEngine
 {
     public class ExtendedTemplateBase<TModel> : TemplateBase<TModel>
     {

@@ -8,7 +8,7 @@ namespace JiraReporter.Model
 {
     public class Commit
     {
-        public SvnLogReporter.Model.LogEntry Entry { get; set; }
+        public SourceControlLogReporter.Model.LogEntry Entry { get; set; }
         public bool TaskSynced { get; set; }
     }
 }

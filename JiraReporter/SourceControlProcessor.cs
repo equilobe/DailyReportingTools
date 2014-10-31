@@ -1,6 +1,6 @@
 ﻿using JiraReporter.Model;
-using SvnLogReporter;
-using SvnLogReporter.Model;
+using SourceControlLogReporter;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace JiraReporter
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
 
-        public static SvnLogReporter.Model.Log GetSourceControlLog(Policy policy, Options options)
+        public static SourceControlLogReporter.Model.Log GetSourceControlLog(Policy policy, Options options)
         {
             var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
             var log = processors.CreateLog();
@@ -49,7 +49,7 @@ namespace JiraReporter
 
         public static string EditMessage(string message)
         {
-            return SvnLogReporter.LogProcessor.GetNonEmptyTrimmedLines(message);
+            return SourceControlLogReporter.LogProcessor.GetNonEmptyTrimmedLines(message);
         }
     }
 }

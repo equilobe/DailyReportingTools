@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvnLogReporter", "SvnLogReporter\SvnLogReporter.csproj", "{CA27B3C4-9045-4FC4-BBCC-2B33A02F54C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceControlLogReporter", "SvnLogReporter\SourceControlLogReporter.csproj", "{CA27B3C4-9045-4FC4-BBCC-2B33A02F54C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraReporter", "JiraReporter\JiraReporter.csproj", "{D1E02075-5930-4AE3-A552-BF3FAE984AA9}"
 EndProject

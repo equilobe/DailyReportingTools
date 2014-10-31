@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 
-namespace SvnLogReporter.Model
+namespace SourceControlLogReporter.Model
 {
     public class LogEntry
     {

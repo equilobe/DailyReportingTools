@@ -1,7 +1,7 @@
 ﻿using JiraReporter.Model;
 using RestSharp;
-using SvnLogReporter;
-using SvnLogReporter.Model;
+using SourceControlLogReporter;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -1,6 +1,6 @@
 ﻿using JiraReporter.Model;
-using SvnLogReporter;
-using SvnLogReporter.Model;
+using SourceControlLogReporter;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace JiraReporter
             }
         }
 
-        public void SetTasks(SvnLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
+        public void SetTasks(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
         {
             tasks.Add(new Issue
             {

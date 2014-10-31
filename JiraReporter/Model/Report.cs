@@ -9,10 +9,10 @@ namespace JiraReporter.Model
 {
     public class Report
     {
-        public SvnLogReporter.Model.Policy policy;
-        public SvnLogReporter.Options options;
+        public SourceControlLogReporter.Model.Policy policy;
+        public SourceControlLogReporter.Options options;
 
-        public Report(SvnLogReporter.Model.Policy p, SvnLogReporter.Options o)
+        public Report(SourceControlLogReporter.Model.Policy p, SourceControlLogReporter.Options o)
         {
             this.policy = p;
             this.options = o;

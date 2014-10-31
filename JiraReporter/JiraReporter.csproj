@@ -147,9 +147,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SvnLogReporter\SvnLogReporter.csproj">
+    <ProjectReference Include="..\SvnLogReporter\SourceControlLogReporter.csproj">
       <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>
-      <Name>SvnLogReporter</Name>
+      <Name>SourceControlLogReporter</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

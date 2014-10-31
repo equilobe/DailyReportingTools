@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SvnLogReporter.Model;
+using SourceControlLogReporter.Model;
 using System.Xml.Serialization;
 using System.IO;
 using RazorEngine;
 using System.Security;
 
 
-namespace SvnLogReporter
+namespace SourceControlLogReporter
 {
     public class LogProcessor
     {

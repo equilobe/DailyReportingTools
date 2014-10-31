@@ -17,7 +17,7 @@ namespace JiraReporter.Model
 
         public List<Commit> UnsyncedCommits { get; set; }
 
-        public DayLog(Author author, DateTime date, SvnLogReporter.Options options)
+        public DayLog(Author author, DateTime date, SourceControlLogReporter.Options options)
         {
             this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
             this.Date = date;
