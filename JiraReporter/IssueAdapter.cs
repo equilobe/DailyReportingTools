@@ -29,7 +29,7 @@ namespace JiraReporter
             if(issue.Entries!=null)
             {
                 var newEntries = new List<Entries>(issue.Entries);
-                newEntries.RemoveAll(e => e.StartDate < date.ToOriginalTimeZone() || e.StartDate >= date.ToOriginalTimeZone().AddDays(1));
+                newEntries.RemoveAll(e => e.StartDate.ToOriginalTimeZone() < date || e.StartDate.ToOriginalTimeZone() >= date.AddDays(1));
                 issue.Entries = newEntries;
             }            
         }
@@ -222,7 +222,7 @@ namespace JiraReporter
         public static void RemoveWrongCommits(Issue issue, DateTime date)
         {
             var commits = new List<Commit>(issue.Commits);
-                commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone() < date.ToOriginalTimeZone() || c.Entry.Date.ToOriginalTimeZone() >= date.ToOriginalTimeZone().AddDays(1));
+                commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone() < date || c.Entry.Date.ToOriginalTimeZone() >= date.AddDays(1));
             issue.Commits = commits;
         }
 
