@@ -29,7 +29,7 @@ namespace JiraReporter
             if(issue.Entries!=null)
             {
                 var newEntries = new List<Entries>(issue.Entries);
-                newEntries.RemoveAll(e => e.StartDate < date.ToOriginalTimeZone() && e.StartDate >= date.ToOriginalTimeZone().AddDays(1));
+                newEntries.RemoveAll(e => e.StartDate < date.ToOriginalTimeZone() || e.StartDate >= date.ToOriginalTimeZone().AddDays(1));
                 issue.Entries = newEntries;
             }            
         }
