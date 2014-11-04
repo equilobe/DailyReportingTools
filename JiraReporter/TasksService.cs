@@ -64,7 +64,7 @@ namespace JiraReporter
         {
             var tasks = from task in completedTasks
                         group task by task.CompletedTimeAgo into newGroup
-                        orderby newGroup.Min(g => g.ResolutionDate)
+                        orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone())
                         select newGroup;
             tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
             return tasks;

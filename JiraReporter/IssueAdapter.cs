@@ -107,7 +107,7 @@ namespace JiraReporter
                     issue.Resolution = newIssue.fields.resolution.name;
                     issue.StringResolutionDate = newIssue.fields.resolutiondate;
                     issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
-                    issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate);
+                    issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate.ToOriginalTimeZone());
                 }
                 issue.Status = newIssue.fields.status.name;
                 issue.Type = newIssue.fields.issuetype.name;
