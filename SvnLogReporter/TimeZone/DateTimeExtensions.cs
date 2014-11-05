@@ -22,6 +22,11 @@ namespace System
             return TimeZoneInfo.ConvertTimeToUtc(date).Add(OffsetFromUtc);
         }
 
+        public static DateTime GetEndOfMonth(this DateTime date)
+        {
+            return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+        }
+
 
         public static void SetOriginalTimeZoneFromDateAtMidnight(DateTime dateAtMidnight)
         {

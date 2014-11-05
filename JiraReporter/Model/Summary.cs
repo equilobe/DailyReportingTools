@@ -78,12 +78,24 @@ namespace JiraReporter.Model
 
         private void SetAverageHourRate()
         {
-            var now = DateTime.Now;
-            DateTime endOfMonth = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month));
-            int days = (int)TimeFormatting.SetTimeSpan(DateTime.Today, endOfMonth).TotalDays;
-            var d = TimeSpan.FromDays(days + 1);
-            AverageWorkRateToComplete = RemainingMonthlyHours / (double)d.Days;
+            var days = GetWorkingDays(DateTime.Now);
+            AverageWorkRateToComplete = RemainingMonthlyHours / (double)days;
             AverageWorkRateToCompleteString = TimeFormatting.SetTimeFormat((int)(AverageWorkRateToComplete * 3600));
+        }
+
+        private int GetWorkingDays(DateTime date)
+        {
+            DateTime dateIterator = DateTime.Today;
+            int days = 1;
+            while(dateIterator < date.GetEndOfMonth().AddDays(1))
+            {
+                if(dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    days++;
+                }
+               dateIterator = dateIterator.AddDays(1);
+            }
+            return days;
         }
     }
 }
