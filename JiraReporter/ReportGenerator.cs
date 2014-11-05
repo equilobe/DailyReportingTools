@@ -18,14 +18,15 @@ namespace JiraReporter
 
             var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var pullRequests = SourceControlProcessor.GetPullRequests(log);
+            var commits = SourceControlProcessor.GetCommits(log);
             timesheetService.SetTimesheetIssues(timesheet, policy, options, pullRequests);
                       
-            return GetReport(timesheet, monthTimesheet, policy, options, pullRequests);
+            return GetReport(timesheet, monthTimesheet, policy, options, pullRequests, commits);
         }
-        private static  Report GetReport(Timesheet timesheet, Timesheet monthTimesheet, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
+        private static  Report GetReport(Timesheet timesheet, Timesheet monthTimesheet, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
         {            
             var sprint = GetSprintReport(policy, options, timesheet, pullRequests);           
-            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options);
+            var authors = AuthorsProcessing.GetAuthors(timesheet, sprint, policy, options, commits);
             var report = new Report(policy, options)
             {
                 Authors = authors,

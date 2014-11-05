@@ -20,6 +20,7 @@
 		<RepoUrl></RepoUrl> <!-- url address of the repository, e.g. svn://10.0.0.1/repos -->
     <Username></Username> <!-- username to access repository -->
     <Password></Password> <!-- password of username to access repository -->
+    <CommitUrl></CommitUrl> <!-- URL for commits tool -->
   </SourceControl>
   <AuthorsCorrelation>
     <User>

@@ -9,14 +9,11 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
         {
-            var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            var commits = SourceControlProcessor.GetCommits(log);
-            SetCommitsLink(commits, policy);
 
             foreach (var user in users)
             {
@@ -155,6 +152,7 @@ namespace JiraReporter
                 if(policy.Users[author.Name]!="")
                   find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
             author.Commits = find;
+            SetCommitsLink(commits, policy);
            // IssueAdapter.AdjustIssueCommits(author);           
         }       
         public static void SetAuthorDayLogs(Author author, SourceControlLogReporter.Options options)
