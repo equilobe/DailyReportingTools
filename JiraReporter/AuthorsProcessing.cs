@@ -15,7 +15,8 @@ namespace JiraReporter
             var authors = GetAuthorsDict(timesheet);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            var commits = SourceControlProcessor.GetCommits(log);            
+            var commits = SourceControlProcessor.GetCommits(log);
+            SetCommitsLink(commits, policy);
 
             foreach (var user in users)
             {
@@ -171,6 +172,14 @@ namespace JiraReporter
             if (author.Commits != null)
                 commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone() >= date && c.Entry.Date.ToOriginalTimeZone() < date.AddDays(1));
             return commits;
+        }
+
+        private static void SetCommitsLink(List<Commit> commits, SourceControlLogReporter.Model.Policy policy)
+        {
+            if(commits!=null)
+              foreach (var commit in commits)
+                  if (commit.Entry.Link == null && policy.SourceControl.CommitUrl != null)
+                      commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
         }
     }
 }
