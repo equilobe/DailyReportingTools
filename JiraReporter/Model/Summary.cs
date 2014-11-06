@@ -87,7 +87,7 @@ namespace JiraReporter.Model
         {
             DateTime dateIterator = DateTime.Today;
             int days = 1;
-            while(dateIterator < date.GetEndOfMonth().AddDays(1))
+            while(dateIterator < date.EndOfMonth().AddDays(1))
             {
                 if(dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
                 {

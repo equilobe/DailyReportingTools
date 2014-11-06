@@ -29,17 +29,5 @@ namespace JiraReporter
             IssueAdapter.RemoveWrongEntries(timesheet.Worklog.Issues);
             IssueAdapter.SetIssues(timesheet, policy, options, pullRequests);
         }
-  
-        public Timesheet GenerateMonthTimesheet(Options options, Policy policy)
-        {
-            var now = DateTime.Now;
-            var startOfMonth = new DateTime(now.Year, now.Month,1);
-            return RestApiRequests.GetTimesheet(policy, startOfMonth, DateTime.Today.AddDays(-1));
-        }
-
-        public Timesheet GenerateTimehseet(Options options, Policy policy)
-        {
-            return RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
-        }
     }
 }

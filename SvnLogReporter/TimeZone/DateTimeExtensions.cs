@@ -22,12 +22,12 @@ namespace System
             return TimeZoneInfo.ConvertTimeToUtc(date).Add(OffsetFromUtc);
         }
 
-        public static DateTime GetEndOfMonth(this DateTime date)
+        public static DateTime EndOfMonth(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
         }
 
-        public static DateTime GetStartOfMonth(this DateTime date)
+        public static DateTime StartOfMonth(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, 1);
         }
