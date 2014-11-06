@@ -13,7 +13,7 @@ namespace JiraReporter
         public List<Issue> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
         {
             var completedTasks = new List<Issue>();
-            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Today.AddDays(-6), DateTime.Now);
+            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Today.AddDays(-6).ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone());
             foreach (var issue in issues.issues)
             {
                 if (issue.fields.issuetype.subtask == false)

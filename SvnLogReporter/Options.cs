@@ -83,10 +83,10 @@ namespace SourceControlLogReporter
         {
             this.Policy = p;
             if (HasToDate)
-                ToDate = GetDate(StringToDate);
+                ToDate = GetDate(StringToDate).Date;
 
             if (HasFromDate)
-                FromDate = GetDate(StringFromDate);
+                FromDate = GetDate(StringFromDate).Date;
 
             SetDefaultDates();
 
