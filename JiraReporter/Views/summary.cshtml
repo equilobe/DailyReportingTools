@@ -25,20 +25,20 @@
             }
             <span style="color:black">in progress</span>
             <span style="font-size:0; color:black">
-                <span style="font-size:14px; color:black">(</span>
+                <span style="font-size:12px; color:black">(</span>
                 @if (Model.InProgressTasksTimeLeftSeconds == 0)
                 {
-                    <span style="color:red;font-size:14px;">@Model.InProgressTasksTimeLeft left</span>
+                    <span style="color:red;font-size:12px;">@Model.InProgressTasksTimeLeft left</span>
                 }
                 else
                 {
-                    <span style="font-size:14px; color:black">@Model.InProgressTasksTimeLeft left</span>
+                    <span style="font-size:12px; color:black">@Model.InProgressTasksTimeLeft left</span>
                 }
                 @if (Model.InProgressUnassigned > 0)
                 {
-                    <span style="font-size:14px; color:black">, @Model.InProgressUnassigned unassigned</span>
+                    <span style="font-size:12px; color:black">, @Model.InProgressUnassigned unassigned</span>
                 }
-                <span style="font-size:14px; color:black">)</span>
+                <span style="font-size:12px; color:black">)</span>
             </span>
         </div>
     }
@@ -63,17 +63,17 @@
                 }
                 @if (Model.OpenTasksTimeLeftSeconds > 0 || Model.OpenUnassigned > 0)
                 {
-                    <span style="font-size:14px; color:black">(</span>
+                    <span style="font-size:12px; color:black">(</span>
                     if (Model.OpenTasksTimeLeftSeconds > 0)
                     {
-                        <span style="font-size:14px; color:black">@Model.OpenTasksTimeLeft left</span>
+                        <span style="font-size:12px; color:black">@Model.OpenTasksTimeLeft left</span>
                     }
-                    <span style="font-size:14px; color:black">@comma</span>
+                    <span style="font-size:12px; color:black">@comma</span>
                     if (Model.OpenUnassigned > 0)
                     {
-                        <span style="font-size:14px; color:black">@Model.OpenUnassigned unassigned</span>
+                        <span style="font-size:12px; color:black">@Model.OpenUnassigned unassigned</span>
                     }
-                    <span style="font-size:14px; color:black">)</span>
+                    <span style="font-size:12px; color:black">)</span>
                 }
             </span>
         </div>
