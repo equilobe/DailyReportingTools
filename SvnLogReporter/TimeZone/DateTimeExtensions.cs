@@ -27,6 +27,10 @@ namespace System
             return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
         }
 
+        public static DateTime GetStartOfMonth(this DateTime date)
+        {
+            return new DateTime(date.Year, date.Month, 1);
+        }
 
         public static void SetOriginalTimeZoneFromDateAtMidnight(DateTime dateAtMidnight)
         {
