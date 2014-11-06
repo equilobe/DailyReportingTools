@@ -39,5 +39,11 @@ namespace System
            // OffsetFromUtc = new DateTimeOffset(dateAtMidnight).Offset;
             OffsetFromUtc = referenceDay - universalDate;
         }
+
+        public static void SetOriginalTimeZoneFromDateAtMidnight(DateTime dateAtMidnight, DateTime localFromDate)
+        {
+            var offsetDateNow = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
+            OffsetFromUtc = offsetDateNow - (dateAtMidnight - localFromDate);
+        }
     }
 }

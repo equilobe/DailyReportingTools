@@ -49,7 +49,8 @@ namespace JiraReporter
 
         private static void SetReportDates(DateTime referenceDate, SourceControlLogReporter.Options options)
         {
-            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
+          //  DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
+            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate, options.FromDate);
             //options.FromDate = options.FromDate.ToOriginalTimeZone();
             //options.ToDate = options.ToDate.ToOriginalTimeZone();
             //var dates = new List<DateTime>();
