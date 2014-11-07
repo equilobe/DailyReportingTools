@@ -1,4 +1,8 @@
-﻿@if (Model.CompletedTasks != null)
+﻿@{
+    var color = "";
+    var bold = "";
+}
+@if (Model.CompletedTasks != null)
 {
     <div style="margin-top:60px">
         <h1 style="color:black">Completed last 7 days</h1>
@@ -17,7 +21,17 @@
                                 <td>
                                     <a style="text-decoration: none; font-weight:bold;" href="@task.Link">@task.Summary</a>
                                     <span style="color: #B8B8B8;"> &#x25cf; @task.Key </span>
-                                    <span style="color:black"> &#x25cf; @task.TimeLoggedTotal worked</span>
+                                    @if (task.TimeSpentTotal>0)
+                                    {
+                                        color = "black";
+                                        bold = "none";
+                                    }
+                                    else
+                                    {
+                                        color = "red";
+                                        bold = "bold";
+                                    }
+                                    <span style="color:@color; font-weight:@bold"> &#x25cf; @task.TimeLoggedTotal worked</span>
                                     @if (task.RemainingEstimateSeconds == 0 && task.TotalRemainingSeconds > 0)
                                     {
                                         <span style="white-space:nowrap; color:red; font-weight:bold;"> &#x25cf; @task.TotalRemaining left from subtasks </span>
