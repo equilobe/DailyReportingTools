@@ -1,5 +1,6 @@
 ﻿@{
     var test = false;
+    var dayName = "";
 }
 @if(Model.Issues!=null)
 {
@@ -16,9 +17,13 @@
 {
     test = true;
 }
+@if(Model.Date == DateTime.Today.AddDays(-1))
+{
+    dayName = "(" + DateTime.Today.AddDays(-1).DayOfWeek + ")";
+}
 @if (test==true)
 {
-    <b style="color:Sienna; font-size:16px; "> @Model.Title</b>
+    <b style="color:Sienna; font-size:16px; "> @Model.Title @dayName</b>
     if (Model.TimeSpent > 0)
     {
         <span style="color:Sienna; font-size:12px;"> &#x25cf; @Model.TimeLogged worked </span>
