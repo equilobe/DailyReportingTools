@@ -11,6 +11,7 @@ namespace JiraReporter.Model
     {
         public string TotalTime { get; set; }
         public int TotalTimeSeconds { get; set; }
+
         public int InProgressTasksCount { get; set; }
         public string InProgressTasksTimeLeft { get; set; }
         public int InProgressTasksTimeLeftSeconds { get; set; }
@@ -19,9 +20,16 @@ namespace JiraReporter.Model
         public string OpenTasksTimeLeft { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public int OpenUnassigned { get; set; }
+        public int SprintTasksTimeLeftSeconds { get; set; }
+        public string SprintTasksTimeLeft { get; set; }
+        public int SprintHourRate { get; set; }  //hour rate per day to complete sprint
+
+        public int MonthlyHourRate { get; set; } //hour rate per day for developers team (set in policy)
+
         public int AuthorsInvolved { get; set; }
         public int CommitsCount { get; set; }
         public int PullRequestsCount { get; set; }
+        public List<PullRequest> PullRequests { get; set; }
         public List<PullRequest> UnrelatedPullRequests { get; set; }
         public int MonthlyHours { get; set; }
         public string MonthlyHoursString { get; set; }
@@ -36,7 +44,7 @@ namespace JiraReporter.Model
         {
             this.TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
             this.TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
-            this.SetSummaryTasksTimeLeft(authors);
+            this.SetSummaryTasksTimeLeft(sprint);
             this.InProgressUnassigned = sprint.InProgressTasks.Count(tasks => tasks.Assignee == null);
             this.OpenUnassigned = sprint.OpenTasks.Count(tasks =>tasks.Assignee == null);
             this.InProgressTasksCount = sprint.InProgressTasks.Count;
@@ -51,20 +59,24 @@ namespace JiraReporter.Model
               SetMonthlyHours(monthTimesheet);
         }   
 
-        private void SetSummaryTasksTimeLeft(List<Author> authors)
+        private void SetSummaryTasksTimeLeft(SprintTasks tasks)
         {
-            this.InProgressTasksTimeLeftSeconds = 0;
-            this.OpenTasksTimeLeftSeconds = 0;
-            foreach (var author in authors)
-            {
-                if(author.InProgressTasks!=null)
-                    this.InProgressTasksTimeLeftSeconds += IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
-                if(author.OpenTasks!=null)
-                    this.OpenTasksTimeLeftSeconds += IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
-            }
+            InProgressTasksTimeLeftSeconds = 0;
+            OpenTasksTimeLeftSeconds = 0;
+            //foreach (var author in authors)
+            //{
+            //    if(author.InProgressTasks!=null)
+            //        this.InProgressTasksTimeLeftSeconds += IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
+            //    if(author.OpenTasks!=null)
+            //        this.OpenTasksTimeLeftSeconds += IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
+            //}
+            if (tasks.InProgressTasks != null)
+                InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.InProgressTasks);
+            if (tasks.OpenTasks != null)
+                OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.OpenTasks);
 
-            this.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.InProgressTasksTimeLeftSeconds);
-            this.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(this.OpenTasksTimeLeftSeconds);
+            InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(InProgressTasksTimeLeftSeconds);
+            OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(OpenTasksTimeLeftSeconds);
         }
 
         private void SetMonthlyHours(Timesheet monthTimesheet)
@@ -86,8 +98,8 @@ namespace JiraReporter.Model
         private int GetWorkingDays(DateTime date)
         {
             DateTime dateIterator = DateTime.Today;
-            int days = 1;
-            while(dateIterator < date.EndOfMonth().AddDays(1))
+            int days = 0;
+            while(dateIterator < date.EndOfMonth())
             {
                 if(dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
                 {
