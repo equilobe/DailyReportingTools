@@ -10,6 +10,7 @@ namespace JiraReporter.Model
     public class Author
     {
         public string Name { get; set; }
+        public string Initials { get; set; }
         public List<Issue> Issues { get; set; }
         public string TimeLogged { get; set; }
         public int TimeSpent { get; set; }
@@ -23,5 +24,6 @@ namespace JiraReporter.Model
         public string OpenTasksTimeLeft { get; set; }
         public List<Commit> Commits { get; set; }
         public List<DayLog> DayLogs { get; set; }
+        public int ErrorsCount { get; set; }
     }
 }

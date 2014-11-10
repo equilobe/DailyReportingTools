@@ -129,6 +129,7 @@ namespace JiraReporter
                 AdjustIssuePullRequests(issue, pullRequests);
                 SetIssueLink(issue, policy);
                 HasWorkLoggedByAssignee(issue, timesheet);
+                SetIssueErrors(issue);
         }
 
         public static void SetSubtasksIssues(Issue issue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
@@ -289,6 +290,26 @@ namespace JiraReporter
             if (HasSubtasksInProgress(task) == true && task.SubtasksIssues.Exists(s => s.Assignee == task.Assignee))
                 return true;
             return false;
+        }
+
+        public static void SetIssueErrors(Issue issue)
+        {
+            if(issue.StatusCategory.name == "Done")
+            {
+                if (issue.TimeSpentTotal == 0)
+                    issue.ErrorsCount++;
+                if (issue.RemainingEstimateSeconds > 0)
+                    issue.ErrorsCount++;
+            }
+            else
+            {
+                if (issue.RemainingEstimateSeconds == 0)
+                    issue.ErrorsCount++;
+                if (issue.Commits != null)
+                    if (issue.Commits.Count > 0)
+                        if (issue.Entries == null || issue.Entries.Count == 0)
+                            issue.ErrorsCount++;
+            }
         }
 
     }

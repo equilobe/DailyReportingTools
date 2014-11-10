@@ -66,6 +66,8 @@ namespace JiraReporter
             author.Name = SetName(author.Name);
             SetUnfinishedTasks(sprint, author);
             SetAuthorDayLogs(author, options);
+            SetAuthorErrors(author);
+            SetAuthorInitials(author);
         }
 
         public static string SetName(string name)
@@ -178,6 +180,26 @@ namespace JiraReporter
               foreach (var commit in commits)
                   if (commit.Entry.Link == null && policy.SourceControl.CommitUrl != null)
                       commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
+        }
+
+        private static void SetAuthorErrors(Author author)
+        {
+            if (author.Issues != null)
+                author.ErrorsCount += author.Issues.Sum(i => i.ErrorsCount);
+            if (author.InProgressTasks != null)
+                author.ErrorsCount += author.InProgressTasks.Sum(i => i.ErrorsCount);
+            if (author.OpenTasks != null)
+                author.ErrorsCount += author.OpenTasks.Sum(i => i.ErrorsCount);
+        }
+
+        private static void SetAuthorInitials(Author author)
+        {
+            string name = author.Name;
+            var nameParts = name.Split(' ');
+            string initials = "";
+            foreach (var part in nameParts)
+                initials += Regex.Match(part, "[A-Z]");
+            author.Initials = initials;
         }
     }
 }

@@ -82,6 +82,8 @@ namespace JiraReporter.Model
         public List<PullRequest> PullRequests { get; set; }
         [XmlIgnore]
         public string PolicyReopenedStatus { get; set; }
+        [XmlIgnore]
+        public int ErrorsCount { get; set; }
 
         [XmlIgnore]
         public string CompletedTimeAgo { get; set; }
@@ -156,7 +158,7 @@ namespace JiraReporter.Model
             this.HasSubtasksInProgress = issue.HasSubtasksInProgress;
             this.CompletedTimeAgo = issue.CompletedTimeAgo;
             this.HasWorkLoggedByAssignee = issue.HasWorkLoggedByAssignee;
-
+            this.ErrorsCount = issue.ErrorsCount;
         }       
     }
 }

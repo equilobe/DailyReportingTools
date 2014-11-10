@@ -39,6 +39,8 @@ namespace JiraReporter.Model
 
         public int MonthHourRateHours { get; set; }
 
+        public Errors Errors { get; set; }
+
         public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Timesheet monthTimesheet)
         {
             TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
@@ -63,6 +65,8 @@ namespace JiraReporter.Model
             SprintTasksTimeLeftHours = SprintTasksTimeLeftSeconds / 3600;
             SprintTasksTimeLeft = TimeFormatting.SetTimeFormat(SprintTasksTimeLeftSeconds);
             SetHourRates();
+
+            Errors = new Errors(authors, sprint);
         }   
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
