@@ -1,4 +1,67 @@
-﻿@{
+﻿<div style="margin-top:40px">
+    <table style="border:1px solid #DDD; border-collapse:collapse">
+        <tbody>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                   <b style="color:black; font-size:14px">Sprint h/day left (velocity)</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <span style="color:black; font-size:14px"> @Model.SprintHourRate (0)</span>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Monthly h/day left</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <span style="color:black; font-size:14px">@Model.MonthHourRateHours</span>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Commits</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <span style="color:black; font-size:14px"> @Model.CommitsCount</span>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">People</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <span style="color:black; font-size:14px"> @Model.AuthorsInvolved</span>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Pull requests</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <span style="color:black; font-size:14px"> @Model.PullRequests.Count</span>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Unrelated pull requests</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">                       
+                    @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
+                </td>
+            </tr>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Report errors</b>
+                </th>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@*@{
     var comma = "";
 }
 <div style="margin-top: 40px">
@@ -134,9 +197,5 @@
                 <span style="color:black"> @Model.AverageWorkRateToCompleteString average per day </span>
             </div>
         }
-        @*else
-        {
-            <div style="color:black"> </div>
-        }*@
     }
-</div>
+</div>*@
