@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atlassian.Connect;
+using System;
 using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
