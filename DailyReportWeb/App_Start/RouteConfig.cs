@@ -16,7 +16,30 @@ namespace DailyReportWeb
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index",
+                    id = UrlParameter.Optional
+                }
+            );
+            routes.MapRoute(
+                name: "descriptor",
+                url: "atlassian-connect.json",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Plugin"
+                }
+            );
+            routes.MapRoute(
+                name: "installed-callback",
+                url: "installed",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "InstalledCallback"
+                }
             );
         }
     }
