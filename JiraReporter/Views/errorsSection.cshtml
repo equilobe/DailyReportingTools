@@ -1,0 +1,21 @@
+﻿<span style="color:red; font-weight:bold; font-size:14px;"> @Model.ErrorsCount</span>
+<span style="font-size:0px">
+    <b style="color:red; font-size:14px;">(</b>
+    @if (Model.AuthorsContainingErrors.Count > 0)
+    {
+
+        foreach (var author in Model.AuthorsContainingErrors)
+        {
+            <b style="color:red; font-size:14px">@author.Initials</b>
+            if(author != Model.AuthorsContainingErrors.Last() || Model.UnassignedErrorCount > 0 || Model.CompletedTasksErrorCount > 0)
+            {
+                <b style="color:red; font-size:14px">, </b>
+            }
+        }
+    }
+        @if (Model.UnassignedErrorCount > 0 || Model.CompletedTasksErrorCount > 0)
+        {
+            <b style="color:red; font-size:14px;">Other</b>
+        }
+    <b style="color:red; font-size:14px;">)</b>
+</span>
