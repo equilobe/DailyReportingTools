@@ -113,6 +113,9 @@
     <None Include="Views\entryComments.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\errorsSection.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\openTasks.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
