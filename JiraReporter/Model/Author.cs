@@ -14,6 +14,7 @@ namespace JiraReporter.Model
         public List<Issue> Issues { get; set; }
         public string TimeLogged { get; set; }
         public int TimeSpent { get; set; }
+        public int TimeSpentHours { get; set; }
         public List<Issue> InProgressTasks { get; set; }
         public List<Issue> OpenTasks { get; set; }
         public int InProgressTasksCount { get; set; }
@@ -22,6 +23,14 @@ namespace JiraReporter.Model
         public string InProgressTasksTimeLeft { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeft { get; set; }
+        public int RemainingEstimateSeconds { get; set; }
+        public int RemainingEstimateHours
+        {
+            get
+            {
+                return RemainingEstimateSeconds / 3600;
+            }
+        }
         public List<Commit> Commits { get; set; }
         public List<DayLog> DayLogs { get; set; }
         public int ErrorsCount { get; set; }

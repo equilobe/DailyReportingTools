@@ -11,6 +11,12 @@ namespace JiraReporter.Model
     {
         public string TotalTime { get; set; }
         public int TotalTimeSeconds { get; set; }
+        public int TotalTimeHours {
+            get
+            {
+                return TotalTimeSeconds / 3600;
+            }
+         }
 
         public int InProgressTasksCount { get; set; }
         public string InProgressTasksTimeLeft { get; set; }
@@ -29,6 +35,7 @@ namespace JiraReporter.Model
         public int MonthlyHourRate { get; set; } //hour rate per day for developers team (set in policy)
 
         public int AuthorsInvolved { get; set; }
+        public List<Author> Authors { get; set; }
         public int CommitsCount { get; set; }
         public List<PullRequest> PullRequests { get; set; }
         public List<PullRequest> UnrelatedPullRequests { get; set; }
@@ -54,6 +61,7 @@ namespace JiraReporter.Model
             OpenTasksCount = sprint.OpenTasks.Count;
 
             AuthorsInvolved = authors.Count;
+            Authors = authors;
             CommitsCount = authors.Sum(a => a.Commits.Count);
             PullRequests = pullRequests;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);

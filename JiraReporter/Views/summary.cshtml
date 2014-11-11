@@ -17,14 +17,17 @@
                     <span style="color:black; font-size:14px">@Model.MonthHourRateHours</span>
                 </td>
             </tr>
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Commits</b>
-                </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <span style="color:black; font-size:14px"> @Model.CommitsCount</span>
-                </td>
-            </tr>
+            @if (Model.CommitsCount > 0)
+            {
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Commits</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px"> @Model.CommitsCount</span>
+                    </td>
+                </tr>
+            }
             <tr>
                 <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
                     <b style="color:black; font-size:14px">People</b>
@@ -33,22 +36,28 @@
                     <span style="color:black; font-size:14px"> @Model.AuthorsInvolved</span>
                 </td>
             </tr>
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Pull requests</b>
-                </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <span style="color:black; font-size:14px"> @Model.PullRequests.Count</span>
-                </td>
-            </tr>
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Unrelated pull requests</b>
-                </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">                       
-                    @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
-                </td>
-            </tr>
+            @if (Model.PullRequests.Count > 0)
+            {
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Pull requests</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px"> @Model.PullRequests.Count</span>
+                    </td>
+                </tr>
+            }
+            @if (Model.UnrelatedPullRequests.Count > 0)
+            {
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Unrelated pull requests</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
+                    </td>
+                </tr>
+            }
             @if (Model.Errors.ErrorsCount > 0)
             {
                 <tr>
@@ -59,6 +68,58 @@
                         @Partial("Views/errorsSection.cshtml", Model.Errors)
                     </td>
                 </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top:10px">
+    <table style="border: 1px solid #DDD; border-collapse:collapse">
+        <tbody>
+            <tr>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Work log summary (h worked)</b>
+                </th>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px"> Ziua respectiva</b>
+                </th>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Sprint (h left)</b>
+                </th>
+                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px">Month</b>
+                </th>
+            </tr>
+            <tr>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px"> TOTAL </b>
+                </td>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px"> @Model.TotalTimeHours </b>
+                </td>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px"> (@Model.SprintTasksTimeLeftHours) </b>
+                </td>
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                    <b style="color:black; font-size:14px"> @Model.MonthHoursWorked / @Model.MonthlyHours </b>
+                </td>
+            </tr>
+            @foreach(var author in Model.Authors)
+            {
+                <tr>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px"> @author.Name </span>
+                    </td>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px"> @author.TimeSpentHours </b>
+                    </td>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">  (@author.RemainingEstimateHours)</b>
+                    </td>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px"> </span>
+                    </td>
+                </tr>                 
             }
         </tbody>
     </table>

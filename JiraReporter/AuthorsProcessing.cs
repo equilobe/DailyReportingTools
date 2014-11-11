@@ -68,6 +68,7 @@ namespace JiraReporter
             SetAuthorDayLogs(author, options);
             SetAuthorErrors(author);
             SetAuthorInitials(author);
+            SetRemainingEstimate(author);
         }
 
         public static string SetName(string name)
@@ -83,7 +84,7 @@ namespace JiraReporter
             if(author.Issues!=null)
               foreach (var issue in author.Issues)
                 author.TimeSpent += issue.TimeSpent;
-
+            author.TimeSpentHours = author.TimeSpent / 3600;
             author.TimeLogged = author.TimeSpent.ToString();
         }
 
@@ -114,6 +115,11 @@ namespace JiraReporter
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
+        }
+
+        private static void SetRemainingEstimate(Author author)
+        {
+            author.RemainingEstimateSeconds = author.InProgressTasksTimeLeftSeconds + author.OpenTasksTimeLeftSeconds;
         }
 
         private static List<Issue> GetAuthorTasks(List<Issue> tasks, Author author)

@@ -266,7 +266,7 @@ namespace JiraReporter
 
         public static int GetTasksTimeLeftSeconds(List<Issue> tasks)
         {
-            return tasks.Sum(t => t.TotalRemainingSeconds);
+            return tasks.Sum(t => t.RemainingEstimateSeconds);
         }
 
         public static void HasTasksInProgress(Issue task)
