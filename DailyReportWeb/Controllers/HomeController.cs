@@ -1,5 +1,7 @@
 ﻿using Atlassian.Connect;
+using Atlassian.Connect.Jwt;
 using System;
+using System.Dynamic;
 using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
@@ -25,8 +27,21 @@ namespace DailyReportWeb.Controllers
             return View();
         }
 
-        [HttpGet]
+        [JwtAuthentication]
         public ActionResult Plugin()
+        {
+            var client = Request.CreateConnectHttpClient("com.equilobe.drt");
+
+            var response = client.GetAsync("rest/api/latest/project").Result;
+            var results = response.Content.ReadAsStringAsync().Result;
+
+            dynamic model = new ExpandoObject();
+            model.projects = results;
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult Descriptor()
         {
             var descriptor = new ConnectDescriptor()
             {
@@ -46,28 +61,29 @@ namespace DailyReportWeb.Controllers
                 {
                     installed = "/installed"
                 },
+                apiVersion = 0,
                 modules = new
                 {
-                    //generalPages = new[] 
-                    //{ 
-                    //    new 
-                    //    {
-                    //        name = new 
-                    //        {
-                    //            value = "Daily Reporting Tool"
-                    //        },
-                    //        url = "/Home/Index",
-                    //        key = "drt-home",
-                    //        location = "system.top.navigation.bar",
-                    //        conditions = new[]
-                    //        {
-                    //            new
-                    //            {
-                    //                condition = "user_is_logged_in"
-                    //            }
-                    //        }
-                    //    }
-                    //}
+                    generalPages = new[] 
+                    { 
+                        new 
+                        {
+                            name = new 
+                            {
+                                value = "test DRT"
+                            },
+                            url = "/test-plugin",
+                            key = "drt-test",
+                            location = "system.top.navigation.bar",
+                            conditions = new[]
+                            {
+                                new
+                                {
+                                    condition = "user_is_logged_in"
+                                }
+                            }
+                        }
+                    }
                 }
             };
 
@@ -80,7 +96,7 @@ namespace DailyReportWeb.Controllers
         [HttpPost]
         public ActionResult InstalledCallback()
         {
-            //SecretKeyPersister.SaveSecretKey(Request);
+            SecretKeyPersister.SaveSecretKey(Request);
 
             return Content(String.Empty);
         }

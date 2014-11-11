@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace DailyReportWeb
@@ -29,7 +25,7 @@ namespace DailyReportWeb
                 defaults: new
                 {
                     controller = "Home",
-                    action = "Plugin"
+                    action = "Descriptor"
                 }
             );
             routes.MapRoute(
@@ -39,6 +35,15 @@ namespace DailyReportWeb
                 {
                     controller = "Home",
                     action = "InstalledCallback"
+                }
+            );
+            routes.MapRoute(
+                name: "test-plugin",
+                url: "test-plugin",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Plugin"
                 }
             );
         }
