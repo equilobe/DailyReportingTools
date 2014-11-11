@@ -48,7 +48,7 @@ namespace JiraReporter.Model
 
         public Errors Errors { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Timesheet monthTimesheet)
+        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
             TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
             TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
@@ -67,8 +67,8 @@ namespace JiraReporter.Model
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
 
             MonthlyHours = policy.AllocatedHoursPerMonth;
-            if(MonthlyHours!=0)
-              SetMonthSummary(monthTimesheet);
+
+            SetMonthSummary(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
             SprintTasksTimeLeftHours = SprintTasksTimeLeftSeconds / 3600;
             SprintTasksTimeLeft = TimeFormatting.SetTimeFormat(SprintTasksTimeLeftSeconds);
@@ -94,7 +94,8 @@ namespace JiraReporter.Model
         private void SetMonthSummary(Timesheet monthTimesheet)
         {
             MonthHoursWorked = monthTimesheet.Worklog.Issues.Sum(i => i.Entries.Sum(e => e.TimeSpent)) / 3600;
-            RemainingMonthlyHours = MonthlyHours - MonthHoursWorked;
+            if(MonthlyHours > 0)
+                 RemainingMonthlyHours = MonthlyHours - MonthHoursWorked;
         }
 
         private void SetHourRates()

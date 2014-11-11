@@ -9,9 +9,9 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Timesheet timesheet, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
+        public static List<Author> GetAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
         {
-            var authors = GetAuthorsDict(timesheet);
+            var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet]);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
 
@@ -21,7 +21,7 @@ namespace JiraReporter
                     authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last(), policy, commits, options);
+                SetAuthor(report, authorsNew.Last(), policy, commits, options, timesheetCollection);
             }
 
             authorsNew.RemoveAll(AuthorIsEmpty);
@@ -57,7 +57,7 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options)
+        private static void SetAuthor(SprintTasks sprint, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author);
@@ -69,6 +69,7 @@ namespace JiraReporter
             SetAuthorErrors(author);
             SetAuthorInitials(author);
             SetRemainingEstimate(author);
+            SetAuthorMonthWorkedSeconds(author, timesheetCollection[TimesheetType.MonthTimesheet]);
         }
 
         public static string SetName(string name)
@@ -206,6 +207,12 @@ namespace JiraReporter
             foreach (var part in nameParts)
                 initials += Regex.Match(part, "[A-Z]");
             author.Initials = initials;
+        }
+
+        private static void SetAuthorMonthWorkedSeconds(Author author, Timesheet monthTimesheet)
+        {
+            foreach (var issue in monthTimesheet.Worklog.Issues)
+                author.TimeSpentCurrentMonthSeconds += issue.Entries.Where(e => e.AuthorFullName == author.Name).Sum(e => e.TimeSpent);
         }
     }
 }

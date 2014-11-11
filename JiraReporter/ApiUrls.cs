@@ -32,5 +32,15 @@ namespace JiraReporter
         {
             return string.Format("sprint in openSprints() & project = {0}", project);
         }
+
+        public static string RapidViews()
+        {
+            return "/rest/greenhopper/1.0/rapidview";
+        }
+
+        public static string Sprint(string rapidViewId, string sprintId)
+        {
+            return string.Format("/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId={0}&sprintId={1}", rapidViewId, sprintId);
+        }
     }
 }

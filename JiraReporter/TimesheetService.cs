@@ -29,5 +29,11 @@ namespace JiraReporter
             IssueAdapter.RemoveWrongEntries(timesheet.Worklog.Issues);
             IssueAdapter.SetIssues(timesheet, policy, options, pullRequests);
         }
+
+        public void SetTimesheetCollection(Dictionary<TimesheetType, Timesheet> timesheetCollection, Policy policy, Options options, List<PullRequest> pullRequests)
+        {
+            foreach (var timesheet in timesheetCollection.Values)
+                SetTimesheetIssues(timesheet, policy, options, pullRequests);
+        }
     }
 }

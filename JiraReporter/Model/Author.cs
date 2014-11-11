@@ -11,12 +11,24 @@ namespace JiraReporter.Model
     {
         public string Name { get; set; }
         public string Initials { get; set; }
-        public List<Issue> Issues { get; set; }
+      
         public string TimeLogged { get; set; }
         public int TimeSpent { get; set; }
         public int TimeSpentHours { get; set; }
+
+        public int TimeSpentCurrentMonthSeconds { get; set; }
+        public int TimeSpentCurrentMonthHours
+        {
+            get
+            {
+                return TimeSpentCurrentMonthSeconds / 3600;
+            }
+        }
+
+        public List<Issue> Issues { get; set; }
         public List<Issue> InProgressTasks { get; set; }
         public List<Issue> OpenTasks { get; set; }
+
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
         public int InProgressTasksTimeLeftSeconds { get; set; }
