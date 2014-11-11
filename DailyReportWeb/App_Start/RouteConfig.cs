@@ -10,16 +10,6 @@ namespace DailyReportWeb
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new
-                {
-                    controller = "Home",
-                    action = "Index",
-                    id = UrlParameter.Optional
-                }
-            );
-            routes.MapRoute(
                 name: "descriptor",
                 url: "atlassian-connect.json",
                 defaults: new
@@ -44,6 +34,16 @@ namespace DailyReportWeb
                 {
                     controller = "Home",
                     action = "Plugin"
+                }
+            );
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index",
+                    id = UrlParameter.Optional
                 }
             );
         }
