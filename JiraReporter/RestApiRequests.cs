@@ -58,5 +58,25 @@ namespace JiraReporter
             var issue = client.GetIssue(issueKey);
             return client.GetIssue(issueKey);
         }
+       
+        public static Views GetRapidViews(SourceControlLogReporter.Model.Policy policy)
+        {
+            var client = new RestClient(policy.BaseUrl);
+            client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
+            var request = new RestRequest(ApiUrls.RapidViews(), Method.GET);
+            var response = client.Execute(request);
+            string contentString = response.Content;
+            return Deserialization.JsonDeserialize<Views>(contentString);
+        }
+
+        public static SprintReport GetSprintReport(string rapidViewId, string sprintId, SourceControlLogReporter.Model.Policy policy)
+        {
+            var client = new RestClient(policy.BaseUrl);
+            client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
+            var request = new RestRequest(ApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
+            var response = client.Execute(request);
+            string contentString = response.Content;
+            return Deserialization.JsonDeserialize<SprintReport>(contentString);
+        }
     }
 }
