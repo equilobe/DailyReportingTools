@@ -64,9 +64,9 @@ else
                 }
                 @if (Model.Subtasks.Count == 0)
                 {
-                    if (Model.TimeSpent > 0)
+                    if (Model.TimeSpentTotal > 0)
                     {
-                        <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
+                        <span style="color:black"> &#x25cf; @Model.TimeLoggedTotal worked </span>
                     }
                     if (Model.RemainingEstimateSeconds == 0)
                     {
