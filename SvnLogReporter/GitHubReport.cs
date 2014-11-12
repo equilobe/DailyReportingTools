@@ -144,8 +144,8 @@ namespace SourceControlLogReporter
         }
         protected List<GitHubCommit> GetReportCommits()
         {
-            string fromDate = Options.DateToISO(Options.FromDate);
-            string toDate = Options.DateToISO(Options.ToDate);
+            string fromDate = Options.DateToISO(Options.FromDate.ToGithubTime());
+            string toDate = Options.DateToISO(Options.ToDate.ToGithubTime());
             var commits = ConcatCommits(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName, fromDate, toDate);
             commits = RemoveDuplicateCommits(commits);
 

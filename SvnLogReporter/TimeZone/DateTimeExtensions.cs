@@ -22,6 +22,11 @@ namespace System
             return TimeZoneInfo.ConvertTimeToUtc(date).Add(OffsetFromUtc);
         }
 
+        public static DateTime ToGithubTime(this DateTime date)
+        {
+            return date.Add(OffsetFromUtc.Negate());
+        }
+
         public static DateTime EndOfMonth(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
