@@ -39,7 +39,11 @@ namespace JiraReporter
                 Sprint = sprint,
                 PullRequests = pullRequests,
                 Date = DateTime.Today,
-                Summary = new Summary(authors, sprint, pullRequests, policy, timesheetCollection),
+                Summary = new Summary(authors, sprint, pullRequests, policy, timesheetCollection)
+                {
+                    FromDate = options.FromDate,
+                    ToDate = options.ToDate
+                },
                 Title = policy.ReportTitle
             };
                          

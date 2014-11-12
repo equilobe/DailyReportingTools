@@ -9,6 +9,19 @@ namespace JiraReporter.Model
 {
     public class Summary
     {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public string ReportDate
+        {
+            get
+            {
+                if ((ToDate - FromDate).Days > 1)
+                    return FromDate.ToString("m") + " - " + ToDate.ToString("m");
+                else
+                    return FromDate.DayOfWeek.ToString();
+            }
+        }
+
         public string TotalTime { get; set; }
         public int TotalTimeSeconds { get; set; }
         public int TotalTimeHours {
