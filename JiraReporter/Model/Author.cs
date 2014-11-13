@@ -11,17 +11,31 @@ namespace JiraReporter.Model
     {
         public string Name { get; set; }
         public string Initials { get; set; }
-      
+
         public string TimeLogged { get; set; }
         public int TimeSpent { get; set; }
-        public int TimeSpentHours { get; set; }
+        public double TimeSpentHours { get; set; }
+        public string TimeSpentHoursString
+        {
+            get
+            {
+                return TimeSpentHours.RoundDoubleDecimals();
+            }           
+        }
 
         public int TimeSpentCurrentMonthSeconds { get; set; }
-        public int TimeSpentCurrentMonthHours
+        public double TimeSpentCurrentMonthHours
         {
             get
             {
                 return TimeSpentCurrentMonthSeconds / 3600;
+            }
+        }
+        public string TimeSpentCurrentMonthHoursString
+        {
+            get
+            {
+                return TimeSpentCurrentMonthHours.RoundDoubleDecimals();
             }
         }
 
@@ -35,12 +49,13 @@ namespace JiraReporter.Model
         public string InProgressTasksTimeLeft { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeft { get; set; }
-        public int RemainingEstimateSeconds { get; set; }
-        public int RemainingEstimateHours
+        public double RemainingEstimateSeconds { get; set; }
+        public double RemainingEstimateHours { get; set; }
+        public string RemainingEstimateHoursString
         {
             get
             {
-                return RemainingEstimateSeconds / 3600;
+               return RemainingEstimateHours.RoundDoubleDecimals();
             }
         }
         public List<Commit> Commits { get; set; }

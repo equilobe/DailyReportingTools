@@ -86,7 +86,6 @@ namespace JiraReporter
               foreach (var issue in author.Issues)
                 author.TimeSpent += issue.TimeSpent;
             author.TimeSpentHours = author.TimeSpent / 3600;
-            author.TimeLogged = author.TimeSpent.ToString();
         }
 
         public static void SetAuthorTimeFormat(Author author)
@@ -121,6 +120,7 @@ namespace JiraReporter
         private static void SetRemainingEstimate(Author author)
         {
             author.RemainingEstimateSeconds = author.InProgressTasksTimeLeftSeconds + author.OpenTasksTimeLeftSeconds;
+            author.RemainingEstimateHours = author.RemainingEstimateSeconds / 3600;
         }
 
         private static List<Issue> GetAuthorTasks(List<Issue> tasks, Author author)

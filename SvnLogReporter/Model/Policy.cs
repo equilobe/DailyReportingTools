@@ -34,6 +34,7 @@ namespace SourceControlLogReporter.Model
         public string ReopenedStatus { get; set; }
         public bool IsWeekendReportActive { get; set; }
         public int AllocatedHoursPerMonth { get; set; }
+        public int AllocatedHoursPerDay { get; set; }
         public SourceControl SourceControl { get; set; }
         public List<User> AuthorsCorrelation { get; set; }
 

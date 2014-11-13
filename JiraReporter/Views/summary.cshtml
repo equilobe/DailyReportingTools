@@ -3,20 +3,31 @@
         <tbody>
             <tr>
                 <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                   <b style="color:black; font-size:14px">Sprint h/day left (velocity)</b>
+                   <b style="color:black; font-size:14px">Sprint h/day left</b>
+                    @if (Model.AllocatedHoursPerDay > 0)
+                    {
+                        <b style="color:black; font-size:14px;">(velocity)</b>
+                    }
                 </th>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <span style="color:black; font-size:14px"> @Model.SprintHourRate (0)</span>
+                    <span style="color:black; font-size:14px">@Model.SprintHourRateString</span>
+                    @if (Model.AllocatedHoursPerDay > 0)
+                    {
+                        <span style="color:black; font-size:14px">(@Model.AllocatedHoursPerDay)</span>
+                    }
                 </td>
             </tr>
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Monthly h/day left</b>
-                </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <span style="color:black; font-size:14px">@Model.MonthHourRateHours</span>
-                </td>
-            </tr>
+            @if (Model.AllocatedHoursPerMonth > 0)
+            {
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Monthly h/day left</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px">@Model.MonthHourRateHoursString</span>
+                    </td>
+                </tr>
+            }
             @if (Model.CommitsCount > 0)
             {
                 <tr>
@@ -95,13 +106,17 @@
                     <b style="color:black; font-size:14px"> TOTAL </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px"> @Model.TotalTimeHours </b>
+                    <b style="color:black; font-size:14px"> @Model.TotalTime </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px"> (@Model.SprintTasksTimeLeftHours) </b>
+                    <b style="color:black; font-size:14px"> (@Model.SprintTasksTimeLeftHoursString) </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px"> @Model.MonthHoursWorked / @Model.MonthlyHours </b>
+                    <b style="color:black; font-size:14px"> @Model.MonthHoursWorkedString</b>
+                    @if (Model.AllocatedHoursPerMonth > 0)
+                    {
+                        <b style="color:black; font-size:14px">/ @Model.AllocatedHoursPerMonth </b>
+                    }
                 </td>
             </tr>
             @foreach(var author in Model.Authors)
@@ -111,13 +126,13 @@
                         <span style="color:black; font-size:14px"> @author.Name </span>
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <b style="color:black; font-size:14px"> @author.TimeSpentHours </b>
+                        <b style="color:black; font-size:14px"> @author.TimeSpentHoursString </b>
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <b style="color:black; font-size:14px">  (@author.RemainingEstimateHours)</b>
+                        <b style="color:black; font-size:14px">  (@author.RemainingEstimateHoursString)</b>
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <span style="color:black; font-size:14px"> @author.TimeSpentCurrentMonthHours</span>
+                        <span style="color:black; font-size:14px"> @author.TimeSpentCurrentMonthHoursString</span>
                     </td>
                 </tr>                 
             }

@@ -22,14 +22,20 @@ namespace JiraReporter.Model
             }
         }
 
-        public string TotalTime { get; set; }
         public int TotalTimeSeconds { get; set; }
-        public int TotalTimeHours {
+        public double TotalTimeHours {
             get
             {
                 return TotalTimeSeconds / 3600;
             }
          }
+        public string TotalTime
+        {
+            get
+            {
+                return TotalTimeHours.RoundDoubleDecimals();
+            }
+        }
 
         public int InProgressTasksCount { get; set; }
         public string InProgressTasksTimeLeft { get; set; }
@@ -41,11 +47,22 @@ namespace JiraReporter.Model
         public int OpenUnassignedCount { get; set; }
 
         public int SprintTasksTimeLeftSeconds { get; set; }
-        public int SprintTasksTimeLeftHours { get; set; }
-        public string SprintTasksTimeLeft { get; set; }
-        public int SprintHourRate { get; set; }  //hour rate per day to complete sprint
-
-        public int MonthlyHourRate { get; set; } //hour rate per day for developers team (set in policy)
+        public double SprintTasksTimeLeftHours { get; set; }
+        public string SprintTasksTimeLeftHoursString
+        {
+            get
+            {
+                return SprintTasksTimeLeftHours.RoundDoubleDecimals();
+            }
+        }
+        public double SprintHourRate { get; set; }  //hour rate per day to complete sprint
+        public string SprintHourRateString
+        {
+            get
+            {
+                return SprintHourRate.RoundDoubleDecimals();
+            }
+        }
 
         public int AuthorsInvolved { get; set; }
         public List<Author> Authors { get; set; }
@@ -53,18 +70,31 @@ namespace JiraReporter.Model
         public List<PullRequest> PullRequests { get; set; }
         public List<PullRequest> UnrelatedPullRequests { get; set; }
 
-        public int MonthlyHours { get; set; }
-        public int MonthHoursWorked { get; set; }
-        public int RemainingMonthlyHours { get; set; }
-
-        public int MonthHourRateHours { get; set; }
+        public int AllocatedHoursPerDay { get; set; } //hour rate per day for developers team (set in policy)
+        public int AllocatedHoursPerMonth { get; set; }
+        public double MonthHoursWorked { get; set; }
+        public string MonthHoursWorkedString
+        {
+            get
+            {
+                return MonthHoursWorked.RoundDoubleDecimals();
+            }
+        }
+        public double RemainingMonthlyHours { get; set; }
+        public double MonthHourRateHours { get; set; }
+        public string MonthHourRateHoursString
+        {
+            get
+            {
+                return MonthHourRateHours.RoundDoubleDecimals();
+            }
+        }
 
         public Errors Errors { get; set; }
 
         public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
             TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
-            TotalTime = TimeFormatting.SetTimeFormat(this.TotalTimeSeconds);
 
             SetSummaryTasksTimeLeft(sprint);
 
@@ -79,12 +109,12 @@ namespace JiraReporter.Model
             PullRequests = pullRequests;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
 
-            MonthlyHours = policy.AllocatedHoursPerMonth;
+            AllocatedHoursPerMonth = policy.AllocatedHoursPerMonth;
+            AllocatedHoursPerDay = policy.AllocatedHoursPerDay;
 
             SetMonthSummary(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
             SprintTasksTimeLeftHours = SprintTasksTimeLeftSeconds / 3600;
-            SprintTasksTimeLeft = TimeFormatting.SetTimeFormat(SprintTasksTimeLeftSeconds);
             SetHourRates();
 
             Errors = new Errors(authors, sprint);
@@ -107,8 +137,8 @@ namespace JiraReporter.Model
         private void SetMonthSummary(Timesheet monthTimesheet)
         {
             MonthHoursWorked = monthTimesheet.Worklog.Issues.Sum(i => i.Entries.Sum(e => e.TimeSpent)) / 3600;
-            if(MonthlyHours > 0)
-                 RemainingMonthlyHours = MonthlyHours - MonthHoursWorked;
+            if (AllocatedHoursPerMonth > 0)
+                RemainingMonthlyHours = AllocatedHoursPerMonth - MonthHoursWorked;
         }
 
         private void SetHourRates()
