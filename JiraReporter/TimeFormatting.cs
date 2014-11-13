@@ -48,17 +48,19 @@ namespace JiraReporter
 
         public static string GetStringDay(DateTime date)
         {
-            var day = "";
-            date = date.Date;         
-            int days = (int)SetTimeSpan(date, DateTime.Today).TotalDays;
-            var d = TimeSpan.FromDays(days);
-            if (d.Days == 0)
+            var day = string.Empty;
+            if(date.Date == DateTime.Now.ToOriginalTimeZone().Date)
+            {
                 day = "Today";
+            } 
+            else if(date.Date == DateTime.Now.ToOriginalTimeZone().Date.AddDays(-1))
+            {
+                day = "Yesterday";
+            }
             else
-                if (d.Days == 1)
-                    day = "Yesterday";
-                else
-                    day = date.ToString("dddd");
+            {
+                day = date.DayOfWeek.ToString();
+            } 
             return day;
         }
 

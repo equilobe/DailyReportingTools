@@ -61,12 +61,15 @@ namespace JiraReporter
         {
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
             //DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate, options.FromDate);
-            options.FromDate = options.FromDate.ToOriginalTimeZone().Date;
-            options.ToDate = options.ToDate.ToOriginalTimeZone().Date;
-            var dates = new List<DateTime>();
-            foreach (var date in options.ReportDates)
-                dates.Add(date.ToOriginalTimeZone().Date);
-            options.ReportDates = dates;
+            if(!options.HasFromDate && !options.HasToDate)
+            {
+                options.FromDate = options.FromDate.ToOriginalTimeZone().Date;
+                options.ToDate = options.ToDate.ToOriginalTimeZone().Date;
+                var dates = new List<DateTime>();
+                foreach (var date in options.ReportDates)
+                    dates.Add(date.ToOriginalTimeZone().Date);
+                options.ReportDates = dates; 
+            }
         }
 
         private static Dictionary<TimesheetType, Timesheet> GenerateReportTimesheets(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
