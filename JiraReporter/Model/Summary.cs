@@ -22,7 +22,7 @@ namespace JiraReporter.Model
             }
         }
 
-        public int TotalTimeSeconds { get; set; }
+        public double TotalTimeSeconds { get; set; }
         public double TotalTimeHours {
             get
             {
@@ -46,7 +46,7 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public int OpenUnassignedCount { get; set; }
 
-        public int SprintTasksTimeLeftSeconds { get; set; }
+        public double SprintTasksTimeLeftSeconds { get; set; }
         public double SprintTasksTimeLeftHours { get; set; }
         public string SprintTasksTimeLeftHoursString
         {

@@ -13,7 +13,7 @@ namespace JiraReporter.Model
         public string Initials { get; set; }
 
         public string TimeLogged { get; set; }
-        public int TimeSpent { get; set; }
+        public double TimeSpent { get; set; }
         public double TimeSpentHours { get; set; }
         public string TimeSpentHoursString
         {
@@ -23,7 +23,7 @@ namespace JiraReporter.Model
             }           
         }
 
-        public int TimeSpentCurrentMonthSeconds { get; set; }
+        public double TimeSpentCurrentMonthSeconds { get; set; }
         public double TimeSpentCurrentMonthHours
         {
             get

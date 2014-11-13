@@ -90,7 +90,7 @@ namespace JiraReporter
 
         public static void SetAuthorTimeFormat(Author author)
         {
-                author.TimeLogged = TimeFormatting.SetTimeFormat(author.TimeSpent);
+                author.TimeLogged = TimeFormatting.SetTimeFormat((int)author.TimeSpent);
         }
 
         private static Author OrderAuthorIssues(Author author)
