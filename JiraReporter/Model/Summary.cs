@@ -136,7 +136,7 @@ namespace JiraReporter.Model
 
         private void SetMonthSummary(Timesheet monthTimesheet)
         {
-            MonthHoursWorked = monthTimesheet.Worklog.Issues.Sum(i => i.Entries.Sum(e => e.TimeSpent)) / 3600;
+            MonthHoursWorked = (double)monthTimesheet.Worklog.Issues.Sum(i => i.Entries.Sum(e => e.TimeSpent)) / 3600;
             if (AllocatedHoursPerMonth > 0)
                 RemainingMonthlyHours = AllocatedHoursPerMonth - MonthHoursWorked;
         }
