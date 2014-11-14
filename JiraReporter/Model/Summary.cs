@@ -150,7 +150,7 @@ namespace JiraReporter.Model
 
         private int GetWorkingDays(DateTime date)
         {
-            DateTime dateIterator = DateTime.Today;
+            DateTime dateIterator = DateTime.Now.ToOriginalTimeZone().Date;
             int days = 0;
             while(dateIterator < date.EndOfMonth())
             {

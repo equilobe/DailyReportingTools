@@ -112,7 +112,7 @@ namespace SourceControlLogReporter
         {
             if (!HasToDate && !HasFromDate)
             {
-                ToDate = DateTime.Today;
+                ToDate = DateTime.Now.ToOriginalTimeZone().Date;
                 FromDate = ToDate.AddDays(-1);              
             }
             else if (!HasToDate)
@@ -131,8 +131,8 @@ namespace SourceControlLogReporter
             if(Policy.IsWeekendReportActive==true)
                 if (DateTime.Today.DayOfWeek == DayOfWeek.Monday)
                 {
-                    FromDate = DateTime.Today.AddDays(-3);
-                    ToDate = DateTime.Today;
+                    FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
+                    ToDate = DateTime.Now.ToOriginalTimeZone().Date;
                 }
         }
 

@@ -33,7 +33,10 @@ namespace JiraReporter
         {
             SetTemplateGlobal();
 
-            options.LoadDates(policy);
+            LoadReportDates(policy, options);
+
+            //var rapidViews = RestApiRequests.GetRapidViews(policy);
+            //var sprint = RestApiRequests.GetSprintReport("7", "34", policy);
 
             var report = ReportGenerator.GenerateReport(policy, options);
 
@@ -75,6 +78,13 @@ namespace JiraReporter
             Directory.CreateDirectory(reportPath);
             reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
+        }
+
+        private static void LoadReportDates(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        {
+            var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
+            options.LoadDates(policy); 
         }
 
     }

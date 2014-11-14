@@ -17,9 +17,9 @@
 {
     test = true;
 }
-@if(Model.Date == DateTime.Today.ToOriginalTimeZone().Date.AddDays(-1))
+@if(Model.Title == "Yesterday")
 {
-    dayName = "(" + DateTime.Today.ToOriginalTimeZone().AddDays(-1).DayOfWeek + ")";
+    dayName = "(" + Model.Date.DayOfWeek + ")";
 }
 @if (test==true)
 {

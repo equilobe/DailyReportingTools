@@ -14,11 +14,7 @@ namespace JiraReporter
         public static Report GenerateReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var timesheetService = new TimesheetService();
-            var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
-          //  var monthTimesheet = RestApiRequests.GetTimesheet(policy, DateTime.Now.StartOfMonth(), DateTime.Today.AddDays(-1));
-            SetReportDates(timesheetSample.StartDate, options);
 
-          //  var timesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1));
             var log = SourceControlProcessor.GetSourceControlLog(policy, options);
             var pullRequests = SourceControlProcessor.GetPullRequests(log);
             var commits = SourceControlProcessor.GetCommits(log);
@@ -38,7 +34,7 @@ namespace JiraReporter
                 Authors = authors,
                 Sprint = sprint,
                 PullRequests = pullRequests,
-                Date = DateTime.Today,
+                Date = DateTime.Now.ToOriginalTimeZone().Date,
                 Summary = new Summary(authors, sprint, pullRequests, policy, timesheetCollection)
                 {
                     FromDate = options.FromDate,
@@ -57,26 +53,11 @@ namespace JiraReporter
             return report;
         }
 
-        private static void SetReportDates(DateTime referenceDate, SourceControlLogReporter.Options options)
-        {
-            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate);
-            //DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(referenceDate, options.FromDate);
-            if(!options.HasFromDate && !options.HasToDate)
-            {
-                options.FromDate = options.FromDate.ToOriginalTimeZone().Date;
-                options.ToDate = options.ToDate.ToOriginalTimeZone().Date;
-                var dates = new List<DateTime>();
-                foreach (var date in options.ReportDates)
-                    dates.Add(date.ToOriginalTimeZone().Date);
-                options.ReportDates = dates; 
-            }
-        }
-
         private static Dictionary<TimesheetType, Timesheet> GenerateReportTimesheets(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var timesheetDictionary = new Dictionary<TimesheetType, Timesheet>();
             timesheetDictionary.Add(TimesheetType.ReportTimesheet, RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1)));
-            timesheetDictionary.Add(TimesheetType.MonthTimesheet, RestApiRequests.GetTimesheet(policy, DateTime.Now.StartOfMonth(), DateTime.Today.AddDays(-1)));
+            timesheetDictionary.Add(TimesheetType.MonthTimesheet, RestApiRequests.GetTimesheet(policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)));
 
             return timesheetDictionary;
         }

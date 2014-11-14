@@ -59,7 +59,7 @@
                         @if (author.InProgressTasks.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
-                                <b style="color:sienna; font-size:16px;">Today (@DateTime.Today.ToOriginalTimeZone().DayOfWeek)</b>
+                                <b style="color:sienna; font-size:16px;">Today (@DateTime.Now.ToOriginalTimeZone().DayOfWeek)</b>
 
                                 @if (author.InProgressTasksTimeLeftSeconds == 0)
                                 { 
