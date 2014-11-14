@@ -47,9 +47,9 @@ namespace JiraReporter
                 AddEntry(existsIssue, entry);
             else
             {
-                var newIssue = new Issue(issue) { Entries = new List<Entries>() };
-                AddEntry(newIssue, entry);
-                AddIssue(newIssue, issues);
+                var jiraIssue = new Issue(issue) { Entries = new List<Entries>() };
+                AddEntry(jiraIssue, entry);
+                AddIssue(jiraIssue, issues);
             }
         }
 
@@ -81,48 +81,53 @@ namespace JiraReporter
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
-                var newIssue = new AnotherJiraRestClient.Issue();
-                newIssue = RestApiRequests.GetIssue(issue.Key, policy);
-                SetIssue(issue, policy, newIssue, timesheet, pullRequests);
-                if (issue.SubTask == true)
-                    SetParent(issue, newIssue, policy, timesheet, pullRequests);
-                if (issue.Subtasks != null)
-                    SetSubtasksIssues(issue, policy, timesheet, pullRequests);
+                var jiraIssue = new AnotherJiraRestClient.Issue();
+                jiraIssue = RestApiRequests.GetIssue(issue.Key, policy);
+                SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
             }
         }
 
-        public static void SetIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
+        {
+            SetGenericIssue(issue, policy, jiraIssue, timesheet, pullRequests);
+            if (issue.SubTask == true)
+                SetParent(issue, jiraIssue, policy, timesheet, pullRequests);
+            if (issue.Subtasks != null)
+                SetSubtasksIssues(issue, policy, timesheet, pullRequests);
+        }
+
+        public static void SetGenericIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {    
                 if (issue.Entries == null)
                     issue.Entries = new List<Entries>();
-                issue.Priority = newIssue.fields.priority;
+                issue.Priority = jiraIssue.fields.priority;
                 issue.PolicyReopenedStatus = policy.ReopenedStatus;
-                if (newIssue.fields.assignee != null)
-                    issue.Assignee = newIssue.fields.assignee.displayName;
-                issue.RemainingEstimateSeconds = newIssue.fields.timeestimate;
-                issue.OriginalEstimateSecondsTotal = newIssue.fields.aggregatetimeoriginalestimate;
-                issue.OriginalEstimateSeconds = newIssue.fields.timeoriginalestimate;
-                if (newIssue.fields.resolution != null)
+                if (jiraIssue.fields.assignee != null)
+                    issue.Assignee = jiraIssue.fields.assignee.displayName;
+                issue.RemainingEstimateSeconds = jiraIssue.fields.timeestimate;
+                issue.OriginalEstimateSecondsTotal = jiraIssue.fields.aggregatetimeoriginalestimate;
+                issue.OriginalEstimateSeconds = jiraIssue.fields.timeoriginalestimate;
+                if (jiraIssue.fields.resolution != null)
                 {
-                    issue.Resolution = newIssue.fields.resolution.name;
-                    issue.StringResolutionDate = newIssue.fields.resolutiondate;
+                    issue.Resolution = jiraIssue.fields.resolution.name;
+                    issue.StringResolutionDate = jiraIssue.fields.resolutiondate;
                     issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
                     issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate.ToOriginalTimeZone());
                 }
-                issue.Status = newIssue.fields.status.name;
-                issue.Type = newIssue.fields.issuetype.name;
-                issue.SubTask = newIssue.fields.issuetype.subtask;
-                SetLabel(issue, policy, newIssue);
-                issue.StatusCategory = newIssue.fields.status.statusCategory;
-                issue.Created = Convert.ToDateTime(newIssue.fields.created);
-                issue.Updated = newIssue.fields.updated;
+                issue.Status = jiraIssue.fields.status.name;
+                issue.Type = jiraIssue.fields.issuetype.name;
+                issue.SubTask = jiraIssue.fields.issuetype.subtask;
+                SetLabel(issue, policy, jiraIssue);
+                issue.StatusCategory = jiraIssue.fields.status.statusCategory;
+                issue.Created = Convert.ToDateTime(jiraIssue.fields.created);
+                issue.Updated = jiraIssue.fields.updated;
                 issue.UpdatedDate = Convert.ToDateTime(issue.Updated);
-                issue.TimeSpentTotal = newIssue.fields.aggregatetimespent;
-                issue.TotalRemainingSeconds = newIssue.fields.aggregatetimeestimate;
-                if (newIssue.fields.subtasks != null)
-                    issue.Subtasks = newIssue.fields.subtasks;
+                issue.TimeSpentTotal = jiraIssue.fields.aggregatetimespent;
+                issue.TotalRemainingSeconds = jiraIssue.fields.aggregatetimeestimate;
+                if (jiraIssue.fields.subtasks != null)
+                    issue.Subtasks = jiraIssue.fields.subtasks;
                 SetIssueTimeSpent(issue);
-                issue.TimeSpentOnTask = newIssue.fields.timespent;
+                issue.TimeSpentOnTask = jiraIssue.fields.timespent;
                 SetIssueTimeFormat(issue);
                 SetIssueExists(issue, timesheet.Worklog.Issues);                
                 issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
@@ -134,13 +139,13 @@ namespace JiraReporter
 
         public static void SetSubtasksIssues(Issue issue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
-            var newIssue = new AnotherJiraRestClient.Issue();
+            var jiraIssue = new AnotherJiraRestClient.Issue();
             issue.SubtasksIssues = new List<Issue>();
             foreach (var task in issue.Subtasks)
             {
-                newIssue = RestApiRequests.GetIssue(task.key, policy);
-                issue.SubtasksIssues.Add(new Issue { Key = task.key, Summary = newIssue.fields.summary });
-                SetIssue(issue.SubtasksIssues.Last(), policy, newIssue, timesheet, pullRequests);
+                jiraIssue = RestApiRequests.GetIssue(task.key, policy);
+                issue.SubtasksIssues.Add(new Issue { Key = task.key, Summary = jiraIssue.fields.summary });
+                SetGenericIssue(issue.SubtasksIssues.Last(), policy, jiraIssue, timesheet, pullRequests);
             }
         }
 
@@ -172,9 +177,9 @@ namespace JiraReporter
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
-        private static void SetLabel(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue newIssue)
+        private static void SetLabel(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue)
         {
-            foreach (var label in newIssue.fields.labels)
+            foreach (var label in jiraIssue.fields.labels)
                 if (label == policy.PermanentTaskLabel)
                     issue.Label = label;
         }
@@ -184,11 +189,11 @@ namespace JiraReporter
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        public static void SetParent(Issue issue, AnotherJiraRestClient.Issue newIssue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetParent(Issue issue, AnotherJiraRestClient.Issue jiraIssue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
-            issue.Parent = new Issue { Key = newIssue.fields.parent.key, Summary = newIssue.fields.parent.fields.summary };
+            issue.Parent = new Issue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(issue.Parent.Key, policy);
-            SetIssue(issue.Parent, policy, parent, timesheet, pullRequests);
+            SetGenericIssue(issue.Parent, policy, parent, timesheet, pullRequests);
         }
 
         public static void AdjustIssueCommits(DayLog dayLog)
@@ -258,8 +263,8 @@ namespace JiraReporter
                 if (issue.Assignee != null)
                     if(issue.ExistsInTimesheet == true)
                     {
-                        var newIssue = timesheet.Worklog.Issues.Find(i => i.Key == issue.Key);
-                        issue.HasWorkLoggedByAssignee = newIssue.Entries.Exists(e => e.AuthorFullName == issue.Assignee);
+                        var jiraIssue = timesheet.Worklog.Issues.Find(i => i.Key == issue.Key);
+                        issue.HasWorkLoggedByAssignee = jiraIssue.Entries.Exists(e => e.AuthorFullName == issue.Assignee);
                     }
               //  else issue.HasWorkLoggedByAssignee = false;
         }

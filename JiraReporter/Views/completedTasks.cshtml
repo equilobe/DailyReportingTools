@@ -4,7 +4,7 @@
 }
 @if (Model.CompletedTasks != null)
 {
-    @if (Model.CompletedTasks.Count > 0)
+    if (Model.CompletedTasks.Count > 0)
     {
         <div style="margin-top:60px">
             <h1 style="color:black">Completed last 7 days</h1>
