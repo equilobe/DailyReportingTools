@@ -56,7 +56,7 @@
                             }
                         }                                                                   
 
-                        @if (author.InProgressTasks.Count > 0)
+                        @if (author.InProgressTasks.Issues.Count > 0)
                         {
                             <div style="margin-top:20px; line-height:1.4em;">
                                 <b style="color:sienna; font-size:16px;">Today (@DateTime.Now.ToOriginalTimeZone().DayOfWeek)</b>
@@ -71,7 +71,7 @@
                                 }
                                 <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                                     <tbody>
-                                        @foreach (var task in author.InProgressTasks)
+                                        @foreach (var task in author.InProgressTasks.Issues)
                                         {
                                             @Partial("Views/inProgress.cshtml", task)                                         
                                                
@@ -88,7 +88,7 @@
                            </div>
                         }   
                         
-                        @if(author.OpenTasks.Count>0)
+                        @if(author.OpenTasks.Issues.Count>0)
                         {
                             <div style="line-height:1.4em; color:sienna; margin-top:20px;">
                                     <b style="font-size: 16px; color: sienna">Upcoming </b>
@@ -102,7 +102,7 @@
                                     }
                                 <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                                     <tbody>
-                                        @foreach (var task in author.OpenTasks)
+                                        @foreach (var task in author.OpenTasks.Issues)
                                         {
                                                 @Partial("Views/openTasks.cshtml", task)
                                             @*if (task.Issue.SubtasksIssues != null)
@@ -124,13 +124,13 @@
             }
         </div>
 
-            @if (Model.Sprint.UnassignedTasks.Count > 0)
+            @if (Model.Sprint.UnassignedTasks.Issues.Count > 0)
             {
                 <div style="margin-top:60px; line-height:1.4em;">
                     <h1 style="color:black">Unassigned </h1>
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                         <tbody>
-                            @foreach (var task in Model.Sprint.UnassignedTasks)
+                            @foreach (var task in Model.Sprint.UnassignedTasks.Issues)
                             {
                                     @Partial("Views/unassignedTasks.cshtml", task)
                                

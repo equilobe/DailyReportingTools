@@ -98,10 +98,10 @@ namespace JiraReporter.Model
 
             SetSummaryTasksTimeLeft(sprint);
 
-            InProgressUnassignedCount = sprint.InProgressTasks.Count(tasks => tasks.Assignee == null);
-            OpenUnassignedCount = sprint.OpenTasks.Count(tasks => tasks.Assignee == null);
-            InProgressTasksCount = sprint.InProgressTasks.Count;
-            OpenTasksCount = sprint.OpenTasks.Count;
+            InProgressUnassignedCount = sprint.InProgressTasks.Issues.Count(tasks => tasks.Assignee == null);
+            OpenUnassignedCount = sprint.OpenTasks.Issues.Count(tasks => tasks.Assignee == null);
+            InProgressTasksCount = sprint.InProgressTasks.Issues.Count;
+            OpenTasksCount = sprint.OpenTasks.Issues.Count;
 
             AuthorsInvolved = authors.Count;
             Authors = authors;
@@ -126,9 +126,9 @@ namespace JiraReporter.Model
             OpenTasksTimeLeftSeconds = 0;
 
             if (tasks.InProgressTasks != null)
-                InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.InProgressTasks);
+                InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.InProgressTasks.Issues);
             if (tasks.OpenTasks != null)
-                OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.OpenTasks);
+                OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.OpenTasks.Issues);
 
             InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(InProgressTasksTimeLeftSeconds);
             OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(OpenTasksTimeLeftSeconds);

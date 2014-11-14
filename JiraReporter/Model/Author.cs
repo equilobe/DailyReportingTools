@@ -40,8 +40,8 @@ namespace JiraReporter.Model
         }
 
         public List<Issue> Issues { get; set; }
-        public List<Issue> InProgressTasks { get; set; }
-        public List<Issue> OpenTasks { get; set; }
+        public UncompletedTasks InProgressTasks { get; set; }
+        public UncompletedTasks OpenTasks { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
