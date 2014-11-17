@@ -1,10 +1,9 @@
 ﻿ @{
      var color="";
  }
-
     @foreach (var subtask in Model.SubtasksIssues)
     {
-        if (subtask.Assignee == Model.LoggedAuthor && subtask.Resolution == null)
+        if (subtask.Resolution == null)
         {
             if (subtask.RemainingEstimateSeconds == 0)
             {
@@ -21,8 +20,10 @@
             {
                 color = "black";
             }
-            <table style="margin-left:10px; margin-top:10px;" cellpadding="1.5px">
                 <tr>
+                    <td>
+
+                    </td>
                     <td style="vertical-align:top;">
                         @if (subtask.StatusCategory.name == "In Progress")
                         {
@@ -74,6 +75,5 @@
                         }
                     </td>
                 </tr>
-            </table>
         }
     }

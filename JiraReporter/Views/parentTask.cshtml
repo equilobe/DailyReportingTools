@@ -1,28 +1,28 @@
 ﻿      <tr>
         <td style="vertical-align:top; width:15px">
-            @if (Model.Parent.Resolution != null)
+            @if (Model.Resolution != null)
             {
                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
             }
-            else if (Model.Parent.StatusCategory.name == "In Progress")
+            else if (Model.StatusCategory.name == "In Progress")
             {
                 <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
             }
-            else if (Model.Parent.Resolution == null)
+            else if (Model.Resolution == null)
             {
                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal">&#10065;</span>
             }
         </td>
         <td colspan="2">
-            <a href=@Model.Parent.Link style="text-decoration: none; font-weight:bold"> @Model.Parent.Summary </a>
-            <span style="color: #B8B8B8;"> &#x25cf; @Model.Parent.Key </span>
-            @if (Model.Parent.Assignee == null)
+            <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary </a>
+            <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
+            @if (Model.Assignee == null)
             {
                 <span style="color:black;"> &#x25cf; Unassigned</span>
             }
-            else if (Model.Parent.Assignee != Model.LoggedAuthor)
+            else if (Model.Assignee != Model.LoggedAuthor)
             {
-                <span style="color:black;"> &#x25cf; @Model.Parent.Assignee</span>
+                <span style="color:black;"> &#x25cf; @Model.Assignee</span>
             }
             @if (Model.PullRequests != null)
             {

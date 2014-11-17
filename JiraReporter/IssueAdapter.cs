@@ -98,43 +98,44 @@ namespace JiraReporter
 
         public static void SetGenericIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {    
-                if (issue.Entries == null)
-                    issue.Entries = new List<Entries>();
-                issue.Priority = jiraIssue.fields.priority;
-                issue.PolicyReopenedStatus = policy.ReopenedStatus;
-                if (jiraIssue.fields.assignee != null)
-                    issue.Assignee = jiraIssue.fields.assignee.displayName;
-                issue.RemainingEstimateSeconds = jiraIssue.fields.timeestimate;
-                issue.OriginalEstimateSecondsTotal = jiraIssue.fields.aggregatetimeoriginalestimate;
-                issue.OriginalEstimateSeconds = jiraIssue.fields.timeoriginalestimate;
-                if (jiraIssue.fields.resolution != null)
-                {
-                    issue.Resolution = jiraIssue.fields.resolution.name;
-                    issue.StringResolutionDate = jiraIssue.fields.resolutiondate;
-                    issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
-                    issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate.ToOriginalTimeZone());
-                }
-                issue.Status = jiraIssue.fields.status.name;
-                issue.Type = jiraIssue.fields.issuetype.name;
-                issue.SubTask = jiraIssue.fields.issuetype.subtask;
-                SetLabel(issue, policy, jiraIssue);
-                issue.StatusCategory = jiraIssue.fields.status.statusCategory;
-                issue.Created = Convert.ToDateTime(jiraIssue.fields.created);
-                issue.Updated = jiraIssue.fields.updated;
-                issue.UpdatedDate = Convert.ToDateTime(issue.Updated);
-                issue.TimeSpentTotal = jiraIssue.fields.aggregatetimespent;
-                issue.TotalRemainingSeconds = jiraIssue.fields.aggregatetimeestimate;
-                if (jiraIssue.fields.subtasks != null)
-                    issue.Subtasks = jiraIssue.fields.subtasks;
-                SetIssueTimeSpent(issue);
-                issue.TimeSpentOnTask = jiraIssue.fields.timespent;
-                SetIssueTimeFormat(issue);
-                SetIssueExists(issue, timesheet.Worklog.Issues);                
-                issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
-                AdjustIssuePullRequests(issue, pullRequests);
-                SetIssueLink(issue, policy);
-                HasWorkLoggedByAssignee(issue, timesheet);
-                SetIssueErrors(issue);
+            if (issue.Entries == null)
+                issue.Entries = new List<Entries>();
+            issue.Priority = jiraIssue.fields.priority;
+            issue.PolicyReopenedStatus = policy.ReopenedStatus;
+            if (jiraIssue.fields.assignee != null)
+                issue.Assignee = jiraIssue.fields.assignee.displayName;
+            issue.RemainingEstimateSeconds = jiraIssue.fields.timeestimate;
+            issue.OriginalEstimateSecondsTotal = jiraIssue.fields.aggregatetimeoriginalestimate;
+            issue.OriginalEstimateSeconds = jiraIssue.fields.timeoriginalestimate;
+            if (jiraIssue.fields.resolution != null)
+            {
+                issue.Resolution = jiraIssue.fields.resolution.name;
+                issue.StringResolutionDate = jiraIssue.fields.resolutiondate;
+                issue.ResolutionDate = Convert.ToDateTime(issue.StringResolutionDate);
+                issue.CompletedTimeAgo = TimeFormatting.GetStringDay(issue.ResolutionDate.ToOriginalTimeZone());
+            }
+            issue.Status = jiraIssue.fields.status.name;
+            issue.Type = jiraIssue.fields.issuetype.name;
+            issue.SubTask = jiraIssue.fields.issuetype.subtask;
+            SetLabel(issue, policy, jiraIssue);
+            issue.StatusCategory = jiraIssue.fields.status.statusCategory;
+            issue.Created = Convert.ToDateTime(jiraIssue.fields.created);
+            issue.Updated = jiraIssue.fields.updated;
+            issue.UpdatedDate = Convert.ToDateTime(issue.Updated);
+            issue.TimeSpentTotal = jiraIssue.fields.aggregatetimespent;
+            issue.TotalRemainingSeconds = jiraIssue.fields.aggregatetimeestimate;
+            if (jiraIssue.fields.subtasks != null)
+                issue.Subtasks = jiraIssue.fields.subtasks;
+            SetIssueTimeSpent(issue);
+            issue.TimeSpentOnTask = jiraIssue.fields.timespent;
+            SetIssueTimeFormat(issue);
+            SetIssueExists(issue, timesheet.Worklog.Issues);                
+            issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
+            AdjustIssuePullRequests(issue, pullRequests);
+            SetIssueLink(issue, policy);
+            HasWorkLoggedByAssignee(issue, timesheet);
+            SetIssueErrors(issue);
+            SetStatusType(issue);
         }
 
         public static void SetSubtasksIssues(Issue issue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
@@ -317,5 +318,13 @@ namespace JiraReporter
             }
         }
 
+        public static void SetStatusType(Issue issue)
+        {
+            if (issue.StatusCategory.name == "In Progress")
+                issue.StatusType = "In Progress";
+            else
+                if (issue.Resolution == null)
+                    issue.StatusType = "Open";
+        }
     }
 }

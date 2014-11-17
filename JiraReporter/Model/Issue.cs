@@ -73,6 +73,8 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public List<Issue> SubtasksIssues { get; set; }
         [XmlIgnore]
+        public List<Issue> AssigneeSubtasks { get; set; }
+        [XmlIgnore]
         public bool ExistsInTimesheet { get; set; }
         [XmlIgnore]
         public DateTime Created { get; set; }
@@ -84,6 +86,8 @@ namespace JiraReporter.Model
         public string PolicyReopenedStatus { get; set; }
         [XmlIgnore]
         public int ErrorsCount { get; set; }
+        [XmlIgnore]
+        public string StatusType {get;set;}
 
         [XmlIgnore]
         public string CompletedTimeAgo { get; set; }
@@ -149,6 +153,10 @@ namespace JiraReporter.Model
                 this.Subtasks = issue.Subtasks;
                 this.SubtasksIssues = issue.SubtasksIssues;
             }
+            if (issue.AssigneeSubtasks != null)
+                this.AssigneeSubtasks = issue.AssigneeSubtasks;
+            else
+                AssigneeSubtasks = new List<Issue>();
             this.Commits = issue.Commits;
             this.PullRequests = issue.PullRequests;
             this.LoggedAuthor = issue.LoggedAuthor;
@@ -159,6 +167,7 @@ namespace JiraReporter.Model
             this.CompletedTimeAgo = issue.CompletedTimeAgo;
             this.HasWorkLoggedByAssignee = issue.HasWorkLoggedByAssignee;
             this.ErrorsCount = issue.ErrorsCount;
+            this.StatusType = issue.StatusType;
         }       
     }
 }

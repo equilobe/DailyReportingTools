@@ -30,13 +30,9 @@ namespace JiraReporter
 
         public void SetUnfinishedTasks(AnotherJiraRestClient.Issues jiraIssues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
         {
-            tasks.InProgressTasks = new UncompletedTasks();
-            tasks.InProgressTasks.Issues = new List<Issue>();
-            tasks.OpenTasks = new UncompletedTasks();
-            tasks.OpenTasks.Issues = new List<Issue>();
-            tasks.UnassignedTasks = new UncompletedTasks();
-            tasks.UnassignedTasks.Issues = new List<Issue>();
-            tasks.UncompletedTasks = new List<Issue>();
+            tasks.InProgressTasks = new List<Issue>();
+            tasks.OpenTasks = new List<Issue>();
+            tasks.UnassignedTasks = new List<Issue>();
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
@@ -46,15 +42,16 @@ namespace JiraReporter
                     Summary = jiraIssue.fields.summary
                 };
                 IssueAdapter.SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
-                tasks.UncompletedTasks.Add(issue);
+
                 if (issue.StatusCategory.name == "In Progress")
-                    tasks.InProgressTasks.Issues.Add(issue);
+                    tasks.InProgressTasks.Add(issue);
                 else
                     if (issue.Resolution == null)
-                        tasks.OpenTasks.Issues.Add(issue);
+                        tasks.OpenTasks.Add(issue);
                 if (issue.Assignee == null && issue.StatusCategory.name != "Done")
-                    tasks.UnassignedTasks.Issues.Add(issue);
+                    tasks.UnassignedTasks.Add(issue);
             }
+            tasks.UnassignedTasks = GetParentTasks(tasks.UnassignedTasks, null);
         }
 
         public void SetTask(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
@@ -93,26 +90,41 @@ namespace JiraReporter
         public void SortTasks(SprintTasks sprintTasks)
         {
             if (sprintTasks.InProgressTasks != null)
-                sprintTasks.InProgressTasks.Issues = sprintTasks.InProgressTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+                sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.OpenTasks != null)
-                sprintTasks.OpenTasks.Issues = sprintTasks.OpenTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+                sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.UnassignedTasks != null)
-                sprintTasks.UnassignedTasks.Issues = sprintTasks.UnassignedTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+                sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public bool HasOpenTasks(Issue task)
+        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.Author author)
         {
-            return task.SubtasksIssues.Exists(i => i.StatusCategory.name != "In Progress" && i.Resolution == null);
+            List<Issue> parentTasks = new List<Issue>();
+            foreach(var task in tasks)
+            {
+                if(task.SubTask == true && task.Resolution == null)
+                {
+                    if(author == null || author.Name == task.Assignee)
+                    {
+                        var parent = parentTasks.Find(t => t.Key == task.Parent.Key);
+                        if (parent != null)
+                            parent.AssigneeSubtasks.Add(task);
+                        else
+                        {
+                            parent = CreateParent(task);
+                            parent.AssigneeSubtasks.Add(task);
+                        }
+                    }
+                }
+            }
+            return tasks.Concat(parentTasks).ToList();
         }
 
-        public bool HasInProgress(Issue task)
+        private static Issue CreateParent(Issue task)
         {
-            return task.SubtasksIssues.Exists(i => i.StatusCategory.name == "In Progress");
-        }
-
-        public bool HasUnassigned(Issue task)
-        {
-            return task.SubtasksIssues.Exists(i => i.Resolution == null && i.Assignee == null);
+            var parent = new Issue(task.Parent);
+            parent.SubtasksIssues = new List<Issue>();
+            return parent;
         }
     }
 }

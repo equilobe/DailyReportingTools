@@ -77,7 +77,6 @@
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\Summary.cs" />
-    <Compile Include="Model\UncompletedTasks.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\Author.cs" />
     <Compile Include="Model\Entries.cs" />
@@ -122,9 +121,6 @@
     <None Include="Views\errorsSection.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\openTasks.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Views\parentTask.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -137,10 +133,7 @@
     <None Include="Views\summary.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\inProgress.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Views\unassignedTasks.cshtml">
+    <None Include="Views\uncompletedTask.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Views\unrelatedCommits.cshtml">
