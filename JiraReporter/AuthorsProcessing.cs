@@ -100,19 +100,28 @@ namespace JiraReporter
                 return author;
         }
 
-        private static void SetUnfinishedTasks(SprintTasks report, Author author)
+        private static void SetUnfinishedTasks(SprintTasks tasks, Author author)
+        {
+            SetAuthorInProgressTasks(tasks, author);
+            SetAuthorOpenTasks(tasks, author);
+        }
+
+        private static void SetAuthorInProgressTasks(SprintTasks tasks, Author author)
         {
             author.InProgressTasks = new List<Issue>();
-            author.InProgressTasks = GetAuthorTasks(report.InProgressTasks, author);
+            author.InProgressTasks = GetAuthorTasks(tasks.InProgressTasks, author);
             author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks, author);
             if (author.InProgressTasks != null)
             {
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
+        }
 
+        private static void SetAuthorOpenTasks(SprintTasks tasks, Author author)
+        {
             author.OpenTasks = new List<Issue>();
-            author.OpenTasks = GetAuthorTasks(report.OpenTasks, author);
+            author.OpenTasks = GetAuthorTasks(tasks.OpenTasks, author);
             author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks, author);
             if (author.OpenTasks != null)
             {
@@ -120,7 +129,6 @@ namespace JiraReporter
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
         }
-
         private static void SetRemainingEstimate(Author author)
         {
             author.RemainingEstimateSeconds = author.InProgressTasksTimeLeftSeconds + author.OpenTasksTimeLeftSeconds;
