@@ -10,9 +10,10 @@ namespace JiraReporter.Model
     public class SprintTasks
     {
         public Dictionary<string, List<Issue>> CompletedTasks { get; set; }
-        public List<Issue> InProgressTasks { get; set; }
-        public List<Issue> OpenTasks { get; set; }
-        public List<Issue> UnassignedTasks { get; set; }
+        public UncompletedTasks InProgressTasks { get; set; }
+        public UncompletedTasks OpenTasks { get; set; }
+        public UncompletedTasks UnassignedTasks { get; set; }
+        public List<Issue> UncompletedTasks { get; set; }
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }
 
@@ -32,7 +33,7 @@ namespace JiraReporter.Model
         private void SetSprintTasksErrors()
         {
             CompletedTasksErrorCount = CompletedTasks.Values.Sum(i => i.Sum(er => er.ErrorsCount));
-            UnassignedTasksErrorCount = UnassignedTasks.Sum(t => t.ErrorsCount);
+            UnassignedTasksErrorCount = UnassignedTasks.Issues.Sum(t => t.ErrorsCount);
         }   
     }
 }
