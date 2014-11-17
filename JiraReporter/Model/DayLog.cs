@@ -23,7 +23,7 @@ namespace JiraReporter.Model
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
 
-            if(author.Issues!=null)
+            if (author.Issues != null)
                 if (author.Issues.Count > 0)
                 {
                     this.Issues = new List<Issue>();
@@ -33,13 +33,23 @@ namespace JiraReporter.Model
                         IssueAdapter.RemoveWrongEntries(this.Issues.Last(), date);
                         IssueAdapter.SetIssueTimeSpent(this.Issues.Last());
                         IssueAdapter.SetIssueTimeFormat(this.Issues.Last());
-                        this.TimeSpent += this.Issues.Last().TimeSpent;                      
+                        this.TimeSpent += this.Issues.Last().TimeSpent;
                     }
-                }            
+                }
             IssueAdapter.AdjustIssueCommits(this);
             IssueAdapter.RemoveWrongIssues(this.Issues);
             this.UnsyncedCommits = new List<Commit>(Commits.FindAll(c => c.TaskSynced == false));
-            this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);          
-        }        
+            this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
+            SetDaylogErrors(author);
+        }
+        
+        private void SetDaylogErrors(Author author)
+        {
+            if(Issues == null || Issues.Count==0)
+            {
+                if(Commits.Count>0)
+                   author.ErrorsCount++;
+            }
+        }
     }
 }
