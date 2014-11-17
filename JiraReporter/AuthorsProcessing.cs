@@ -102,19 +102,17 @@ namespace JiraReporter
 
         private static void SetUnfinishedTasks(SprintTasks report, Author author)
         {
-            author.InProgressTasks = new UncompletedTasks();
-            author.InProgressTasks.Issues = GetAuthorTasks(report.InProgressTasks.Issues, author);
+            author.InProgressTasks = GetAuthorTasks(report.InProgressTasks, author);
             if (author.InProgressTasks != null)
             {
-                author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks.Issues);
+                author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
 
-            author.OpenTasks = new UncompletedTasks();
-            author.OpenTasks.Issues = GetAuthorTasks(report.OpenTasks.Issues, author);
+            author.OpenTasks = GetAuthorTasks(report.OpenTasks, author);
             if (author.OpenTasks != null)
             {
-                author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks.Issues);
+                author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
         }
@@ -150,7 +148,7 @@ namespace JiraReporter
        
         private static bool AuthorIsEmpty(Author author)
         {
-            if (author.InProgressTasks.Issues.Count == 0 && author.OpenTasks.Issues.Count == 0 && author.DayLogs.Count==0)
+            if (author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.DayLogs.Count==0)
                 return true;
             return false;
         }
@@ -196,9 +194,9 @@ namespace JiraReporter
             if (author.Issues != null)
                 author.ErrorsCount += author.Issues.Sum(i => i.ErrorsCount);
             if (author.InProgressTasks != null)
-                author.ErrorsCount += author.InProgressTasks.Issues.Sum(i => i.ErrorsCount);
+                author.ErrorsCount += author.InProgressTasks.Sum(i => i.ErrorsCount);
             if (author.OpenTasks != null)
-                author.ErrorsCount += author.OpenTasks.Issues.Sum(i => i.ErrorsCount);
+                author.ErrorsCount += author.OpenTasks.Sum(i => i.ErrorsCount);
         }
 
         private static void SetAuthorInitials(Author author)

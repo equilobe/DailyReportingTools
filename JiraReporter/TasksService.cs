@@ -17,7 +17,7 @@ namespace JiraReporter
             foreach (var issue in issues.issues)
             {
                 if (issue.fields.issuetype.subtask == false)
-                    SetTask(policy, issue, timesheet, completedTasks, null);
+                    SetTasks(policy, issue, timesheet, completedTasks, null);
             }
             completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
             return completedTasks; 
@@ -28,44 +28,36 @@ namespace JiraReporter
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(AnotherJiraRestClient.Issues jiraIssues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
+        public void SetUnfinishedTasks(AnotherJiraRestClient.Issues issues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
         {
-            tasks.InProgressTasks = new UncompletedTasks();
-            tasks.InProgressTasks.Issues = new List<Issue>();
-            tasks.OpenTasks = new UncompletedTasks();
-            tasks.OpenTasks.Issues = new List<Issue>();
-            tasks.UnassignedTasks = new UncompletedTasks();
-            tasks.UnassignedTasks.Issues = new List<Issue>();
-            tasks.UncompletedTasks = new List<Issue>();
-
-            foreach (var jiraIssue in jiraIssues.issues)
+            tasks.InProgressTasks = new List<Issue>();
+            tasks.OpenTasks = new List<Issue>();
+            tasks.UnassignedTasks = new List<Issue>();
+            foreach (var issue in issues.issues)
             {
-                var issue = new Issue
-                {
-                    Key = jiraIssue.key,
-                    Summary = jiraIssue.fields.summary
-                };
-                IssueAdapter.SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
-                tasks.UncompletedTasks.Add(issue);
-                if (issue.StatusCategory.name == "In Progress")
-                    tasks.InProgressTasks.Issues.Add(issue);
+                if (issue.fields.status.statusCategory.name == "In Progress")
+                    SetTasks(policy, issue, timesheet, tasks.InProgressTasks, pullRequests);
                 else
-                    if (issue.Resolution == null)
-                        tasks.OpenTasks.Issues.Add(issue);
-                if (issue.Assignee == null && issue.StatusCategory.name != "Done")
-                    tasks.UnassignedTasks.Issues.Add(issue);
+                    if (issue.fields.resolution == null)
+                        SetTasks(policy, issue, timesheet, tasks.OpenTasks, pullRequests);
+                if (issue.fields.assignee == null && issue.fields.status.statusCategory.name != "Done")
+                    SetTasks(policy, issue, timesheet, tasks.UnassignedTasks, pullRequests);
             }
         }
 
-        public void SetTask(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
+        public void SetTasks(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue issue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
         {
             tasks.Add(new Issue
             {
-                Key = jiraIssue.key,
-                Summary = jiraIssue.fields.summary
+                Key = issue.key,
+                Summary = issue.fields.summary
             });
 
-            IssueAdapter.SetIssue(tasks.Last(), policy, jiraIssue, timesheet, pullRequests);
+            IssueAdapter.SetIssue(tasks.Last(), policy, issue, timesheet, pullRequests);
+            if (tasks.Last().SubTask == true)
+                IssueAdapter.SetParent(tasks.Last(), issue, policy, timesheet, pullRequests);
+            if (tasks.Last().Subtasks != null)
+                IssueAdapter.SetSubtasksIssues(tasks.Last(), policy, timesheet, pullRequests);
         }
 
         public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)
@@ -93,26 +85,11 @@ namespace JiraReporter
         public void SortTasks(SprintTasks sprintTasks)
         {
             if (sprintTasks.InProgressTasks != null)
-                sprintTasks.InProgressTasks.Issues = sprintTasks.InProgressTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+                sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.OpenTasks != null)
-                sprintTasks.OpenTasks.Issues = sprintTasks.OpenTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+                sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.UnassignedTasks != null)
-                sprintTasks.UnassignedTasks.Issues = sprintTasks.UnassignedTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
-        }
-
-        public bool HasOpenTasks(Issue task)
-        {
-            return task.SubtasksIssues.Exists(i => i.StatusCategory.name != "In Progress" && i.Resolution == null);
-        }
-
-        public bool HasInProgress(Issue task)
-        {
-            return task.SubtasksIssues.Exists(i => i.StatusCategory.name == "In Progress");
-        }
-
-        public bool HasUnassigned(Issue task)
-        {
-            return task.SubtasksIssues.Exists(i => i.Resolution == null && i.Assignee == null);
+                sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
     }
 }
