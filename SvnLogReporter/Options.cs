@@ -129,7 +129,7 @@ namespace SourceControlLogReporter
         private void SetDates()
         {
             if(Policy.IsWeekendReportActive==true)
-                if (DateTime.Today.DayOfWeek == DayOfWeek.Monday)
+                if (DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
                 {
                     FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
                     ToDate = DateTime.Now.ToOriginalTimeZone().Date;

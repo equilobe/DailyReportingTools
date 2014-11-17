@@ -19,6 +19,7 @@ namespace JiraReporter
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
+            LoadReportDates(policy, options);
             policy.SetPermanentTaskLabel();
             if (policy.IsWeekendReportActive == true)
             {
@@ -32,8 +33,6 @@ namespace JiraReporter
         private static void RunReportTool(string[] args, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             SetTemplateGlobal();
-
-            LoadReportDates(policy, options);
 
             //var rapidViews = RestApiRequests.GetRapidViews(policy);
             //var sprint = RestApiRequests.GetSprintReport("7", "34", policy);
