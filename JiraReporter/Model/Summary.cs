@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
+    public enum Health { Bad, Decent, Good};
     public class Summary
     {
         public DateTime FromDate { get; set; }
@@ -92,6 +93,11 @@ namespace JiraReporter.Model
 
         public Errors Errors { get; set; }
 
+        public Health WorkedDaysHealth { get; set; }
+        public Health DayHealth { get; set; }
+        public Health SprintHealth { get; set; }
+        public Health MonthHealth { get; set; }
+
         public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
             TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
@@ -143,16 +149,16 @@ namespace JiraReporter.Model
 
         private void SetHourRates()
         {
-            var days = GetWorkingDays(DateTime.Now);
+            var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
             MonthHourRateHours = RemainingMonthlyHours / days;
             SprintHourRate = SprintTasksTimeLeftHours / days;
         }
 
-        private int GetWorkingDays(DateTime date)
+        private int GetWorkingDays(DateTime startDate, DateTime endDate)
         {
             DateTime dateIterator = DateTime.Now.ToOriginalTimeZone().Date;
             int days = 0;
-            while(dateIterator < date.EndOfMonth())
+            while(dateIterator < endDate)
             {
                 if(dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
                 {
@@ -167,5 +173,15 @@ namespace JiraReporter.Model
         {
             return OpenTasksTimeLeftSeconds + InProgressTasksTimeLeftSeconds;
         }
+
+        //private void SetHealth()
+        //{
+
+        //}
+
+        //private void SetWorkedDaysHealth()
+        //{
+
+        //}
     }
 }
