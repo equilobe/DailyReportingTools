@@ -28,10 +28,19 @@
                         @if (subtask.StatusCategory.name == "In Progress")
                         {
                             <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
-                            if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                            {
-                                <b style="color:black"> NEW: </b>
-                            }
+                        }
+                        else
+                        {
+                            <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
+                        }
+                    </td>
+                    <td>
+                        @if (DateTime.Compare(subtask.Created, DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
+                        {
+                        <b style="color:black"> NEW: </b>
+                        }
+                        @if (subtask.StatusCategory.name == "In Progress")
+                        {
                             if (subtask.ExistsInTimesheet == true)
                             {
                                 <b style="color:black">Continue:</b>
@@ -39,11 +48,6 @@
                         }
                         else
                         {
-                            <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
-                            if (DateTime.Compare(subtask.Created, DateTime.Today.AddDays(-1)) >= 0)
-                            {
-                                <b style="color:black"> NEW: </b>
-                            }
                             if (subtask.Status == Model.PolicyReopenedStatus)
                             {
                                 <span style="font-weight:bold; color:black">Reopened:</span>
@@ -53,8 +57,10 @@
                                 <span style="font-weight:bold; color:black">Paused:</span>
                             }
                         }
-                    </td>
-                    <td>
+                        @if (subtask.DisplayStatus == true)
+                        {
+                            <b style="color:black; padding:1.5px; background-color:@subtask.StatusCategory.colorName">@subtask.Status</b>
+                        }
                         <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
                         <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
 

@@ -88,6 +88,8 @@ namespace JiraReporter.Model
         public int ErrorsCount { get; set; }
         [XmlIgnore]
         public string StatusType {get;set;}
+        [XmlIgnore]
+        public bool DisplayStatus { get; set; }
 
         [XmlIgnore]
         public string CompletedTimeAgo { get; set; }
@@ -168,6 +170,7 @@ namespace JiraReporter.Model
             this.HasWorkLoggedByAssignee = issue.HasWorkLoggedByAssignee;
             this.ErrorsCount = issue.ErrorsCount;
             this.StatusType = issue.StatusType;
+            this.DisplayStatus = issue.DisplayStatus;
         }       
     }
 }

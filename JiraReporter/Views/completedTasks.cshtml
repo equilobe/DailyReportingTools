@@ -21,6 +21,10 @@
                                         <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
                                     </td>
                                     <td>
+                                        @if (task.DisplayStatus == true)
+                                        {
+                                            <b style="color:black; padding:1.5px; background-color:@task.StatusCategory.colorName">@task.Status</b>
+                                        }
                                         <a style="text-decoration: none; font-weight:bold;" href="@task.Link">@task.Summary</a>
                                         <span style="color: #B8B8B8;"> &#x25cf; @task.Key </span>
                                         @if (task.TimeSpentTotal > 0)

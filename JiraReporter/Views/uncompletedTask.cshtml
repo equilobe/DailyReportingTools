@@ -13,7 +13,7 @@
         }
     </td>
     <td colspan="2">
-        @if (DateTime.Compare(Model.Created, DateTime.Today.AddDays(-1)) >= 0)
+        @if (DateTime.Compare(Model.Created, DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
         {
             <b style="color:black"> NEW: </b>
         }
@@ -32,7 +32,10 @@
         {
             <span style="font-weight:bold; color:black">Continue:</span>
         }
-
+        @if (Model.DisplayStatus == true)
+        {
+            <b style="color:black; padding:1.5px; background-color:@Model.StatusCategory.colorName">@Model.Status</b>
+        }
         <a style="text-decoration: none; font-weight:bold;" href="@Model.Link">@Model.Summary</a>
         <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
         @if (Model.Label != null)

@@ -25,6 +25,7 @@ namespace SourceControlLogReporter.Model
         public string BaseUrl { get; set; }
         public string TargetGroup { get; set; }
         public string PermanentTaskLabel { get; set; }
+        public List<string> AdditionalWorkflowStatuses { get; set; }
 
         public string Username { get; set; }
         public string Password { get; set; }

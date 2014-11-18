@@ -136,6 +136,7 @@ namespace JiraReporter
             HasWorkLoggedByAssignee(issue, timesheet);
             SetIssueErrors(issue);
             SetStatusType(issue);
+            SetDisplayStatus(issue, policy);
         }
 
         public static void SetSubtasksIssues(Issue issue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
@@ -325,6 +326,15 @@ namespace JiraReporter
             else
                 if (issue.Resolution == null)
                     issue.StatusType = "Open";
+        }
+
+        public static void SetDisplayStatus(Issue issue, SourceControlLogReporter.Model.Policy policy)
+        {
+            if (policy.AdditionalWorkflowStatuses != null)
+            {
+                if(policy.AdditionalWorkflowStatuses.Exists(s=>s == issue.Status))
+                    issue.DisplayStatus = true;
+            }
         }
     }
 }

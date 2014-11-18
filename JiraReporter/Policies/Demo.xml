@@ -6,6 +6,7 @@
   <Password></Password> <!-- password of username to access Jira -->
   <PermanentTaskLabel></PermanentTaskLabel> <!-- label of permanent tasks in Jira, e.g. permanent -->
   <ReopenedStatus></ReopenedStatus> <!-- label of reopened tasks in Jira, e.g. reopened -->
+  <AdditionalWorkflowStatuses></AdditionalWorkflowStatuses> <!-- display additional issue statuses e.g. <string>In Testing</string> -->
   <RootPath></RootPath> <!-- e.g. BoardProspects -->
   <IsWeekendReportActive></IsWeekendReportActive> <!-- runs report for weekend on mondays, e.g true -->
   <AllocatedHoursPerMonth></AllocatedHoursPerMonth> <!-- e.g. 400 -->
