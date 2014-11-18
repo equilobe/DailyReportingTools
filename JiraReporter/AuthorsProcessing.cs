@@ -110,25 +110,28 @@ namespace JiraReporter
         {
             author.InProgressTasks = new List<Issue>();
             author.InProgressTasks = GetAuthorTasks(tasks.InProgressTasks, author);
-            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks, author);
             if (author.InProgressTasks != null)
             {
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
+            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks, author);
+            author.InProgressTasks = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
         private static void SetAuthorOpenTasks(SprintTasks tasks, Author author)
         {
             author.OpenTasks = new List<Issue>();
             author.OpenTasks = GetAuthorTasks(tasks.OpenTasks, author);
-            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks, author);
             if (author.OpenTasks != null)
             {
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
+            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks, author);
+            author.OpenTasks = author.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
+
         private static void SetRemainingEstimate(Author author)
         {
             author.RemainingEstimateSeconds = author.InProgressTasksTimeLeftSeconds + author.OpenTasksTimeLeftSeconds;

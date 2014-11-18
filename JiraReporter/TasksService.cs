@@ -113,6 +113,7 @@ namespace JiraReporter
                         {
                             parent = CreateParent(task);
                             parent.AssigneeSubtasks.Add(task);
+                            parentTasks.Add(parent);
                         }
                     }
                 }
