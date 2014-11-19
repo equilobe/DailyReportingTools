@@ -31,7 +31,8 @@ namespace SourceControlLogReporter.Model
         public string Password { get; set; }
         public string Emails { get; set; }
         public string EmailSubject { get; set; }
-        public string Project { get; set; }
+        public string ProjectKey { get; set; }
+        public string ProjectName { get; set; }
         public string ReopenedStatus { get; set; }
         public bool IsWeekendReportActive { get; set; }
         public int AllocatedHoursPerMonth { get; set; }

@@ -67,10 +67,14 @@
     <Compile Include="AuthorsProcessing.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="IssueAdapter.cs" />
+    <Compile Include="JiraModels\Filter.cs" />
     <Compile Include="JiraModels\RapidView.cs" />
+    <Compile Include="JiraModels\SprintsData.cs" />
+    <Compile Include="JiraModels\View.cs" />
     <Compile Include="JiraModels\Sprint.cs" />
     <Compile Include="JiraModels\SprintReport.cs" />
     <Compile Include="JiraModels\Views.cs" />
+    <Compile Include="JiraService.cs" />
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Errors.cs" />

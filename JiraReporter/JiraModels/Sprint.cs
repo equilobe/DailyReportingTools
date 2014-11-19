@@ -25,5 +25,20 @@ namespace JiraReporter
         public string endDate { get; set; }
         [DataMember]
         public string completedDate { get; set; }
+
+        public DateTime StartDate
+        {
+            get
+            {
+                return Convert.ToDateTime(startDate);
+            }
+        }
+        public DateTime EndDate
+        {
+            get
+            {
+                return Convert.ToDateTime(endDate);
+            }
+        }
     }
 }

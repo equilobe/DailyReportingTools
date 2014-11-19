@@ -32,7 +32,7 @@ namespace JiraReporter
             var report = new Report(policy, options)
             {
                 Authors = authors,
-                Sprint = sprint,
+                SprintTasks = sprint,
                 PullRequests = pullRequests,
                 Date = DateTime.Now.ToOriginalTimeZone().Date,
                 Summary = new Summary(authors, sprint, pullRequests, policy, timesheetCollection)
@@ -56,10 +56,17 @@ namespace JiraReporter
         private static Dictionary<TimesheetType, Timesheet> GenerateReportTimesheets(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var timesheetDictionary = new Dictionary<TimesheetType, Timesheet>();
+            var sprint = GenerateSprint(policy);
             timesheetDictionary.Add(TimesheetType.ReportTimesheet, RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1)));
             timesheetDictionary.Add(TimesheetType.MonthTimesheet, RestApiRequests.GetTimesheet(policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)));
-
+            timesheetDictionary.Add(TimesheetType.SprintTimesheet, RestApiRequests.GetTimesheet(policy, sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone()));
             return timesheetDictionary;
+        }
+
+        private static Sprint GenerateSprint(SourceControlLogReporter.Model.Policy policy)
+        {
+            var jira = new JiraService(policy);
+            return jira.GetLatestSprint();
         }
     }
 }

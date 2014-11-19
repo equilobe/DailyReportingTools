@@ -34,9 +34,6 @@ namespace JiraReporter
         {
             SetTemplateGlobal();
 
-            //var rapidViews = RestApiRequests.GetRapidViews(policy);
-            //var sprint = RestApiRequests.GetSprintReport("7", "34", policy);
-
             var report = ReportGenerator.GenerateReport(policy, options);
 
             SaveReportToFile(report);

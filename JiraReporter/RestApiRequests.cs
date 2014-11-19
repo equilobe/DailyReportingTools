@@ -27,7 +27,7 @@ namespace JiraReporter
         {
             var client = new RestClient(policy.BaseUrl);
             client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
-            var request = new RestRequest(ApiUrls.Users(policy.Project), Method.GET);
+            var request = new RestRequest(ApiUrls.Users(policy.ProjectKey), Method.GET);
             var response = client.Execute(request);
             string contentString = response.Content;
             return Deserialization.JsonDeserialize<List<User>>(contentString);
@@ -47,7 +47,7 @@ namespace JiraReporter
         {
             var account = new JiraAccount(policy.BaseUrl, policy.Username, policy.Password);
             var client = new JiraClient(account);
-            var tasks = client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.Project), 0, 250);
+            var tasks = client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.ProjectKey), 0, 250);
             return tasks;
         }
 
@@ -58,15 +58,25 @@ namespace JiraReporter
             var issue = client.GetIssue(issueKey);
             return client.GetIssue(issueKey);
         }
+
+        public static RapidView GetRapidView(string id, SourceControlLogReporter.Model.Policy policy)
+        {
+            var client = new RestClient(policy.BaseUrl);
+            client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
+            var request = new RestRequest(ApiUrls.RapidView(id), Method.GET);
+            var response = client.Execute(request);
+            string contentString = response.Content;
+            return Deserialization.JsonDeserialize<RapidView>(contentString);
+        }
        
-        public static Views GetRapidViews(SourceControlLogReporter.Model.Policy policy)
+        public static List<View> GetRapidViews(SourceControlLogReporter.Model.Policy policy)
         {
             var client = new RestClient(policy.BaseUrl);
             client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
             var request = new RestRequest(ApiUrls.RapidViews(), Method.GET);
             var response = client.Execute(request);
             string contentString = response.Content;
-            return Deserialization.JsonDeserialize<Views>(contentString);
+            return Deserialization.JsonDeserialize<Views>(contentString).views;
         }
 
         public static SprintReport GetSprintReport(string rapidViewId, string sprintId, SourceControlLogReporter.Model.Policy policy)

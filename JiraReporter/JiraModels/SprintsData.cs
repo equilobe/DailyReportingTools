@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    public class RapidView
+    public class SprintsData
     {
         [DataMember]
         public int rapidViewId { get; set; }
         [DataMember]
-        public SprintsData sprintsData { get; set; }
+        public List<Sprint> sprints { get; set; }
+        [DataMember]
+        public bool canManageSprints { get; set; }
     }
 }

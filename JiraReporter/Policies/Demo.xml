@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Project></Project> <!-- project name in Jira, e.g. BPRO -->
+  <ProjectKey></ProjectKey> <!-- project key in Jira, e.g. BPRO -->
+  <ProjectName></ProjectName> <!-- project name in Jira, e.g. BoardProspects -->
   <BaseUrl></BaseUrl> <!-- url address of project in Jira, e.g. https://bpro.atlassian.net -->
   <Username></Username> <!-- username to access Jira -->
   <Password></Password> <!-- password of username to access Jira -->

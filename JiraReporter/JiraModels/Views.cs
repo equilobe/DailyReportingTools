@@ -8,6 +8,6 @@ namespace JiraReporter
 {
     public class Views
     {
-        public List<RapidView> views { get; set; }
+        public List<View> views { get; set; }
     }
 }
