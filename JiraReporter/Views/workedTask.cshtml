@@ -48,7 +48,7 @@ else
         <td @colspan>
             @if (Model.DisplayStatus == true)
             {
-                <b style="color:black; padding:1.5px; background-color:@Model.StatusCategory.colorName">@Model.Status</b>
+                <b style="color:black; padding:1.5px;">@Model.Status</b>
             }
             <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
             <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
