@@ -301,18 +301,21 @@ namespace JiraReporter
 
         public static void SetIssueErrors(Issue issue)
         {
-            if(issue.StatusCategory.name == "Done")
-            {
-                if (issue.TimeSpentTotal == 0)
-                    issue.ErrorsCount++;
-                if (issue.RemainingEstimateSeconds > 0)
-                    issue.ErrorsCount++;
-            }
-            else
-            {
-                if (issue.RemainingEstimateSeconds == 0)
-                    issue.ErrorsCount++;
-            }
+          if(issue.SubTask == false)
+          {
+              if (issue.StatusCategory.name == "Done")
+              {
+                  if (issue.TimeSpentTotal == 0)
+                      issue.ErrorsCount++;
+                  if (issue.RemainingEstimateSeconds > 0)
+                      issue.ErrorsCount++;
+              }
+              else
+              {
+                  if (issue.RemainingEstimateSeconds == 0)
+                      issue.ErrorsCount++;
+              }
+          }
         }
 
         public static void SetStatusType(Issue issue)

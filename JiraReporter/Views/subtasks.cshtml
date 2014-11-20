@@ -1,5 +1,6 @@
 ﻿ @{
-     var color="";
+     var color = "";
+     var bold = "";
  }
     @foreach (var subtask in Model.AssigneeSubtasks)
     {
@@ -7,18 +8,13 @@
         {
             if (subtask.RemainingEstimateSeconds == 0)
             {
-                if (subtask.Label != null)
-                {
-                    color = "orange";
-                }
-                else
-                {
-                    color = "red";
-                }
+                color = "orange";
+                bold = "bold";
             }
             else
             {
                 color = "black";
+                bold = "normal";
             }
                 <tr>
                     <td>
@@ -70,7 +66,7 @@
                         }
                         @if (subtask.Resolution == null)
                         {
-                            <span style="color:@color;"> &#x25cf; @subtask.RemainingEstimate left </span>
+                            <span style="color:@color; font-weight:@bold"> &#x25cf; @subtask.RemainingEstimate left </span>
                         }
                         @if (subtask.PullRequests != null)
                         {
