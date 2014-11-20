@@ -167,28 +167,7 @@
                         <tbody>
                             @foreach (var task in Model.SprintTasks.UnassignedTasks)
                             {
-                                if (task.AssigneeSubtasks != null)
-                                {
-                                    if (task.AssigneeSubtasks.Count > 0)
-                                    {
-                                        if (task.Assignee != null)
-                                        {
-                                            @Partial("Views/parentTask.cshtml", task)
-                                        }
-                                        else
-                                        {
-                                            @Partial("Views/uncompletedTask.cshtml", task)
-                                        }
-                                        @Partial("Views/subtasks.cshtml", task)
-                                    }
-                                }
-                                else if (task.AssigneeSubtasks == null || task.AssigneeSubtasks.Count == 0)
-                                {
-                                    if (task.SubTask == false)
-                                    {
-                                        @Partial("Views/uncompletedTask.cshtml", task)
-                                    }
-                                }
+                                 @Partial("Views/uncompletedTask.cshtml", task)
                             }
                         </tbody>
                     </table>                                          

@@ -51,7 +51,6 @@ namespace JiraReporter
                 if (issue.Assignee == null && issue.StatusCategory.name != "Done")
                     tasks.UnassignedTasks.Add(issue);
             }
-            tasks.UnassignedTasks = GetParentTasks(tasks.UnassignedTasks);
         }
 
         public void SetTask(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
