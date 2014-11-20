@@ -34,7 +34,7 @@ namespace JiraReporter
                 Authors = authors,
                 SprintTasks = sprint,
                 PullRequests = pullRequests,
-                Date = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date,
+                Date = options.FromDate,
                 Summary = new Summary(authors, sprint, pullRequests, policy, timesheetCollection)
                 {
                     FromDate = options.FromDate,

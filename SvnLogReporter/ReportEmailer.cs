@@ -86,7 +86,11 @@ namespace SourceControlLogReporter
 
         private string GetReportSubject(string reportPath)
         {
-                return policy.ReportTitle + " " + policy.EmailSubject + " " + DateTime.Parse(Path.GetFileNameWithoutExtension(reportPath)).ToString("dddd, dd MMMM yyyy");
+            string subject = policy.ReportTitle + " " + policy.EmailSubject;
+            if ((options.ToDate - options.FromDate).Days > 1)
+                return subject + " " + options.FromDate.ToString("dddd, dd MMMM") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM");
+            else
+                return subject + " " + options.FromDate.ToString("dddd, dd MMMM yyyy");
         }
 
         private void MoveToSent(string path)

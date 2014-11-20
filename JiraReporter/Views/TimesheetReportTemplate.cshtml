@@ -1,5 +1,13 @@
 <div style="margin-top:15px; font-size:12px; color:#000000;">
-           <h2 style="color:black"> @Model.Title Daily Report for @Model.Date.ToString("dddd, dd MMMM yyyy") </h2>
+    @if ((Model.options.ToDate - Model.options.FromDate).Days > 1)
+    {
+        <h2 style="color:black"> @Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM") - @Model.options.ToDate.AddDays(-1).ToString("dddd, dd MMMM")  </h2>
+    }
+    else
+    {
+        <h2 style="color:black"> @Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") </h2>
+    }
+          
     @{
         var bold = "";
         var remainingEstimate = "";
