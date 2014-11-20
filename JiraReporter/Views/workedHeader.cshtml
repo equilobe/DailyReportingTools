@@ -17,13 +17,14 @@
 {
     test = true;
 }
-@if(Model.Title == "Yesterday")
+@*@if(Model.Title == "Yesterday")
 {
     dayName = "(" + Model.Date.DayOfWeek + ")";
-}
+}*@
+    
 @if (test==true)
 {
-    <b style="color:Sienna; font-size:16px; "> @Model.Title @dayName</b>
+    <b style="color:Sienna; font-size:16px; "> @Model.Date.DayOfWeek </b>
     if (Model.TimeSpent > 0)
     {
         <span style="color:Sienna; font-size:12px;"> &#x25cf; @Model.TimeLogged worked </span>
