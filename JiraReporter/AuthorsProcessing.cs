@@ -60,7 +60,7 @@ namespace JiraReporter
         private static void SetAuthor(SprintTasks sprint, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
             author = OrderAuthorIssues(author);
-            SetAuthorTimeSpent(author);
+            SetAuthorTimeSpent(author, timesheetCollection);
             SetAuthorTimeFormat(author);           
             SetAuthorCommits(policy, author, commits);
             author.Name = SetName(author.Name);
@@ -69,7 +69,6 @@ namespace JiraReporter
             SetAuthorErrors(author);
             SetAuthorInitials(author);
             SetRemainingEstimate(author);
-            SetAuthorMonthWorkedSeconds(author, timesheetCollection[TimesheetType.MonthTimesheet]);
         }
 
         public static string SetName(string name)
@@ -78,14 +77,6 @@ namespace JiraReporter
             if(name!=null)
                 name = Regex.Replace(name, delimiter, "");
             return name;
-        }
-
-        private static void SetAuthorTimeSpent(Author author)
-        {
-            if(author.Issues!=null)
-              foreach (var issue in author.Issues)
-                author.TimeSpent += issue.TimeSpent;
-            author.TimeSpentHours = author.TimeSpent / 3600;
         }
 
         public static void SetAuthorTimeFormat(Author author)
@@ -224,10 +215,24 @@ namespace JiraReporter
             author.Initials = initials;
         }
 
-        private static void SetAuthorMonthWorkedSeconds(Author author, Timesheet monthTimesheet)
+        //private static void SetAuthorMonthWorkedSeconds(Author author, Timesheet monthTimesheet)
+        //{
+        //    foreach (var issue in monthTimesheet.Worklog.Issues)
+        //        author.TimeSpentCurrentMonthSeconds += issue.Entries.Where(e => e.AuthorFullName == author.Name).Sum(e => e.TimeSpent);
+        //}
+
+        //private static void SetAuthorTimeSpent(Author author)
+        //{
+        //    if (author.Issues != null)
+        //        foreach (var issue in author.Issues)
+        //            author.TimeSpent += issue.TimeSpent;
+        //}
+
+        private static void SetAuthorTimeSpent(Author author, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
-            foreach (var issue in monthTimesheet.Worklog.Issues)
-                author.TimeSpentCurrentMonthSeconds += issue.Entries.Where(e => e.AuthorFullName == author.Name).Sum(e => e.TimeSpent);
+            author.TimeSpent = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorkedAuthor(author);
+            author.TimeSpentCurrentMonthSeconds = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorkedAuthor(author);
+            author.TimeSpentCurrentSprintSeconds = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorkedAuthor(author);
         }
     }
 }

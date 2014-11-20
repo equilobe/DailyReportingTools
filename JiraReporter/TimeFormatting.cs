@@ -70,14 +70,6 @@ namespace JiraReporter
             return timeAgo;
         }
 
-        public static double GetReportTotalTime(List<Author> authors)
-        {
-            double totalTime = 0;
-            foreach (var author in authors)
-                totalTime += author.TimeSpent;
-            return totalTime;
-        }
-
         public static string DateToString(DateTime date)
         {
             return date.ToString("dd/MMM/yyyy", DateTimeFormatInfo.InvariantInfo);

@@ -81,6 +81,14 @@ namespace JiraReporter.Model
                 return MonthHoursWorked.RoundDoubleDecimals();
             }
         }
+        public double SprintHoursWorked { get; set; }
+        public string SprintHoursWorkedString
+        {
+            get
+            {
+                return SprintHoursWorked.RoundDoubleDecimals();
+            }
+        }
         public double RemainingMonthlyHours { get; set; }
         public double MonthHourRateHours { get; set; }
         public string MonthHourRateHoursString
@@ -98,16 +106,16 @@ namespace JiraReporter.Model
         public Health SprintHealth { get; set; }
         public Health MonthHealth { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprint, List<PullRequest> pullRequests, Policy policy, Dictionary<TimesheetType,Timesheet> timesheetCollection)
+        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
-            TotalTimeSeconds = TimeFormatting.GetReportTotalTime(authors);
+            SetTimeWorked(timesheetCollection);
 
-            SetSummaryTasksTimeLeft(sprint);
+            SetSummaryTasksTimeLeft(sprintTasks);
 
-            InProgressUnassignedCount = sprint.InProgressTasks.Count(tasks => tasks.Assignee == null);
-            OpenUnassignedCount = sprint.OpenTasks.Count(tasks => tasks.Assignee == null);
-            InProgressTasksCount = sprint.InProgressTasks.Count;
-            OpenTasksCount = sprint.OpenTasks.Count;
+            InProgressUnassignedCount = sprintTasks.InProgressTasks.Count(tasks => tasks.Assignee == null);
+            OpenUnassignedCount = sprintTasks.OpenTasks.Count(tasks => tasks.Assignee == null);
+            InProgressTasksCount = sprintTasks.InProgressTasks.Count;
+            OpenTasksCount = sprintTasks.OpenTasks.Count;
 
             AuthorsInvolved = authors.Count;
             Authors = authors;
@@ -118,13 +126,20 @@ namespace JiraReporter.Model
             AllocatedHoursPerMonth = policy.AllocatedHoursPerMonth;
             AllocatedHoursPerDay = policy.AllocatedHoursPerDay;
 
-            SetMonthSummary(timesheetCollection[TimesheetType.MonthTimesheet]);
+            SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
             SprintTasksTimeLeftHours = SprintTasksTimeLeftSeconds / 3600;
             SetHourRates();
 
-            Errors = new Errors(authors, sprint);
-        }   
+            Errors = new Errors(authors, sprintTasks);
+        }
+
+        private void SetTimeWorked(Dictionary<TimesheetType, Timesheet> timesheetCollection)
+        {
+            TotalTimeSeconds = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorked();
+            MonthHoursWorked = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorked() / 3600;
+            SprintHoursWorked = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
+        }
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
         {
@@ -140,9 +155,8 @@ namespace JiraReporter.Model
             OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(OpenTasksTimeLeftSeconds);
         }
 
-        private void SetMonthSummary(Timesheet monthTimesheet)
+        private void SetRemainingMonthlyHours(Timesheet monthTimesheet)
         {
-            MonthHoursWorked = (double)monthTimesheet.Worklog.Issues.Sum(i => i.Entries.Sum(e => e.TimeSpent)) / 3600;
             if (AllocatedHoursPerMonth > 0)
                 RemainingMonthlyHours = AllocatedHoursPerMonth - MonthHoursWorked;
         }

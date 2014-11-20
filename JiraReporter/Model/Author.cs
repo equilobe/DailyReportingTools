@@ -14,7 +14,13 @@ namespace JiraReporter.Model
 
         public string TimeLogged { get; set; }
         public double TimeSpent { get; set; }
-        public double TimeSpentHours { get; set; }
+        public double TimeSpentHours
+        {
+            get
+            {
+                return TimeSpent / 3600;
+            }
+        }
         public string TimeSpentHoursString
         {
             get
@@ -36,6 +42,21 @@ namespace JiraReporter.Model
             get
             {
                 return TimeSpentCurrentMonthHours.RoundDoubleDecimals();
+            }
+        }
+        public double TimeSpentCurrentSprintSeconds { get; set; }
+        public double TimeSpentCurrentSprintHours
+        {
+            get
+            {
+                return TimeSpentCurrentSprintSeconds / 3600;
+            }
+        }
+        public string TimeSpentCurrentSprintString
+        {
+            get
+            {
+                return TimeSpentCurrentSprintHours.RoundDoubleDecimals();
             }
         }
 

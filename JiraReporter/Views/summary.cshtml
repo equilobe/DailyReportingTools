@@ -109,7 +109,7 @@
                     <b style="color:black; font-size:14px"> @Model.TotalTime </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px"> (@Model.SprintTasksTimeLeftHoursString) </b>
+                    <b style="color:black; font-size:14px">@Model.SprintHoursWorkedString (@Model.SprintTasksTimeLeftHoursString) </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                     <b style="color:black; font-size:14px"> @Model.MonthHoursWorkedString</b>
@@ -129,7 +129,7 @@
                         <b style="color:black; font-size:14px"> @author.TimeSpentHoursString </b>
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <b style="color:black; font-size:14px">  (@author.RemainingEstimateHoursString)</b>
+                        <b style="color:black; font-size:14px"> @author.TimeSpentCurrentSprintString (@author.RemainingEstimateHoursString)</b>
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                         <span style="color:black; font-size:14px"> @author.TimeSpentCurrentMonthHoursString</span>
@@ -139,142 +139,3 @@
         </tbody>
     </table>
 </div>
-
-@*@{
-    var comma = "";
-}
-<div style="margin-top: 40px">
-    <h2 style="color:black">Summary</h2>
-    @if (Model.TotalTimeSeconds == 0)
-    {
-        <h2 style="font-weight:normal; color:black">No work logged</h2>
-    }
-    else
-    {
-        <h2 style="font-weight:normal; color:black;"> @Model.TotalTime worked</h2>
-    }
-    @if (Model.InProgressTasksCount > 0)
-    {
-        <div style="margin-top:10px;">
-            <span style="color:black">@Model.InProgressTasksCount </span>
-            @if (Model.InProgressTasksCount == 1)
-            {
-                <span style="color:black"> task </span>
-            }
-            else
-            {
-                <span style="color:black"> tasks </span>
-            }
-            <span style="color:black">in progress</span>
-            <span style="font-size:0; color:black">
-                <span style="font-size:12px; color:black">(</span>
-                @if (Model.InProgressTasksTimeLeftSeconds == 0)
-                {
-                    <span style="color:red;font-size:12px;">@Model.InProgressTasksTimeLeft left</span>
-                }
-                else
-                {
-                    <span style="font-size:12px; color:black">@Model.InProgressTasksTimeLeft left</span>
-                }
-                @if (Model.InProgressUnassigned > 0)
-                {
-                    <span style="font-size:12px; color:black">, @Model.InProgressUnassigned unassigned</span>
-                }
-                <span style="font-size:12px; color:black">)</span>
-            </span>
-        </div>
-    }
-
-    @if (Model.OpenTasksCount > 0)
-    {
-        <div style="margin-top:10px;">
-            <span style="color:black">@Model.OpenTasksCount </span>
-            @if (Model.OpenTasksCount == 1)
-            {
-                <span style="color:black"> task </span>
-            }
-            else
-            {
-                <span style="color:black"> tasks </span>
-            }
-            <span style="color:black">upcoming</span>
-            <span style="font-size:0; color:black">
-                @if (Model.OpenTasksTimeLeftSeconds > 0 && Model.OpenUnassigned > 0)
-                {
-                    comma = ", ";
-                }
-                @if (Model.OpenTasksTimeLeftSeconds > 0 || Model.OpenUnassigned > 0)
-                {
-                    <span style="font-size:12px; color:black">(</span>
-                    if (Model.OpenTasksTimeLeftSeconds > 0)
-                    {
-                        <span style="font-size:12px; color:black">@Model.OpenTasksTimeLeft left</span>
-                    }
-                    <span style="font-size:12px; color:black">@comma</span>
-                    if (Model.OpenUnassigned > 0)
-                    {
-                        <span style="font-size:12px; color:black">@Model.OpenUnassigned unassigned</span>
-                    }
-                    <span style="font-size:12px; color:black">)</span>
-                }
-            </span>
-        </div>
-    }
-    @if (Model.CommitsCount>0)
-    {
-        <div style="margin-top:10px;">
-            <span style="color:black"> @Model.CommitsCount </span>
-            @if(Model.CommitsCount==1)
-            {
-                <span style="color:black"> commit </span>
-            }
-            else
-            {
-                <span style="color:black"> commits </span>
-            }
-        </div>
-    }
-    
-    @if (Model.PullRequestsCount > 0)
-    {
-        <div style="margin-top:10px;">
-            <span style="color:black"> @Model.PullRequestsCount </span>
-            @if (Model.PullRequestsCount == 1)
-            {
-                <span style="color:black"> pending pull request </span>
-            }
-            else
-            {
-                <span style="color:black"> pending pull requests </span>
-            }
-        </div>
-    }
-    @if(Model.UnrelatedPullRequests.Count>0)
-    {
-        <div style="margin-top:10px">
-            @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
-        </div>
-    }
-
-    @if (Model.AuthorsInvolved > 0)
-    {
-        <div style="margin-top:10px">
-            <span style="color:black">@Model.AuthorsInvolved people involved</span>
-        </div>
-    }
-    @if (Model.MonthlyHours > 0)
-    {
-        <div style="margin-top:10px">
-            <span style="color:black"> @Model.MonthHoursWorkedString / @Model.MonthlyHoursString worked</span>
-        </div>
-        if (Model.RemainingMonthlyHours > 0)
-        {
-            <div style="margin-top:10px">
-                <span style="color:black"> @Model.RemainingMonthlyHoursString remaining monthly hours </span>
-            </div>
-            <div style="margin-top:10px">
-                <span style="color:black"> @Model.AverageWorkRateToCompleteString average per day </span>
-            </div>
-        }
-    }
-</div>*@

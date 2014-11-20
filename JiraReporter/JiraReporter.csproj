@@ -96,6 +96,7 @@
     <Compile Include="SourceControlProcessor.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
+    <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="TimesheetService.cs" />
   </ItemGroup>
   <ItemGroup>
