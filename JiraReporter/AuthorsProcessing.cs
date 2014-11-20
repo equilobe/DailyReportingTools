@@ -145,7 +145,6 @@ namespace JiraReporter
                             if (author.Issues == null)
                                 author.Issues = new List<Issue>();
                             author.Issues.Add(unfinishedTasks.Last());
-                            author.ErrorsCount++;
                         }
                     }
                 }

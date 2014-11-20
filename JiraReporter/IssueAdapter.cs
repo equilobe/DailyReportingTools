@@ -312,10 +312,6 @@ namespace JiraReporter
             {
                 if (issue.RemainingEstimateSeconds == 0)
                     issue.ErrorsCount++;
-                if (issue.Commits != null)
-                    if (issue.Commits.Count > 0)
-                        if (issue.Entries == null || issue.Entries.Count == 0)
-                            issue.ErrorsCount++;
             }
         }
 
