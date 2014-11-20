@@ -51,7 +51,7 @@ namespace JiraReporter
                 if (issue.Assignee == null && issue.StatusCategory.name != "Done")
                     tasks.UnassignedTasks.Add(issue);
             }
-            tasks.UnassignedTasks = GetParentTasks(tasks.UnassignedTasks, null);
+            tasks.UnassignedTasks = GetParentTasks(tasks.UnassignedTasks);
         }
 
         public void SetTask(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
@@ -97,18 +97,20 @@ namespace JiraReporter
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.Author author)
+        public static List<Issue> GetParentTasks(List<Issue> tasks)
         {
-            List<Issue> parentTasks = new List<Issue>();
+            List<Issue> parentTasks = new List<Issue>(tasks);
             foreach(var task in tasks)
             {
                 if(task.SubTask == true && task.Resolution == null)
                 {
-                    if(author == null || author.Name == task.Assignee)
-                    {
                         var parent = parentTasks.Find(t => t.Key == task.Parent.Key);
                         if (parent != null)
+                        {
+                            if (parent.AssigneeSubtasks == null)
+                                parent.AssigneeSubtasks = new List<Issue>();
                             parent.AssigneeSubtasks.Add(task);
+                        }
                         else
                         {
                             parent = CreateParent(task);
@@ -116,15 +118,14 @@ namespace JiraReporter
                             parentTasks.Add(parent);
                         }
                     }
-                }
             }
-            return tasks.Concat(parentTasks).ToList();
+            return parentTasks;
         }
 
         private static Issue CreateParent(Issue task)
         {
             var parent = new Issue(task.Parent);
-            parent.SubtasksIssues = new List<Issue>();
+            parent.AssigneeSubtasks = new List<Issue>();
             return parent;
         }
     }

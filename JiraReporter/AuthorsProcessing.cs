@@ -39,7 +39,6 @@ namespace JiraReporter
             }
                
             return authors;
-
         }
 
         private static void Add(Dictionary<string, List<Issue>> dict, string key, Issue issue)
@@ -101,13 +100,14 @@ namespace JiraReporter
         {
             author.InProgressTasks = new List<Issue>();
             author.InProgressTasks = GetAuthorTasks(tasks.InProgressTasks, author);
+            
             if (author.InProgressTasks != null)
             {
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
-            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks, author);
-            author.InProgressTasks = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
+            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks);
+            author.InProgressTasks = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList(); 
         }
 
         private static void SetAuthorOpenTasks(SprintTasks tasks, Author author)
@@ -119,7 +119,7 @@ namespace JiraReporter
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
-            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks, author);
+            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks);
             author.OpenTasks = author.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
@@ -214,19 +214,6 @@ namespace JiraReporter
                 initials += Regex.Match(part, "[A-Z]");
             author.Initials = initials;
         }
-
-        //private static void SetAuthorMonthWorkedSeconds(Author author, Timesheet monthTimesheet)
-        //{
-        //    foreach (var issue in monthTimesheet.Worklog.Issues)
-        //        author.TimeSpentCurrentMonthSeconds += issue.Entries.Where(e => e.AuthorFullName == author.Name).Sum(e => e.TimeSpent);
-        //}
-
-        //private static void SetAuthorTimeSpent(Author author)
-        //{
-        //    if (author.Issues != null)
-        //        foreach (var issue in author.Issues)
-        //            author.TimeSpent += issue.TimeSpent;
-        //}
 
         private static void SetAuthorTimeSpent(Author author, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
