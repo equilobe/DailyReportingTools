@@ -49,6 +49,10 @@
                                                 <tbody>
                                                 @foreach (var issue in dayLog.Issues)
                                                 {
+                                                    if(issue.SubTask == true)
+                                                    {
+                                                        @Partial("Views/parentTask.cshtml", issue.Parent)
+                                                    }
                                                     @Partial("Views/workedTask.cshtml", issue)
                                                 }
                                                 </tbody>

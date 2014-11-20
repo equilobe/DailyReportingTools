@@ -199,9 +199,9 @@ namespace JiraReporter
             if (author.Issues != null)
                 author.ErrorsCount += author.Issues.Sum(i => i.ErrorsCount);
             if (author.InProgressTasks != null)
-                author.ErrorsCount += author.InProgressTasks.Sum(i => i.ErrorsCount);
+                author.ErrorsCount += author.InProgressTasks.Where(t=>t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
             if (author.OpenTasks != null)
-                author.ErrorsCount += author.OpenTasks.Sum(i => i.ErrorsCount);
+                author.ErrorsCount += author.OpenTasks.Where(t => t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
         }
 
         private static void SetAuthorInitials(Author author)
