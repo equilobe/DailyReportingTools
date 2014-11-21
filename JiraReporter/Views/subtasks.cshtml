@@ -2,10 +2,8 @@
      var color = "";
      var bold = "";
  }
-   
-        @if (Model.Resolution == null)
-        {
-            if (Model.RemainingEstimateSeconds == 0)
+
+            @if ((Model.RemainingEstimateSeconds == 0 && Model.Resolution == null) || (Model.RemainingEstimateSeconds > 0 && Model.Resolution != null))
             {
                 color = "orange";
                 bold = "bold";
@@ -20,11 +18,15 @@
 
                     </td>
                     <td style="vertical-align:top; width:15px">
+                        @if (Model.StatusCategory.name == "Done")
+                        {
+                            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
+                        }
                         @if (Model.StatusCategory.name == "In Progress")
                         {
                             <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
                         }
-                        else
+                        @if(Model.StatusType == "Open")
                         {
                             <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
                         }
@@ -76,4 +78,3 @@
                         }
                     </td>
                 </tr>
-        }
