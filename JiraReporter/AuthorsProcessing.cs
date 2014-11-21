@@ -46,12 +46,12 @@ namespace JiraReporter
             if (dict.ContainsKey(key))
             {
                 List<Issue> list = dict[key];
-                list.Add(issue);
+                list.Add(new Issue(issue));
             }
             else
             {
                 List<Issue> list = new List<Issue>();
-                list.Add(issue);
+                list.Add(new Issue(issue));
                 dict.Add(key, list);
             }
         }
@@ -144,7 +144,8 @@ namespace JiraReporter
                         {
                             if (author.Issues == null)
                                 author.Issues = new List<Issue>();
-                            author.Issues.Add(unfinishedTasks.Last());
+                            unfinishedTasks.Last().ExistsInTimesheet = true;
+                            author.Issues.Add(new Issue(unfinishedTasks.Last()));
                         }
                     }
                 }

@@ -121,10 +121,13 @@ else
             </div>
 
             <div style="margin-top:5px; margin-left:10px; margin-bottom:5px">
-                @Partial("Views/commits.cshtml", Model.Commits)
-                @if (Model.Commits.Count > 0)
+                @if (Model.Commits != null)
                 {
-                    @Partial("Views/commitsComments.cshtml", Model.Commits)
+                    @Partial("Views/commits.cshtml", Model.Commits)
+                    if (Model.Commits.Count > 0)
+                    {
+                        @Partial("Views/commitsComments.cshtml", Model.Commits)
+                    }
                 }
             </div>
         </td>

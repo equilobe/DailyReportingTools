@@ -38,20 +38,11 @@ namespace JiraReporter.Model
                 }
             IssueAdapter.AdjustIssueCommits(this);
             IssueAdapter.RemoveWrongIssues(this.Issues);
+            
             if(Issues != null)
                   Issues = TasksService.GetParentTasks(Issues);
             this.UnsyncedCommits = new List<Commit>(Commits.FindAll(c => c.TaskSynced == false));
             this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
-            SetDaylogErrors(author);
-        }
-        
-        private void SetDaylogErrors(Author author)
-        {
-            if(Issues == null || Issues.Count==0)
-            {
-                if(Commits.Count>0)
-                   author.ErrorsCount++;
-            }
-        }
+        }      
     }
 }

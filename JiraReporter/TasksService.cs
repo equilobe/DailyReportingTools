@@ -108,7 +108,8 @@ namespace JiraReporter
                         {
                             if (parent.AssigneeSubtasks == null)
                                 parent.AssigneeSubtasks = new List<Issue>();
-                            parent.AssigneeSubtasks.Add(task);
+                            if(parent.AssigneeSubtasks.Exists(t=>t.Key == task.Key) == false)
+                                parent.AssigneeSubtasks.Add(task);
                         }
                         else
                         {
@@ -120,18 +121,6 @@ namespace JiraReporter
             }
             return parentTasks;
         }
-
-        //public static List<Issue> GetParentTasksTimesheet(List<Issue> tasks)
-        //{
-        //    List<Issue> parentTasks = new List<Issue>(tasks);
-        //    foreach(var task in tasks)
-        //    {
-        //        if(task.SubTask == true && task.ExistsInTimesheet == true)
-        //        {
-
-        //        }
-        //    }
-        //}
 
         private static Issue CreateParent(Issue task)
         {
