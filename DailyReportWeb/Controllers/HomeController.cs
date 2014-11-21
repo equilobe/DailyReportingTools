@@ -61,7 +61,7 @@ namespace DailyReportWeb.Controllers
                 {
                     installed = "/installed"
                 },
-                apiVersion = 0,
+                apiVersion = 1,
                 modules = new
                 {
                     generalPages = new[] 
