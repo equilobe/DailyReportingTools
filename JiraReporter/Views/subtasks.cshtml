@@ -2,11 +2,10 @@
      var color = "";
      var bold = "";
  }
-    @foreach (var subtask in Model.AssigneeSubtasks)
-    {
-        if (subtask.Resolution == null)
+   
+        @if (Model.Resolution == null)
         {
-            if (subtask.RemainingEstimateSeconds == 0)
+            if (Model.RemainingEstimateSeconds == 0)
             {
                 color = "orange";
                 bold = "bold";
@@ -21,7 +20,7 @@
 
                     </td>
                     <td style="vertical-align:top; width:15px">
-                        @if (subtask.StatusCategory.name == "In Progress")
+                        @if (Model.StatusCategory.name == "In Progress")
                         {
                             <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
                         }
@@ -31,51 +30,50 @@
                         }
                     </td>
                     <td>
-                        @if (DateTime.Compare(subtask.Created, DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
+                        @if (DateTime.Compare(Model.Created, DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
                         {
                         <b style="color:black"> NEW: </b>
                         }
-                        @if (subtask.StatusCategory.name == "In Progress")
+                        @if (Model.StatusCategory.name == "In Progress")
                         {
-                            if (subtask.ExistsInTimesheet == true)
+                            if (Model.ExistsInTimesheet == true)
                             {
                                 <b style="color:black">Continue:</b>
                             }
                         }
                         else
                         {
-                            if (subtask.Status == Model.PolicyReopenedStatus)
+                            if (Model.Status == Model.PolicyReopenedStatus)
                             {
                                 <span style="font-weight:bold; color:black">Reopened:</span>
                             }
-                            else if (subtask.TimeSpent > 0)
+                            else if (Model.TimeSpent > 0)
                             {
                                 <span style="font-weight:bold; color:black">Paused:</span>
                             }
                         }
-                        @if (subtask.DisplayStatus == true)
+                        @if (Model.DisplayStatus == true)
                         {
-                            <b style="color:black; padding:1.5px;">@subtask.Status</b>
+                            <b style="color:black; padding:1.5px;">@Model.Status</b>
                         }
-                        <a style="text-decoration: none; font-weight:bold;" href="@subtask.Link">@subtask.Summary</a>
-                        <span style="color: #B8B8B8;"> &#x25cf; @subtask.Key </span>
+                        <a style="text-decoration: none; font-weight:bold;" href="@Model.Link">@Model.Summary</a>
+                        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
 
-                        @if (subtask.TimeSpentOnTask > 0)
+                        @if (Model.TimeSpentOnTask > 0)
                         {
-                            <span style="color:black"> &#x25cf; @subtask.TimeLogged worked </span>
+                            <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
                         }
-                        @if (subtask.Resolution == null)
+                        @if (Model.Resolution == null)
                         {
-                            <span style="color:@color; font-weight:@bold"> &#x25cf; @subtask.RemainingEstimate left </span>
+                            <span style="color:@color; font-weight:@bold"> &#x25cf; @Model.RemainingEstimate left </span>
                         }
-                        @if (subtask.PullRequests != null)
+                        @if (Model.PullRequests != null)
                         {
-                            if (subtask.PullRequests.Count > 0)
+                            if (Model.PullRequests.Count > 0)
                             {
-                                <span> @Partial("Views/pullRequests.cshtml", subtask.PullRequests) </span>
+                                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
                             }
                         }
                     </td>
                 </tr>
         }
-    }

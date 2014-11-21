@@ -49,11 +49,31 @@
                                                 <tbody>
                                                 @foreach (var issue in dayLog.Issues)
                                                 {
-                                                    if(issue.SubTask == true)
+                                                    if (issue.AssigneeSubtasks != null)
                                                     {
-                                                        @Partial("Views/parentTask.cshtml", issue.Parent)
+                                                        if (issue.AssigneeSubtasks.Count > 0)
+                                                        {
+                                                            if(issue.ExistsInTimesheet == true && issue.Assignee == author.Name)
+                                                            {
+                                                                @Partial("Views/workedTask.cshtml", issue)
+                                                            }
+                                                            else
+                                                            {
+                                                                @Partial("Views/parentTask.cshtml", issue)
+                                                            }
+                                                            foreach (var subtask in issue.AssigneeSubtasks)
+                                                            {
+                                                                @Partial("Views/workedTask.cshtml", subtask)
+                                                            }
+                                                        }
                                                     }
-                                                    @Partial("Views/workedTask.cshtml", issue)
+                                                    if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
+                                                    {
+                                                        if (issue.SubTask == false)
+                                                        {
+                                                            @Partial("Views/workedTask.cshtml", issue)
+                                                        }
+                                                    }
                                                 }
                                                 </tbody>
                                             </table>
@@ -97,7 +117,10 @@
                                                     {
                                                         @Partial("Views/uncompletedTask.cshtml", task)
                                                     }
-                                                    @Partial("Views/subtasks.cshtml", task)
+                                                    foreach (var subtask in task.AssigneeSubtasks)
+                                                    {
+                                                        @Partial("Views/subtasks.cshtml", subtask)
+                                                    }
                                                 }
                                             }
                                             else if (task.AssigneeSubtasks == null || task.AssigneeSubtasks.Count == 0)
@@ -141,7 +164,10 @@
                                                     {
                                                         @Partial("Views/uncompletedTask.cshtml", task)
                                                     }
-                                                    @Partial("Views/subtasks.cshtml", task)
+                                                    foreach (var subtask in task.AssigneeSubtasks)
+                                                    {
+                                                        @Partial("Views/subtasks.cshtml", subtask)
+                                                    }
                                                 }
                                             }
                                             else if (task.AssigneeSubtasks == null || task.AssigneeSubtasks.Count == 0)

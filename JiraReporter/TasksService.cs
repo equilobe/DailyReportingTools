@@ -101,7 +101,7 @@ namespace JiraReporter
             List<Issue> parentTasks = new List<Issue>(tasks);
             foreach(var task in tasks)
             {
-                if(task.SubTask == true && task.Resolution == null)
+                if(task.SubTask == true)
                 {
                         var parent = parentTasks.Find(t => t.Key == task.Parent.Key);
                         if (parent != null)
@@ -120,6 +120,18 @@ namespace JiraReporter
             }
             return parentTasks;
         }
+
+        //public static List<Issue> GetParentTasksTimesheet(List<Issue> tasks)
+        //{
+        //    List<Issue> parentTasks = new List<Issue>(tasks);
+        //    foreach(var task in tasks)
+        //    {
+        //        if(task.SubTask == true && task.ExistsInTimesheet == true)
+        //        {
+
+        //        }
+        //    }
+        //}
 
         private static Issue CreateParent(Issue task)
         {
