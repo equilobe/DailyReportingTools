@@ -43,7 +43,11 @@ namespace JiraReporter
         {
             var projectViews = GetRapidViewsFromProject();
             var activeView = GetActiveView(projectViews);
-            return GetRapidView(activeView).sprintsData.sprints.Last();
+            var rapidView = GetRapidView(activeView);
+            if (rapidView.sprintsData.sprints.Count > 0)
+                return rapidView.sprintsData.sprints.Last();
+            else
+                return null;
         }
     }
 }

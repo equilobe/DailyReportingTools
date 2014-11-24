@@ -59,7 +59,8 @@ namespace JiraReporter
             var sprint = GenerateSprint(policy);
             timesheetDictionary.Add(TimesheetType.ReportTimesheet, RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1)));
             timesheetDictionary.Add(TimesheetType.MonthTimesheet, RestApiRequests.GetTimesheet(policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)));
-            timesheetDictionary.Add(TimesheetType.SprintTimesheet, RestApiRequests.GetTimesheet(policy, sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone()));
+            if(sprint != null)
+                 timesheetDictionary.Add(TimesheetType.SprintTimesheet, RestApiRequests.GetTimesheet(policy, sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone()));
             return timesheetDictionary;
         }
 
