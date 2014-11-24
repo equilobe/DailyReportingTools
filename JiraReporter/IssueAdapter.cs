@@ -341,5 +341,12 @@ namespace JiraReporter
             if (issue.LoggedAuthor == null)
                 issue.LoggedAuthor = issue.LoggedAuthor = AuthorsProcessing.SetName(authorName);
         }
+
+        public static void SetSubtasksLoggedAuthor(Issue issue, string authorName)
+        {
+            if (issue.SubtasksIssues != null && issue.SubtasksIssues.Count > 0)
+                foreach (var subtask in issue.SubtasksIssues)
+                    SetLoggedAuthor(subtask, authorName);
+        }
     }
 }

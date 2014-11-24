@@ -101,6 +101,7 @@ namespace JiraReporter
             List<Issue> parentTasks = new List<Issue>(tasks);
             foreach(var task in tasks)
             {
+                IssueAdapter.SetSubtasksLoggedAuthor(task, author.Name);
                 if(task.SubTask == true)
                 {
                         var parent = parentTasks.Find(t => t.Key == task.Parent.Key);

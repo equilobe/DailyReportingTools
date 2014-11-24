@@ -69,6 +69,17 @@
                         {
                             <span style="color:@color; font-weight:@bold"> &#x25cf; @Model.RemainingEstimate left </span>
                         }
+                        @if (Model.Assignee == null)
+                        {
+                            <span style="color:black"> &#x25cf; Unassigned</span>
+                        }
+                        else
+                        {
+                            if (Model.Assignee != Model.LoggedAuthor)
+                            {
+                                <span style="color:black"> &#x25cf; @Model.Assignee</span>
+                            }
+                        }
                         @if (Model.PullRequests != null)
                         {
                             if (Model.PullRequests.Count > 0)
