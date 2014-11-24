@@ -104,7 +104,7 @@ namespace JiraReporter
             issue.PolicyReopenedStatus = policy.ReopenedStatus;
             if (jiraIssue.fields.assignee != null)
                 issue.Assignee = jiraIssue.fields.assignee.displayName;
-            issue.RemainingEstimateSeconds = jiraIssue.fields.timeestimate;
+            issue.RemainingEstimateSeconds = jiraIssue.fields.aggregatetimeestimate;
             issue.OriginalEstimateSecondsTotal = jiraIssue.fields.aggregatetimeoriginalestimate;
             issue.OriginalEstimateSeconds = jiraIssue.fields.timeoriginalestimate;
             if (jiraIssue.fields.resolution != null)

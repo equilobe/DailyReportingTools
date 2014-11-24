@@ -1,4 +1,5 @@
-﻿using SourceControlLogReporter.Model;
+﻿using SourceControlLogReporter;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public enum Health { Bad, Decent, Good};
+    public enum Health { Bad, Decent, Good, None};
     public class Summary
     {
         public DateTime FromDate { get; set; }
@@ -17,7 +18,7 @@ namespace JiraReporter.Model
             get
             {
                 if ((ToDate - FromDate).Days > 1)
-                    return FromDate.ToString("m") + " - " + ToDate.ToString("m");
+                    return FromDate.ToString("m") + " - " + ToDate.AddDays(-1).ToString("m");
                 else
                     return FromDate.DayOfWeek.ToString();
             }
@@ -106,8 +107,11 @@ namespace JiraReporter.Model
         public Health SprintHealth { get; set; }
         public Health MonthHealth { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Dictionary<TimesheetType,Timesheet> timesheetCollection)
+        public Dictionary<Health, string> HealthColors { get; set; }
+
+        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
+            SetDates(options);
             SetTimeWorked(timesheetCollection);
 
             SetSummaryTasksTimeLeft(sprintTasks);
@@ -129,9 +133,18 @@ namespace JiraReporter.Model
             SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
             SprintTasksTimeLeftHours = SprintTasksTimeLeftSeconds / 3600;
-            SetHourRates();
+            SetHourRates(timesheetCollection);
+
+            SetHealthColors();
+            SetHealth(timesheetCollection);
 
             Errors = new Errors(authors, sprintTasks);
+        }
+
+        private void SetDates(Options options)
+        {
+            FromDate = options.FromDate;
+            ToDate = options.ToDate;
         }
 
         private void SetTimeWorked(Dictionary<TimesheetType, Timesheet> timesheetCollection)
@@ -163,16 +176,17 @@ namespace JiraReporter.Model
                 RemainingMonthlyHours = AllocatedHoursPerMonth - MonthHoursWorked;
         }
 
-        private void SetHourRates()
+        private void SetHourRates(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
-            var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
-            MonthHourRateHours = RemainingMonthlyHours / days;
-            SprintHourRate = SprintTasksTimeLeftHours / days;
+            var monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+            var sprintDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1));
+            MonthHourRateHours = RemainingMonthlyHours / monthDays;
+            SprintHourRate = SprintTasksTimeLeftHours / sprintDays;
         }
 
         private int GetWorkingDays(DateTime startDate, DateTime endDate)
         {
-            DateTime dateIterator = DateTime.Now.ToOriginalTimeZone().Date;
+            DateTime dateIterator = startDate.Date;
             int days = 0;
             while(dateIterator < endDate)
             {
@@ -190,14 +204,62 @@ namespace JiraReporter.Model
             return OpenTasksTimeLeftSeconds + InProgressTasksTimeLeftSeconds;
         }
 
-        //private void SetHealth()
-        //{
+        private void SetHealthColors()
+        {
+            HealthColors = new Dictionary<Health, string>();
+            HealthColors.Add(Health.Bad, "#FFE7E7");
+            HealthColors.Add(Health.Decent, "#FFD");
+            HealthColors.Add(Health.Good, "#DDFADE");
+            HealthColors.Add(Health.None, "White");
+        }
 
-        //}
+        private void SetHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
+        {
+            SetWorkedDaysHealth();
+            SetDayHealth(timesheetCollection);
+        }
 
-        //private void SetWorkedDaysHealth()
-        //{
+        private void SetWorkedDaysHealth()
+        {
+            int workedDays = GetWorkingDays(FromDate, ToDate.AddDays(-1));
+            int allocatedHours = AllocatedHoursPerDay * workedDays;
+            var diff = 0;
+            if (AllocatedHoursPerDay > 0)
+            {
+                if (TotalTimeHours > allocatedHours)
+                    diff = (int)TotalTimeHours - allocatedHours;
+                else
+                    diff = allocatedHours - (int)TotalTimeHours;
+                if (diff <= 2)
+                    WorkedDaysHealth = Health.Good;
+                else
+                    if (diff <= 5)
+                        WorkedDaysHealth = Health.Decent;
+                    else
+                        WorkedDaysHealth = Health.Bad;
+            }
+            else
+                WorkedDaysHealth = Health.None;
+        }
 
-        //}
+        private void SetDayHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
+        {
+            var diff = 0;
+            if (AllocatedHoursPerDay > 0 && timesheetCollection.ContainsKey(TimesheetType.SprintTimesheet) && timesheetCollection[TimesheetType.SprintTimesheet] != null)
+            {
+                if (AllocatedHoursPerDay > SprintHourRate)
+                    diff = AllocatedHoursPerDay - (int)SprintHourRate;
+                else
+                    diff = (int)SprintHourRate - AllocatedHoursPerDay;
+                if (diff <= 2)
+                    DayHealth = Health.Good;
+                else if (diff <= 4)
+                    DayHealth = Health.Decent;
+                else
+                    DayHealth = Health.Bad;
+            }
+            else
+                DayHealth = Health.None;
+        }
     }
 }

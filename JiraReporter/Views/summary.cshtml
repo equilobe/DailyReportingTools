@@ -9,7 +9,7 @@
                         <b style="color:black; font-size:14px;">(velocity)</b>
                     }
                 </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.DayHealth]">
                     <span style="color:black; font-size:14px">@Model.SprintHourRateString</span>
                     @if (Model.AllocatedHoursPerDay > 0)
                     {
@@ -105,7 +105,7 @@
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                     <b style="color:black; font-size:14px"> TOTAL </b>
                 </td>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.WorkedDaysHealth]">
                     <b style="color:black; font-size:14px"> @Model.TotalTime </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
