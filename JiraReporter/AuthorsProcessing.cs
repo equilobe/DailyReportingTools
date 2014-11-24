@@ -33,9 +33,8 @@ namespace JiraReporter
             var authors = new Dictionary<string, List<Issue>>();
             foreach (var issue in timesheet.Worklog.Issues)
             {
+                IssueAdapter.SetLoggedAuthor(issue, issue.Entries.First().AuthorFullName);
                 Add(authors, issue.Entries.First().AuthorFullName, issue);
-                issue.LoggedAuthor = issue.Entries.First().AuthorFullName;
-                issue.LoggedAuthor = SetName(issue.LoggedAuthor);
             }
                
             return authors;
@@ -106,7 +105,7 @@ namespace JiraReporter
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
-            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks);
+            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks, author);
             author.InProgressTasks = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList(); 
         }
 
@@ -119,7 +118,7 @@ namespace JiraReporter
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
-            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks);
+            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks, author);
             author.OpenTasks = author.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
@@ -136,7 +135,7 @@ namespace JiraReporter
                 if (task.Assignee == author.Name)
                 {
                     unfinishedTasks.Add(task);
-                    unfinishedTasks.Last().LoggedAuthor = author.Name;
+                    IssueAdapter.SetLoggedAuthor(unfinishedTasks.Last(), author.Name);
                     if (unfinishedTasks.Last().ExistsInTimesheet == false)
                     {
                         IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last(), author.Commits);
@@ -219,7 +218,9 @@ namespace JiraReporter
         {
             author.TimeSpent = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorkedAuthor(author);
             author.TimeSpentCurrentMonthSeconds = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorkedAuthor(author);
-            author.TimeSpentCurrentSprintSeconds = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorkedAuthor(author);
+            if (timesheetCollection.ContainsKey(TimesheetType.SprintTimesheet))
+                if(timesheetCollection[TimesheetType.SprintTimesheet] != null)
+                 author.TimeSpentCurrentSprintSeconds = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorkedAuthor(author);
         }
     }
 }

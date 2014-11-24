@@ -335,5 +335,11 @@ namespace JiraReporter
                     issue.DisplayStatus = true;
             }
         }
+
+        public static void SetLoggedAuthor(Issue issue, string authorName)
+        {
+            if (issue.LoggedAuthor == null)
+                issue.LoggedAuthor = issue.LoggedAuthor = AuthorsProcessing.SetName(authorName);
+        }
     }
 }

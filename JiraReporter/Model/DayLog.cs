@@ -40,7 +40,7 @@ namespace JiraReporter.Model
             IssueAdapter.RemoveWrongIssues(this.Issues);
             
             if(Issues != null)
-                  Issues = TasksService.GetParentTasks(Issues);
+                  Issues = TasksService.GetParentTasks(Issues,author);
             this.UnsyncedCommits = new List<Commit>(Commits.FindAll(c => c.TaskSynced == false));
             this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
         }      

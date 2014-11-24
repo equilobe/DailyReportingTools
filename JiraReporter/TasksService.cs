@@ -96,7 +96,7 @@ namespace JiraReporter
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public static List<Issue> GetParentTasks(List<Issue> tasks)
+        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.Author author)
         {
             List<Issue> parentTasks = new List<Issue>(tasks);
             foreach(var task in tasks)
@@ -104,17 +104,19 @@ namespace JiraReporter
                 if(task.SubTask == true)
                 {
                         var parent = parentTasks.Find(t => t.Key == task.Parent.Key);
+                        IssueAdapter.SetLoggedAuthor(task, author.Name);
                         if (parent != null)
                         {
                             if (parent.AssigneeSubtasks == null)
                                 parent.AssigneeSubtasks = new List<Issue>();
-                            if(parent.AssigneeSubtasks.Exists(t=>t.Key == task.Key) == false)
+                            if (parent.AssigneeSubtasks.Exists(t => t.Key == task.Key) == false)
                                 parent.AssigneeSubtasks.Add(task);
                         }
                         else
                         {
                             parent = CreateParent(task);
                             parent.AssigneeSubtasks.Add(task);
+                            IssueAdapter.SetLoggedAuthor(parent, author.Name);
                             parentTasks.Add(parent);
                         }
                     }
