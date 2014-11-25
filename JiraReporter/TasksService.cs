@@ -115,7 +115,7 @@ namespace JiraReporter
                         }
                         else
                         {
-                            parent = CreateParent(task);
+                            parent = CreateParent(task, author);
                             parent.AssigneeSubtasks.Add(task);
                             IssueAdapter.SetLoggedAuthor(parent, author.Name);
                             parentTasks.Add(parent);
@@ -125,9 +125,11 @@ namespace JiraReporter
             return parentTasks;
         }
 
-        private static Issue CreateParent(Issue task)
+        private static Issue CreateParent(Issue task, JiraReporter.Model.Author author)
         {
             var parent = new Issue(task.Parent);
+            foreach (var subtask in parent.SubtasksIssues)
+                IssueAdapter.SetLoggedAuthor(subtask, author.Name);
             parent.AssigneeSubtasks = new List<Issue>();
             return parent;
         }

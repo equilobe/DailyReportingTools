@@ -91,7 +91,10 @@ namespace JiraReporter
         {
             SetGenericIssue(issue, policy, jiraIssue, timesheet, pullRequests);
             if (issue.SubTask == true)
+            {
                 SetParent(issue, jiraIssue, policy, timesheet, pullRequests);
+                SetSubtasksIssues(issue.Parent, policy, timesheet, pullRequests);
+            }
             if (issue.Subtasks != null)
                 SetSubtasksIssues(issue, policy, timesheet, pullRequests);
         }
@@ -273,7 +276,14 @@ namespace JiraReporter
 
         public static int GetTasksTimeLeftSeconds(List<Issue> tasks)
         {
-            return tasks.Sum(t => t.RemainingEstimateSeconds);
+            int sum = 0;
+            foreach (var task in tasks)
+                if (task.SubTask == false)
+                    sum += task.TotalRemainingSeconds;
+                else
+                    if (tasks.Exists(t => t.Key == task.Parent.Key) == false)
+                        sum += task.RemainingEstimateSeconds;
+            return sum;
         }
 
         public static void HasTasksInProgress(Issue task)

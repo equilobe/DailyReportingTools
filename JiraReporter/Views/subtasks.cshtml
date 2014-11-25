@@ -32,7 +32,7 @@
                         }
                     </td>
                     <td>
-                        @if (DateTime.Compare(Model.Created, DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
+                        @if (DateTime.Compare(Model.Created.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
                         {
                         <b style="color:black"> NEW: </b>
                         }
