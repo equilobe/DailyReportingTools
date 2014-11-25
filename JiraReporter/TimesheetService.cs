@@ -32,8 +32,9 @@ namespace JiraReporter
 
         public void SetTimesheetCollection(Dictionary<TimesheetType, Timesheet> timesheetCollection, Policy policy, Options options, List<PullRequest> pullRequests)
         {
-            foreach (var timesheet in timesheetCollection.Values)
-                SetTimesheetIssues(timesheet, policy, options, pullRequests);
+            foreach (var timesheet in timesheetCollection)
+                if(timesheet.Key != TimesheetType.MonthTimesheet)
+                     SetTimesheetIssues(timesheet.Value, policy, options, pullRequests);
         }
     }
 }

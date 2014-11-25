@@ -21,5 +21,12 @@ namespace JiraReporter
                 seconds += issue.Entries.Where(e => e.AuthorFullName == author.Name).Sum(e => e.TimeSpent);
             return seconds;
         }
+
+        public static bool TimesheetExists(this Dictionary<TimesheetType, Timesheet> timesheetCollection, TimesheetType type)
+        {
+            if (timesheetCollection.ContainsKey(type) && timesheetCollection[type] != null)
+                return true;
+            return false;
+        }
     }
 }

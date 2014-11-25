@@ -151,8 +151,7 @@ namespace JiraReporter.Model
         {
             TotalTimeSeconds = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorked();
             MonthHoursWorked = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorked() / 3600;
-            if (timesheetCollection.ContainsKey(TimesheetType.SprintTimesheet)) 
-                if(timesheetCollection[TimesheetType.SprintTimesheet]!=null)
+            if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet)) 
                      SprintHoursWorked = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
         }
 
@@ -179,9 +178,12 @@ namespace JiraReporter.Model
         private void SetHourRates(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             var monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
-            var sprintDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1));
+            int sprintDays = 0;
+            if(timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
+                sprintDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1));
             MonthHourRateHours = RemainingMonthlyHours / monthDays;
-            SprintHourRate = SprintTasksTimeLeftHours / sprintDays;
+            if(sprintDays > 0)
+              SprintHourRate = SprintTasksTimeLeftHours / sprintDays;
         }
 
         private int GetWorkingDays(DateTime startDate, DateTime endDate)
@@ -221,7 +223,7 @@ namespace JiraReporter.Model
 
         private void SetWorkedDaysHealth()
         {
-            int workedDays = GetWorkingDays(FromDate, ToDate.AddDays(-1));
+            int workedDays = GetWorkingDays(FromDate, ToDate);
             int allocatedHours = AllocatedHoursPerDay * workedDays;
             var diff = 0;
             if (AllocatedHoursPerDay > 0)
@@ -245,7 +247,7 @@ namespace JiraReporter.Model
         private void SetDayHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             var diff = 0;
-            if (AllocatedHoursPerDay > 0 && timesheetCollection.ContainsKey(TimesheetType.SprintTimesheet) && timesheetCollection[TimesheetType.SprintTimesheet] != null)
+            if (AllocatedHoursPerDay > 0 && timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
             {
                 if (AllocatedHoursPerDay > SprintHourRate)
                     diff = AllocatedHoursPerDay - (int)SprintHourRate;
