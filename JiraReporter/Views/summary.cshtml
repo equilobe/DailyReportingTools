@@ -1,30 +1,68 @@
 ﻿<div style="margin-top:40px; display:inline-block">
     <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px">
         <tbody>
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                   <b style="color:black; font-size:14px">Sprint h/day left</b>
-                    @if (Model.AllocatedHoursPerDay > 0)
-                    {
-                        <b style="color:black; font-size:14px;">(velocity)</b>
-                    }
-                </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.DayHealth]">
-                    <span style="color:black; font-size:14px">@Model.SprintHourRateString</span>
-                    @if (Model.AllocatedHoursPerDay > 0)
-                    {
-                        <span style="color:black; font-size:14px">(@Model.AllocatedHoursPerDay)</span>
-                    }
-                </td>
-            </tr>
+            @if(Model.HasSprint)
+            {
+                <tr> 
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px;">Sprint status</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: center; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.SprintHealth]">
+                        <span style="color:black">@Model.SprintStatus[Model.SprintHealth]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px;">Sprint - remaining work / day</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD;">
+                        <span style="color:black">@Model.SprintTasksTimeLeftHoursString</span>
+                    </td>
+                </tr>
+            }
+            @if(Model.AllocatedHoursPerDay > 0)
+            {
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Team - estimated work rate / day</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD;">
+                        <span style="color:black; font-size:14px">@Model.AllocatedHoursPerDayString</span>
+                    </td>
+                </tr>
+            }
             @if (Model.AllocatedHoursPerMonth > 0)
             {
                 <tr>
                     <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                        <b style="color:black; font-size:14px">Monthly h/day left</b>
+                        <b style="color:black; font-size:14px">Month status</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: center; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.MonthHealth]">
+                        <span style="color:black; font-size:14px">@Model.MonthStatus[Model.MonthHealth]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Month - remaining work / day</b>
                     </th>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <span style="color:black; font-size:14px">@Model.MonthHourRateHoursString</span>
+                        <span style="color:black; font-size:14px">@Model.MonthHourRateString</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Month - remaining time</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px">@Model.RemainingMonthHoursString</span>
+                    </td>
+                </tr>
+                 <tr>
+                    <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <b style="color:black; font-size:14px">Month - work limit</b>
+                    </th>
+                    <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px">@Model.AllocatedHoursPerMonthDetailed (@Model.AllocatedHoursPerMonthTime)</span>
                     </td>
                 </tr>
             }
