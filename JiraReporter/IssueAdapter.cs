@@ -137,7 +137,7 @@ namespace JiraReporter
             AdjustIssuePullRequests(issue, pullRequests);
             SetIssueLink(issue, policy);
             HasWorkLoggedByAssignee(issue, timesheet);
-            SetIssueErrors(issue);
+           // SetIssueErrors(issue);
             SetStatusType(issue);
             SetDisplayStatus(issue, policy);
         }

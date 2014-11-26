@@ -31,8 +31,15 @@ namespace JiraReporter.Model
 
         private void SetSprintTasksErrors()
         {
-            CompletedTasksErrorCount = CompletedTasks.Values.Sum(i => i.Sum(er => er.ErrorsCount));
-            UnassignedTasksErrorCount = UnassignedTasks.Sum(t => t.ErrorsCount);
+            int completedErrors = 0;
+            TasksService.SetErrors(UnassignedTasks);
+            foreach (var list in CompletedTasks)
+            {
+                TasksService.SetErrors(list.Value);
+                completedErrors += TasksService.GetErrors(list.Value);
+            }
+            CompletedTasksErrorCount = completedErrors;
+            UnassignedTasksErrorCount = TasksService.GetErrors(UnassignedTasks);
         }   
     }
 }

@@ -133,5 +133,20 @@ namespace JiraReporter
             parent.AssigneeSubtasks = new List<Issue>();
             return parent;
         }
+
+        public static void SetErrors(List<Issue> tasks)
+        {
+            if(tasks!=null && tasks.Count>0)
+               foreach (var task in tasks)
+                  IssueAdapter.SetIssueErrors(task);
+        }
+
+        public static int GetErrors(List<Issue> tasks)
+        {
+            if (tasks != null)
+                return tasks.Sum(t => t.ErrorsCount);
+            else
+                return 0;
+        }
     }
 }

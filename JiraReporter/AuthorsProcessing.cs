@@ -64,7 +64,7 @@ namespace JiraReporter
             author.Name = SetName(author.Name);
             SetUnfinishedTasks(sprint, author);
             SetAuthorDayLogs(author, options);
-            SetAuthorErrors(author);
+           // SetAuthorErrors(author);
             SetAuthorInitials(author);
             SetRemainingEstimate(author);
         }
@@ -99,7 +99,8 @@ namespace JiraReporter
         {
             author.InProgressTasks = new List<Issue>();
             author.InProgressTasks = GetAuthorTasks(tasks.InProgressTasks, author);
-            
+            TasksService.SetErrors(author.InProgressTasks);
+            author.ErrorsCount += TasksService.GetErrors(author.InProgressTasks);
             if (author.InProgressTasks != null)
             {
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
@@ -113,6 +114,8 @@ namespace JiraReporter
         {
             author.OpenTasks = new List<Issue>();
             author.OpenTasks = GetAuthorTasks(tasks.OpenTasks, author);
+            TasksService.SetErrors(author.OpenTasks);
+            author.ErrorsCount += TasksService.GetErrors(author.OpenTasks);
             if (author.OpenTasks != null)
             {
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
@@ -194,15 +197,15 @@ namespace JiraReporter
                       commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
         }
 
-        private static void SetAuthorErrors(Author author)
-        {
-            if (author.Issues != null)
-                author.ErrorsCount += author.Issues.Sum(i => i.ErrorsCount);
-            if (author.InProgressTasks != null)
-                author.ErrorsCount += author.InProgressTasks.Where(t=>t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
-            if (author.OpenTasks != null)
-                author.ErrorsCount += author.OpenTasks.Where(t => t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
-        }
+        //private static void SetAuthorErrors(Author author)
+        //{
+        //    if (author.Issues != null)
+        //        author.ErrorsCount += author.Issues.Sum(i => i.ErrorsCount);
+        //    if (author.InProgressTasks != null)
+        //        author.ErrorsCount += author.InProgressTasks.Where(t=>t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
+        //    if (author.OpenTasks != null)
+        //        author.ErrorsCount += author.OpenTasks.Where(t => t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
+        //}
 
         private static void SetAuthorInitials(Author author)
         {
