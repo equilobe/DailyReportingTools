@@ -21,6 +21,7 @@ namespace JiraReporter
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             LoadReportDates(policy, options);
             policy.SetPermanentTaskLabel();
+            policy.SetDraftMode(options);
             if (policy.IsWeekendReportActive == true)
             {
                 if (options.IsWeekend() == false)

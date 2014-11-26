@@ -79,5 +79,11 @@ namespace SourceControlLogReporter.Model
         {
             this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
         }
+
+        public void SetDraftMode(Options options)
+        {
+            if (options.IsDraft == true)
+                this.ReportTitle = "DRAFT " + this.ReportTitle;
+        }
     }
 }
