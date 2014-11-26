@@ -66,6 +66,7 @@
     <Compile Include="ApiUrls.cs" />
     <Compile Include="AuthorsProcessing.cs" />
     <Compile Include="Deserialization.cs" />
+    <Compile Include="HealthInspector.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="JiraModels\Filter.cs" />
     <Compile Include="JiraModels\RapidView.cs" />

@@ -9,14 +9,14 @@ namespace JiraReporter
 {
     public static class TimesheetExtensions
     {
-        public static double GetTimesheetSecondsWorked(this Timesheet timesheet)
+        public static int GetTimesheetSecondsWorked(this Timesheet timesheet)
         {
-            return (double)timesheet.Worklog.Issues.Sum(i => i.Entries.Sum(t => t.TimeSpent));
+            return timesheet.Worklog.Issues.Sum(i => i.Entries.Sum(t => t.TimeSpent));
         }
 
-        public static double GetTimesheetSecondsWorkedAuthor(this Timesheet timesheet, Author author)
+        public static int GetTimesheetSecondsWorkedAuthor(this Timesheet timesheet, Author author)
         {
-            double seconds = 0;
+            int seconds = 0;
             foreach (var issue in timesheet.Worklog.Issues)
                 seconds += issue.Entries.Where(e => e.AuthorFullName == author.Name).Sum(e => e.TimeSpent);
             return seconds;

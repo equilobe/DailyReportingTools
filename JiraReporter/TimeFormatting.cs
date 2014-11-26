@@ -13,7 +13,11 @@ namespace JiraReporter
         public static string SetTimeFormat(int time)
         {
             string timeFormat = "";
-
+            if (time < 0)
+            {
+                time = time * (-1);
+                timeFormat+="-";
+            }
             TimeSpan t = TimeSpan.FromSeconds(time);
 
             if (t.Hours > 0 || t.Days > 0)
@@ -28,6 +32,11 @@ namespace JiraReporter
         public static string SetTimeFormat8Hour(int seconds)
         {
             string timeFormat = "";
+            if (seconds < 0)
+            {
+                seconds = seconds * (-1);
+                timeFormat += "-";
+            }
             int weeks = seconds / 144000;
             int days = seconds / 28800 - weeks * 5;
             int hours = seconds / 3600 - weeks * 5 * 8 - days * 8;

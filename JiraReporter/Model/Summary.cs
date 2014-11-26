@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public enum Health { Bad, Decent, Good, None};
+    public enum Health { Bad, Weak, Good, None };
     public class Summary
     {
         public DateTime FromDate { get; set; }
@@ -24,18 +24,19 @@ namespace JiraReporter.Model
             }
         }
 
-        public double TotalTimeSeconds { get; set; }
-        public double TotalTimeHours {
+        public int TotalTimeSeconds { get; set; }
+        public int TotalTimeHours
+        {
             get
             {
                 return TotalTimeSeconds / 3600;
             }
-         }
+        }
         public string TotalTime
         {
             get
             {
-                return TotalTimeHours.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat8Hour(TotalTimeHours * 3600);
             }
         }
 
@@ -48,21 +49,21 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public int OpenUnassignedCount { get; set; }
 
-        public double SprintTasksTimeLeftSeconds { get; set; }
-        public double SprintTasksTimeLeftHours { get; set; }
+        public int SprintTasksTimeLeftSeconds { get; set; }
+        public int SprintTasksTimeLeftHours { get; set; }
         public string SprintTasksTimeLeftHoursString
         {
             get
             {
-                return SprintTasksTimeLeftHours.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat8Hour(SprintTasksTimeLeftSeconds);
             }
         }
-        public double SprintHourRate { get; set; }  //hour rate per day to complete sprint
+        public int SprintHourRate { get; set; }  //hour rate per day to complete sprint
         public string SprintHourRateString
         {
             get
             {
-                return SprintHourRate.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat8Hour(SprintHourRate * 3600);
             }
         }
 
@@ -95,28 +96,28 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat(AllocatedHoursPerMonth * 3600);
             }
         }
-        public double MonthHoursWorked { get; set; }
+        public int MonthHoursWorked { get; set; }
         public string MonthHoursWorkedString
         {
             get
             {
-                return MonthHoursWorked.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat(MonthHoursWorked * 3600);
             }
         }
-        public double SprintHoursWorked { get; set; }
+        public int SprintHoursWorked { get; set; }
         public string SprintHoursWorkedString
         {
             get
             {
-                return SprintHoursWorked.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat(SprintHoursWorked * 3600); ;
             }
         }
-        public double RemainingMonthHours{ get; set; }
+        public int RemainingMonthHours { get; set; }
         public string RemainingMonthHoursString
         {
             get
             {
-                return TimeFormatting.SetTimeFormat8Hour((int)RemainingMonthHours * 3600);
+                return TimeFormatting.SetTimeFormat8Hour(RemainingMonthHours * 3600);
             }
         }
         public int MonthHourRate { get; set; }
@@ -143,10 +144,13 @@ namespace JiraReporter.Model
         public Health MonthHealth { get; set; }
 
         public Dictionary<Health, string> HealthColors { get; set; }
-        public Dictionary<Health, string> SprintStatus { get; set; }
-        public Dictionary<Health, string> MonthStatus { get; set; }
+        public string SprintStatus { get; set; }
+        public string MonthStatus { get; set; }
 
-        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
+        public int SprintHourRateDeviation { get; set; }
+        public int MonthHourRateDeviation { get; set; }
+
+        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Options options, Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             SetDates(options);
             SetTimeWorked(timesheetCollection);
@@ -173,8 +177,7 @@ namespace JiraReporter.Model
             SetHourRates(timesheetCollection);
 
             SetHealthColors();
-            SetSprintStatus();
-            SetMonthStatus();
+
             SetHealth(timesheetCollection);
 
             Errors = new Errors(authors, sprintTasks);
@@ -190,8 +193,8 @@ namespace JiraReporter.Model
         {
             TotalTimeSeconds = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorked();
             MonthHoursWorked = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorked() / 3600;
-            if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet)) 
-                     SprintHoursWorked = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
+            if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
+                SprintHoursWorked = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
         }
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
@@ -218,24 +221,24 @@ namespace JiraReporter.Model
         {
             var monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
             int sprintDays = 0;
-            if(timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
+            if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
                 sprintDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1));
-            MonthHourRate = (int)RemainingMonthHours / monthDays;
-            if(sprintDays > 0)
-              SprintHourRate = SprintTasksTimeLeftHours / sprintDays;
+            MonthHourRate = RemainingMonthHours / monthDays;
+            if (sprintDays > 0)
+                SprintHourRate = SprintTasksTimeLeftHours / sprintDays;
         }
 
-        private int GetWorkingDays(DateTime startDate, DateTime endDate)
+        public int GetWorkingDays(DateTime startDate, DateTime endDate)
         {
             DateTime dateIterator = startDate.Date;
             int days = 0;
-            while(dateIterator < endDate)
+            while (dateIterator < endDate)
             {
-                if(dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
+                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
                 {
                     days++;
                 }
-               dateIterator = dateIterator.AddDays(1);
+                dateIterator = dateIterator.AddDays(1);
             }
             return days;
         }
@@ -249,82 +252,20 @@ namespace JiraReporter.Model
         {
             HealthColors = new Dictionary<Health, string>();
             HealthColors.Add(Health.Bad, "#FFE7E7");
-            HealthColors.Add(Health.Decent, "#FFD");
+            HealthColors.Add(Health.Weak, "#FFD");
             HealthColors.Add(Health.Good, "#DDFADE");
             HealthColors.Add(Health.None, "White");
         }
 
-        private void SetSprintStatus()
-        {
-            SprintStatus = new Dictionary<Health, string>();
-            SprintStatus.Add(Health.Bad, "Remove sprint tasks or increase sprint duration");
-            SprintStatus.Add(Health.Decent, "Add tasks to sprint");
-            SprintStatus.Add(Health.Good, "Good");
-            SprintStatus.Add(Health.None, string.Empty);
-        }
-
-        private void SetMonthStatus()
-        {
-            MonthStatus = new Dictionary<Health, string>();
-            MonthStatus.Add(Health.Bad, "Remove sprint tasks or increase monthly work limit");
-            MonthStatus.Add(Health.Decent, "Add tasks to sprint");
-            MonthStatus.Add(Health.Good, "Good");
-            MonthStatus.Add(Health.None, string.Empty);
-        }
-
         private void SetHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
-            SetWorkedDaysHealth();
-            SetDayHealth(timesheetCollection);
+            WorkedDaysHealth = HealthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate), TotalTimeHours);
+            DayHealth = HealthInspector.GetDayHealth(timesheetCollection, AllocatedHoursPerDay, SprintHourRate);
         }
 
-        private void SetWorkedDaysHealth()
+        public static int GetDeviation(int allocatedTime, int hourRate)
         {
-            int workedDays = GetWorkingDays(FromDate, ToDate);
-            int allocatedHours = AllocatedHoursPerDay * workedDays;
-            var diff = 0;
-            if (AllocatedHoursPerDay > 0)
-            {
-                if (TotalTimeHours > allocatedHours)
-                    diff = (int)TotalTimeHours - allocatedHours;
-                else
-                    diff = allocatedHours - (int)TotalTimeHours;
-                if (GetPercentage(diff, allocatedHours) <=5)
-                    WorkedDaysHealth = Health.Good;
-                else
-                    if (GetPercentage(diff, allocatedHours) <= 15)
-                        WorkedDaysHealth = Health.Decent;
-                    else
-                        WorkedDaysHealth = Health.Bad;
-            }
-            else
-                WorkedDaysHealth = Health.None;
-        }
-
-        private void SetDayHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
-        {
-            var diff = 0;
-            if (AllocatedHoursPerDay > 0 && timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
-            {
-                if (AllocatedHoursPerDay > SprintHourRate)
-                    diff = AllocatedHoursPerDay - (int)SprintHourRate;
-                else
-                    diff = (int)SprintHourRate - AllocatedHoursPerDay;
-                if (GetPercentage(diff, AllocatedHoursPerDay) <= 5)
-                    DayHealth = Health.Good;
-                else if (GetPercentage(diff, AllocatedHoursPerDay) <= 15)
-                    DayHealth = Health.Decent;
-                else
-                    DayHealth = Health.Bad;
-            }
-            else
-                DayHealth = Health.None;
-        }
-
-        public int GetPercentage(int value, int total)
-        {
-            var percentage = value * 100;
-            return percentage / total;
+            return allocatedTime - hourRate;
         }
     }
 }
