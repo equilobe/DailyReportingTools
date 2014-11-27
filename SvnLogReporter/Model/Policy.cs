@@ -20,6 +20,8 @@ namespace SourceControlLogReporter.Model
         public string ReportsPath { get { return Path.Combine(RootPath, "Reports"); } }
         [XmlIgnore]
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
+        [XmlIgnore]
+        public bool IsDraft { get; set; }
 
         public string ReportTitle { get; set; }
         public string BaseUrl { get; set; }
@@ -30,6 +32,7 @@ namespace SourceControlLogReporter.Model
         public string Username { get; set; }
         public string Password { get; set; }
         public string Emails { get; set; }
+        public string DraftEmails { get; set; }
         public string EmailSubject { get; set; }
         public string ProjectKey { get; set; }
         public string ProjectName { get; set; }
@@ -53,7 +56,10 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                return Emails.Split(new char[] { ' ',  ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if(IsDraft == true)
+                    return DraftEmails.Split(new char[] { ' ',  ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+                else
+                    return Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
         }
 
@@ -83,7 +89,10 @@ namespace SourceControlLogReporter.Model
         public void SetDraftMode(Options options)
         {
             if (options.IsDraft == true)
+            {
                 this.ReportTitle = "DRAFT " + this.ReportTitle;
+                IsDraft = true;
+            }
         }
     }
 }
