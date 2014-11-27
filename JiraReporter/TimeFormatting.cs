@@ -16,7 +16,7 @@ namespace JiraReporter
             if (time < 0)
             {
                 time = time * (-1);
-                timeFormat+="-";
+                timeFormat+="- ";
             }
             TimeSpan t = TimeSpan.FromSeconds(time);
 
@@ -26,6 +26,8 @@ namespace JiraReporter
                 timeFormat += string.Format("{0}m", t.Minutes);
             if (t.Days == 0 && t.Hours == 0 && t.Minutes == 0)
                 timeFormat = string.Format("{0}m", t.Minutes);
+            if (timeFormat.Last() == ' ')
+                timeFormat = timeFormat.Remove(timeFormat.Length - 1);
             return timeFormat;
         }
 
@@ -35,7 +37,7 @@ namespace JiraReporter
             if (seconds < 0)
             {
                 seconds = seconds * (-1);
-                timeFormat += "-";
+                timeFormat += "- ";
             }
             int weeks = seconds / 144000;
             int days = seconds / 28800 - weeks * 5;
@@ -49,9 +51,11 @@ namespace JiraReporter
             if (hours > 0)
                 timeFormat += string.Format("{0}h ", hours);
             if (minutes > 0)
-                timeFormat += string.Format("{0}m ", minutes);
+                timeFormat += string.Format("{0}m", minutes);
             if (weeks == 0 && days == 0 && hours == 0 && minutes == 0)
                 timeFormat = "0m";
+            if (timeFormat.Last() == ' ')
+                timeFormat = timeFormat.Remove(timeFormat.Length - 1);
             return timeFormat;
         }
 
