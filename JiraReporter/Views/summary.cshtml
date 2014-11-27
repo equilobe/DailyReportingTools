@@ -10,7 +10,7 @@
                             <b style="color:black; font-size:14px;">Sprint status</b>
                         </th>
                         <td colspan="1" style="vertical-align: top; text-align: center; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.SprintHealth]">
-                            <span style="color:black">@Model.SprintStatus</span>
+                            <span style="color:black; font-size:14px">@Model.SprintStatus</span>
                         </td>
                     </tr>
                 }
@@ -19,7 +19,7 @@
                         <b style="color:black; font-size:14px;">Sprint - remaining work / day</b>
                     </th>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD;">
-                        <span style="color:black">@Model.SprintHourRateString</span>
+                        <span style="color:black; font-size:14px;">@Model.SprintHourRateString</span>
                     </td>
                 </tr>
             }
@@ -30,7 +30,7 @@
                         <b style="color:black; font-size:14px">Team - estimated work rate / day</b>
                     </th>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD;">
-                        <span style="color:black;">@Model.AllocatedHoursPerDayString</span>
+                        <span style="color:black; font-size:14px">@Model.AllocatedHoursPerDayString</span>
                     </td>
                 </tr>
             }
@@ -149,14 +149,14 @@
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.WorkedDaysHealth]">
                     <b style="color:black; font-size:14px"> @Model.TotalTime </b>
                 </td>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.SprintHealth]">
                     <b style="color:black; font-size:14px">@Model.SprintHoursWorkedString (@Model.SprintTasksTimeLeftHoursString) </b>
                 </td>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.MonthHealth]">
                     <b style="color:black; font-size:14px"> @Model.MonthHoursWorkedString</b>
                     @if (Model.AllocatedHoursPerMonth > 0)
                     {
-                        <b style="color:black; font-size:14px">/ @Model.AllocatedHoursPerMonth </b>
+                        <b style="color:black; font-size:14px">/ @Model.AllocatedHoursPerMonthTime </b>
                     }
                 </td>
             </tr>

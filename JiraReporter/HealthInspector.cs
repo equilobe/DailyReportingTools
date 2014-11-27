@@ -9,29 +9,29 @@ namespace JiraReporter
 {
     public static class HealthInspector
     {
-        private static string GetHealthStatus(int deviation, Health health, string specificString)
+        private static string GetHealthStatus(double variance, Health health, string specificString)
         {
             var statusProcessor = new Dictionary<Health, string>()
             {
-                {Health.Bad, GetBadHealthStatus(deviation, specificString)},
-                {Health.Weak, GetWeakHealthStatus(deviation)},
+                {Health.Bad, GetBadHealthStatus(variance, specificString)},
+                {Health.Weak, GetWeakHealthStatus(variance)},
                 {Health.Good, GetGoodHealthStatus()},
                 {Health.None, GetEmptyHealthStatus()}
             };
             return statusProcessor[health];
         }
 
-        private static string GetBadHealthStatus(int deviation, string specificString)
+        private static string GetBadHealthStatus(double variance, string specificString)
         {
-            if (deviation > 0)
+            if (variance > 0)
                 return "Remove sprint tasks or increase " + specificString;
             else
                 return "Add tasks to sprint";
         }
 
-        private static string GetWeakHealthStatus(int deviation)
+        private static string GetWeakHealthStatus(double variance)
         {
-            if (deviation > 0)
+            if (variance > 0)
                 return "Remove tasks from sprint";
             else
                 return "Add tasks to sprint";
@@ -47,7 +47,19 @@ namespace JiraReporter
             return string.Empty;
         }
 
-        public static Health GetWorkedDaysHealth(int allocatedHours, int totalTimeHours)
+        public static string GetSprintStatus(Health sprintHealth, double variance)
+        {
+            string specificString = "sprint duration";
+            return GetHealthStatus(variance, sprintHealth, specificString);
+        }
+
+        public static string GetMonthStatus(Health monthHealth, double variance)
+        {
+            string specificString = "monthly work limit";
+            return GetHealthStatus(variance, monthHealth, specificString);
+        }
+
+        public static Health GetWorkedDaysHealth(double allocatedHours, double totalTimeHours)
         {
            // int workedDays = GetWorkingDays(FromDate, ToDate);
            // int allocatedHours = AllocatedHoursPerDay * workedDays;
@@ -57,32 +69,59 @@ namespace JiraReporter
                 return Health.None;
         }
 
-        public static Health GetDayHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection, int allocatedHours, int sprintHourRate)
+        public static Health GetDayHealth(double allocatedHours, double sprintHourRate)
         {
-            if (allocatedHours > 0 && timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
+            if (allocatedHours > 0)
                 return GetHealthFromPercentage(allocatedHours, sprintHourRate);
             else
                 return Health.None;
         }
 
-        public static Health GetHealthFromPercentage(int allocatedTime, int hourRate)
+        public static Health GetSprintHealth(Timesheet sprint, double allocatedHours, double totalTime)
         {
-            int diff = Summary.GetDeviation(allocatedTime, hourRate);
-            if (diff < 0)
-                diff = diff * (-1);
+            int daysWorked = 0;
+            if (allocatedHours > 0)
+            {
+                if (DateTime.Now.ToOriginalTimeZone() >= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
+                    daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date);
+                return GetHealthFromPercentage(allocatedHours * daysWorked, totalTime);
+            }
+            else
+                return Health.None;
+        }
 
-            if (GetPercentage(diff, allocatedTime) <= 5)
+        public static Health GetMonthHealth(double allocatedHours, double totalTimeWorked)
+        {
+            if (allocatedHours > 0)
+            {
+                var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1));
+                var workedPerDay = totalTimeWorked / workedDays;
+                var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+                var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
+                return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
+            }
+            else
+                return Health.None;
+        }
+
+        public static Health GetHealthFromPercentage(double allocatedTime, double hourRate)
+        {
+            var variance = Summary.GetVariance(allocatedTime, hourRate);
+            if (variance < 0)
+                variance = variance * (-1);
+
+            if (GetPercentage(variance, allocatedTime) <= 5)
                 return Health.Good;
-            else if (GetPercentage(diff, allocatedTime) <= 15)
+            else if (GetPercentage(variance, allocatedTime) <= 15)
                 return Health.Weak;
             else
                 return Health.Bad;        
         }
 
-        public static int GetPercentage(int value, int total)
+        public static double GetPercentage(double value, double total)
         {
-            var percentage = value * 100;
-            return percentage / total;
+            var percentage = (value * 100)/total;
+            return percentage;
         }
     }
  }

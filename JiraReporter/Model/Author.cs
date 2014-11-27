@@ -25,38 +25,38 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeSpentHours.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat8Hour((int)(TimeSpentHours * 3600));
             }           
         }
 
-        public double TimeSpentCurrentMonthSeconds { get; set; }
+        public int TimeSpentCurrentMonthSeconds { get; set; }
         public double TimeSpentCurrentMonthHours
         {
             get
             {
-                return TimeSpentCurrentMonthSeconds / 3600;
+                return (double)TimeSpentCurrentMonthSeconds / 3600;
             }
         }
         public string TimeSpentCurrentMonthHoursString
         {
             get
             {
-                return TimeSpentCurrentMonthHours.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat8Hour(TimeSpentCurrentMonthSeconds);
             }
         }
-        public double TimeSpentCurrentSprintSeconds { get; set; }
+        public int TimeSpentCurrentSprintSeconds { get; set; }
         public double TimeSpentCurrentSprintHours
         {
             get
             {
-                return TimeSpentCurrentSprintSeconds / 3600;
+                return (double)TimeSpentCurrentSprintSeconds / 3600;
             }
         }
         public string TimeSpentCurrentSprintString
         {
             get
             {
-                return TimeSpentCurrentSprintHours.RoundDoubleDecimals();
+                return TimeFormatting.SetTimeFormat8Hour(TimeSpentCurrentSprintSeconds);
             }
         }
 
@@ -70,13 +70,13 @@ namespace JiraReporter.Model
         public string InProgressTasksTimeLeft { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeft { get; set; }
-        public double RemainingEstimateSeconds { get; set; }
+        public int RemainingEstimateSeconds { get; set; }
         public double RemainingEstimateHours { get; set; }
         public string RemainingEstimateHoursString
         {
             get
             {
-               return RemainingEstimateHours.RoundDoubleDecimals();
+               return TimeFormatting.SetTimeFormat8Hour(RemainingEstimateSeconds);
             }
         }
         public List<Commit> Commits { get; set; }

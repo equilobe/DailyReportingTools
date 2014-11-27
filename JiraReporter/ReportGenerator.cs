@@ -27,15 +27,15 @@ namespace JiraReporter
         }
         private static Report GetReport(Dictionary<TimesheetType, Timesheet> timesheetCollection, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
         {
-            var sprint = GetSprintReport(policy, options, timesheetCollection[TimesheetType.ReportTimesheet], pullRequests);           
-            var authors = AuthorsProcessing.GetAuthors(timesheetCollection, sprint, policy, options, commits);
+            var sprintTasks = GetSprintReport(policy, options, timesheetCollection[TimesheetType.ReportTimesheet], pullRequests);           
+            var authors = AuthorsProcessing.GetAuthors(timesheetCollection, sprintTasks, policy, options, commits);
             var report = new Report(policy, options)
             {
                 Authors = authors,
-                SprintTasks = sprint,
+                SprintTasks = sprintTasks,
                 PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = new Summary(authors, sprint, pullRequests, policy, options, timesheetCollection),
+                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, timesheetCollection),
                 Title = policy.ReportTitle
             };
                          
