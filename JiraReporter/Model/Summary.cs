@@ -273,9 +273,9 @@ namespace JiraReporter.Model
             MonthHealth = HealthInspector.GetMonthHealth(AllocatedHoursPerMonth, MonthHoursWorked);
         }
 
-        public static double GetVariance(double allocatedTime, double hourRate)
+        public static double GetVariance(double allocatedTime, double workedTime)
         {
-            return allocatedTime - hourRate;
+            return allocatedTime - workedTime;
         }
 
         public void SetSprintVariance(Timesheet sprint)
@@ -290,7 +290,7 @@ namespace JiraReporter.Model
             var workedPerDay = MonthHoursWorked / workedDays;
             var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
             var averageFromAllocatedHours = AllocatedHoursPerMonth / monthWorkingDays;
-            MonthHourRateVariance = GetVariance(averageFromAllocatedHours, workedPerDay);
+            MonthHourRateVariance = GetVariance(workedPerDay, averageFromAllocatedHours);
         }
 
         public void SetVariances(Dictionary<TimesheetType, Timesheet> timesheetCollection)
