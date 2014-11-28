@@ -42,6 +42,7 @@ namespace SourceControlLogReporter.Model
         public int AllocatedHoursPerDay { get; set; }
         public SourceControl SourceControl { get; set; }
         public List<User> AuthorsCorrelation { get; set; }
+        public List<string> IgnoredAuthors { get; set; }
 
         public IDictionary<string, string> Users
         {

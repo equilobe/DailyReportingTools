@@ -14,6 +14,8 @@ namespace JiraReporter
             var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet]);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
+            if(policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
+                users.RemoveAll(u => policy.IgnoredAuthors.Exists(a => a == u.displayName));
 
             foreach (var user in users)
             {
