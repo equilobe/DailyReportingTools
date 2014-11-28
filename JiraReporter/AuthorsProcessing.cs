@@ -57,14 +57,15 @@ namespace JiraReporter
             }
         }
 
-        private static void SetAuthor(SprintTasks sprint, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
+        private static void SetAuthor(SprintTasks sprintTasks, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author, timesheetCollection);
             SetAuthorTimeFormat(author);           
-            SetAuthorCommits(policy, author, commits);
+            GetAuthorCommits(policy, author, commits);
             author.Name = SetName(author.Name);
-            SetUnfinishedTasks(sprint, author);
+            SetAuthorsCommitsTasks(sprintTasks.UncompletedTasks, author);
+            SetUnfinishedTasks(sprintTasks, author);
             SetAuthorDayLogs(author, options);
            // SetAuthorErrors(author);
             SetAuthorInitials(author);
@@ -108,8 +109,9 @@ namespace JiraReporter
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
-            author.InProgressTasks = TasksService.GetParentTasks(author.InProgressTasks, author);
-            author.InProgressTasks = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList(); 
+            author.InProgressTasksParents = TasksService.GetParentTasks(author.InProgressTasks, author);
+            author.InProgressTasksParents.RemoveAll(t => t.SubTask == true);
+            author.InProgressTasksParents = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList(); 
         }
 
         private static void SetAuthorOpenTasks(SprintTasks tasks, Author author)
@@ -123,8 +125,9 @@ namespace JiraReporter
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
-            author.OpenTasks = TasksService.GetParentTasks(author.OpenTasks, author);
-            author.OpenTasks = author.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
+            author.OpenTasksParents = TasksService.GetParentTasks(author.OpenTasks, author);
+            author.OpenTasksParents.RemoveAll(t => t.SubTask == true);
+            author.OpenTasksParents = author.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
         private static void SetRemainingEstimate(Author author)
@@ -141,20 +144,41 @@ namespace JiraReporter
                 {
                     unfinishedTasks.Add(task);
                     IssueAdapter.SetLoggedAuthor(unfinishedTasks.Last(), author.Name);
-                    if (unfinishedTasks.Last().ExistsInTimesheet == false)
-                    {
-                        IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last(), author.Commits);
-                        if (unfinishedTasks.Last().Commits.Count > 0) 
-                        {
-                            if (author.Issues == null)
-                                author.Issues = new List<Issue>();
-                            unfinishedTasks.Last().ExistsInTimesheet = true;
-                            author.Issues.Add(new Issue(unfinishedTasks.Last()));
-                        }
-                    }
+                    //if (unfinishedTasks.Last().ExistsInTimesheet == false)
+                    //{
+                    //    IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last(), author.Commits);
+                    //    if (unfinishedTasks.Last().Commits.Count > 0) 
+                    //    {
+                    //        if (author.Issues == null)
+                    //            author.Issues = new List<Issue>();
+                    //        unfinishedTasks.Last().ExistsInTimesheet = true;
+                    //        author.Issues.Add(new Issue(unfinishedTasks.Last()));
+                    //    }
+                    //}
                 }
             return unfinishedTasks;
         } 
+
+        public static void SetAuthorsCommitsTasks(List<Issue> tasks, Author author)
+        {
+            foreach(var task in tasks)
+            {
+                if((author.Issues!=null && author.Issues.Exists(i=>i.Key == task.Key) == false) || author.Issues == null)
+                {
+                    var issue = new Issue(task);
+                    issue.Commits = null;
+                    IssueAdapter.AdjustIssueCommits(issue, author.Commits);
+                    if (issue.Commits.Count > 0)
+                    {
+                        if (author.Issues == null)
+                            author.Issues = new List<Issue>();
+                        issue.ExistsInTimesheet = true;
+                        IssueAdapter.SetLoggedAuthor(issue, author.Name);
+                        author.Issues.Add(issue);
+                    }
+                }
+            }
+        }
        
         private static bool AuthorIsEmpty(Author author)
         {
@@ -163,7 +187,7 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetAuthorCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
+        public static void GetAuthorCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
         {            
             var find = new List<Commit>();             
             author.Commits = new List<Commit>();

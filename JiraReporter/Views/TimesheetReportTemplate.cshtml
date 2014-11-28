@@ -105,8 +105,6 @@
                                     <tbody>
                                         @foreach (var task in author.InProgressTasks)
                                         {
-                                            if (task.SubTask == false)
-                                            {
                                                 if (task.Assignee == author.Name)
                                                 {
                                                     @Partial("Views/uncompletedTask.cshtml", task)
@@ -128,8 +126,7 @@
                                                     {
                                                         @Partial("Views/subtasks.cshtml", subtask)
                                                     }
-                                                }
-                                            }                        
+                                                }           
                                         }                            
                                     </tbody>                                    
                                 </table>
@@ -152,8 +149,6 @@
                                     <tbody>
                                         @foreach (var task in author.OpenTasks)
                                         {
-                                            if (task.SubTask == false)
-                                            {
                                                 if (task.Assignee == author.Name)
                                                 {
                                                     @Partial("Views/uncompletedTask.cshtml", task)
@@ -176,7 +171,6 @@
                                                         @Partial("Views/subtasks.cshtml", subtask)
                                                     }
                                                 }
-                                            }
                                         }
                                         
                                     </tbody>                                 
