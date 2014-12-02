@@ -50,7 +50,13 @@ namespace JiraReporter.Model
         public int OpenUnassignedCount { get; set; }
 
         public int SprintTasksTimeLeftSeconds { get; set; }
-        public int SprintTasksTimeLeftHours { get; set; }
+        public double SprintTasksTimeLeftHours
+        {
+            get
+            {
+                return SprintTasksTimeLeftSeconds / 3600;
+            }
+        }
         public string SprintTasksTimeLeftHoursString
         {
             get
@@ -128,6 +134,15 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour((int)(MonthHourRate * 3600));
             }
         }
+        public string MonthTimeLeft
+        {
+            get
+            {
+                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+                var seconds = days * 28800;
+                return TimeFormatting.SetTimeFormat8Hour(seconds);
+            }
+        }
         public bool HasSprint
         {
             get
@@ -136,7 +151,11 @@ namespace JiraReporter.Model
             }
         }
 
-        public Errors Errors { get; set; }
+        public List<Error> Errors { get; set; }
+        public List<Error> CompletedWithEstimateErrors { get; set; }
+        public List<Error> CompletedWithNoWorkErrors { get; set; }
+        public List<Error> UnassignedErrors { get; set; }
+        public List<Author> AuthorsWithErrors { get; set; }
 
         public Health WorkedDaysHealth { get; set; }
         public Health DayHealth { get; set; }
@@ -173,7 +192,6 @@ namespace JiraReporter.Model
 
             SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
-            SprintTasksTimeLeftHours = SprintTasksTimeLeftSeconds / 3600;
             SetHourRates(timesheetCollection);
 
             SetHealthColors();
@@ -182,7 +200,7 @@ namespace JiraReporter.Model
             SetHealth(timesheetCollection);
             SetHealthStatuses();
 
-            Errors = new Errors(authors, sprintTasks);
+            SetErrors();
         }
 
         private void SetDates(Options options)
@@ -305,6 +323,49 @@ namespace JiraReporter.Model
         {
             SprintStatus = HealthInspector.GetSprintStatus(SprintHealth, SprintHourRateVariance);
             MonthStatus = HealthInspector.GetMonthStatus(MonthHealth, MonthHourRateVariance);
+        }
+
+        private void SetErrors()
+        {
+            GetAllErrors();
+            GetCompletedWithEstimateErrors();
+            GetCompletedWithNoWorkErrors();
+            GetUnassignedErrors();
+        }
+
+        private void GetAllErrors()
+        {
+            foreach(var author in Authors)
+            {
+                if (author.Errors != null && author.Errors.Count > 0)
+                {
+                    if (AuthorsWithErrors == null)
+                        AuthorsWithErrors = new List<Author>();
+                    AuthorsWithErrors.Add(author);
+                    Errors = Errors.Concat(author.Errors).ToList();
+                }
+            }
+        }
+
+        private void GetCompletedWithEstimateErrors()
+        {
+            CompletedWithEstimateErrors = new List<Error>();
+            if(Errors != null)
+                CompletedWithEstimateErrors = Errors.FindAll(e => e.Type == ErrorType.HasRemaining);
+        }
+
+        private void GetCompletedWithNoWorkErrors()
+        {
+            CompletedWithNoWorkErrors = new List<Error>();
+            if(Errors != null)
+                 CompletedWithNoWorkErrors = Errors.FindAll(e => e.Type == ErrorType.HasNoRemaining);
+        }
+
+        private void GetUnassignedErrors()
+        {
+            UnassignedErrors = new List<Error>();
+            if(Errors != null)
+                UnassignedErrors = Errors.FindAll(e => e.Type == ErrorType.Unassigned);
         }
     }
 }

@@ -33,16 +33,16 @@ namespace JiraReporter.Model
             var completedTasks = tasksService.GetCompletedTasks(policy, options, timesheet);
             tasksService.SetCompletedTasks(tasksService.GroupCompletedTasks(completedTasks), this);
             tasksService.SortTasks(this);
-            SetSprintTasksErrors();
+            SetSprintTasksErrors(policy);
         }
 
-        private void SetSprintTasksErrors()
+        private void SetSprintTasksErrors(SourceControlLogReporter.Model.Policy policy)
         {
             int completedErrors = 0;
-            TasksService.SetErrors(UnassignedTasks);
+            TasksService.SetErrors(UnassignedTasks, policy);
             foreach (var list in CompletedTasks)
             {
-                TasksService.SetErrors(list.Value);
+                TasksService.SetErrors(list.Value, policy);
                 completedErrors += TasksService.GetErrors(list.Value);
             }
             CompletedTasksErrorCount = completedErrors;

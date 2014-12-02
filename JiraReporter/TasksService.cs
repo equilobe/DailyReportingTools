@@ -134,11 +134,11 @@ namespace JiraReporter
             return parent;
         }
 
-        public static void SetErrors(List<Issue> tasks)
+        public static void SetErrors(List<Issue> tasks, Policy policy)
         {
             if(tasks!=null && tasks.Count>0)
                foreach (var task in tasks)
-                  IssueAdapter.SetIssueErrors(task);
+                  IssueAdapter.SetIssueErrors(task, policy);
         }
 
         public static int GetErrors(List<Issue> tasks)

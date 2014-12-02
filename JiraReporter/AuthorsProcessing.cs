@@ -63,21 +63,33 @@ namespace JiraReporter
             SetAuthorTimeSpent(author, timesheetCollection);
             SetAuthorTimeFormat(author);           
             GetAuthorCommits(policy, author, commits);
-            author.Name = SetName(author.Name);
+            author.Name = GetName(author.Name);
             SetAuthorsCommitsTasks(sprintTasks.UncompletedTasks, author);
-            SetUnfinishedTasks(sprintTasks, author);
+            SetUnfinishedTasks(sprintTasks, author, policy);
             SetAuthorDayLogs(author, options);
-           // SetAuthorErrors(author);
+            SetAuthorErrors(author);
             SetAuthorInitials(author);
             SetRemainingEstimate(author);
         }
 
-        public static string SetName(string name)
+        public static string GetName(string name)
         {
             string delimiter = "(\\[.*\\])";
             if(name!=null)
                 name = Regex.Replace(name, delimiter, "");
             return name;
+        }
+
+        public static string GetFirstName(string name)
+        {
+            var names = name.Split(' ');
+            return names[0];
+        }
+
+        public static string GetShortName(string name)
+        {
+            var names = name.Split(' ');
+            return names[0] + " " + names[1][0] + ".";
         }
 
         public static void SetAuthorTimeFormat(Author author)
@@ -92,18 +104,17 @@ namespace JiraReporter
                 return author;
         }
 
-        private static void SetUnfinishedTasks(SprintTasks tasks, Author author)
+        private static void SetUnfinishedTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
         {
-            SetAuthorInProgressTasks(tasks, author);
-            SetAuthorOpenTasks(tasks, author);
+            SetAuthorInProgressTasks(tasks, author, policy);
+            SetAuthorOpenTasks(tasks, author, policy);
         }
 
-        private static void SetAuthorInProgressTasks(SprintTasks tasks, Author author)
+        private static void SetAuthorInProgressTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
         {
             author.InProgressTasks = new List<Issue>();
             author.InProgressTasks = GetAuthorTasks(tasks.InProgressTasks, author);
-            TasksService.SetErrors(author.InProgressTasks);
-            author.ErrorsCount += TasksService.GetErrors(author.InProgressTasks);
+            TasksService.SetErrors(author.InProgressTasks, policy);
             if (author.InProgressTasks != null)
             {
                 author.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.InProgressTasks);
@@ -114,12 +125,11 @@ namespace JiraReporter
             author.InProgressTasksParents = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList(); 
         }
 
-        private static void SetAuthorOpenTasks(SprintTasks tasks, Author author)
+        private static void SetAuthorOpenTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
         {
             author.OpenTasks = new List<Issue>();
             author.OpenTasks = GetAuthorTasks(tasks.OpenTasks, author);
-            TasksService.SetErrors(author.OpenTasks);
-            author.ErrorsCount += TasksService.GetErrors(author.OpenTasks);
+            TasksService.SetErrors(author.OpenTasks, policy);
             if (author.OpenTasks != null)
             {
                 author.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(author.OpenTasks);
@@ -251,5 +261,13 @@ namespace JiraReporter
                 if(timesheetCollection[TimesheetType.SprintTimesheet] != null)
                  author.TimeSpentCurrentSprintSeconds = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorkedAuthor(author);
         }
+
+        public static void SetAuthorErrors(Author author)
+        {
+            if(author.Issues!=null && author.Issues.Count>0)
+              foreach(var issue in author.Issues)
+                 if(issue.ErrorsCount > 0)
+                     author.Errors = author.Errors.Concat(issue.Errors).ToList();
+        }   
     }
 }

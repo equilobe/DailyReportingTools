@@ -1,4 +1,41 @@
-﻿<div style="margin-top:40px">
+﻿@if(Model.Errors!=null && Model.Errors.Count>0)
+{
+    <div style="margin-top:20px">
+        <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px; background-color:#FFE7E7">
+            <tbody>
+                <tr>
+                    <th>
+                        <div>
+                            <b style="color:red; font-size:14px;">Report Errors</b>
+                            <ul>
+                                @if(Model.CompletedWithEstimateErrors.Count > 0)
+                                {
+                                    <li><b style="color:red; font-size:14px">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></li>
+                                }
+                                @if (Model.CompletedWithNoWorkErrors.Count > 0)
+                                {
+                                    <li><b style="color:red; font-size:14px">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></li>
+                                }
+                                @if (Model.UnassignedErrors.Count > 0)
+                                {
+                                    <li><b style="color:red; font-size:14px">@Model.UnassignedErrors.Count unassigned items with no estimate</b></li>
+                                }
+                                @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
+                                {
+                                    foreach (var author in Model.AuthorsWithErrors)
+                                    {
+                                        <li><b style="color:red; font-size:14px">@author.FirstName has @author.Errors.Count with no estimate</b></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </th>               
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+<div style="margin-top:10px">
     <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px">
         <tbody>
             @if(Model.HasSprint)
@@ -57,7 +94,7 @@
                         <b style="color:black; font-size:14px">Month - remaining time</b>
                     </th>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <span style="color:black; font-size:14px">@Model.RemainingMonthHoursString</span>
+                        <span style="color:black; font-size:14px">@Model.MonthTimeLeft</span>
                     </td>
                 </tr>
                  <tr>
@@ -110,7 +147,7 @@
                     </td>
                 </tr>
             }
-            @if (Model.Errors.ErrorsCount > 0)
+            @*@if (Model.Errors.ErrorsCount > 0)
             {
                 <tr>
                     <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
@@ -120,7 +157,7 @@
                         @Partial("Views/errorsSection.cshtml", Model.Errors)
                     </td>
                 </tr>
-            }
+            }*@
         </tbody>
     </table>
 </div>
@@ -130,13 +167,13 @@
         <tbody>
             <tr>
                 <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Work log summary (h worked)</b>
+                    <b style="color:black; font-size:14px">Work summary</b>
                 </th>
                 <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
                     <b style="color:black; font-size:14px"> @Model.ReportDate</b>
                 </th>
                 <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Sprint (h left)</b>
+                    <b style="color:black; font-size:14px">Sprint</b>
                 </th>
                 <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
                     <b style="color:black; font-size:14px">Month</b>
@@ -150,33 +187,145 @@
                     <b style="color:black; font-size:14px"> @Model.TotalTime </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.SprintHealth]">
-                    <b style="color:black; font-size:14px">@Model.SprintHoursWorkedString (@Model.SprintTasksTimeLeftHoursString) </b>
+                    <b style="color:black; font-size:14px">@Model.SprintHoursWorkedString</b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.MonthHealth]">
                     <b style="color:black; font-size:14px"> @Model.MonthHoursWorkedString</b>
-                    @if (Model.AllocatedHoursPerMonth > 0)
-                    {
-                        <b style="color:black; font-size:14px">/ @Model.AllocatedHoursPerMonthTime </b>
-                    }
                 </td>
             </tr>
             @foreach(var author in Model.Authors)
             {
                 <tr>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <span style="color:black; font-size:14px"> @author.Name </span>
+                        <span style="color:black; font-size:14px"> @author.ShortName </span>
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <b style="color:black; font-size:14px"> @author.TimeSpentHoursString </b>
+                        @if (author.TimeSpent > 0)
+                        {
+                            <b style="color:black; font-size:14px"> @author.TimeSpentHoursString </b>
+                        }
+                        else
+                        {
+                            <b style="color:black; font-size:14px"> - </b>
+                        }
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <b style="color:black; font-size:14px"> @author.TimeSpentCurrentSprintString (@author.RemainingEstimateHoursString)</b>
+                        @if (author.TimeSpentCurrentSprintSeconds > 0)
+                        {
+                            <b style="color:black; font-size:14px"> @author.TimeSpentCurrentSprintString</b>
+                        }
+                        else
+                        {
+                            <b style="color:black; font-size:14px"> - </b>
+                        }
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                        <span style="color:black; font-size:14px"> @author.TimeSpentCurrentMonthHoursString</span>
+                        @if (author.TimeSpentCurrentMonthSeconds > 0)
+                        {
+                            <span style="color:black; font-size:14px"> @author.TimeSpentCurrentMonthHoursString</span>
+                        }
+                        else
+                        {
+                            <span style="color:black; font-size:14px"> - </span>
+                        }
                     </td>
                 </tr>                 
             }
         </tbody>
+    </table>
+</div>
+
+<div style="margin-top:10px">
+    <table style="border: 1px solid #DDD; border-collapse:collapse; min-width:400px">
+        <tr>
+            <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <b style="color:black; font-size:14px;">Remaining summary</b>
+            </th>
+            <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <b style="color:black; font-size:14px;">In Progress</b>
+            </th>
+            <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <b style="color:black; font-size:14px;">Upcoming</b>
+            </th>
+            <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <b style="color:black; font-size:14px;">Both</b>
+            </th>
+        </tr>
+        <tr>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <b style="color:black; font-size:14px;">Total</b>
+            </td>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                @if(Model.InProgressTasksTimeLeftSeconds > 0)
+                {
+                    <b style="color:black; font-size:14px;">@Model.InProgressTasksTimeLeft</b>
+                }
+                else
+                {
+                    <b style="color:black; font-size:14px;"> - </b>
+                }
+            </td>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                @if(Model.OpenTasksTimeLeftSeconds > 0)
+                {
+                    <b style="color:black; font-size:14px;">@Model.OpenTasksTimeLeft</b>
+                }
+                else
+                {
+                    <b style="color:black; font-size:14px;"> - </b>
+                }
+            </td>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                @if(Model.SprintTasksTimeLeftSeconds > 0)
+                {
+                    <b style="color:black; font-size:14px;">@Model.SprintTasksTimeLeftHoursString</b>
+                }
+                else
+                {
+                    <b style="color:black; font-size:14px;"> - </b>
+                }
+            </td>
+        </tr>
+        @if (Model.Authors != null && Model.Authors.Count > 0)
+        {
+            foreach (var author in Model.Authors)
+            {
+                <tr>
+                    <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        <span style="color:black; font-size:14px;">@author.ShortName</span>
+                    </td>
+                    <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        @if (author.InProgressTasksTimeLeftSeconds > 0)
+                        {
+                            <span style="color:black; font-size:14px;">@author.InProgressTasksTimeLeft</span>
+                        }
+                        else
+                        {
+                            <span style="color:black; font-size:14px;"> - </span>
+                        }
+                    </td>
+                    <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        @if (author.OpenTasksTimeLeftSeconds > 0)
+                        {
+                            <span style="color:black; font-size:14px;">@author.OpenTasksTimeLeft</span>
+                        }
+                        else
+                        {
+                            <span style="color:black; font-size:14px;"> - </span>
+                        }
+                    </td>
+                    <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                        @if (author.RemainingEstimateSeconds > 0)
+                        {
+                            <span style="color:black; font-size:14px;">@author.RemainingEstimateHoursString</span>
+                        }
+                        else
+                        {
+                            <span style="color:black; font-size:14px;"> - </span>
+                        }
+                    </td>
+                </tr>  
+            }
+        }
     </table>
 </div>

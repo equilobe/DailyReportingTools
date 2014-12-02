@@ -10,6 +10,20 @@ namespace JiraReporter.Model
     public class Author
     {
         public string Name { get; set; }
+        public string ShortName
+        {
+            get
+            {
+                return AuthorsProcessing.GetShortName(Name);
+            }
+        }
+        public string FirstName
+        {
+            get
+            {
+                return AuthorsProcessing.GetFirstName(Name);
+            }
+        }
         public string Initials { get; set; }
 
         public string TimeLogged { get; set; }
@@ -83,6 +97,6 @@ namespace JiraReporter.Model
         }
         public List<Commit> Commits { get; set; }
         public List<DayLog> DayLogs { get; set; }
-        public int ErrorsCount { get; set; }
+        public List<Error> Errors { get; set; }
     }
 }

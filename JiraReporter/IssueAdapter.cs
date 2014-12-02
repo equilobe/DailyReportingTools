@@ -133,7 +133,7 @@ namespace JiraReporter
             issue.TimeSpentOnTask = jiraIssue.fields.timespent;
             SetIssueTimeFormat(issue);
             SetIssueExists(issue, timesheet.Worklog.Issues);                
-            issue.Assignee = AuthorsProcessing.SetName(issue.Assignee);
+            issue.Assignee = AuthorsProcessing.GetName(issue.Assignee);
             AdjustIssuePullRequests(issue, pullRequests);
             SetIssueLink(issue, policy);
             HasWorkLoggedByAssignee(issue, timesheet);
@@ -309,23 +309,38 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetIssueErrors(Issue issue)
+        public static void SetIssueErrors(Issue issue, SourceControlLogReporter.Model.Policy policy)
         {
-          if(issue.SubTask == false)
-          {
-              if (issue.StatusCategory.name == "Done")
-              {
-                  if (issue.TimeSpentTotal == 0)
-                      issue.ErrorsCount++;
-                  if (issue.RemainingEstimateSeconds > 0)
-                      issue.ErrorsCount++;
-              }
-              else
-              {
-                  if (issue.RemainingEstimateSeconds == 0)
-                      issue.ErrorsCount++;
-              }
-          }
+            issue.Errors = new List<Error>();
+            if(issue.SubTask == false && issue.Label != policy.PermanentTaskLabel)
+            {
+                if (issue.StatusCategory.name == "Done")
+                {
+                    if (issue.TimeSpentTotal == 0)
+                    {
+                        issue.Errors.Add(new Error { Type = ErrorType.HasNoTimeSpent });
+                        issue.ErrorsCount++;
+                    }
+                    if (issue.RemainingEstimateSeconds > 0)
+                    {
+                        issue.Errors.Add(new Error { Type = ErrorType.HasRemaining });
+                        issue.ErrorsCount++;
+                    }
+                }
+                else
+                {
+                    if (issue.RemainingEstimateSeconds == 0)
+                    {
+                        ErrorType type = new ErrorType();
+                        if (issue.Assignee == null)
+                            type = ErrorType.Unassigned;
+                        else
+                            type = ErrorType.HasNoRemaining;
+                        issue.Errors.Add(new Error { Type = type });
+                        issue.ErrorsCount++;
+                    }
+                }
+            }
         }
 
         public static void SetStatusType(Issue issue)
@@ -349,7 +364,7 @@ namespace JiraReporter
         public static void SetLoggedAuthor(Issue issue, string authorName)
         {
             if (issue.LoggedAuthor == null)
-                issue.LoggedAuthor = issue.LoggedAuthor = AuthorsProcessing.SetName(authorName);
+                issue.LoggedAuthor = issue.LoggedAuthor = AuthorsProcessing.GetName(authorName);
         }
 
         public static void SetSubtasksLoggedAuthor(Issue issue, string authorName)
