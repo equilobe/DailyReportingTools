@@ -200,7 +200,7 @@ namespace JiraReporter.Model
             SetHealth(timesheetCollection);
             SetHealthStatuses();
 
-            SetErrors();
+            SetErrors(sprintTasks);
         }
 
         private void SetDates(Options options)
@@ -325,47 +325,58 @@ namespace JiraReporter.Model
             MonthStatus = HealthInspector.GetMonthStatus(MonthHealth, MonthHourRateVariance);
         }
 
-        private void SetErrors()
+        private void SetErrors(SprintTasks tasks)
         {
+            SetAuthorsWithErrors();        
+            GetCompletedTasksErrors(tasks);
+            GetUnassignedErrors(tasks);
             GetAllErrors();
-            GetCompletedWithEstimateErrors();
-            GetCompletedWithNoWorkErrors();
-            GetUnassignedErrors();
         }
 
         private void GetAllErrors()
         {
-            foreach(var author in Authors)
-            {
-                if (author.Errors != null && author.Errors.Count > 0)
-                {
-                    if (AuthorsWithErrors == null)
-                        AuthorsWithErrors = new List<Author>();
-                    AuthorsWithErrors.Add(author);
-                    Errors = Errors.Concat(author.Errors).ToList();
-                }
-            }
+            var errors = new List<Error>();
+            if(AuthorsWithErrors != null)
+               errors = AuthorsWithErrors.SelectMany(e => e.Errors).ToList();
+            if (CompletedWithEstimateErrors != null)
+               errors = errors.Concat(CompletedWithEstimateErrors).ToList();
+            if (CompletedWithNoWorkErrors != null)
+               errors = errors.Concat(CompletedWithNoWorkErrors).ToList();
+            if (UnassignedErrors != null)
+               errors = errors.Concat(UnassignedErrors).ToList();
+            Errors = errors;
         }
 
-        private void GetCompletedWithEstimateErrors()
+        private void SetAuthorsWithErrors()
+        {
+            AuthorsWithErrors = new List<Author>();
+            AuthorsWithErrors = Authors.FindAll(a => a.Errors != null && a.Errors.Count > 0).ToList();
+        }
+
+        private void GetCompletedTasksErrors(SprintTasks tasks)
         {
             CompletedWithEstimateErrors = new List<Error>();
-            if(Errors != null)
-                CompletedWithEstimateErrors = Errors.FindAll(e => e.Type == ErrorType.HasRemaining);
-        }
-
-        private void GetCompletedWithNoWorkErrors()
-        {
             CompletedWithNoWorkErrors = new List<Error>();
-            if(Errors != null)
-                 CompletedWithNoWorkErrors = Errors.FindAll(e => e.Type == ErrorType.HasNoRemaining);
+            if(tasks.CompletedTasks!=null)
+                foreach(var completedTasks in tasks.CompletedTasks.Values)
+                {
+                    var tasksWithErrors = completedTasks.Where(t => t.ErrorsCount > 0);
+                    var errorsWithEstimate = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasRemaining)).ToList();
+                    var errorsWithNoTimeSpent = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasNoTimeSpent)).ToList();
+                    CompletedWithEstimateErrors = CompletedWithEstimateErrors.Concat(errorsWithEstimate).ToList();
+                    CompletedWithNoWorkErrors = CompletedWithNoWorkErrors.Concat(errorsWithNoTimeSpent).ToList();
+                }
         }
 
-        private void GetUnassignedErrors()
+        private void GetUnassignedErrors(SprintTasks tasks)
         {
             UnassignedErrors = new List<Error>();
-            if(Errors != null)
-                UnassignedErrors = Errors.FindAll(e => e.Type == ErrorType.Unassigned);
+            if(tasks.UnassignedTasks!=null && tasks.UnassignedTasks.Count>0)
+            {
+                var errors = new List<Error>();
+                errors = tasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                UnassignedErrors = UnassignedErrors.Concat(errors).ToList();
+            }
         }
     }
 }

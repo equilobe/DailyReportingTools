@@ -132,7 +132,8 @@ namespace JiraReporter
             SetIssueTimeSpent(issue);
             issue.TimeSpentOnTask = jiraIssue.fields.timespent;
             SetIssueTimeFormat(issue);
-            SetIssueExists(issue, timesheet.Worklog.Issues);                
+            if(timesheet!= null)
+                SetIssueExists(issue, timesheet.Worklog.Issues);                
             issue.Assignee = AuthorsProcessing.GetName(issue.Assignee);
             AdjustIssuePullRequests(issue, pullRequests);
             SetIssueLink(issue, policy);

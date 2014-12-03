@@ -43,10 +43,10 @@ namespace JiraReporter.Model
             foreach (var list in CompletedTasks)
             {
                 TasksService.SetErrors(list.Value, policy);
-                completedErrors += TasksService.GetErrors(list.Value);
+                completedErrors += TasksService.GetErrorsCount(list.Value);
             }
             CompletedTasksErrorCount = completedErrors;
-            UnassignedTasksErrorCount = TasksService.GetErrors(UnassignedTasks);
+            UnassignedTasksErrorCount = TasksService.GetErrorsCount(UnassignedTasks);
         }   
     }
 }

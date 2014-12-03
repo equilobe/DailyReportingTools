@@ -1,6 +1,7 @@
 ﻿using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -233,16 +234,6 @@ namespace JiraReporter
                       commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
         }
 
-        //private static void SetAuthorErrors(Author author)
-        //{
-        //    if (author.Issues != null)
-        //        author.ErrorsCount += author.Issues.Sum(i => i.ErrorsCount);
-        //    if (author.InProgressTasks != null)
-        //        author.ErrorsCount += author.InProgressTasks.Where(t=>t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
-        //    if (author.OpenTasks != null)
-        //        author.ErrorsCount += author.OpenTasks.Where(t => t.ExistsInTimesheet == false).Sum(i => i.ErrorsCount);
-        //}
-
         private static void SetAuthorInitials(Author author)
         {
             string name = author.Name;
@@ -264,10 +255,19 @@ namespace JiraReporter
 
         public static void SetAuthorErrors(Author author)
         {
-            if(author.Issues!=null && author.Issues.Count>0)
-              foreach(var issue in author.Issues)
-                 if(issue.ErrorsCount > 0)
-                     author.Errors = author.Errors.Concat(issue.Errors).ToList();
+            var inProgressTasksErrors = new List<Error>();
+            if (author.InProgressTasks != null && author.InProgressTasks.Count > 0)
+                inProgressTasksErrors = author.InProgressTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            var openTasksErrors = new List<Error>();
+            if(author.OpenTasks!=null && author.OpenTasks.Count>0)
+                openTasksErrors = author.OpenTasks.Where(e => e.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+
+            if(inProgressTasksErrors.Count>0 || openTasksErrors.Count>0)
+            {
+                author.Errors = new List<Error>();
+                author.Errors = author.Errors.Concat(inProgressTasksErrors).ToList();
+                author.Errors = author.Errors.Concat(openTasksErrors).ToList();
+            }
         }   
     }
 }

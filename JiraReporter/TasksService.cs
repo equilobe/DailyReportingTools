@@ -42,6 +42,7 @@ namespace JiraReporter
                     Summary = jiraIssue.fields.summary
                 };
                 IssueAdapter.SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
+                IssueAdapter.SetIssueErrors(issue, policy);
 
                 if (issue.StatusCategory.name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
@@ -62,6 +63,7 @@ namespace JiraReporter
             });
 
             IssueAdapter.SetIssue(tasks.Last(), policy, jiraIssue, timesheet, pullRequests);
+            IssueAdapter.SetIssueErrors(tasks.Last(), policy);
         }
 
         public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)
@@ -141,7 +143,7 @@ namespace JiraReporter
                   IssueAdapter.SetIssueErrors(task, policy);
         }
 
-        public static int GetErrors(List<Issue> tasks)
+        public static int GetErrorsCount(List<Issue> tasks)
         {
             if (tasks != null)
                 return tasks.Sum(t => t.ErrorsCount);

@@ -1,33 +1,55 @@
 ﻿@if(Model.Errors!=null && Model.Errors.Count>0)
 {
     <div style="margin-top:20px">
-        <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px; background-color:#FFE7E7">
+        <table style="border:1px solid #DDD; min-width:250px; background-color:#FFE7E7; border-radius:20px">
             <tbody>
                 <tr>
                     <th>
                         <div>
                             <b style="color:red; font-size:14px;">Report Errors</b>
-                            <ul>
-                                @if(Model.CompletedWithEstimateErrors.Count > 0)
-                                {
-                                    <li><b style="color:red; font-size:14px">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></li>
-                                }
-                                @if (Model.CompletedWithNoWorkErrors.Count > 0)
-                                {
-                                    <li><b style="color:red; font-size:14px">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></li>
-                                }
-                                @if (Model.UnassignedErrors.Count > 0)
-                                {
-                                    <li><b style="color:red; font-size:14px">@Model.UnassignedErrors.Count unassigned items with no estimate</b></li>
-                                }
-                                @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
-                                {
-                                    foreach (var author in Model.AuthorsWithErrors)
+                            <table style="margin-top:5px">
+                                <tbody>
+                                    @if (Model.CompletedWithEstimateErrors.Count > 0)
                                     {
-                                        <li><b style="color:red; font-size:14px">@author.FirstName has @author.Errors.Count with no estimate</b></li>
+                                        <tr>
+                                            <td style="vertical-align:top; width:15px">
+                                                <span>&#x25cf;</span>
+                                            </td>
+                                            <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                                        </tr>                                     
                                     }
-                                }
-                            </ul>
+                                    @if (Model.CompletedWithNoWorkErrors.Count > 0)
+                                    {
+                                        <tr>
+                                            <td style="vertical-align:top; width:15px">
+                                                <span>&#x25cf;</span>
+                                            </td>
+                                            <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
+                                        </tr>                                    
+                                    }
+                                    @if (Model.UnassignedErrors.Count > 0)
+                                    {
+                                        <tr>
+                                            <td style="vertical-align:top; width:15px">
+                                                <span>&#x25cf;</span>
+                                            </td>
+                                            <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
+                                        </tr>                                      
+                                    }
+                                    @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
+                                    {
+                                        foreach (var author in Model.AuthorsWithErrors)
+                                        {
+                                            <tr>
+                                                <td style="vertical-align:top; width:15px">
+                                                    <span>&#x25cf;</span>
+                                                </td>
+                                                <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
+                                            </tr>                                          
+                                        }
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </th>               
                 </tr>
