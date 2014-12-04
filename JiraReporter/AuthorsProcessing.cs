@@ -262,6 +262,13 @@ namespace JiraReporter
                 author.Errors = author.Errors.Concat(inProgressTasksErrors).ToList();
                 author.Errors = author.Errors.Concat(openTasksErrors).ToList();
             }
-        }   
+        } 
+  
+        public static bool AuthorExistsInTimesheet(Author author, Timesheet timesheet)
+        {
+            if (timesheet != null && timesheet.Worklog.Issues != null)
+                return timesheet.Worklog.Issues.Exists(i => i.Assignee == author.Name);
+            return false;
+        }
     }
 }
