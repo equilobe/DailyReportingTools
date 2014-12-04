@@ -65,7 +65,7 @@ namespace JiraReporter
             SetAuthorTimeFormat(author);           
             GetAuthorCommits(policy, author, commits);
             author.Name = GetName(author.Name);
-            SetAuthorsCommitsTasks(sprintTasks.UncompletedTasks, author);
+            SetCommitsAllTasks(author, sprintTasks);
             SetUnfinishedTasks(sprintTasks, author, policy);
             SetAuthorDayLogs(author, options);
             SetAuthorErrors(author);
@@ -153,17 +153,6 @@ namespace JiraReporter
                 {
                     unfinishedTasks.Add(task);
                     IssueAdapter.SetLoggedAuthor(unfinishedTasks.Last(), author.Name);
-                    //if (unfinishedTasks.Last().ExistsInTimesheet == false)
-                    //{
-                    //    IssueAdapter.AdjustIssueCommits(unfinishedTasks.Last(), author.Commits);
-                    //    if (unfinishedTasks.Last().Commits.Count > 0) 
-                    //    {
-                    //        if (author.Issues == null)
-                    //            author.Issues = new List<Issue>();
-                    //        unfinishedTasks.Last().ExistsInTimesheet = true;
-                    //        author.Issues.Add(new Issue(unfinishedTasks.Last()));
-                    //    }
-                    //}
                 }
             return unfinishedTasks;
         } 
@@ -187,6 +176,13 @@ namespace JiraReporter
                     }
                 }
             }
+        }
+
+        public static void SetCommitsAllTasks(Author author, SprintTasks tasks)
+        {
+            SetAuthorsCommitsTasks(tasks.UncompletedTasks, author);
+            foreach (var listOfTasks in tasks.CompletedTasks.Values)
+                SetAuthorsCommitsTasks(listOfTasks, author);
         }
        
         private static bool AuthorIsEmpty(Author author)
