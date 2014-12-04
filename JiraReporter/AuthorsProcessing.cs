@@ -122,8 +122,7 @@ namespace JiraReporter
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
             author.InProgressTasksParents = TasksService.GetParentTasks(author.InProgressTasks, author);
-            author.InProgressTasksParents.RemoveAll(t => t.SubTask == true);
-            author.InProgressTasksParents = author.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList(); 
+            author.InProgressTasksParents = author.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList(); 
         }
 
         private static void SetAuthorOpenTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
@@ -137,8 +136,7 @@ namespace JiraReporter
                 author.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.OpenTasksTimeLeftSeconds);
             }
             author.OpenTasksParents = TasksService.GetParentTasks(author.OpenTasks, author);
-            author.OpenTasksParents.RemoveAll(t => t.SubTask == true);
-            author.OpenTasksParents = author.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
+            author.OpenTasksParents = author.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 
         private static void SetRemainingEstimate(Author author)

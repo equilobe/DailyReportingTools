@@ -103,7 +103,7 @@
                                 }
                                 <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                                     <tbody>
-                                        @foreach (var task in author.InProgressTasks)
+                                        @foreach (var task in author.InProgressTasksParents)
                                         {
                                                 if (task.Assignee == author.Name)
                                                 {
@@ -147,7 +147,7 @@
                                     }
                                 <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                                     <tbody>
-                                        @foreach (var task in author.OpenTasks)
+                                        @foreach (var task in author.OpenTasksParents)
                                         {
                                                 if (task.Assignee == author.Name)
                                                 {

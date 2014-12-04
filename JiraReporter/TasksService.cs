@@ -124,6 +124,7 @@ namespace JiraReporter
                         }
                     }
             }
+            parentTasks.RemoveAll(t => t.SubTask == true);
             return parentTasks;
         }
 
