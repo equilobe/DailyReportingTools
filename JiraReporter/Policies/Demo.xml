@@ -16,6 +16,8 @@
   <Emails></Emails> <!-- e-mail address of the recipient, e.g. contact@equilobe.com -->
   <EmailSubject></EmailSubject> <!-- e-mail subject, e.g. Daily Report for -->
   <ReportTitle></ReportTitle> <!-- e-mail report title, e.g. Board Prospects -->
+  <ReportTime></ReportTime> <!-- time when the report is sent, e.g. 02:00 PM or 14:00 -->
+  <DraftTime></DraftTIme> <!-- time when draft report is sent, e.g. 08:00 AM -->
   <SourceControl>
     <Type></Type> <!-- type of the Source Control System, e.g. SVN, GitHub -->
     <RepoOwner></RepoOwner> <!-- owner of the repository, e.g. EQUILOBE -->

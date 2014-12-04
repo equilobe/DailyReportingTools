@@ -24,6 +24,30 @@ namespace SourceControlLogReporter.Model
         public bool IsDraft { get; set; }
 
         public string ReportTitle { get; set; }
+        public string ReportTime { get; set; }
+        [XmlIgnore]
+        public DateTime ReportTimeDateFormat
+        {
+            get
+            {
+                if (ReportTime != null)
+                    return DateTime.Parse(ReportTime);
+                else
+                    return new DateTime();
+            }
+        }
+        public string DraftTime { get; set; }
+        [XmlIgnore]
+        public DateTime DraftTimeDateFormat
+        {
+            get
+            {
+                if (DraftTime != null)
+                    return DateTime.Parse(DraftTime);
+                else
+                    return new DateTime();
+            }
+        }
         public string BaseUrl { get; set; }
         public string TargetGroup { get; set; }
         public string PermanentTaskLabel { get; set; }
