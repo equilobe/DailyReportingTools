@@ -124,10 +124,6 @@ else
                 @if (Model.Commits != null)
                 {
                     @Partial("Views/commits.cshtml", Model.Commits)
-                    if (Model.Commits.Count > 0)
-                    {
-                        @Partial("Views/commitsComments.cshtml", Model.Commits)
-                    }
                 }
             </div>
         </td>
