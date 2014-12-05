@@ -49,6 +49,33 @@ namespace JiraReporter.Model
         public int OpenTasksTimeLeftSeconds { get; set; }
         public int OpenUnassignedCount { get; set; }
 
+        public int OpenUnassignedTasksSecondsLeft { get; set; }
+        public string OpenUnassignedTasksTimeLeft
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat8Hour(OpenUnassignedTasksSecondsLeft);
+            }
+        }
+
+        public int InProgressUnassignedTasksSecondsLeft { get; set; }
+        public string InProgressUnassignedTasksTimeLeft
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat8Hour(InProgressUnassignedTasksSecondsLeft);
+            }
+        }
+
+        public int UnassignedTasksSecondsLeft { get; set; }
+        public string UnassignedTasksTimeLeft
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat8Hour(UnassignedTasksSecondsLeft);
+            }
+        }
+
         public int SprintTasksTimeLeftSeconds { get; set; }
         public double SprintTasksTimeLeftHours
         {
@@ -180,6 +207,10 @@ namespace JiraReporter.Model
             OpenUnassignedCount = sprintTasks.OpenTasks.Count(tasks => tasks.Assignee == null);
             InProgressTasksCount = sprintTasks.InProgressTasks.Count;
             OpenTasksCount = sprintTasks.OpenTasks.Count;
+
+            OpenUnassignedTasksSecondsLeft = JiraReporter.TasksService.GetTimeLeftForSpecificAuthorTasks(sprintTasks.OpenTasks, null);
+            InProgressUnassignedTasksSecondsLeft = JiraReporter.TasksService.GetTimeLeftForSpecificAuthorTasks(sprintTasks.InProgressTasks, null);
+            UnassignedTasksSecondsLeft = OpenUnassignedTasksSecondsLeft + InProgressUnassignedTasksSecondsLeft;
 
             AuthorsInvolved = authors.Count;
             Authors = authors;

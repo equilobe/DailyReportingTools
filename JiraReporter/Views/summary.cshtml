@@ -352,5 +352,41 @@
                 </tr>  
             }
         }
+        <tr>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <span style="color:black; font-size:14px;">Unassigned</span>
+            </td>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                @if (Model.InProgressUnassignedTasksSecondsLeft > 0)
+                {
+                    <span style="color:black; font-size:14px;">@Model.InProgressUnassignedTasksTimeLeft</span>
+                }
+                else
+                {
+                    <span style="color:black; font-size:14px;"> - </span>
+                }
+            </td>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                @if (Model.OpenUnassignedTasksSecondsLeft > 0)
+                {
+                    <span style="color:black; font-size:14px;">@Model.OpenUnassignedTasksTimeLeft</span>
+                }
+                else
+                {
+                    <span style="color:black; font-size:14px;"> - </span>
+                }
+            </td>
+            <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                @if (Model.UnassignedTasksSecondsLeft > 0)
+                {
+                    <span style="color:black; font-size:14px;">@Model.UnassignedTasksTimeLeft</span>
+                }
+                else
+                {
+                    <span style="color:black; font-size:14px;"> - </span>
+                }
+            </td>
+
+        </tr>
     </table>
 </div>

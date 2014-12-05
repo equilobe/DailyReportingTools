@@ -151,5 +151,10 @@ namespace JiraReporter
             else
                 return 0;
         }
+
+        public static int GetTimeLeftForSpecificAuthorTasks(List<Issue> tasks, string authorName)
+        {
+            return tasks.Where(t => t.Assignee == authorName).Sum(i=>i.TotalRemainingSeconds);
+        }
     }
 }
