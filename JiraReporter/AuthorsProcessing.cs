@@ -12,7 +12,11 @@ namespace JiraReporter
     {
         public static List<Author> GetAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
         {
-            var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet]);
+            var sprintAuthors = GetAuthorsFromTimesheet(timesheetCollection[TimesheetType.SprintTimesheet]);
+            var loggedAuthors = GetAuthorsFromTimesheet(timesheetCollection[TimesheetType.ReportTimesheet]);
+            var reportAuthors = sprintAuthors.Concat(loggedAuthors).Distinct().ToList();
+
+            var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet], reportAuthors);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
             if(policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
@@ -27,35 +31,24 @@ namespace JiraReporter
                 SetAuthor(report, authorsNew.Last(), policy, commits, options, timesheetCollection);
             }
 
-            authorsNew.RemoveAll(AuthorIsEmpty);
+            authorsNew.RemoveAll(a=>reportAuthors.Exists(t=>t==a.Name) == false && AuthorIsEmpty(a));
             return authorsNew;
         }
 
-        private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet timesheet)
+        private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet timesheet, List<string> reportAuthors)
         {
             var authors = new Dictionary<string, List<Issue>>();
-            foreach (var issue in timesheet.Worklog.Issues)
-            {
-                IssueAdapter.SetLoggedAuthor(issue, issue.Entries.First().AuthorFullName);
-                Add(authors, issue.Entries.First().AuthorFullName, issue);
-            }
+            if(reportAuthors.Count > 0)
+                foreach(var author in reportAuthors)
+                {
+                    var issues = timesheet.Worklog.Issues.Where(i => i.Entries.First().AuthorFullName == author).ToList();
+                    if(issues != null && issues.Count > 0)
+                        foreach(var issue in issues)
+                            IssueAdapter.SetLoggedAuthor(issue, author);
+                    authors.Add(author, issues);
+                }
                
             return authors;
-        }
-
-        private static void Add(Dictionary<string, List<Issue>> dict, string key, Issue issue)
-        {
-            if (dict.ContainsKey(key))
-            {
-                List<Issue> list = dict[key];
-                list.Add(new Issue(issue));
-            }
-            else
-            {
-                List<Issue> list = new List<Issue>();
-                list.Add(new Issue(issue));
-                dict.Add(key, list);
-            }
         }
 
         private static void SetAuthor(SprintTasks sprintTasks, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
@@ -90,7 +83,10 @@ namespace JiraReporter
         public static string GetShortName(string name)
         {
             var names = name.Split(' ');
-            return names[0] + " " + names[1][0] + ".";
+            if (names.Count() > 1)
+                return names[0] + " " + names[1][0] + ".";
+            else
+                return names[0];
         }
 
         public static void SetAuthorTimeFormat(Author author)
@@ -269,6 +265,14 @@ namespace JiraReporter
             if (timesheet != null && timesheet.Worklog.Issues != null)
                 return timesheet.Worklog.Issues.Exists(i => i.Assignee == author.Name);
             return false;
+        }
+
+        public static List<string> GetAuthorsFromTimesheet(Timesheet timesheet)
+        {
+            var authors = new List<string>();
+            if(timesheet!=null && timesheet.Worklog!=null)
+                authors = timesheet.Worklog.Issues.SelectMany(i=>i.Entries.Select(e=>e.AuthorFullName)).Distinct().ToList();
+            return authors;
         }
     }
 }

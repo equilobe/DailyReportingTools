@@ -29,10 +29,12 @@
 </div>
 
     <div style="margin-top:40px; line-height:1.4em;">
-        @if(Model.Authors.Count>0)
-        { 
-              foreach (var author in Model.Authors)
-              {
+        @if (Model.Authors.Count > 0)
+        {
+            foreach (var author in Model.Authors)
+            {
+                if (author.DayLogs.Count > 0 || author.InProgressTasks.Count > 0 || author.OpenTasks.Count > 0)
+                {
                     <div style="margin-top:40px;">
                         <h1 style="color:black; line-height:1.4em">@author.Name</h1>
                         @if (author.DayLogs.Count > 0)
@@ -47,46 +49,46 @@
                                         {
                                             <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                                                 <tbody>
-                                                @foreach (var issue in dayLog.Issues)
-                                                {
-                                                    if (issue.AssigneeSubtasks != null)
+                                                    @foreach (var issue in dayLog.Issues)
                                                     {
-                                                        if (issue.AssigneeSubtasks.Count > 0)
+                                                        if (issue.AssigneeSubtasks != null)
                                                         {
-                                                            if(issue.ExistsInTimesheet == true && issue.Assignee == author.Name)
+                                                            if (issue.AssigneeSubtasks.Count > 0)
+                                                            {
+                                                                if (issue.ExistsInTimesheet == true && issue.Assignee == author.Name)
+                                                                {
+                                                                    @Partial("Views/workedTask.cshtml", issue)
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Partial("Views/parentTask.cshtml", issue)
+                                                                }
+                                                                foreach (var subtask in issue.AssigneeSubtasks)
+                                                                {
+                                                                    @Partial("Views/workedTask.cshtml", subtask)
+                                                                }
+                                                            }
+                                                        }
+                                                        if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
+                                                        {
+                                                            if (issue.SubTask == false)
                                                             {
                                                                 @Partial("Views/workedTask.cshtml", issue)
                                                             }
-                                                            else
-                                                            {
-                                                                @Partial("Views/parentTask.cshtml", issue)
-                                                            }
-                                                            foreach (var subtask in issue.AssigneeSubtasks)
-                                                            {
-                                                                @Partial("Views/workedTask.cshtml", subtask)
-                                                            }
                                                         }
                                                     }
-                                                    if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
-                                                    {
-                                                        if (issue.SubTask == false)
-                                                        {
-                                                            @Partial("Views/workedTask.cshtml", issue)
-                                                        }
-                                                    }
-                                                }
                                                 </tbody>
                                             </table>
                                         }
                                     }
                                 </div>
-                             
+
                                 if (dayLog.UnsyncedCommits.Count > 0)
                                 {
                                     @Partial("Views/unrelatedCommits.cshtml", dayLog.UnsyncedCommits)
                                 }
                             }
-                        }                                                                   
+                        }
 
                         @if (author.InProgressTasks.Count > 0)
                         {
@@ -94,7 +96,7 @@
                                 <b style="color:sienna; font-size:16px;">In Progress</b>
 
                                 @if (author.InProgressTasksTimeLeftSeconds == 0)
-                                { 
+                                {
                                     <span style="color:red; font-size:12px;"> &#x25cf; @author.InProgressTasksTimeLeft left</span>
                                 }
                                 else
@@ -105,82 +107,83 @@
                                     <tbody>
                                         @foreach (var task in author.InProgressTasksParents)
                                         {
-                                                if (task.Assignee == author.Name)
+                                            if (task.Assignee == author.Name)
+                                            {
+                                                @Partial("Views/uncompletedTask.cshtml", task)
+                                                if (task.SubtasksIssues != null)
                                                 {
-                                                    @Partial("Views/uncompletedTask.cshtml", task)
-                                                    if (task.SubtasksIssues != null)
+                                                    if (task.SubtasksIssues.Count > 0)
                                                     {
-                                                        if (task.SubtasksIssues.Count > 0)
+                                                        foreach (var subtask in task.SubtasksIssues)
                                                         {
-                                                            foreach (var subtask in task.SubtasksIssues)
-                                                            {
-                                                                @Partial("Views/subtasks.cshtml", subtask)
-                                                            }
+                                                            @Partial("Views/subtasks.cshtml", subtask)
                                                         }
                                                     }
                                                 }
-                                                else
+                                            }
+                                            else
+                                            {
+                                                @Partial("Views/parentTask.cshtml", task)
+                                                foreach (var subtask in task.AssigneeSubtasks)
                                                 {
-                                                    @Partial("Views/parentTask.cshtml", task)
-                                                    foreach (var subtask in task.AssigneeSubtasks)
-                                                    {
-                                                        @Partial("Views/subtasks.cshtml", subtask)
-                                                    }
-                                                }           
-                                        }                            
-                                    </tbody>                                    
+                                                    @Partial("Views/subtasks.cshtml", subtask)
+                                                }
+                                            }
+                                        }
+                                    </tbody>
                                 </table>
-                           </div>
-                        }   
-                        
-                        @if(author.OpenTasks.Count>0)
+                            </div>
+                        }
+
+                        @if (author.OpenTasks.Count > 0)
                         {
                             <div style="line-height:1.4em; color:sienna; margin-top:20px;">
-                                    <b style="font-size: 16px; color: sienna">Upcoming </b>
-                                    @if (author.OpenTasksTimeLeftSeconds != 0)                     
-                                    {
-                                        <span style="color: sienna; font-size:12px;"> &#x25cf; @author.OpenTasksTimeLeft left</span>
-                                    }
-                                    else
-                                    {
-                                        <span style="color:red; font-size:12px;">&#x25cf; @author.OpenTasksTimeLeft left</span>
-                                    }
+                                <b style="font-size: 16px; color: sienna">Upcoming </b>
+                                @if (author.OpenTasksTimeLeftSeconds != 0)
+                                {
+                                    <span style="color: sienna; font-size:12px;"> &#x25cf; @author.OpenTasksTimeLeft left</span>
+                                }
+                                else
+                                {
+                                    <span style="color:red; font-size:12px;">&#x25cf; @author.OpenTasksTimeLeft left</span>
+                                }
                                 <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                                     <tbody>
                                         @foreach (var task in author.OpenTasksParents)
                                         {
-                                                if (task.Assignee == author.Name)
+                                            if (task.Assignee == author.Name)
+                                            {
+                                                @Partial("Views/uncompletedTask.cshtml", task)
+                                                if (task.SubtasksIssues != null)
                                                 {
-                                                    @Partial("Views/uncompletedTask.cshtml", task)
-                                                    if (task.SubtasksIssues != null)
+                                                    if (task.SubtasksIssues.Count > 0)
                                                     {
-                                                        if (task.SubtasksIssues.Count > 0)
+                                                        foreach (var subtask in task.SubtasksIssues)
                                                         {
-                                                            foreach (var subtask in task.SubtasksIssues)
-                                                            {
-                                                                @Partial("Views/subtasks.cshtml", subtask)
-                                                            }
+                                                            @Partial("Views/subtasks.cshtml", subtask)
                                                         }
                                                     }
                                                 }
-                                                else
+                                            }
+                                            else
+                                            {
+                                                @Partial("Views/parentTask.cshtml", task)
+                                                foreach (var subtask in task.AssigneeSubtasks)
                                                 {
-                                                    @Partial("Views/parentTask.cshtml", task)
-                                                    foreach (var subtask in task.AssigneeSubtasks)
-                                                    {
-                                                        @Partial("Views/subtasks.cshtml", subtask)
-                                                    }
+                                                    @Partial("Views/subtasks.cshtml", subtask)
                                                 }
+                                            }
                                         }
-                                        
-                                    </tbody>                                 
+
+                                    </tbody>
                                 </table>
-                            
+
                             </div>
-                        }                    
-                    </div>                       
+                        }
+                    </div>
                 }
             }
+        }
         </div>
 
             @if (Model.SprintTasks.UnassignedTasks.Count > 0)
