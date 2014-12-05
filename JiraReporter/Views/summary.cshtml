@@ -1,15 +1,15 @@
 ﻿@if(Model.Errors!=null && Model.Errors.Count>0)
 {
     <div style="margin-top:20px">
-        <table style="border:1px solid #AB0202; min-width:250px; border-radius:20px">
+        <table style="border:1px solid #D00000; min-width:250px; border-radius:10px; padding:5px; background-color:#FAEAEA">
             <tbody>
                 <tr>
                     <th>
                         <div>
-                            <a style="text-decoration:none;border-radius:50px;width:15px; height:15px; font-size:11px; font-family: Segoe UI Symbol;color:#ffffff;padding:1px 1px 1px 1px;background-color:red; display:inline-block; margin-right:4px;">
-                                &#x2715;
+                            <a style="text-decoration:none;border-radius:50px;width:15px; height:15px; font-size:11px; font-family: Segoe UI Symbol, Arial;color:#ffffff;padding:1px 1px 1px 1px;background-color:#D00000; display:inline-block; margin-right:4px;">
+                                &#10006;
                             </a>
-                            <b style="color:red; font-size:14px;">Report Errors</b>
+                            <b style="color:#D00000; font-size:14px;">Report Errors</b>
                             <table style="margin-top:5px">
                                 <tbody>
                                     @if (Model.CompletedWithEstimateErrors.Count > 0)
@@ -18,7 +18,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
                                         </tr>                                     
                                     }
                                     @if (Model.CompletedWithNoWorkErrors.Count > 0)
@@ -27,7 +27,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
                                         </tr>                                    
                                     }
                                     @if (Model.UnassignedErrors.Count > 0)
@@ -36,7 +36,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
                                         </tr>                                      
                                     }
                                     @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
@@ -47,7 +47,7 @@
                                                 <td style="vertical-align:top; width:15px">
                                                     <span>&#x25cf;</span>
                                                 </td>
-                                                <td colspan="1" style="text-align: left"><b style="color:red; font-size:14px">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
+                                                <td colspan="1" style="text-align: left"><b style="font-size:14px">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
                                             </tr>                                          
                                         }
                                     }
@@ -227,21 +227,21 @@
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                         @if (author.TimeSpent > 0)
                         {
-                            <b style="color:black; font-size:14px"> @author.TimeLogged </b>
+                            <span style="color:black; font-size:14px"> @author.TimeLogged </span>
                         }
                         else
                         {
-                            <b style="color:black; font-size:14px"> - </b>
+                            <span style="color:black; font-size:14px"> - </span>
                         }
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                         @if (author.TimeSpentCurrentSprintSeconds > 0)
                         {
-                            <b style="color:black; font-size:14px"> @author.TimeSpentCurrentSprintString</b>
+                            <span style="color:black; font-size:14px"> @author.TimeSpentCurrentSprintString</span>
                         }
                         else
                         {
-                            <b style="color:black; font-size:14px"> - </b>
+                            <span style="color:black; font-size:14px"> - </span>
                         }
                     </td>
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
@@ -278,7 +278,7 @@
         </tr>
         <tr>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                <b style="color:black; font-size:14px;">Total</b>
+                <b style="color:black; font-size:14px;">TOTAL</b>
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
                 @if(Model.InProgressTasksTimeLeftSeconds > 0)
