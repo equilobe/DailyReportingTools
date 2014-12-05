@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,11 @@ namespace System
         public static DateTime StartOfMonth(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, 1);
+        }
+
+        public static string CurrentMonth(this DateTime date)
+        {
+            return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(date.Month);
         }
 
         public static void SetOriginalTimeZoneFromDateAtMidnight(DateTime dateAtMidnight)

@@ -68,6 +68,21 @@ namespace SourceControlLogReporter.Model
         public List<User> AuthorsCorrelation { get; set; }
         public List<string> IgnoredAuthors { get; set; }
 
+        public string OverrideMonth { get; set; }
+        public int OverrideAllocatedHoursPerDay { get; set; }
+        public int OverrideAllocatedHoursPerMonth { get; set; }
+        public int OverrideWorkDays { get; set; }
+
+        [XmlIgnore]
+        public bool OverrideThisMonth
+        {
+            get
+            {
+                return OverrideMonth.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower();
+            }
+        }
+
+
         public IDictionary<string, string> Users
         {
             get

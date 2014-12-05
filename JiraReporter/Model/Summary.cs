@@ -11,6 +11,7 @@ namespace JiraReporter.Model
     public enum Health { Bad, Weak, Good, None };
     public class Summary
     {
+        public Policy Policy { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public string ReportDate
@@ -134,7 +135,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat((int)(MonthHoursWorked * 3600));
+                return TimeFormatting.SetTimeFormat8Hour((int)(MonthHoursWorked * 3600));
             }
         }
         public double SprintHoursWorked { get; set; }
@@ -142,7 +143,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat((int)(SprintHoursWorked * 3600)); ;
+                return TimeFormatting.SetTimeFormat8Hour((int)(SprintHoursWorked * 3600)); ;
             }
         }
         public double RemainingMonthHours { get; set; }
@@ -198,9 +199,10 @@ namespace JiraReporter.Model
 
         public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Options options, Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
+            Policy = policy;
             SetDates(options);
             SetTimeWorked(timesheetCollection);
-
+            SetAllocatedTime();
             SetSummaryTasksTimeLeft(sprintTasks);
 
             InProgressUnassignedCount = sprintTasks.InProgressTasks.Count(tasks => tasks.Assignee == null);
@@ -217,9 +219,6 @@ namespace JiraReporter.Model
             CommitsCount = authors.Sum(a => a.Commits.Count);
             PullRequests = pullRequests;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
-
-            AllocatedHoursPerMonth = policy.AllocatedHoursPerMonth;
-            AllocatedHoursPerDay = policy.AllocatedHoursPerDay;
 
             SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
@@ -238,6 +237,28 @@ namespace JiraReporter.Model
         {
             FromDate = options.FromDate;
             ToDate = options.ToDate;
+        }
+
+        private void SetAllocatedTime()
+        {
+            SetAllocatedTimePerDay();
+            SetAllocatedTimePerMonth();
+        }
+
+        private void SetAllocatedTimePerDay()
+        {
+            if (Policy.OverrideThisMonth == true && Policy.OverrideAllocatedHoursPerDay > 0)
+                AllocatedHoursPerDay = Policy.OverrideAllocatedHoursPerDay;
+            else
+                AllocatedHoursPerDay = Policy.AllocatedHoursPerDay;
+        }
+
+        private void SetAllocatedTimePerMonth()
+        {
+            if (Policy.OverrideThisMonth == true && Policy.OverrideAllocatedHoursPerMonth > 0)
+                AllocatedHoursPerMonth = Policy.OverrideAllocatedHoursPerMonth;
+            else
+                AllocatedHoursPerMonth = Policy.AllocatedHoursPerMonth;
         }
 
         private void SetTimeWorked(Dictionary<TimesheetType, Timesheet> timesheetCollection)
@@ -270,7 +291,11 @@ namespace JiraReporter.Model
 
         private void SetHourRates(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
-            var monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+            int monthDays = 0;
+            if (Policy.OverrideThisMonth == true && Policy.OverrideWorkDays > 0)
+                monthDays = Policy.OverrideWorkDays - GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.AddDays(-1).ToOriginalTimeZone());
+            else
+                monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
             MonthHourRate = RemainingMonthHours / monthDays;
             int sprintDays = 0;
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
