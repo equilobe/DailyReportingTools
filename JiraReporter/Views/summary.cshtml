@@ -18,7 +18,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="font-size:14px">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
                                         </tr>                                     
                                     }
                                     @if (Model.CompletedWithNoWorkErrors.Count > 0)
@@ -27,7 +27,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="font-size:14px">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
                                         </tr>                                    
                                     }
                                     @if (Model.UnassignedErrors.Count > 0)
@@ -36,7 +36,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="font-size:14px">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
                                         </tr>                                      
                                     }
                                     @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
@@ -47,7 +47,7 @@
                                                 <td style="vertical-align:top; width:15px">
                                                     <span>&#x25cf;</span>
                                                 </td>
-                                                <td colspan="1" style="text-align: left"><b style="font-size:14px">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
+                                                <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
                                             </tr>                                          
                                         }
                                     }

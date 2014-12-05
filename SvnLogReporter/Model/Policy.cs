@@ -78,7 +78,10 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                return OverrideMonth.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower();
+                if (OverrideMonth != null)
+                    return OverrideMonth.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower();
+                else
+                    return false;
             }
         }
 
