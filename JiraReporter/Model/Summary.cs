@@ -243,9 +243,9 @@ namespace JiraReporter.Model
         private void SetTimeWorked(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             TotalTimeSeconds = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorked();
-            MonthHoursWorked = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorked() / 3600;
+            MonthHoursWorked = (double)timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorked() / 3600;
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
-                SprintHoursWorked = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
+                SprintHoursWorked = (double)timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
         }
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
