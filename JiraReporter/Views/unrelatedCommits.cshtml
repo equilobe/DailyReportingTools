@@ -2,28 +2,14 @@
     string[] delim = { "<br />" };
 }
 <div style="margin-top:25px;">
-    <b style="color:black">Unrelated commits </b>
-    <ul style="padding:0; margin-left:15px; margin-top:5px; color:black">
-        @foreach (var commit in Model)
-        {
-                if (commit.Entry.Link != null)
-                {
-                    <li style="margin-left:15px">
-                        <div>
-                            <a href="@commit.Entry.Link" style="text-decoration:none">@commit.Entry.Message.Split(delim, StringSplitOptions.None).First()</a>
-                        </div>
-                        @foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
-                        {
-                            <div>
-                                <span style="color:black">@line</span>
-                            </div>
-                        }
-                    </li>
-                }
-                else
-                {
-                    <li style="color:black; margin-left:15px;">@commit.Entry.Message</li>
-                }
-        }
-    </ul>
+    @Model.Count
+    @if (Model.Count > 1)
+    {
+        <b style="color:black"> unrelated commits </b>
+    }
+    else
+    { 
+        <b style="color:black"> unrelated commit </b>
+    }
+    <b>@Partial("Views/commitsList.cshtml", Model)</b>
 </div>

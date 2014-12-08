@@ -112,6 +112,9 @@
     <None Include="Views\authorHeader.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\commitsList.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\commits.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
