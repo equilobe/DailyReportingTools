@@ -12,8 +12,8 @@ namespace JiraReporter
     {
         public static List<Author> GetAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
         {
-            var sprintAuthors = GetAuthorsFromTimesheet(timesheetCollection[TimesheetType.SprintTimesheet]);
-            var loggedAuthors = GetAuthorsFromTimesheet(timesheetCollection[TimesheetType.ReportTimesheet]);
+            var sprintAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.SprintTimesheet);
+            var loggedAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.ReportTimesheet);
             var reportAuthors = sprintAuthors.Concat(loggedAuthors).Distinct().ToList();
 
             var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet], reportAuthors);
@@ -49,6 +49,14 @@ namespace JiraReporter
                 }
                
             return authors;
+        }
+
+        private static List<string> GetTimesheetCollectionAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, TimesheetType key)
+        {
+            if(timesheetCollection.ContainsKey(key) && timesheetCollection[key] != null)
+                return GetAuthorsFromTimesheet(timesheetCollection[key]);
+            else
+                return new List<string>();
         }
 
         private static void SetAuthor(SprintTasks sprintTasks, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
