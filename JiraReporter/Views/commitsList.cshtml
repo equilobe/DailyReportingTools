@@ -1,0 +1,53 @@
+﻿@{
+    var openParentheses = "";
+    var closedParentheses = "";
+    var comma = "";
+    var revision = "";
+    var commitMessage = "";
+    string[] delim = { "<br />" };
+}
+@foreach (var commit in Model)
+{
+    commitMessage = "";
+
+    if (commit.Entry.Revision.Length > 6)
+    {
+        revision = commit.Entry.Revision.Substring(0, 6);
+    }
+    else
+    {
+        revision = commit.Entry.Revision.Substring(0, commit.Entry.Revision.Length);
+    }
+
+    if (commit == Model.First())
+    {
+        openParentheses = "(";
+    }
+    else { openParentheses = ""; }
+    
+    if (commit == Model.Last())
+    {
+        closedParentheses = ")";
+        comma = "";
+    }
+    else
+    {
+        closedParentheses = "";
+        comma = ",";
+    }
+
+    if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
+    {
+        foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
+        {
+            commitMessage += line + "\n";
+        }
+    }
+
+    if (commit.Entry.Link != null)
+    {
+        <span style="text-wrap:none; white-space:nowrap; color:black;">@openParentheses<a href=@commit.Entry.Link style="text-decoration:none;" title="@commitMessage">@revision</a>@comma@closedParentheses</span>
+    }
+    else
+    { <span style="text-wrap:none; white-space:nowrap; color:black;">@openParentheses<span style="color:black;" title="@commitMessage">@revision</span>@comma@closedParentheses</span> }
+}
