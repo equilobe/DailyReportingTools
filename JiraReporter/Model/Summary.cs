@@ -166,7 +166,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
                 var seconds = days * 28800;
                 return TimeFormatting.SetTimeFormat8Hour(seconds);
             }
@@ -176,6 +176,17 @@ namespace JiraReporter.Model
             get
             {
                 return SprintHoursWorked != 0 || SprintTasksTimeLeftSeconds != 0;
+            }
+        }
+
+        public List<int> NonWorkingDays
+        {
+            get
+            {
+                if (Policy.OverrideThisMonth == true)
+                    return Policy.CurrentOverride.NonWorkingDays;
+                else
+                    return new List<int>();
             }
         }
 
@@ -247,16 +258,16 @@ namespace JiraReporter.Model
 
         private void SetAllocatedTimePerDay()
         {
-            if (Policy.OverrideThisMonth == true && Policy.OverrideAllocatedHoursPerDay > 0)
-                AllocatedHoursPerDay = Policy.OverrideAllocatedHoursPerDay;
+            if (Policy.OverrideThisMonth == true && Policy.CurrentOverride.AllocatedHoursPerDay > 0)
+                AllocatedHoursPerDay = Policy.CurrentOverride.AllocatedHoursPerDay;
             else
                 AllocatedHoursPerDay = Policy.AllocatedHoursPerDay;
         }
 
         private void SetAllocatedTimePerMonth()
         {
-            if (Policy.OverrideThisMonth == true && Policy.OverrideAllocatedHoursPerMonth > 0)
-                AllocatedHoursPerMonth = Policy.OverrideAllocatedHoursPerMonth;
+            if (Policy.OverrideThisMonth == true && Policy.CurrentOverride.AllocatedHoursPerMonth > 0)
+                AllocatedHoursPerMonth = Policy.CurrentOverride.AllocatedHoursPerMonth;
             else
                 AllocatedHoursPerMonth = Policy.AllocatedHoursPerMonth;
         }
@@ -292,25 +303,22 @@ namespace JiraReporter.Model
         private void SetHourRates(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             int monthDays = 0;
-            if (Policy.OverrideThisMonth == true && Policy.OverrideWorkDays > 0)
-                monthDays = Policy.OverrideWorkDays - GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.AddDays(-1).ToOriginalTimeZone());
-            else
-                monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+            monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
             MonthHourRate = RemainingMonthHours / monthDays;
             int sprintDays = 0;
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
-                sprintDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1));          
+                sprintDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);          
             if (sprintDays > 0)
                 SprintHourRate = (double)SprintTasksTimeLeftHours / sprintDays;
         }
 
-        public static int GetWorkingDays(DateTime startDate, DateTime endDate)
+        public static int GetWorkingDays(DateTime startDate, DateTime endDate, List<int> nonWorkingDays)
         {
             DateTime dateIterator = startDate.Date;
             int days = 0;
             while (dateIterator <= endDate)
             {
-                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday)
+                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday && nonWorkingDays.Exists(d=>d == dateIterator.Day) == false)
                     days++;
                 dateIterator = dateIterator.AddDays(1);
             }
@@ -333,18 +341,19 @@ namespace JiraReporter.Model
 
         private void SetHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
-            WorkedDaysHealth = HealthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate.AddDays(-1)), TotalTimeHours);
+            var healthInspector = new HealthInspector(NonWorkingDays);
+            WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate.AddDays(-1), NonWorkingDays), TotalTimeHours);
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
             {
-                DayHealth = HealthInspector.GetDayHealth(AllocatedHoursPerDay, SprintHourRate);
-                SprintHealth = HealthInspector.GetSprintHealth(timesheetCollection[TimesheetType.SprintTimesheet], AllocatedHoursPerDay, SprintHoursWorked);
+                DayHealth = healthInspector.GetDayHealth(AllocatedHoursPerDay, SprintHourRate);
+                SprintHealth = healthInspector.GetSprintHealth(timesheetCollection[TimesheetType.SprintTimesheet], AllocatedHoursPerDay, SprintHoursWorked);
             }
             else
                 {
                     DayHealth = Health.None;
                     SprintHealth = Health.None;
                 }
-            MonthHealth = HealthInspector.GetMonthHealth(AllocatedHoursPerMonth, MonthHoursWorked);
+            MonthHealth = healthInspector.GetMonthHealth(AllocatedHoursPerMonth, MonthHoursWorked);
         }
 
         public static double GetVariance(double allocatedTime, double workedTime)
@@ -354,15 +363,15 @@ namespace JiraReporter.Model
 
         public void SetSprintVariance(Timesheet sprint)
         {
-            var workedDays = GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date);
+            var workedDays = GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date, NonWorkingDays);
             SprintHourRateVariance = GetVariance(AllocatedHoursPerDay * workedDays, SprintHoursWorked);
         }
 
         public void SetMonthVariance()
         {
-            var workedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1));
+            var workedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
             var workedPerDay = MonthHoursWorked / workedDays;
-            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
             var averageFromAllocatedHours = AllocatedHoursPerMonth / monthWorkingDays;
             MonthHourRateVariance = GetVariance(workedPerDay, averageFromAllocatedHours);
         }

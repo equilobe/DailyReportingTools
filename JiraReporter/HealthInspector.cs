@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    public static class HealthInspector
+    public class HealthInspector
     {
+        public List<int> NonWorkingDays { get; set; }
+        public HealthInspector(List<int> nonWorkingDays)
+        {
+            NonWorkingDays = nonWorkingDays;
+        }
+
         private static string GetHealthStatus(double variance, Health health, string specificString)
         {
             var statusProcessor = new Dictionary<Health, string>()
@@ -59,7 +65,7 @@ namespace JiraReporter
             return GetHealthStatus(variance, monthHealth, specificString);
         }
 
-        public static Health GetWorkedDaysHealth(double allocatedHours, double totalTimeHours)
+        public Health GetWorkedDaysHealth(double allocatedHours, double totalTimeHours)
         {
            // int workedDays = GetWorkingDays(FromDate, ToDate);
            // int allocatedHours = AllocatedHoursPerDay * workedDays;
@@ -69,7 +75,7 @@ namespace JiraReporter
                 return Health.None;
         }
 
-        public static Health GetDayHealth(double allocatedHours, double sprintHourRate)
+        public Health GetDayHealth(double allocatedHours, double sprintHourRate)
         {
             if (allocatedHours > 0)
                 return GetHealthFromPercentage(allocatedHours, sprintHourRate);
@@ -77,26 +83,26 @@ namespace JiraReporter
                 return Health.None;
         }
 
-        public static Health GetSprintHealth(Timesheet sprint, double allocatedHours, double totalTime)
+        public Health GetSprintHealth(Timesheet sprint, double allocatedHours, double totalTime)
         {
             int daysWorked = 0;
             if (allocatedHours > 0)
             {
                 if (DateTime.Now.ToOriginalTimeZone() >= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
-                    daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date);
+                    daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date, NonWorkingDays);
                 return GetHealthFromPercentage(allocatedHours * daysWorked, totalTime);
             }
             else
                 return Health.None;
         }
 
-        public static Health GetMonthHealth(double allocatedHours, double totalTimeWorked)
+        public Health GetMonthHealth(double allocatedHours, double totalTimeWorked)
         {
             if (allocatedHours > 0)
             {
-                var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1));
+                var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
                 var workedPerDay = totalTimeWorked / workedDays;
-                var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth());
+                var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
                 var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
                 return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
             }
@@ -104,7 +110,7 @@ namespace JiraReporter
                 return Health.None;
         }
 
-        public static Health GetHealthFromPercentage(double allocatedTime, double hourRate)
+        public Health GetHealthFromPercentage(double allocatedTime, double hourRate)
         {
             var variance = Summary.GetVariance(allocatedTime, hourRate);
             if (variance < 0)

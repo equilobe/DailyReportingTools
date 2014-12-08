@@ -68,18 +68,31 @@ namespace SourceControlLogReporter.Model
         public List<User> AuthorsCorrelation { get; set; }
         public List<string> IgnoredAuthors { get; set; }
 
-        public string OverrideMonth { get; set; }
-        public int OverrideAllocatedHoursPerDay { get; set; }
-        public int OverrideAllocatedHoursPerMonth { get; set; }
-        public int OverrideWorkDays { get; set; }
+        public List<Override> Overrides { get; set; }
+
+        [XmlIgnore]
+        public Override CurrentOverride
+        {
+            get
+            {
+                if (Overrides != null)
+                    return Overrides.Find(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
+                else
+                    return null;
+            }
+        }
+        //public string OverrideMonth { get; set; }
+        //public int OverrideAllocatedHoursPerDay { get; set; }
+        //public int OverrideAllocatedHoursPerMonth { get; set; }
+        //public int OverrideWorkDays { get; set; }
 
         [XmlIgnore]
         public bool OverrideThisMonth
         {
             get
             {
-                if (OverrideMonth != null)
-                    return OverrideMonth.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower();
+                if (Overrides != null)
+                    return Overrides.Exists(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
                 else
                     return false;
             }
