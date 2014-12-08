@@ -88,8 +88,10 @@ namespace JiraReporter
             int daysWorked = 0;
             if (allocatedHours > 0)
             {
-                if (DateTime.Now.ToOriginalTimeZone() >= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
+                if (DateTime.Now.ToOriginalTimeZone() <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
                     daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date, NonWorkingDays);
+                else
+                    daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
                 return GetHealthFromPercentage(allocatedHours * daysWorked, totalTime);
             }
             else
