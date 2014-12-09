@@ -67,49 +67,48 @@ namespace JiraReporter
 
         public Health GetWorkedDaysHealth(double allocatedHours, double totalTimeHours)
         {
-           // int workedDays = GetWorkingDays(FromDate, ToDate);
-           // int allocatedHours = AllocatedHoursPerDay * workedDays;
             if (allocatedHours > 0)
                 return GetHealthFromPercentage(allocatedHours, totalTimeHours);
-            else
-                return Health.None;
+
+            return Health.None;
         }
 
         public Health GetDayHealth(double allocatedHours, double sprintHourRate)
         {
-            if (allocatedHours > 0)
-                return GetHealthFromPercentage(allocatedHours, sprintHourRate);
-            else
+            if (allocatedHours == 0)
                 return Health.None;
+
+            return GetHealthFromPercentage(allocatedHours, sprintHourRate);
         }
 
         public Health GetSprintHealth(Timesheet sprint, double allocatedHours, double totalTime)
         {
-            int daysWorked = 0;
-            if (allocatedHours > 0)
-            {
-                if (DateTime.Now.ToOriginalTimeZone() <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
-                    daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date, NonWorkingDays);
-                else
-                    daysWorked = Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
-                return GetHealthFromPercentage(allocatedHours * daysWorked, totalTime);
-            }
-            else
+            if (allocatedHours == 0)
                 return Health.None;
+
+            int daysWorked = GetDaysWorked(sprint);
+            return GetHealthFromPercentage(allocatedHours * daysWorked, totalTime);
+        }
+
+        private int GetDaysWorked(Timesheet sprint)
+        {
+            var now = DateTime.Now.ToOriginalTimeZone();
+            if (now <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
+                return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, NonWorkingDays);
+
+            return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
         }
 
         public Health GetMonthHealth(double allocatedHours, double totalTimeWorked)
         {
-            if (allocatedHours > 0)
-            {
-                var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
-                var workedPerDay = totalTimeWorked / workedDays;
-                var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
-                var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
-                return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
-            }
-            else
+            if (allocatedHours == 0)
                 return Health.None;
+
+            var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
+            var workedPerDay = totalTimeWorked / workedDays;
+            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
+            var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
+            return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }
 
         public Health GetHealthFromPercentage(double allocatedTime, double hourRate)
@@ -117,19 +116,19 @@ namespace JiraReporter
             var variance = Summary.GetVariance(allocatedTime, hourRate);
             if (variance < 0)
                 variance = variance * (-1);
-
-            if (GetPercentage(variance, allocatedTime) <= 5)
+            var percentage = GetPercentage(variance, allocatedTime);
+            if (percentage <= 5)
                 return Health.Good;
-            else if (GetPercentage(variance, allocatedTime) <= 15)
+            else if (percentage <= 15)
                 return Health.Weak;
             else
-                return Health.Bad;        
+                return Health.Bad;
         }
 
         public static double GetPercentage(double value, double total)
         {
-            var percentage = (value * 100)/total;
+            var percentage = (value * 100) / total;
             return percentage;
         }
     }
- }
+}

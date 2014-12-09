@@ -194,7 +194,10 @@
                         <tbody>
                             @foreach (var task in Model.SprintTasks.UnassignedTasks)
                             {
-                                 @Partial("Views/uncompletedTask.cshtml", task)
+                                if (task.SubTask == false)
+                                {
+                                    @Partial("Views/uncompletedTask.cshtml", task)
+                                }
                             }
                         </tbody>
                     </table>                                          
