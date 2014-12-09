@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,17 @@ namespace SourceControlLogReporter.Model
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
         [XmlIgnore]
         public bool IsDraft { get; set; }
+        [XmlIgnore]
+        public Uri DraftConfirmationUrl
+        {
+            get
+            {
+                if (IsDraft == true)
+                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + "-" + UniqueProjectKey);
+                else
+                    return null;
+            }
+        }
 
         public string ReportTitle { get; set; }
         public string ReportTime { get; set; }
@@ -59,6 +71,7 @@ namespace SourceControlLogReporter.Model
         public string DraftEmails { get; set; }
         public string EmailSubject { get; set; }
         public string ProjectKey { get; set; }
+        public string UniqueProjectKey { get; set; }
         public string ProjectName { get; set; }
         public string ReopenedStatus { get; set; }
         public bool IsWeekendReportActive { get; set; }
@@ -81,10 +94,6 @@ namespace SourceControlLogReporter.Model
                     return null;
             }
         }
-        //public string OverrideMonth { get; set; }
-        //public int OverrideAllocatedHoursPerDay { get; set; }
-        //public int OverrideAllocatedHoursPerMonth { get; set; }
-        //public int OverrideWorkDays { get; set; }
 
         [XmlIgnore]
         public bool OverrideThisMonth

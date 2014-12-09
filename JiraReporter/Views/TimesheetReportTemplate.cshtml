@@ -1,32 +1,32 @@
 <div style="margin-top:15px; font-size:12px; color:#000000;">
-    @if ((Model.options.ToDate - Model.options.FromDate).Days > 1)
+    @if ((Model.Options.ToDate - Model.Options.FromDate).Days > 1)
     {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM") - @Model.options.ToDate.AddDays(-1).ToString("dddd, dd MMMM")  </h2>
+        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM") - @Model.Options.ToDate.AddDays(-1).ToString("dddd, dd MMMM")  </h2>
     }
     else
     {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.options.FromDate.ToString("dddd, dd MMMM yyyy") </h2>
+        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM yyyy") </h2>
     }
-          
+
     @{
         var bold = "";
         var remainingEstimate = "";
         var colorTotal = "black";
-        var color="black";
-        var tasks="";
+        var color = "black";
+        var tasks = "";
         var comma = "";
         var openParentheses = "(";
         var closedParentheses = ")";
         var indentation = "";
         var totalTimeSpent = "";
-        var revision="";
+        var revision = "";
         var tooltipWorked = "";
         var tooltipCommit = "";
-     }
-  
-<div>
-    @Partial("Views/summary.cshtml", Model.Summary)
-</div>
+    }
+
+    <div>
+        @Partial("Views/summary.cshtml", Model.Summary)
+    </div>
 
     <div style="margin-top:40px; line-height:1.4em;">
         @if (Model.Authors.Count > 0)
@@ -184,25 +184,30 @@
                 }
             }
         }
+    </div>
+
+    @if (Model.SprintTasks.UnassignedTasks.Count > 0)
+    {
+        <div style="margin-top:60px; line-height:1.4em;">
+            <h1 style="color:black">Unassigned </h1>
+            <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+                <tbody>
+                    @foreach (var task in Model.SprintTasks.UnassignedTasks)
+                    {
+                        if (task.SubTask == false)
+                        {
+                            @Partial("Views/uncompletedTask.cshtml", task)
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
+    }
 
-            @if (Model.SprintTasks.UnassignedTasks.Count > 0)
-            {
-                <div style="margin-top:60px; line-height:1.4em;">
-                    <h1 style="color:black">Unassigned </h1>
-                    <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                        <tbody>
-                            @foreach (var task in Model.SprintTasks.UnassignedTasks)
-                            {
-                                if (task.SubTask == false)
-                                {
-                                    @Partial("Views/uncompletedTask.cshtml", task)
-                                }
-                            }
-                        </tbody>
-                    </table>                                          
-                </div>
-            }     
-
-        @Partial("Views/completedTasks.cshtml", Model.SprintTasks)
+    @Partial("Views/completedTasks.cshtml", Model.SprintTasks)
+    @if (Model.Policy.IsDraft == true)
+    {
+        @Partial("Views/confirmationButton.cshtml", Model)
+    }
+   
 </div>
