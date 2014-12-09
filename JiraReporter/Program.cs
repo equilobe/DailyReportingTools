@@ -60,18 +60,18 @@ namespace JiraReporter
             string reportPath = GetReportPath(report);
 
             var repCont = ReportProcessor.ProcessReport(report);
-            SourceControlLogReporter.Reporter.WriteReport(report.policy, repCont, reportPath);
+            SourceControlLogReporter.Reporter.WriteReport(report.Policy, repCont, reportPath);
         }
 
         private static void SendReport(Report report)
         {
-            var emailer = new SourceControlLogReporter.ReportEmailer(report.policy, report.options);
+            var emailer = new SourceControlLogReporter.ReportEmailer(report.Policy, report.Options);
             emailer.TrySendEmails();
         }
 
         private static string GetReportPath(Report report)
         {
-            string reportPath = report.policy.ReportsPath;
+            string reportPath = report.Policy.ReportsPath;
             Directory.CreateDirectory(reportPath);
             reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
