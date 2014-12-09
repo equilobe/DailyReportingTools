@@ -24,7 +24,6 @@
 *.sdf
 *.opensdf
 *.unsuccessfulbuild
-_bin_deployableAssemblies
 ipch/
 [Oo]bj/
 [Bb]in
