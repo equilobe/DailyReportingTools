@@ -17,13 +17,13 @@ namespace SourceControlLogReporter
     {
         Policy policy;
         Options options;
-        
+
         public ReportEmailer(Policy p, Options o)
-		{
+        {
             this.policy = p;
             this.options = o;
-		}
-                
+        }
+
 
         private void SendEmails()
         {
@@ -49,7 +49,7 @@ namespace SourceControlLogReporter
             }
         }
 
-       public void TryEmailReport(string path)
+        public void TryEmailReport(string path)
         {
             try
             {
@@ -68,6 +68,8 @@ namespace SourceControlLogReporter
             smtp.Send(GetMessage(reportPath));
 
             MoveToSent(reportPath);
+            if (policy.IsDraft == false)
+                policy.WriteDateToPolicy(options.PolicyPath);
         }
 
         private MailMessage GetMessage(string reportPath)
@@ -98,7 +100,7 @@ namespace SourceControlLogReporter
             Validation.EnsureDirectoryExists(policy.ReportsPath);
 
             var newFilePath = Path.Combine(policy.ReportsPath, Path.GetFileName(path));
-            
+
             File.Copy(path, newFilePath, overwrite: true);
             File.Delete(path);
         }

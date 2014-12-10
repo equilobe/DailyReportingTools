@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 namespace SourceControlLogReporter.Model
 {
@@ -34,6 +35,9 @@ namespace SourceControlLogReporter.Model
                     return null;
             }
         }
+
+        [XmlIgnore]
+        public DateTime LastReportSentDate { get; set; }
 
         public string ReportTitle { get; set; }
         public string ReportTime { get; set; }
@@ -144,6 +148,14 @@ namespace SourceControlLogReporter.Model
                 XmlSerializer ser = new XmlSerializer(typeof(Policy));
                 ser.Serialize(fs, this);
             }
+        }
+
+        public void WriteDateToPolicy(string filePath)
+        {
+            XDocument xDocument = XDocument.Load(filePath);
+            XElement root = xDocument.Element("Policy");
+            root.AddFirst(new XElement("LastReportSentDate", DateTime.Now.ToOriginalTimeZone()));
+            xDocument.Save(filePath);
         }
 
         public void SetPermanentTaskLabel()
