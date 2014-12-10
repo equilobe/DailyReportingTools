@@ -29,14 +29,14 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
+                var now = DateTime.Now.ToOriginalTimeZone();
                 if (IsDraft == true)
-                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + "-" + UniqueProjectKey);
+                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
                 else
                     return null;
             }
         }
 
-        [XmlIgnore]
         public DateTime LastReportSentDate { get; set; }
 
         public string ReportTitle { get; set; }
@@ -125,8 +125,8 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                if(IsDraft == true)
-                    return DraftEmails.Split(new char[] { ' ',  ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (IsDraft == true)
+                    return DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
                 else
                     return Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -137,7 +137,7 @@ namespace SourceControlLogReporter.Model
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Policy));
-                return (Policy) ser.Deserialize(fs);
+                return (Policy)ser.Deserialize(fs);
             }
         }
 
@@ -150,11 +150,13 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void WriteDateToPolicy(string filePath)
+        public void WriteDateToPolicy(string filePath, DateTime date)
         {
             XDocument xDocument = XDocument.Load(filePath);
             XElement root = xDocument.Element("Policy");
-            root.AddFirst(new XElement("LastReportSentDate", DateTime.Now.ToOriginalTimeZone()));
+            if (root.Elements("LastReportSentDate").Any())
+                root.Elements("LastReportSentDate").Remove();
+            root.AddFirst(new XElement("LastReportSentDate", date));
             xDocument.Save(filePath);
         }
 

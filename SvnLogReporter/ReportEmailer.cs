@@ -69,7 +69,7 @@ namespace SourceControlLogReporter
 
             MoveToSent(reportPath);
             if (policy.IsDraft == false)
-                policy.WriteDateToPolicy(options.PolicyPath);
+                policy.WriteDateToPolicy(options.PolicyPath, DateTime.Now.ToOriginalTimeZone());
         }
 
         private MailMessage GetMessage(string reportPath)
