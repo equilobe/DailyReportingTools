@@ -35,10 +35,10 @@
         closedParentheses = "";
         comma = ",";
     }
-
-    if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
+    var message = commit.Entry.Message.Split(delim, StringSplitOptions.None);
+    if (message.Length - 1 > 0)
     {
-        foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
+        foreach (string line in message.Skip(1))
         {
             commitMessage += line + "\n";
         }

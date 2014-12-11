@@ -22,15 +22,18 @@ namespace JiraReporter
             LoadReportDates(policy, options);
             policy.SetPermanentTaskLabel();
             policy.SetDraftMode(options);
-            if((DateTime.Now.ToOriginalTimeZone() - policy.LastReportSentDate).TotalDays > 1)
-            {
-                if (policy.IsWeekendReportActive == true)
-                {
-                    if (options.IsWeekend() == false)
-                        RunReportTool(args, policy, options);
-                }
-                else RunReportTool(args, policy, options);
-            }
+            if (RunReport(policy, options) == true)
+                RunReportTool(args, policy, options);
+        }
+
+        private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        {
+            var today = DateTime.Now.ToOriginalTimeZone().Date;
+            if (policy.IsDraft == false && today <= policy.LastReportSentDate.Date)
+                return false;
+            if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)
+                return false;
+            return true;
         }
 
         private static void RunReportTool(string[] args, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
