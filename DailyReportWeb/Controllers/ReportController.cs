@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,29 +15,52 @@ namespace DailyReportWeb.Controllers
         {
             if (date.Date == DateTime.Today)
             {
-                RunReport(id);
-                return Content("Draft confirmed. Final report sent");
+                var sendReport = RunReport(id);
+                if (sendReport == true)
+                    return Content("Report confirmed. Final report sent");
+
+                return Content("Error in sending the final report");
             }
-            else
-                return Content("Confirmation invalid");
+
+            return Content("Cannot confirm report for another date");
         }
 
         [HttpGet]
         public ActionResult ResendDraft(string id, DateTime date)
         {
-            return Content("key = " + id + " date = " + date);
+            if (date.Date == DateTime.Today)
+            {
+                var resendReport = RunReport(id);
+                if (resendReport == true)
+                    return Content("Draft report was resent");
+
+                return Content("Error in resending draft report");
+            }
+
+            return Content("Cannot resend draft for another date");
         }
 
-        public void RunReport(string id)
+        public bool RunReport(string id)
         {
             var key = "DRT-" + id;
             using (TaskService ts = new TaskService())
             {
                 var task = ts.AllTasks.ToList().Find(t => t.Name == key);
                 if (task != null)
-                    task.Run();
+                {
+                    try
+                    {
+                        task.Run();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
+                    }
+                }
+                return false;
+                // return string.Join(", ", ts.AllTasks.Select(t => t.Name));
             }
         }
-
     }
 }

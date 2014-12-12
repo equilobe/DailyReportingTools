@@ -207,7 +207,10 @@
     @Partial("Views/completedTasks.cshtml", Model.SprintTasks)
     @if (Model.Policy.IsDraft == true)
     {
-        @Partial("Views/confirmationButton.cshtml", Model)
+        <div style="margin-top:50px">
+            @Partial("Views/confirmationButton.cshtml", Model)
+            @Partial("Views/resendDraftButton.cshtml", Model)
+        </div>
     }
    
 </div>
