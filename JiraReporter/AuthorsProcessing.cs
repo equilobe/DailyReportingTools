@@ -175,8 +175,8 @@ namespace JiraReporter
                         if (author.Issues == null)
                             author.Issues = new List<Issue>();
                         issue.ExistsInTimesheet = true;
-                        IssueAdapter.SetLoggedAuthor(issue, author.Name);
-                        author.Issues.Add(issue);
+                        IssueAdapter.ChangeLoggedAuthor(issue, author.Name);
+                        author.Issues.Add(new Issue(issue));
                     }
                 }
             }

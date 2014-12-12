@@ -55,7 +55,7 @@
                                                         {
                                                             if (issue.AssigneeSubtasks.Count > 0)
                                                             {
-                                                                if (issue.ExistsInTimesheet == true && issue.Assignee == author.Name)
+                                                                if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == author.Name)
                                                                 {
                                                                     @Partial("Views/workedTask.cshtml", issue)
                                                                 }

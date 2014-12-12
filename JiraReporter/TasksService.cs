@@ -20,10 +20,10 @@ namespace JiraReporter
                     SetTask(policy, issue, timesheet, completedTasks, null);
             }
             completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
-            return completedTasks; 
+            return completedTasks;
         }
 
-        public AnotherJiraRestClient.Issues GetUnfinishedTasks (Policy policy)
+        public AnotherJiraRestClient.Issues GetUnfinishedTasks(Policy policy)
         {
             return RestApiRequests.GetSprintTasks(policy);
         }
@@ -101,28 +101,30 @@ namespace JiraReporter
         public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.Author author)
         {
             List<Issue> parentTasks = new List<Issue>(tasks);
-            foreach(var task in tasks)
+            foreach (var task in tasks)
             {
                 IssueAdapter.SetSubtasksLoggedAuthor(task, author.Name);
-                if(task.SubTask == true)
+                if (task.SubTask == true)
                 {
-                        var parent = parentTasks.Find(t => t.Key == task.Parent.Key);
-                        IssueAdapter.SetLoggedAuthor(task, author.Name);
-                        if (parent != null)
-                        {
-                            if (parent.AssigneeSubtasks == null)
-                                parent.AssigneeSubtasks = new List<Issue>();
-                            if (parent.AssigneeSubtasks.Exists(t => t.Key == task.Key) == false)
-                                parent.AssigneeSubtasks.Add(task);
-                        }
-                        else
-                        {
-                            parent = CreateParent(task, author);
-                            parent.AssigneeSubtasks.Add(task);
-                            IssueAdapter.SetLoggedAuthor(parent, author.Name);
-                            parentTasks.Add(parent);
-                        }
+                    IssueAdapter.SetLoggedAuthor(task, author.Name);
+                    var parentIssue = parentTasks.Find(t => t.Key == task.Parent.Key);
+                    var parent = new Issue();
+                    if (parentIssue != null)
+                    {
+                        parent = new Issue(parentIssue);
+                        if (parent.AssigneeSubtasks == null)
+                            parent.AssigneeSubtasks = new List<Issue>();
+                        if (parent.AssigneeSubtasks.Exists(t => t.Key == task.Key) == false)
+                            parent.AssigneeSubtasks.Add(new Issue(task));
                     }
+                    else
+                    {
+                        parent = CreateParent(task, author);
+                        parent.AssigneeSubtasks.Add(new Issue(task));
+                        IssueAdapter.SetLoggedAuthor(parent, author.Name);
+                        parentTasks.Add(parent);
+                    }
+                }
             }
             parentTasks.RemoveAll(t => t.SubTask == true);
             return parentTasks;
@@ -139,9 +141,9 @@ namespace JiraReporter
 
         public static void SetErrors(List<Issue> tasks, Policy policy)
         {
-            if(tasks!=null && tasks.Count>0)
-               foreach (var task in tasks)
-                  IssueAdapter.SetIssueErrors(task, policy);
+            if (tasks != null && tasks.Count > 0)
+                foreach (var task in tasks)
+                    IssueAdapter.SetIssueErrors(task, policy);
         }
 
         public static int GetErrorsCount(List<Issue> tasks)
@@ -154,7 +156,7 @@ namespace JiraReporter
 
         public static int GetTimeLeftForSpecificAuthorTasks(List<Issue> tasks, string authorName)
         {
-            return tasks.Where(t => t.Assignee == authorName).Sum(i=>i.TotalRemainingSeconds);
+            return tasks.Where(t => t.Assignee == authorName).Sum(i => i.TotalRemainingSeconds);
         }
     }
 }
