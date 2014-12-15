@@ -12,7 +12,7 @@ namespace SourceControlLogReporter
 {
     public class Options
     {
-        [Option(null, "policy", Required=true)]
+        [Option(null, "policy", Required = true)]
         public string PolicyPath { get; set; }
         [Option(null, "to", Required = false)]
         public string StringToDate { get; set; }
@@ -57,7 +57,7 @@ namespace SourceControlLogReporter
             return date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", DateTimeFormatInfo.InvariantInfo);
         }
 
-        public List<DateTime>  GetDates()
+        public List<DateTime> GetDates()
         {
             var dates = new List<DateTime>();
             var startDate = FromDate;
@@ -90,13 +90,11 @@ namespace SourceControlLogReporter
             if (HasFromDate)
                 FromDate = GetDate(StringFromDate).Date;
 
+            //    SetWeekendDates();
+
             SetDefaultDates();
 
-            SetWeekendDates();
-
-            SetDatesFromLastSentReport(p);
-
-           // SwitchToUniversalTime();
+            // SwitchToUniversalTime();
 
             if (ToDate < FromDate)
                 throw new ArgumentException("ToDate < FromDate");
@@ -116,8 +114,16 @@ namespace SourceControlLogReporter
         {
             if (!HasToDate && !HasFromDate)
             {
-                ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-                FromDate = ToDate.AddDays(-1);              
+                if (Policy.LastReportSentDate == new DateTime())
+                    if (Policy.IsWeekendReportActive)
+                        SetWeekendDates();
+                    else
+                    {
+                        FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date;
+                        ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+                    }
+                else
+                    SetDatesFromLastSentReport();
             }
             else if (!HasToDate)
             {
@@ -132,21 +138,17 @@ namespace SourceControlLogReporter
 
         private void SetWeekendDates()
         {
-            if(Policy.IsWeekendReportActive==true)
-                if (DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
-                {
-                    FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
-                    ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-                }
+            if (DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
+            {
+                FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
+                ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+            }
         }
 
-        private void SetDatesFromLastSentReport(Policy policy)
+        private void SetDatesFromLastSentReport()
         {
-            if(!HasFromDate && !HasToDate)
-            {
-                FromDate = policy.LastReportSentDate;
-                ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-            }          
+            FromDate = Policy.LastReportSentDate.Date;
+            ToDate = DateTime.Now.ToOriginalTimeZone().Date;
         }
 
         private DateTime GetDate(string dateString)
