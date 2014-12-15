@@ -44,7 +44,7 @@ namespace SourceControlLogReporter.Model
             {
                 var now = DateTime.Now.ToOriginalTimeZone();
                 if (IsDraft == true)
-                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "-draft" + "?date=" + now.ToString());
+                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "draft" + "?date=" + now.ToString());
                 else
                     return null;
             }
