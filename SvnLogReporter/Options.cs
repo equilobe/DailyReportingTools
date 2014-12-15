@@ -92,7 +92,9 @@ namespace SourceControlLogReporter
 
             SetDefaultDates();
 
-            SetDates();
+            SetWeekendDates();
+
+            SetDatesFromLastSentReport(p);
 
            // SwitchToUniversalTime();
 
@@ -128,7 +130,7 @@ namespace SourceControlLogReporter
             }
         }
 
-        private void SetDates()
+        private void SetWeekendDates()
         {
             if(Policy.IsWeekendReportActive==true)
                 if (DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
@@ -136,6 +138,15 @@ namespace SourceControlLogReporter
                     FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
                     ToDate = DateTime.Now.ToOriginalTimeZone().Date;
                 }
+        }
+
+        private void SetDatesFromLastSentReport(Policy policy)
+        {
+            if(!HasFromDate && !HasToDate)
+            {
+                FromDate = policy.LastReportSentDate;
+                ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+            }          
         }
 
         private DateTime GetDate(string dateString)
