@@ -90,7 +90,7 @@ namespace SourceControlLogReporter
             if (HasFromDate)
                 FromDate = GetDate(StringFromDate).Date;
 
-            //    SetWeekendDates();
+            // SetWeekendDates();
 
             SetDefaultDates();
 
@@ -114,16 +114,7 @@ namespace SourceControlLogReporter
         {
             if (!HasToDate && !HasFromDate)
             {
-                if (Policy.LastReportSentDate == new DateTime())
-                    if (Policy.IsWeekendReportActive)
-                        SetWeekendDates();
-                    else
-                    {
-                        FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date;
-                        ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-                    }
-                else
-                    SetDatesFromLastSentReport();
+                SetDates();
             }
             else if (!HasToDate)
             {
@@ -136,13 +127,24 @@ namespace SourceControlLogReporter
             }
         }
 
+        private void SetDates()
+        {
+            if (Policy.LastReportSentDate == new DateTime())
+                if (Policy.IsWeekendReportActive && DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
+                    SetWeekendDates();
+                else
+                {
+                    FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date;
+                    ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+                }
+            else
+                SetDatesFromLastSentReport();
+        }
+
         private void SetWeekendDates()
         {
-            if (DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
-            {
-                FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
-                ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-            }
+            FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
+            ToDate = DateTime.Now.ToOriginalTimeZone().Date;
         }
 
         private void SetDatesFromLastSentReport()

@@ -111,9 +111,9 @@ namespace JiraReporter
             return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }
 
-        public Health GetHealthFromPercentage(double allocatedTime, double hourRate)
+        public Health GetHealthFromPercentage(double allocatedTime, double workedTime)
         {
-            var variance = Summary.GetVariance(allocatedTime, hourRate);
+            var variance = Summary.GetVariance(allocatedTime, workedTime);
             if (variance < 0)
                 variance = variance * (-1);
             var percentage = GetPercentage(variance, allocatedTime);
