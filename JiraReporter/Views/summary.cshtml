@@ -6,11 +6,23 @@
                 <tr>
                     <th>
                         <div>
-                            <a style="text-decoration:none;border-radius:50px;width:17px; height:16px; line-height:16px; font-size:11px; font-family: Segoe UI Symbol, Arial;color:#ffffff;padding:1px 1px 1px 1px;background-color:#D9534F; display:inline-block; margin-right:4px;">
-                                &#10006;
-                            </a>
-                            <b style="color:#D9534F; font-size:14px;">Report Errors</b>
-                            <table style="margin-top:5px">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            <a style="text-decoration:none;border-radius:10px;width:17px; height:16px; line-height:16px; font-size:11px; font-family: Segoe UI Symbol, Arial;color:white;padding:1px 1px 1px 1px;background-color:#D9534F; display:inline-block; margin-right:4px;">
+                                                &#10006;
+                                            </a>
+                                        </th>
+                                        <td>
+                                            <b style="color:#D9534F; font-size:14px;">Report Errors</b>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            
+                            <table style="margin-top:5px; color:#D9534F;">
                                 <tbody>
                                     @if (Model.CompletedWithEstimateErrors.Count > 0)
                                     {
@@ -18,7 +30,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
                                         </tr>
                                     }
                                     @if (Model.CompletedWithNoWorkErrors.Count > 0)
@@ -27,7 +39,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
                                         </tr>
                                     }
                                     @if (Model.UnassignedErrors.Count > 0)
@@ -36,7 +48,7 @@
                                             <td style="vertical-align:top; width:15px">
                                                 <span>&#x25cf;</span>
                                             </td>
-                                            <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
+                                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
                                         </tr>
                                     }
                                     @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
@@ -47,7 +59,7 @@
                                                 <td style="vertical-align:top; width:15px">
                                                     <span>&#x25cf;</span>
                                                 </td>
-                                                <td colspan="1" style="text-align: left"><b style="font-size:14px; color:black">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
+                                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
                                             </tr>
                                         }
                                     }
@@ -60,60 +72,6 @@
         </table>
     </div>
 }
-
-@if (Model.Policy.IsDraft == true)
-{
-    <div style="margin-top:50px">
-        <table style="width:450px; height:150px; border:1px solid #DDD; background-color:#DDFCDE">
-            <tbody>
-                <tr>
-                    <th style="vertical-align:top; text-align:left; padding: 5px 1px 1px 10px">
-                        <b style="color:black; ">Press confirm button if:</b>
-                    </th>
-                    <th style="vertical-align:top; padding:5px 5px 1px 30px">
-                        <b style="color:black;">Press resend button if another draft report is needed</b>
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        <table>
-                            <tr>
-                                <td width="10px"></td>
-                                <td colspan="1">
-                                    <span style="color:black;"> - errors are corrected</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="10px"></td>
-                                <td colspan="1">
-                                    <span style="color:black;"> - everyone logged work</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="10px"></td>
-                                <td colspan="1">
-                                    <span style="color:black;"> - sprint was adjusted</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td width="200px" height="40px" style="padding-left:5px; padding-bottom:5px">
-                        @Partial("Views/confirmationButton.cshtml", Model)
-                    </td>
-                    <td width="200px" height="40px" style="padding-left:30px; padding-bottom:5px">
-                        @Partial("Views/resendDraftButton.cshtml", Model)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-}
-
 <div style="margin-top:10px">
     <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px">
         <tbody>
