@@ -1,5 +1,6 @@
 ﻿@{
     var color = string.Empty;
+    var timeSpentTotalColor = string.Empty;
 }
 <tr>
     <td style="vertical-align:top; width:15px">
@@ -46,12 +47,20 @@
         {
             color = "red";
         }
+        @if (Model.ExceededOriginalEstimate == true)
+        {
+            timeSpentTotalColor = "orange";
+        }
+        else
+        {
+            timeSpentTotalColor = "black";
+        }
+        @if (Model.TimeSpentTotal > 0)
+        {
+        <span style="color:@timeSpentTotalColor"> &#x25cf; @Model.TimeLoggedTotal worked </span>
+        }
         @if (Model.Subtasks.Count == 0)
         {
-            if (Model.TimeSpentTotal > 0)
-            {
-                <span style="color:black"> &#x25cf; @Model.TimeLoggedTotal worked </span>
-            }
             if (Model.RemainingEstimateSeconds == 0)
             {
                 <span style="color:@color; font-weight:bold;"> &#x25cf; @Model.RemainingEstimate left</span>
@@ -63,10 +72,6 @@
         }
         else
         {
-            if (Model.TimeSpentTotal > 0)
-            {
-                <span style="color:black"> &#x25cf; @Model.TimeLoggedTotal worked </span>
-            }
             if (Model.TotalRemainingSeconds == 0)
             {
                 <span style="color:@color; font-weight:bold">&#x25cf; @Model.TotalRemaining left</span>
@@ -75,10 +80,6 @@
             {
                 <span style="color:black"> &#x25cf; @Model.TotalRemaining left</span>
             }
-        }
-        @if (Model.ExceededOriginalEstimate == true)
-        {
-            <span style="color:black">&#x25cf; exceeded estimate</span>
         }
         @if (Model.HasSubtasksInProgress == true)
         {

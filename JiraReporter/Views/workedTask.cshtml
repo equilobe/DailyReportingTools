@@ -52,7 +52,15 @@ else
             }
             <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
             <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
-            <span style="color:black;"> &#x25cf; @Model.TimeLoggedTotal spent</span>
+            @if (Model.ExceededOriginalEstimate == true && Model.SubTask == false)
+            {
+                color = "orange";
+            }
+            else
+            {
+                color = "black";
+            }
+            <span style="color:@color;"> &#x25cf; @Model.TimeLoggedTotal spent</span>
             @if (Model.Label != null || Model.SubTask == true)
             {
                 color = "orange";
@@ -82,10 +90,6 @@ else
                 {
                     <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
                 }
-            }
-            @if (Model.ExceededOriginalEstimate == true)
-            {
-                <span style="color:black">&#x25cf; exceeded estimate</span>
             }
             @if(Model.Assignee==null)
             {

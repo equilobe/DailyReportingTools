@@ -1,95 +1,89 @@
-﻿ @{
-     var color = "";
-     var bold = "";
- }
+﻿@{
+    var color = "";
+    var bold = "";
+}
 
-            @if ((Model.RemainingEstimateSeconds == 0 && Model.Resolution == null) || (Model.RemainingEstimateSeconds > 0 && Model.Resolution != null))
+@if ((Model.RemainingEstimateSeconds == 0 && Model.Resolution == null) || (Model.RemainingEstimateSeconds > 0 && Model.Resolution != null))
+{
+    color = "orange";
+    bold = "bold";
+}
+else
+{
+    color = "black";
+    bold = "normal";
+}
+<tr>
+    <td></td>
+    <td style="vertical-align:top; width:15px">
+        @if (Model.StatusCategory.name == "Done")
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
+        }
+        @if (Model.StatusCategory.name == "In Progress")
+        {
+            <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
+        }
+        @if (Model.StatusType == "Open")
+        {
+            <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
+        }
+    </td>
+    <td>
+        @if (DateTime.Compare(Model.Created.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
+        {
+            <b style="color:black"> NEW: </b>
+        }
+        @if (Model.StatusCategory.name == "In Progress")
+        {
+            if (Model.ExistsInTimesheet == true)
             {
-                color = "orange";
-                bold = "bold";
+                <b style="color:black">Continue:</b>
             }
-            else
+        }
+        else
+        {
+            if (Model.Status == Model.PolicyReopenedStatus)
             {
-                color = "black";
-                bold = "normal";
+                <span style="font-weight:bold; color:black">Reopened:</span>
             }
-                <tr>
-                    <td>
+            else if (Model.TimeSpent > 0)
+            {
+                <span style="font-weight:bold; color:black">Paused:</span>
+            }
+        }
+        @if (Model.DisplayStatus == true)
+        {
+            <b style="color:black; padding:1.5px;">@Model.Status</b>
+        }
+        <a style="text-decoration: none; font-weight:bold;" href="@Model.Link">@Model.Summary</a>
+        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
 
-                    </td>
-                    <td style="vertical-align:top; width:15px">
-                        @if (Model.StatusCategory.name == "Done")
-                        {
-                            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
-                        }
-                        @if (Model.StatusCategory.name == "In Progress")
-                        {
-                            <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
-                        }
-                        @if(Model.StatusType == "Open")
-                        {
-                            <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
-                        }
-                    </td>
-                    <td>
-                        @if (DateTime.Compare(Model.Created.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
-                        {
-                        <b style="color:black"> NEW: </b>
-                        }
-                        @if (Model.StatusCategory.name == "In Progress")
-                        {
-                            if (Model.ExistsInTimesheet == true)
-                            {
-                                <b style="color:black">Continue:</b>
-                            }
-                        }
-                        else
-                        {
-                            if (Model.Status == Model.PolicyReopenedStatus)
-                            {
-                                <span style="font-weight:bold; color:black">Reopened:</span>
-                            }
-                            else if (Model.TimeSpent > 0)
-                            {
-                                <span style="font-weight:bold; color:black">Paused:</span>
-                            }
-                        }
-                        @if (Model.DisplayStatus == true)
-                        {
-                            <b style="color:black; padding:1.5px;">@Model.Status</b>
-                        }
-                        <a style="text-decoration: none; font-weight:bold;" href="@Model.Link">@Model.Summary</a>
-                        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
-
-                        @if (Model.TimeSpentOnTask > 0)
-                        {
-                            <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
-                        }
-                        @if (Model.ExceededOriginalEstimate == true)
-                        {
-                            <span style="color:black">&#x25cf; exceeded estimate</span>
-                        }
-                        @if (Model.Resolution == null)
-                        {
-                            <span style="color:@color; font-weight:@bold"> &#x25cf; @Model.RemainingEstimate left </span>
-                        }
-                        @if (Model.Assignee == null)
-                        {
-                            <span style="color:black"> &#x25cf; Unassigned</span>
-                        }
-                        else
-                        {
-                            if (Model.Assignee != Model.LoggedAuthor)
-                            {
-                                <span style="color:black"> &#x25cf; @Model.Assignee</span>
-                            }
-                        }
-                        @if (Model.PullRequests != null)
-                        {
-                            if (Model.PullRequests.Count > 0)
-                            {
-                                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
-                            }
-                        }
-                    </td>
-                </tr>
+        @if (Model.TimeSpentOnTask > 0)
+        {
+            <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
+        }
+        @if (Model.Resolution == null)
+        {
+            <span style="color:@color; font-weight:@bold"> &#x25cf; @Model.RemainingEstimate left </span>
+        }
+        @if (Model.Assignee == null)
+        {
+            <span style="color:black"> &#x25cf; Unassigned</span>
+        }
+        else
+        {
+            if (Model.Assignee != Model.LoggedAuthor)
+            {
+                <span style="color:black"> &#x25cf; @Model.Assignee</span>
+            }
+        }
+        @if (Model.PullRequests != null)
+        {
+            if (Model.PullRequests.Count > 0)
+            {
+                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+            }
+        }
+    </td>
+</tr>
