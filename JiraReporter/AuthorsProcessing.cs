@@ -19,55 +19,55 @@ namespace JiraReporter
             var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet], reportAuthors);
             var authorsNew = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            if(policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
+            if (policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
                 users.RemoveAll(u => policy.IgnoredAuthors.Exists(a => a == u.displayName));
 
             foreach (var user in users)
             {
-                if(authors.ContainsKey(user.displayName))
-                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName]});
+                if (authors.ContainsKey(user.displayName))
+                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName] });
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
                 SetAuthor(report, authorsNew.Last(), policy, commits, options, timesheetCollection);
             }
 
-            authorsNew.RemoveAll(a=>reportAuthors.Exists(t=>t==a.Name) == false && AuthorIsEmpty(a));
+            authorsNew.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
             return authorsNew;
         }
 
         private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet timesheet, List<string> reportAuthors)
         {
             var authors = new Dictionary<string, List<Issue>>();
-            if(reportAuthors.Count > 0)
-                foreach(var author in reportAuthors)
+            if (reportAuthors.Count > 0)
+                foreach (var author in reportAuthors)
                 {
                     var issues = timesheet.Worklog.Issues.Where(i => i.Entries.First().AuthorFullName == author).ToList();
-                    if(issues != null && issues.Count > 0)
-                        foreach(var issue in issues)
+                    if (issues != null && issues.Count > 0)
+                        foreach (var issue in issues)
                             IssueAdapter.SetLoggedAuthor(issue, author);
                     authors.Add(author, issues);
                 }
-               
+
             return authors;
         }
 
         private static List<string> GetTimesheetCollectionAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, TimesheetType key)
         {
-            if(timesheetCollection.ContainsKey(key) && timesheetCollection[key] != null)
+            if (timesheetCollection.ContainsKey(key) && timesheetCollection[key] != null)
                 return GetAuthorsFromTimesheet(timesheetCollection[key]);
             else
                 return new List<string>();
         }
 
-        private static void SetAuthor(SprintTasks sprintTasks, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType,Timesheet> timesheetCollection)
+        private static void SetAuthor(SprintTasks sprintTasks, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author, timesheetCollection);
-            SetAuthorTimeFormat(author);           
+            SetAuthorTimeFormat(author);
             GetAuthorCommits(policy, author, commits);
             author.Name = GetName(author.Name);
             SetCommitsAllTasks(author, sprintTasks);
-            SetUnfinishedTasks(sprintTasks, author, policy);
+            SetUncompletedTasks(sprintTasks, author, policy);
             SetAuthorDayLogs(author, options);
             SetAuthorErrors(author);
             SetAuthorInitials(author);
@@ -77,7 +77,7 @@ namespace JiraReporter
         public static string GetName(string name)
         {
             string delimiter = "(\\[.*\\])";
-            if(name!=null)
+            if (name != null)
                 name = Regex.Replace(name, delimiter, "");
             return name;
         }
@@ -99,17 +99,17 @@ namespace JiraReporter
 
         public static void SetAuthorTimeFormat(Author author)
         {
-                author.TimeLogged = TimeFormatting.SetTimeFormat((int)author.TimeSpent);
+            author.TimeLogged = TimeFormatting.SetTimeFormat((int)author.TimeSpent);
         }
 
         private static Author OrderAuthorIssues(Author author)
         {
-                if(author.Issues!=null)
-                    author.Issues = IssueAdapter.OrderIssues(author.Issues);
-                return author;
+            if (author.Issues != null)
+                author.Issues = IssueAdapter.OrderIssues(author.Issues);
+            return author;
         }
 
-        private static void SetUnfinishedTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
+        private static void SetUncompletedTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
         {
             SetAuthorInProgressTasks(tasks, author, policy);
             SetAuthorOpenTasks(tasks, author, policy);
@@ -126,7 +126,7 @@ namespace JiraReporter
                 author.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(author.InProgressTasksTimeLeftSeconds);
             }
             author.InProgressTasksParents = TasksService.GetParentTasks(author.InProgressTasks, author);
-            author.InProgressTasksParents = author.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList(); 
+            author.InProgressTasksParents = author.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 
         private static void SetAuthorOpenTasks(SprintTasks tasks, Author author, SourceControlLogReporter.Model.Policy policy)
@@ -159,13 +159,13 @@ namespace JiraReporter
                     IssueAdapter.SetLoggedAuthor(unfinishedTasks.Last(), author.Name);
                 }
             return unfinishedTasks;
-        } 
+        }
 
         public static void SetAuthorsCommitsTasks(List<Issue> tasks, Author author)
         {
-            foreach(var task in tasks)
+            foreach (var task in tasks)
             {
-                if((author.Issues!=null && author.Issues.Exists(i=>i.Key == task.Key) == false) || author.Issues == null)
+                if ((author.Issues != null && author.Issues.Exists(i => i.Key == task.Key) == false) || author.Issues == null)
                 {
                     var issue = new Issue(task);
                     issue.Commits = null;
@@ -188,25 +188,25 @@ namespace JiraReporter
             foreach (var listOfTasks in tasks.CompletedTasks.Values)
                 SetAuthorsCommitsTasks(listOfTasks, author);
         }
-       
+
         private static bool AuthorIsEmpty(Author author)
         {
-            if (author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.DayLogs.Count==0)
+            if (author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.DayLogs.Count == 0)
                 return true;
             return false;
         }
 
         public static void GetAuthorCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
-        {            
-            var find = new List<Commit>();             
+        {
+            var find = new List<Commit>();
             author.Commits = new List<Commit>();
-            if(policy.Users.ContainsKey(author.Name))
-                if(policy.Users[author.Name]!="")
-                  find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
+            if (policy.Users.ContainsKey(author.Name))
+                if (policy.Users[author.Name] != "")
+                    find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
             author.Commits = find;
             SetCommitsLink(commits, policy);
-           // IssueAdapter.AdjustIssueCommits(author);           
-        }       
+            // IssueAdapter.AdjustIssueCommits(author);           
+        }
         public static void SetAuthorDayLogs(Author author, SourceControlLogReporter.Options options)
         {
             author.DayLogs = new List<DayLog>();
@@ -226,10 +226,10 @@ namespace JiraReporter
 
         private static void SetCommitsLink(List<Commit> commits, SourceControlLogReporter.Model.Policy policy)
         {
-            if(commits!=null)
-              foreach (var commit in commits)
-                  if (commit.Entry.Link == null && policy.SourceControl.CommitUrl != null)
-                      commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
+            if (commits != null)
+                foreach (var commit in commits)
+                    if (commit.Entry.Link == null && policy.SourceControl.CommitUrl != null)
+                        commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
         }
 
         private static void SetAuthorInitials(Author author)
@@ -242,13 +242,13 @@ namespace JiraReporter
             author.Initials = initials;
         }
 
-        private static void SetAuthorTimeSpent(Author author, Dictionary<TimesheetType,Timesheet> timesheetCollection)
+        private static void SetAuthorTimeSpent(Author author, Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             author.TimeSpent = timesheetCollection[TimesheetType.ReportTimesheet].GetTimesheetSecondsWorkedAuthor(author);
             author.TimeSpentCurrentMonthSeconds = timesheetCollection[TimesheetType.MonthTimesheet].GetTimesheetSecondsWorkedAuthor(author);
             if (timesheetCollection.ContainsKey(TimesheetType.SprintTimesheet))
-                if(timesheetCollection[TimesheetType.SprintTimesheet] != null)
-                 author.TimeSpentCurrentSprintSeconds = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorkedAuthor(author);
+                if (timesheetCollection[TimesheetType.SprintTimesheet] != null)
+                    author.TimeSpentCurrentSprintSeconds = timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorkedAuthor(author);
         }
 
         public static void SetAuthorErrors(Author author)
@@ -257,17 +257,17 @@ namespace JiraReporter
             if (author.InProgressTasks != null && author.InProgressTasks.Count > 0)
                 inProgressTasksErrors = author.InProgressTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
             var openTasksErrors = new List<Error>();
-            if(author.OpenTasks!=null && author.OpenTasks.Count>0)
+            if (author.OpenTasks != null && author.OpenTasks.Count > 0)
                 openTasksErrors = author.OpenTasks.Where(e => e.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
 
-            if(inProgressTasksErrors.Count>0 || openTasksErrors.Count>0)
+            if (inProgressTasksErrors.Count > 0 || openTasksErrors.Count > 0)
             {
                 author.Errors = new List<Error>();
                 author.Errors = author.Errors.Concat(inProgressTasksErrors).ToList();
                 author.Errors = author.Errors.Concat(openTasksErrors).ToList();
             }
-        } 
-  
+        }
+
         public static bool AuthorExistsInTimesheet(Author author, Timesheet timesheet)
         {
             if (timesheet != null && timesheet.Worklog.Issues != null)
@@ -278,9 +278,15 @@ namespace JiraReporter
         public static List<string> GetAuthorsFromTimesheet(Timesheet timesheet)
         {
             var authors = new List<string>();
-            if(timesheet!=null && timesheet.Worklog!=null)
-                authors = timesheet.Worklog.Issues.SelectMany(i=>i.Entries.Select(e=>e.AuthorFullName)).Distinct().ToList();
+            if (timesheet != null && timesheet.Worklog != null)
+                authors = timesheet.Worklog.Issues.SelectMany(i => i.Entries.Select(e => e.AuthorFullName)).Distinct().ToList();
             return authors;
+        }
+
+        public static void SetAuthorAverageWorkPerDay(Author author, int monthWorkedDays, int sprintWorkedDays)
+        {
+            author.MonthWorkedPerDay = author.TimeSpentCurrentMonthSeconds / monthWorkedDays;
+            author.SprintWorkedPerDay = author.TimeSpentCurrentSprintSeconds / sprintWorkedDays;
         }
     }
 }

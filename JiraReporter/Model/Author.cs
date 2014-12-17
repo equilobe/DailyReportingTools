@@ -58,6 +58,14 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour(TimeSpentCurrentMonthSeconds);
             }
         }
+        public double MonthWorkedPerDay { get; set; }
+        public string MonthWorkedPerDayString
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat8Hour((int)(MonthWorkedPerDay));
+            }
+        }
         public int TimeSpentCurrentSprintSeconds { get; set; }
         public double TimeSpentCurrentSprintHours
         {
@@ -71,6 +79,14 @@ namespace JiraReporter.Model
             get
             {
                 return TimeFormatting.SetTimeFormat8Hour(TimeSpentCurrentSprintSeconds);
+            }
+        }
+        public double SprintWorkedPerDay { get; set; }
+        public string SprintWorkedPerDayString
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat8Hour((int)(SprintWorkedPerDay));
             }
         }
 
