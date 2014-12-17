@@ -213,10 +213,10 @@
                     <b style="color:black; font-size:14px"> @Model.TotalTime </b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.SprintHealth]">
-                    <b style="color:black; font-size:14px">@Model.SprintHoursWorkedString</b>
+                    <b style="color:black; font-size:14px">@Model.SprintWorkedPerDayString</b>
                 </td>
                 <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD; background-color:@Model.HealthColors[Model.MonthHealth]">
-                    <b style="color:black; font-size:14px"> @Model.MonthHoursWorkedString</b>
+                    <b style="color:black; font-size:14px"> @Model.MonthWorkedPerDayString</b>
                 </td>
             </tr>
             @foreach (var author in Model.Authors)
@@ -238,7 +238,7 @@
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                         @if (author.TimeSpentCurrentSprintSeconds > 0)
                         {
-                            <span style="color:black; font-size:14px"> @author.TimeSpentCurrentSprintString</span>
+                            <span style="color:black; font-size:14px"> @author.SprintWorkedPerDayString</span>
                         }
                         else
                         {
@@ -248,7 +248,7 @@
                     <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                         @if (author.TimeSpentCurrentMonthSeconds > 0)
                         {
-                            <span style="color:black; font-size:14px"> @author.TimeSpentCurrentMonthHoursString</span>
+                            <span style="color:black; font-size:14px"> @author.MonthWorkedPerDayString</span>
                         }
                         else
                         {

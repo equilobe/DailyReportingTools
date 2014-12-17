@@ -235,10 +235,16 @@ namespace JiraReporter.Model
 
             var monthWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
             var monthWorkingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
+            var monthWorkingDaysLeft = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
+            int sprintRemainingDays = 0;
             int sprintWorkedDays = 0;
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
-                sprintWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
-
+            {
+                var sprintEndDate = timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1);
+                var sprintStartDate = timesheetCollection[TimesheetType.SprintTimesheet].StartDate.ToOriginalTimeZone();
+                sprintRemainingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, NonWorkingDays);
+                sprintWorkedDays = GetWorkingDays(sprintStartDate, sprintEndDate, NonWorkingDays);
+            }
             SetDates(options);
             SetTimeWorked(timesheetCollection);
             SetAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays);
@@ -253,7 +259,7 @@ namespace JiraReporter.Model
 
             SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
             SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
-            SetHourRates(timesheetCollection);
+            SetHourRates(monthWorkingDaysLeft, sprintRemainingDays);
 
             SetHealthColors();
             SetVariances(sprintWorkedDays, monthWorkedDays, monthWorkingDays);
@@ -348,15 +354,11 @@ namespace JiraReporter.Model
                 RemainingMonthHours = AllocatedHoursPerMonth - MonthHoursWorked;
         }
 
-        private void SetHourRates(Dictionary<TimesheetType, Timesheet> timesheetCollection)
+        private void SetHourRates(int monthWorkingDaysLeft, int sprintWorkingDaysLeft)
         {
-            int monthDays = 0;
-            monthDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
-            MonthHourRate = RemainingMonthHours / monthDays;
-            int sprintDays = 0;
-
-            if (sprintDays > 0)
-                SprintHourRate = (double)SprintTasksTimeLeftHours / sprintDays;
+            MonthHourRate = RemainingMonthHours / monthWorkingDaysLeft;
+            if (sprintWorkingDaysLeft > 0)
+                SprintHourRate = (double)SprintTasksTimeLeftHours / sprintWorkingDaysLeft;
         }
 
         public static int GetWorkingDays(DateTime startDate, DateTime endDate, List<int> nonWorkingDays)
