@@ -154,6 +154,14 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour((int)(SprintWorkedPerDay));
             }
         }
+        public int SprintTotalEstimate { get; set; }
+        public string SprintTotalEstimateString
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat(SprintTotalEstimate);
+            }
+        }
         public double RemainingMonthHours { get; set; }
         public string RemainingMonthHoursString
         {
@@ -176,6 +184,14 @@ namespace JiraReporter.Model
             get
             {
                 return TimeFormatting.SetTimeFormat8Hour((int)(MonthWorkedPerDay));
+            }
+        }
+        public int MonthTotalEstimate { get; set; }
+        public string MonthTotalEstimateString
+        {
+            get
+            {
+                return TimeFormatting.SetTimeFormat(MonthTotalEstimate);
             }
         }
         public string MonthTimeLeft
@@ -405,21 +421,16 @@ namespace JiraReporter.Model
             MonthHealth = healthInspector.GetMonthHealth(AllocatedHoursPerMonth, MonthHoursWorked);
         }
 
-        public static double GetVariance(double allocatedTime, double workedTime)
-        {
-            return allocatedTime - workedTime;
-        }
-
         public void SetSprintVariance(int sprintWorkedDays)
         {
-            SprintHourRateVariance = GetVariance(AllocatedHoursPerDay * sprintWorkedDays, SprintHoursWorked);
+            SprintHourRateVariance = MathHelpers.GetVariance(AllocatedHoursPerDay * sprintWorkedDays, SprintHoursWorked);
         }
 
         public void SetMonthVariance(int monthWorkedDays, int monthWorkingDays)
         {
             var workedPerDay = MonthHoursWorked / monthWorkedDays;
             var averageFromAllocatedHours = AllocatedHoursPerMonth / monthWorkingDays;
-            MonthHourRateVariance = GetVariance(workedPerDay, averageFromAllocatedHours);
+            MonthHourRateVariance = MathHelpers.GetVariance(workedPerDay, averageFromAllocatedHours);
         }
 
         public void SetVariances(int sprintWorkedDays, int monthWorkedDays, int monthWorkingDays)

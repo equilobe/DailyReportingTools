@@ -113,22 +113,16 @@ namespace JiraReporter
 
         public Health GetHealthFromPercentage(double allocatedTime, double workedTime)
         {
-            var variance = Summary.GetVariance(allocatedTime, workedTime);
+            var variance = MathHelpers.GetVariance(allocatedTime, workedTime);
             if (variance < 0)
                 variance = variance * (-1);
-            var percentage = GetPercentage(variance, allocatedTime);
+            var percentage = MathHelpers.GetPercentage(variance, allocatedTime);
             if (percentage <= 5)
                 return Health.Good;
             else if (percentage <= 15)
                 return Health.Weak;
             else
                 return Health.Bad;
-        }
-
-        public static double GetPercentage(double value, double total)
-        {
-            var percentage = (value * 100) / total;
-            return percentage;
         }
     }
 }

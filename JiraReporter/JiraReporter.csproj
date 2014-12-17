@@ -76,6 +76,7 @@
     <Compile Include="JiraModels\SprintReport.cs" />
     <Compile Include="JiraModels\Views.cs" />
     <Compile Include="JiraService.cs" />
+    <Compile Include="MathHelpers.cs" />
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Error.cs" />
