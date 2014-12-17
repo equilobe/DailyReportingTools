@@ -20,8 +20,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            
-                            
+
+
                             <table style="margin-top:5px; color:#D9534F;">
                                 <tbody>
                                     @if (Model.CompletedWithEstimateErrors.Count > 0)
@@ -188,6 +188,24 @@
     </table>
 </div>
 
+<div style="margin-top:30px">
+    <h3>Status</h3>
+    <div>
+        <a style="width:0.2px; height:0.2px; background-color:green; padding:5px; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@Model.FromDate.DayOfWeek.ToString().Substring(0, 3)</span>
+        <a style="width:0.2px; height:0.2px; background-color:blue; padding:5px; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg</span>
+        <a style="width:0.2px; height:0.2px; background-color:yellow; padding:5px; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg</span>
+    </div>
+    <table cellspacing="0"; style="margin-top:5px">
+        <tbody>
+            @foreach(var author in Model.Authors)
+            {
+                <tr>
+                    <td style="width:50px; height:50px; border-right:1px solid grey; padding:5px;">@author.FirstName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 <div style="margin-top:10px">
     <table style="border: 1px solid #DDD; border-collapse:collapse; min-width:400px">
         <tbody>
