@@ -14,7 +14,7 @@ namespace JiraReporter.Model
     public class Issue
     {
         [XmlElement("key")]
-        public string Key {get; set;}
+        public string Key { get; set; }
 
         [XmlIgnore]
         public Uri Link { get; set; }
@@ -50,6 +50,16 @@ namespace JiraReporter.Model
         public int OriginalEstimateSeconds { get; set; }
         [XmlIgnore]
         public int OriginalEstimateSecondsTotal { get; set; }
+        [XmlIgnore]
+        public bool ExceededOriginalEstimate
+        {
+            get
+            {
+                if (TimeSpentTotal > OriginalEstimateSecondsTotal && Label == null)
+                    return true;
+                return false;
+            }
+        }
         [XmlIgnore]
         public string Type { get; set; }
         [XmlIgnore]
@@ -89,7 +99,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public List<Error> Errors { get; set; }
         [XmlIgnore]
-        public string StatusType {get;set;}
+        public string StatusType { get; set; }
         [XmlIgnore]
         public bool DisplayStatus { get; set; }
 
@@ -115,16 +125,16 @@ namespace JiraReporter.Model
 
         public Issue(Issue issue)
         {
-            if(issue.Assignee!=null)
+            if (issue.Assignee != null)
                 this.Assignee = issue.Assignee;
-            if(issue.Entries!=null)
+            if (issue.Entries != null)
                 this.Entries = issue.Entries;
             this.Key = issue.Key;
-            if(issue.Label!=null)
+            if (issue.Label != null)
                 this.Label = issue.Label;
             this.Link = issue.Link;
-            if (issue.Parent!=null)
-                 this.Parent = issue.Parent;
+            if (issue.Parent != null)
+                this.Parent = issue.Parent;
             this.Priority = issue.Priority;
             this.RemainingEstimate = issue.RemainingEstimate;
             this.RemainingEstimateSeconds = issue.RemainingEstimateSeconds;
@@ -173,6 +183,6 @@ namespace JiraReporter.Model
             //this.ErrorsCount = issue.ErrorsCount;
             this.StatusType = issue.StatusType;
             this.DisplayStatus = issue.DisplayStatus;
-        }       
+        }
     }
 }

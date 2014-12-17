@@ -76,6 +76,10 @@
                 <span style="color:black"> &#x25cf; @Model.TotalRemaining left</span>
             }
         }
+        @if (Model.ExceededOriginalEstimate == true)
+        {
+            <span style="color:black">&#x25cf; exceeded estimate</span>
+        }
         @if (Model.HasSubtasksInProgress == true)
         {
             <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>

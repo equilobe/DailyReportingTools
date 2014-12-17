@@ -65,6 +65,10 @@
                         {
                             <span style="color:black"> &#x25cf; @Model.TimeLogged worked </span>
                         }
+                        @if (Model.ExceededOriginalEstimate == true)
+                        {
+                            <span style="color:black">&#x25cf; exceeded estimate</span>
+                        }
                         @if (Model.Resolution == null)
                         {
                             <span style="color:@color; font-weight:@bold"> &#x25cf; @Model.RemainingEstimate left </span>

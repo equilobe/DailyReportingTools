@@ -83,6 +83,10 @@ else
                     <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
                 }
             }
+            @if (Model.ExceededOriginalEstimate == true)
+            {
+                <span style="color:black">&#x25cf; exceeded estimate</span>
+            }
             @if(Model.Assignee==null)
             {
                 <span style="color:black"> &#x25cf; Unassigned</span>
