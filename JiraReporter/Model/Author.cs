@@ -27,7 +27,7 @@ namespace JiraReporter.Model
         public string Initials { get; set; }
 
         public string TimeLogged { get; set; }
-        public double TimeSpent { get; set; }
+        public int TimeSpent { get; set; }
         public double TimeSpentHours
         {
             get
@@ -39,8 +39,17 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat8Hour((int)(TimeSpentHours * 3600));
-            }           
+                return TimeSpent.SetTimeFormat();
+            }
+        }
+
+        public int TimeLoggedPerDayAverage { get; set; }
+        public string TimeLoggedPerDayAverageString
+        {
+            get
+            {
+                return TimeLoggedPerDayAverage.SetTimeFormat8Hour();
+            }
         }
 
         public int TimeSpentCurrentMonthSeconds { get; set; }
@@ -55,7 +64,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat8Hour(TimeSpentCurrentMonthSeconds);
+                return TimeSpentCurrentMonthSeconds.SetTimeFormat8Hour();
             }
         }
         public double MonthWorkedPerDay { get; set; }
@@ -63,7 +72,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat8Hour((int)(MonthWorkedPerDay));
+                return ((int)(MonthWorkedPerDay)).SetTimeFormat8Hour();
             }
         }
         public int TimeSpentCurrentSprintSeconds { get; set; }
@@ -78,7 +87,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat8Hour(TimeSpentCurrentSprintSeconds);
+                return TimeSpentCurrentSprintSeconds.SetTimeFormat8Hour();
             }
         }
         public double SprintWorkedPerDay { get; set; }
@@ -86,7 +95,32 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeFormatting.SetTimeFormat8Hour((int)(SprintWorkedPerDay));
+                return ((int)(SprintWorkedPerDay)).SetTimeFormat8Hour();
+            }
+        }
+
+        public double DayChartPixelWidth { get; set; }
+        public string DayChartPixelWidthString
+        {
+            get
+            {
+                return DayChartPixelWidth.ToString() + "px";
+            }
+        }
+        public double SprintChartPixelWidth { get; set; }
+        public string SprintChartPixelWidthString
+        {
+            get
+            {
+                return SprintChartPixelWidth.ToString() + "px";
+            }
+        }
+        public double MonthChartPixelWidth { get; set; }
+        public string MonthChartPixelWidthString
+        {
+            get
+            {
+                return MonthChartPixelWidth.ToString() + "px";
             }
         }
 
@@ -108,7 +142,7 @@ namespace JiraReporter.Model
         {
             get
             {
-               return TimeFormatting.SetTimeFormat8Hour(RemainingEstimateSeconds);
+                return RemainingEstimateSeconds.SetTimeFormat8Hour();
             }
         }
         public List<Commit> Commits { get; set; }

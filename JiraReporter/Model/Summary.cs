@@ -240,6 +240,23 @@ namespace JiraReporter.Model
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
+        public const int ChartMaxBarWidth = 250;
+        public int ChartMaxWidth
+        {
+            get
+            {
+                return ChartMaxBarWidth + 50;
+            }
+        }
+        public string ChartMaxWidthString
+        {
+            get
+            {
+                return ChartMaxWidth.ToString() + "px";
+            }
+        }
+
+
         public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Options options, Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             Policy = policy;
@@ -248,7 +265,9 @@ namespace JiraReporter.Model
             CommitsCount = authors.Sum(a => a.Commits.Count);
             PullRequests = pullRequests;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
+            SetDates(options);
 
+            var reportWorkingDays = GetWorkingDays(FromDate, ToDate.AddDays(-1), NonWorkingDays);
             var monthWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
             var monthWorkingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
             var monthWorkingDaysLeft = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
@@ -261,9 +280,8 @@ namespace JiraReporter.Model
                 sprintRemainingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, NonWorkingDays);
                 sprintWorkedDays = GetWorkingDays(sprintStartDate, sprintEndDate, NonWorkingDays);
             }
-            SetDates(options);
             SetTimeWorked(timesheetCollection);
-            SetAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays);
+            SetAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
             SetAllocatedTime();
             SetSummaryTasksTimeLeft(sprintTasks);
 
@@ -282,6 +300,8 @@ namespace JiraReporter.Model
 
             SetHealth(timesheetCollection);
             SetHealthStatuses();
+
+            SetAuthorsWorkSummaryChartWidths();
 
             SetErrors(sprintTasks);
         }
@@ -330,10 +350,10 @@ namespace JiraReporter.Model
                 SprintHoursWorked = (double)timesheetCollection[TimesheetType.SprintTimesheet].GetTimesheetSecondsWorked() / 3600;
         }
 
-        private void SetAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays)
+        private void SetAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             SetTotalAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays);
-            SetAuthorsAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays);
+            SetAuthorsAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
         }
 
         private void SetTotalAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays)
@@ -344,10 +364,10 @@ namespace JiraReporter.Model
                 SprintWorkedPerDay = (SprintHoursWorked * 3600) / sprintWorkedDays;
         }
 
-        private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays)
+        private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             foreach (var author in Authors)
-                AuthorsProcessing.SetAuthorAverageWorkPerDay(author, monthWorkedDays, sprintWorkedDays);
+                AuthorsProcessing.SetAuthorAverageWorkPerDay(author, monthWorkedDays, sprintWorkedDays, reportWorkingDays);
         }
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
@@ -499,6 +519,25 @@ namespace JiraReporter.Model
                 errors = tasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
                 UnassignedErrors = UnassignedErrors.Concat(errors).ToList();
             }
+        }
+
+        private int GetWorkSummaryMax()
+        {
+            var max = new List<int>();
+            foreach(var author in Authors)
+            {
+                var maxFromAuthor = AuthorsProcessing.GetAuthorMaxAverage(author);
+                max.Add(maxFromAuthor);
+            }
+            double maxHours = max.Max() / 3600;
+            return MathHelpers.RoundToNextEvenInteger(maxHours);
+        }
+
+        private void SetAuthorsWorkSummaryChartWidths()
+        {
+            var max = GetWorkSummaryMax();
+            foreach (var author in Authors)
+                AuthorsProcessing.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, max);
         }
     }
 }

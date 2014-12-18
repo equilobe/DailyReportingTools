@@ -283,10 +283,25 @@ namespace JiraReporter
             return authors;
         }
 
-        public static void SetAuthorAverageWorkPerDay(Author author, int monthWorkedDays, int sprintWorkedDays)
+        public static void SetAuthorAverageWorkPerDay(Author author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             author.MonthWorkedPerDay = author.TimeSpentCurrentMonthSeconds / monthWorkedDays;
             author.SprintWorkedPerDay = author.TimeSpentCurrentSprintSeconds / sprintWorkedDays;
+            author.TimeLoggedPerDayAverage = author.TimeSpent / reportWorkingDays;
+        }
+
+        public static int GetAuthorMaxAverage(Author author)
+        {
+            var max = Math.Max(author.TimeLoggedPerDayAverage, author.SprintWorkedPerDay);
+            max = Math.Max(max, author.MonthWorkedPerDay);
+            return (int)max;
+        }
+
+        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, int maxValue)
+        {
+            author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
+            author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));
+            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.TimeLoggedPerDayAverage / 3600));
         }
     }
 }

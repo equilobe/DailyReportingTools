@@ -18,5 +18,18 @@ namespace JiraReporter
         {
             return allocatedTime - workedTime;
         }
+
+        public static double RuleOfThree(double referenceNumber, double associatedValue, double evaluatedAmount)
+        {
+            return (referenceNumber * evaluatedAmount) / associatedValue;
+        }
+
+        public static int RoundToNextEvenInteger(double number)
+        {
+            var roundedNumber = Math.Ceiling(number);
+            if (number % 2 != 0)
+                roundedNumber++;
+            return (int)roundedNumber;
+        }
     }
 }
