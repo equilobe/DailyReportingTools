@@ -21,9 +21,9 @@
                                         <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
                                     </td>
                                     <td>
-                                        @if(task.Resolution!="Fixed")
+                                        @if (task.Resolution != "Fixed" && task.Resolution != "Done")
                                         {
-                                            <b style="color:black">@task.Resolution</b>
+                                            <b style="color:black; padding:1.5px">@task.Resolution</b>
                                         }
                                         @if (task.DisplayStatus == true)
                                         {

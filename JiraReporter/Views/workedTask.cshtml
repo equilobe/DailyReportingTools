@@ -48,9 +48,9 @@ else
         <td @colspan>
             @if (Model.StatusCategory.name == "Done")
             {
-                if (Model.Resolution != "Fixed")
+                if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
                 {
-                    <b style="color:black">@Model.Resolution</b>
+                    <b style="color:black; padding:1.5px">@Model.Resolution</b>
                 }
             }
             @if (Model.DisplayStatus == true)
