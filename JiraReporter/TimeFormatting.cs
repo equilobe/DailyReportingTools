@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    class TimeFormatting
+    public static class TimeFormatting
     {
-        public static string SetTimeFormat(int time)
+        public static string SetTimeFormat(this int time)
         {
             string timeFormat = "";
             if (time < 0)
@@ -31,7 +31,7 @@ namespace JiraReporter
             return timeFormat;
         }
 
-        public static string SetTimeFormat8Hour(int seconds)
+        public static string SetTimeFormat8Hour(this int seconds)
         {
             string timeFormat = "";
             if (seconds < 0)
