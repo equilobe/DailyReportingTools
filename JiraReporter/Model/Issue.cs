@@ -58,7 +58,7 @@ namespace JiraReporter.Model
                 if (TimeSpentTotal > OriginalEstimateSecondsTotal && Label == null)
                 {
                     var percentage = MathHelpers.GetPercentage((TimeSpentTotal - OriginalEstimateSecondsTotal), OriginalEstimateSecondsTotal);
-                    if (percentage >= 10)
+                    if (percentage >= 25)
                         return true;
                 }
                 return false;

@@ -30,6 +30,13 @@ else
         }
     </td>
     <td>
+        @if (Model.StatusCategory.name == "Done")
+        {
+            if (Model.Resolution != "Fixed")
+            {
+                <b style="color:black">@Model.Resolution</b>
+            }
+        }
         @if (DateTime.Compare(Model.Created.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
         {
             <b style="color:black"> NEW: </b>
@@ -56,7 +63,7 @@ else
         {
             <b style="color:black; padding:1.5px;">@Model.Status</b>
         }
-        <a style="text-decoration: none; font-weight:bold;" href="@Model.Link">@Model.Summary</a>
+        <a style="text-decoration: none; font-weight:bold; color:#15C;" href="@Model.Link">@Model.Summary</a>
         <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
 
         @if (Model.TimeSpentOnTask > 0)

@@ -46,6 +46,13 @@ else
             }
         </td>
         <td @colspan>
+            @if (Model.StatusCategory.name == "Done")
+            {
+                if (Model.Resolution != "Fixed")
+                {
+                    <b style="color:black">@Model.Resolution</b>
+                }
+            }
             @if (Model.DisplayStatus == true)
             {
                 <b style="color:black; padding:1.5px;">@Model.Status</b>
