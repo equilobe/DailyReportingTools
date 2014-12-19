@@ -35,7 +35,16 @@ namespace JiraReporter
                 return false;
             if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)
                 return false;
+            if (CheckDayFromOverrides(policy) == true)
+                return false;
             return true;
+        }
+
+        private static bool CheckDayFromOverrides(SourceControlLogReporter.Model.Policy policy)
+        {
+            if (policy.CurrentOverride != null && policy.CurrentOverride.NonWorkingDays != null)
+                return policy.CurrentOverride.NonWorkingDays.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
+            return false;
         }
 
         private static void RunReportTool(string[] args, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
@@ -60,7 +69,7 @@ namespace JiraReporter
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
-        }        
+        }
 
         private static void SaveReportToFile(Report report)
         {
@@ -88,7 +97,7 @@ namespace JiraReporter
         {
             var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
-            options.LoadDates(policy); 
+            options.LoadDates(policy);
         }
 
     }
