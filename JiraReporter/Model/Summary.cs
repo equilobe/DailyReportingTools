@@ -92,6 +92,23 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour(SprintTasksTimeLeftSeconds);
             }
         }
+        public double SprintTasksTimeLeftPerDay { get; set; }
+        public string SprintTasksTimeLeftPerDayWithDecimals
+        {
+            get
+            {
+                var hoursLeft = SprintTasksTimeLeftPerDay/3600;
+                return hoursLeft.RoundDoubleOneDecimal();
+            }
+        }
+        public double SprintTasksTimeLeftPixelWidth { get; set; }
+        public string SprintTasksTimeLeftPixelWidthString
+        {
+            get
+            {
+                return SprintTasksTimeLeftPixelWidth.ToString() + "px";
+            }
+        }
         public double SprintHourRate { get; set; }  //hour rate per day to complete sprint
         public string SprintHourRateString
         {
@@ -107,6 +124,23 @@ namespace JiraReporter.Model
         public List<PullRequest> PullRequests { get; set; }
         public List<PullRequest> UnrelatedPullRequests { get; set; }
 
+        public double AverageTimeWorked { get; set; }
+        public string AverageTimeWorkedWithDecimals
+        {
+            get
+            {
+                var hoursWorked = AverageTimeWorked/3600;
+                return hoursWorked.RoundDoubleOneDecimal();
+            }
+        }
+        public double AverageTimeWorkedPixelWidth { get; set; }
+        public string AverageTimeWorkedPixelWidthString
+        {
+            get
+            {
+                return AverageTimeWorkedPixelWidth.ToString() + "px";
+            }
+        }
         public double AllocatedHoursPerDay { get; set; } //hour rate per day for developers team (set in policy)
         public string AllocatedHoursPerDayString
         {
@@ -154,6 +188,22 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour((int)(SprintWorkedPerDay));
             }
         }
+        public string SprintWorkedPerDayWithDecimals
+        {
+            get
+            {
+                var hoursWorked = SprintWorkedPerDay / 3600;
+                return hoursWorked.RoundDoubleOneDecimal();
+            }
+        }
+        public double SprintWorkedPerDayPixelWidth { get; set; }
+        public string SprintWorkedPerDayPixelWidthString
+        {
+            get
+            {
+                return SprintWorkedPerDayPixelWidth.ToString() + "px";
+            }
+        }
         public int SprintTotalEstimate { get; set; }
         public string SprintTotalEstimateString
         {
@@ -162,12 +212,45 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat(SprintTotalEstimate);
             }
         }
+        public double SprintAverageEstimate { get; set; }
+        public string SprintAverageEstimateWithDecimals
+        {
+            get
+            {
+                var estimatedHours = SprintAverageEstimate / 3600;
+                return estimatedHours.RoundDoubleOneDecimal();
+            }
+        }
+        public double SprintEstimatePixelWidth { get; set; }
+        public string SprintEstimatePixelWidthString
+        {
+            get
+            {
+                return SprintEstimatePixelWidth.ToString() + "px";
+            }
+        }
         public double RemainingMonthHours { get; set; }
         public string RemainingMonthHoursString
         {
             get
             {
                 return TimeFormatting.SetTimeFormat8Hour((int)(RemainingMonthHours * 3600));
+            }
+        }
+        public double RemainingMonthHoursAverage { get; set; }
+        public string RemainingMonthHoursAverageWithDecimals
+        {
+            get
+            {
+                return RemainingMonthHoursAverage.RoundDoubleOneDecimal();
+            }
+        }
+        public double RemainingMonthHoursPixelWidth { get; set; }
+        public string RemainingMonthHoursPixelWidthString
+        {
+            get
+            {
+                return RemainingMonthHoursPixelWidth.ToString() + "px";
             }
         }
         public double MonthHourRate { get; set; }
@@ -186,12 +269,37 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour((int)(MonthWorkedPerDay));
             }
         }
-        public int MonthTotalEstimate { get; set; }
+        public string MonthWorkedPerDayWithDecimals
+        {
+            get
+            {
+                var hoursWorked = MonthWorkedPerDay / 3600;
+                return hoursWorked.RoundDoubleOneDecimal();
+            }
+        }
+        public double MonthTotalEstimate { get; set; }
         public string MonthTotalEstimateString
         {
             get
             {
-                return TimeFormatting.SetTimeFormat(MonthTotalEstimate);
+                return TimeFormatting.SetTimeFormat((int)MonthTotalEstimate);
+            }
+        }
+        public double MonthAverageEstimated{ get; set; }
+        public string MonthAverageEstimatedWithDecimals
+        {
+            get
+            {
+                var hoursEstimated = MonthAverageEstimated / 3600;
+                return hoursEstimated.RoundDoubleOneDecimal();
+            }
+        }
+        public int MonthEstimatedPixelWidth { get; set; }
+        public string MonthEstimatedPixelWidthString
+        {
+            get
+            {
+                return MonthEstimatedPixelWidth.ToString() + "px";
             }
         }
         public string MonthTimeLeft
@@ -296,7 +404,7 @@ namespace JiraReporter.Model
             SetHealth(timesheetCollection);
             SetHealthStatuses();
 
-            SetAuthorsWorkSummaryChartWidths();
+            SetSummaryChartWidths();
 
             SetErrors(sprintTasks);
         }
@@ -519,7 +627,7 @@ namespace JiraReporter.Model
         private int GetWorkSummaryMax()
         {
             var max = new List<int>();
-            foreach(var author in Authors)
+            foreach (var author in Authors)
             {
                 var maxFromAuthor = AuthorsProcessing.GetAuthorMaxAverage(author);
                 max.Add(maxFromAuthor);
@@ -528,11 +636,46 @@ namespace JiraReporter.Model
             return MathHelpers.RoundToNextEvenInteger(maxHours);
         }
 
+        private int GetStatusMax()
+        {
+            var sprintMax = GetSprintMax();
+            var monthMax = GetMonthMax();
+            var statusMax = Math.Max(sprintMax, monthMax);
+            return MathHelpers.RoundToNextEvenInteger(statusMax);
+        }
+
+        private double GetSprintMax()
+        {
+            var max = new List<double>();
+            max.Add(SprintWorkedPerDay);
+            max.Add(AverageTimeWorked);
+            max.Add(SprintAverageEstimate);
+            max.Add(SprintTasksTimeLeftPerDay);
+            var maxHours = max.Max() / 3600;
+            return maxHours;
+        }
+
+        private double GetMonthMax()
+        {
+            var max = new List<double>();
+            max.Add(MonthAverageEstimated);
+            max.Add(MonthWorkedPerDay);
+            max.Add(RemainingMonthHoursAverage);
+            var maxHours = max.Max() / 3600;
+            return maxHours;
+        }
+
+        private void SetSummaryChartWidths()
+        {
+            SetAuthorsWorkSummaryChartWidths();
+        }
+
         private void SetAuthorsWorkSummaryChartWidths()
         {
             var max = GetWorkSummaryMax();
             foreach (var author in Authors)
                 AuthorsProcessing.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, max);
         }
+
     }
 }
