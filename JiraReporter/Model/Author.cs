@@ -51,6 +51,13 @@ namespace JiraReporter.Model
                 return TimeLoggedPerDayAverage.SetTimeFormat8Hour();
             }
         }
+        public string TimeLoggedPerDayAverageHours
+        {
+            get
+            {
+                return TimeSpentHours.RoundDoubleOneDecimal();
+            }
+        }
 
         public int TimeSpentCurrentMonthSeconds { get; set; }
         public double TimeSpentCurrentMonthHours
@@ -75,6 +82,14 @@ namespace JiraReporter.Model
                 return ((int)(MonthWorkedPerDay)).SetTimeFormat8Hour();
             }
         }
+        public string MonthWorkedPerDayHours
+        {
+            get
+            {
+                var hoursWorked = MonthWorkedPerDay / 3600;
+                return hoursWorked.RoundDoubleOneDecimal();
+            }
+        }
         public int TimeSpentCurrentSprintSeconds { get; set; }
         public double TimeSpentCurrentSprintHours
         {
@@ -96,6 +111,14 @@ namespace JiraReporter.Model
             get
             {
                 return ((int)(SprintWorkedPerDay)).SetTimeFormat8Hour();
+            }
+        }
+        public string SprintWorkedPerDayHours
+        {
+            get
+            {
+                var hoursWorked = SprintWorkedPerDay / 3600;
+                return hoursWorked.RoundDoubleOneDecimal();
             }
         }
 
