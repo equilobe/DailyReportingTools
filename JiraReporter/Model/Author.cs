@@ -55,7 +55,8 @@ namespace JiraReporter.Model
         {
             get
             {
-                return TimeSpentHours.RoundDoubleOneDecimal();
+                double hoursSpent = (double)TimeSpent / 3600;
+                return hoursSpent.RoundDoubleOneDecimal();
             }
         }
 
@@ -171,5 +172,6 @@ namespace JiraReporter.Model
         public List<Commit> Commits { get; set; }
         public List<DayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
+        public Uri AvatarLink { get; set; }
     }
 }

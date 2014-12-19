@@ -25,7 +25,7 @@ namespace JiraReporter
             foreach (var user in users)
             {
                 if (authors.ContainsKey(user.displayName))
-                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName] });
+                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName], AvatarLink = user.avatarUrls.Big });
                 else
                     authorsNew.Add(new Author { Name = user.displayName });
                 SetAuthor(report, authorsNew.Last(), policy, commits, options, timesheetCollection);
