@@ -240,12 +240,12 @@ namespace JiraReporter.Model
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
-        public const int ChartMaxBarWidth = 250;
+        public const int ChartMaxBarWidth = 220;
         public int ChartMaxWidth
         {
             get
             {
-                return ChartMaxBarWidth + 50;
+                return ChartMaxBarWidth + 80;
             }
         }
         public string ChartMaxWidthString
@@ -529,7 +529,7 @@ namespace JiraReporter.Model
                 var maxFromAuthor = AuthorsProcessing.GetAuthorMaxAverage(author);
                 max.Add(maxFromAuthor);
             }
-            double maxHours = max.Max() / 3600;
+            double maxHours = (double)max.Max() / 3600;
             return MathHelpers.RoundToNextEvenInteger(maxHours);
         }
 

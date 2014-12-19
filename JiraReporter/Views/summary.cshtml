@@ -217,20 +217,20 @@
             @foreach (var author in Model.Authors)
             {
                 <tr>
-                    <td style="width:55px; height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle">@author.FirstName</td>
-                    <td>
-                            <div style="width= @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px;">
-                                <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;">@author.TimeLoggedPerDayAverageString</div>
-                            </div>
-                            <div style="width= @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px;">
-                                <div style="display:inline-block; background-color:#337AB7; width:@author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;">@author.SprintWorkedPerDayString</div>
-                            </div>
-                            <div style="width= @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px;">
-                                <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;">@author.MonthWorkedPerDayString</div>
-                            </div>
+                    <td style="width:55px; height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle;">@author.FirstName</td>
+                    <td style="padding:0px; padding-bottom:5px">
+                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                            <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.TimeLoggedPerDayAverageString</div>
+                        </div>
+                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                            <div style="display:inline-block; background-color:#337AB7; width:@author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.SprintWorkedPerDayString</div>
+                        </div>
+                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                            <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.MonthWorkedPerDayString</div>
+                        </div>
                     </td>
                 </tr>
             }
@@ -238,7 +238,7 @@
     </table>
 </div>
 
-<div style="margin-top:10px">
+@*<div style="margin-top:10px">
     <table style="border: 1px solid #DDD; border-collapse:collapse; min-width:400px">
         <tbody>
             <tr>
@@ -309,9 +309,9 @@
             }
         </tbody>
     </table>
-</div>
+</div>*@
 
-<div style="margin-top:10px">
+<div style="margin-top:20px">
     <table style="border: 1px solid #DDD; border-collapse:collapse; min-width:400px">
         <tr>
             <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
