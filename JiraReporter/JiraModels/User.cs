@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using JiraReporter.JiraModels;
 
 namespace JiraReporter.Model
 {
@@ -25,6 +26,8 @@ namespace JiraReporter.Model
         [DataMember]
         public string displayName { get; set; }
         [DataMember]
-        public bool active { get; set; }       
+        public bool active { get; set; }
+        [DataMember]
+        public Avatar avatarUrls { get; set; }
     }
 }

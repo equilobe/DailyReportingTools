@@ -68,6 +68,7 @@
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="IssueAdapter.cs" />
+    <Compile Include="JiraModels\Avatar.cs" />
     <Compile Include="JiraModels\Filter.cs" />
     <Compile Include="JiraModels\RapidView.cs" />
     <Compile Include="JiraModels\SprintsData.cs" />
