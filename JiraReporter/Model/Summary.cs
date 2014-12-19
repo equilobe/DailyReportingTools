@@ -241,13 +241,8 @@ namespace JiraReporter.Model
         public double MonthHourRateVariance { get; set; }
 
         public const int ChartMaxBarWidth = 250;
-        public int ChartMaxWidth
-        {
-            get
-            {
-                return ChartMaxBarWidth + 45;
-            }
-        }
+        public const int ChartMaxWidth = 300;
+
         public string ChartMaxWidthString
         {
             get
