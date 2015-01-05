@@ -9,12 +9,12 @@ namespace JiraReporter
 {
     public class HealthInspector
     {
-        public List<int> NonWorkingDays { get; set; }
-        public HealthInspector(List<int> nonWorkingDays)
-        {
-            NonWorkingDays = nonWorkingDays;
-        }
+        SourceControlLogReporter.Model.Policy Policy { get; set; }
 
+        public HealthInspector(SourceControlLogReporter.Model.Policy policy)
+        {
+            Policy = policy;
+        }
         private static string GetHealthStatus(double variance, Health health, string specificString)
         {
             var statusProcessor = new Dictionary<Health, string>()
@@ -94,9 +94,9 @@ namespace JiraReporter
         {
             var now = DateTime.Now.ToOriginalTimeZone();
             if (now <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
-                return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, NonWorkingDays);
+                return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, Policy.CurrentOverrides);
 
-            return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
+            return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), Policy.CurrentOverrides);
         }
 
         public Health GetMonthHealth(double allocatedHours, double totalTimeWorked)
@@ -104,9 +104,9 @@ namespace JiraReporter
             if (allocatedHours == 0)
                 return Health.None;
 
-            var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), NonWorkingDays);
+            var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.CurrentOverrides);
             var workedPerDay = totalTimeWorked / workedDays;
-            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), NonWorkingDays);
+            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.CurrentOverrides);
             var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
             return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }

@@ -285,19 +285,28 @@ namespace JiraReporter
 
         public static void SetAuthorAverageWorkPerDay(Author author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
-            author.MonthWorkedPerDay = author.TimeSpentCurrentMonthSeconds / monthWorkedDays;
-            author.SprintWorkedPerDay = author.TimeSpentCurrentSprintSeconds / sprintWorkedDays;
-            author.TimeLoggedPerDayAverage = author.TimeSpent / reportWorkingDays;
+            if (monthWorkedDays == 0)
+                author.MonthWorkedPerDay = 0;
+            else
+                author.MonthWorkedPerDay = author.TimeSpentCurrentMonthSeconds / monthWorkedDays;
+            if (sprintWorkedDays == 0)
+                author.SprintWorkedPerDay = 0;
+            else
+                author.SprintWorkedPerDay = author.TimeSpentCurrentSprintSeconds / sprintWorkedDays;
+            if (reportWorkingDays == 0)
+                author.TimeLoggedPerDayAverage = 0;
+            else
+                author.TimeLoggedPerDayAverage = author.TimeSpent / reportWorkingDays;
         }
 
-        public static int GetAuthorMaxAverage(Author author)
+        public static double GetAuthorMaxAverage(Author author)
         {
             var max = Math.Max(author.TimeLoggedPerDayAverage, author.SprintWorkedPerDay);
             max = Math.Max(max, author.MonthWorkedPerDay);
-            return (int)max;
+            return max;
         }
 
-        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, int maxValue)
+        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, double maxValue)
         {
             author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
             author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));

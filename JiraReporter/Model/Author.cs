@@ -55,7 +55,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                double hoursSpent = (double)TimeSpent / 3600;
+                double hoursSpent = (double)TimeLoggedPerDayAverage / 3600;
                 return hoursSpent.RoundDoubleOneDecimal();
             }
         }

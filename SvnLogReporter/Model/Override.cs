@@ -25,5 +25,24 @@ namespace SourceControlLogReporter.Model
                 return nonWorkingDays;
             }
         }
+
+        public static Override SearchOverride(List<Override> overrides, DateTime day)
+        {
+            if (overrides == null)
+                return null;
+            else
+                return (overrides.Find(o => o.Month.ToLower() == day.CurrentMonth().ToLower()));
+        }
+
+        public static bool SearchDateInOverrides(List<Override> overrides, DateTime date)
+        {
+            var currentOverride = new Override();
+            if(overrides!=null)
+                 currentOverride = SearchOverride(overrides, date);
+            if (currentOverride.Days == null)
+                return false;
+            else
+                return currentOverride.NonWorkingDays.Exists(d => d == date.Day);
+        }
     }
 }
