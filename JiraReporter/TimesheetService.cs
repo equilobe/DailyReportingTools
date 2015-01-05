@@ -36,5 +36,16 @@ namespace JiraReporter
                 if(timesheet.Key != TimesheetType.MonthTimesheet)
                      SetTimesheetIssues(timesheet.Value, policy, options, pullRequests);
         }
+
+        public int GetTotalOriginalEstimate(Timesheet timesheet)
+        {
+            int sum = 0;
+            if (timesheet != null && timesheet.Worklog != null && timesheet.Worklog.Issues != null)
+            {
+                var issues = timesheet.Worklog.Issues;
+                sum = issues.Sum(i => i.OriginalEstimateSeconds);
+            }
+            return sum;
+        }
     }
 }

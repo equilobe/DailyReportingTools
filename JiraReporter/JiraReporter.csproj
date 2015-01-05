@@ -83,6 +83,7 @@
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
+    <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="JiraModels\User.cs" />
     <Compile Include="Model\Author.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="ReportProcessor.cs" />
     <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
+    <Compile Include="SummaryCharts\WidthHelpers.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />

@@ -306,7 +306,7 @@ namespace JiraReporter
             return max;
         }
 
-        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, double maxValue)
+        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, int maxValue)
         {
             author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
             author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));
