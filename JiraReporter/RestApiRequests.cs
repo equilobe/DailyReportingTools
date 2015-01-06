@@ -80,7 +80,7 @@ namespace JiraReporter
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
             var issue = client.GetIssue(issueKey);
 
-            return client.GetIssue(issueKey);
+            return issue;
         }
     }
 }

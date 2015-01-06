@@ -45,8 +45,8 @@ namespace DailyReportWeb.Controllers
         {
             var descriptor = new ConnectDescriptor()
             {
-                name = "Daily Reporting Tool",
-                description = "A Connect add-on that makes JIRA info available to Daily Reporting Tool",
+                name = "Daily Report Tool",
+                description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
                 key = "com.equilobe.drt",
                 vendor = new ConnectDescriptorVendor()
                 {
