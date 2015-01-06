@@ -20,7 +20,7 @@ namespace JiraReporter
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);          
             LoadReportDates(policy, options);
-            policy.SetCurrentOverride(options);
+           // policy.SetCurrentOverride(options);
             policy.SetPermanentTaskLabel();
             policy.SetDraftMode(options);
             if (RunReport(policy, options) == true)

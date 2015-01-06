@@ -100,8 +100,8 @@ namespace SourceControlLogReporter.Model
 
         public List<Override> Overrides { get; set; }
 
-        [XmlIgnore]
-        public List<Override> CurrentOverrides { get; set; }
+     //   [XmlIgnore]
+     //   public List<Override> CurrentOverrides { get; set; }
 
         public Override CurrentOverride
         {
@@ -189,29 +189,29 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void SetCurrentOverride(Options options)
-        {
-            var day = options.FromDate;
-            if(Overrides!=null)
-                while (day < options.ToDate)
-                {
-                    if (Override.SearchOverride(CurrentOverrides, day) == null)
-                    {
-                        var currentOverride = Override.SearchOverride(Overrides, day);
-                        AddOverride(currentOverride);
-                    }
-                    day = day.AddDays(1);
-                }
-        }
+        //public void SetCurrentOverride(Options options)
+        //{
+        //    var day = options.FromDate;
+        //    if(Overrides!=null)
+        //        while (day < options.ToDate)
+        //        {
+        //            if (Override.SearchOverride(CurrentOverrides, day) == null)
+        //            {
+        //                var currentOverride = Override.SearchOverride(Overrides, day);
+        //                AddOverride(currentOverride);
+        //            }
+        //            day = day.AddDays(1);
+        //        }
+        //}
 
-        private void AddOverride(Override currentOverride)
-        {
-            if (currentOverride != null)
-            {
-                if (CurrentOverrides == null)
-                    CurrentOverrides = new List<Override>();
-                CurrentOverrides.Add(currentOverride);
-            }
-        }
+        //private void AddOverride(Override currentOverride)
+        //{
+        //    if (currentOverride != null)
+        //    {
+        //        if (CurrentOverrides == null)
+        //            CurrentOverrides = new List<Override>();
+        //        CurrentOverrides.Add(currentOverride);
+        //    }
+        //}
     }
 }
