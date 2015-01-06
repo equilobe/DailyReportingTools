@@ -23,8 +23,11 @@ namespace JiraReporter
             policy.SetCurrentOverride(options);
             policy.SetPermanentTaskLabel();
             policy.SetDraftMode(options);
+
             if (RunReport(policy, options) == true)
                 RunReportTool(args, policy, options);
+            else
+                Console.WriteLine("Unable to run report tool due to policy settings or final report already generated.");
         }
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
