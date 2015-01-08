@@ -4,6 +4,7 @@ using RazorEngine;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -82,7 +83,9 @@ namespace JiraReporter
 
         private static void SendReport(Report report)
         {
-            var emailer = new SourceControlLogReporter.ReportEmailer(report.Policy, report.Options);
+            var emailer = new ReportEmailJira(report.Policy, report.Options);
+            emailer.Authors = report.Authors;
+
             emailer.TrySendEmails();
         }
 
@@ -100,6 +103,5 @@ namespace JiraReporter
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             options.LoadDates(policy);
         }
-
     }
 }

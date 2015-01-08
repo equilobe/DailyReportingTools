@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Drawing;
 using RestSharp;
 
 namespace JiraReporter
@@ -29,9 +28,9 @@ namespace JiraReporter
             foreach (var user in users)
             {
                 if (authors.ContainsKey(user.displayName))
-                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName], AvatarLink = user.avatarUrls.Big });
+                    authorsNew.Add(new Author { Name = user.displayName, Username = user.key, Issues = authors[user.displayName], AvatarLink = user.avatarUrls.Big });
                 else
-                    authorsNew.Add(new Author { Name = user.displayName, AvatarLink = user.avatarUrls.Big });
+                    authorsNew.Add(new Author { Name = user.displayName, Username = user.key, AvatarLink = user.avatarUrls.Big });
                 SetAuthor(report, authorsNew.Last(), policy, commits, options, timesheetCollection);
             }
 
@@ -65,7 +64,6 @@ namespace JiraReporter
 
         private static void SetAuthor(SprintTasks sprintTasks, Author author, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
-            GetAvatarBase64String(author, policy);
             author = OrderAuthorIssues(author);
             SetAuthorTimeSpent(author, timesheetCollection);
             SetAuthorTimeFormat(author);
@@ -316,26 +314,6 @@ namespace JiraReporter
             author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
             author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));
             author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.TimeLoggedPerDayAverage / 3600));
-        }
-
-        public static void GetAvatarBase64String(Author author, SourceControlLogReporter.Model.Policy policy)
-        {
-            string base64 = string.Empty;
-
-            HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(author.AvatarLink);
-            httpRequest.Credentials = new NetworkCredential(policy.Username, policy.Password, policy.BaseUrl);
-            HttpWebResponse response = (HttpWebResponse)httpRequest.GetResponse();
-
-            using(Stream stream = response.GetResponseStream())
-            {
-                using(BinaryReader reader = new BinaryReader(stream))
-                {
-                    byte[] byteData = reader.ReadBytes((int)response.ContentLength);
-                    base64 = Convert.ToBase64String(byteData);
-                }
-            }
-            var link = "data:image/png;base64," + base64;
-            response.Close();
         }
     }
 }
