@@ -68,8 +68,9 @@ namespace SourceControlLogReporter
             smtp.Send(GetMessage(reportPath));
 
             MoveToSent(reportPath);
+
             if (policy.IsDraft == false)
-                policy.WriteDateToPolicy(options.PolicyPath, DateTime.Now.ToOriginalTimeZone());
+                policy.WriteDataToPolicy(options.PolicyPath, "LastReportSentDate", DateTime.Now.ToOriginalTimeZone().ToString());
         }
 
         private MailMessage GetMessage(string reportPath)

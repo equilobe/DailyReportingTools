@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+
 namespace SourceControlLogReporter.Model
 {
     public class Policy
@@ -50,8 +51,24 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public DateTime LastReportSentDate { get; set; }
+        public string LastReportSentDate { get; set; }
+        [XmlIgnore]
+        public DateTime LastReportSentDateFormat
+        {
+            get
+            {
+                try
+                {
+                    DateTime.Parse(LastReportSentDate);
 
+                    return DateTime.Parse(LastReportSentDate);
+                }
+                catch (Exception)
+                {
+                    return new DateTime();
+                }
+            }
+        }
         public string ReportTitle { get; set; }
         public string ReportTime { get; set; }
         [XmlIgnore]
@@ -59,10 +76,16 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                if (ReportTime != null)
+                try
+                {
+                    DateTime.Parse(ReportTime);
+
                     return DateTime.Parse(ReportTime);
-                else
+                }
+                catch (Exception)
+                {
                     return new DateTime();
+                }
             }
         }
         public string DraftTime { get; set; }
@@ -71,10 +94,16 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                if (DraftTime != null)
+                try
+                {
+                    DateTime.Parse(DraftTime);
+
                     return DateTime.Parse(DraftTime);
-                else
+                }
+                catch (Exception)
+                {
                     return new DateTime();
+                }
             }
         }
         public string BaseUrl { get; set; }
@@ -84,6 +113,7 @@ namespace SourceControlLogReporter.Model
 
         public string Username { get; set; }
         public string Password { get; set; }
+        public string SharedSecret { get; set; }
         public string Emails { get; set; }
         public string DraftEmails { get; set; }
         public string EmailSubject { get; set; }
@@ -165,14 +195,14 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void WriteDateToPolicy(string filePath, DateTime date)
+        public void WriteDataToPolicy(string filePath, string name, Object value)
         {
-            XDocument xDocument = XDocument.Load(filePath);
-            XElement root = xDocument.Element("Policy");
-            if (root.Elements("LastReportSentDate").Any())
-                root.Elements("LastReportSentDate").Remove();
-            root.AddFirst(new XElement("LastReportSentDate", date));
-            xDocument.Save(filePath);
+            XDocument xmlDocument = XDocument.Load(filePath);
+            XElement root = xmlDocument.Element("Policy");
+
+            root.SetElementValue(name, value);
+
+            xmlDocument.Save(filePath);
         }
 
         public void SetPermanentTaskLabel()

@@ -32,15 +32,15 @@ namespace JiraReporter
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
-            var today = DateTime.Now.ToOriginalTimeZone().Date;
-            if (policy.IsDraft == false && today == policy.LastReportSentDate.Date)
+            if (policy.LastReportSentDateFormat.Date.DayOfYear == DateTime.Now.ToOriginalTimeZone().Date.DayOfYear)
                 return false;
-            if (policy.IsDraft == true && today == policy.LastReportSentDate.Date)
-                return false;
+
             if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)
                 return false;
+
             if (CheckDayFromOverrides(policy) == true)
                 return false;
+
             return true;
         }
 

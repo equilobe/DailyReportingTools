@@ -129,7 +129,7 @@ namespace SourceControlLogReporter
 
         private void SetDates()
         {
-            if (Policy.LastReportSentDate == new DateTime())
+            if (Policy.LastReportSentDateFormat == new DateTime())
                 if (Policy.IsWeekendReportActive && DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
                     SetWeekendDates();
                 else
@@ -149,7 +149,7 @@ namespace SourceControlLogReporter
 
         private void SetDatesFromLastSentReport()
         {
-            FromDate = Policy.LastReportSentDate.Date;
+            FromDate = Policy.LastReportSentDateFormat.ToOriginalTimeZone().Date;
             ToDate = DateTime.Now.ToOriginalTimeZone().Date;
         }
 
