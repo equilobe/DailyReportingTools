@@ -10,6 +10,7 @@ namespace JiraReporter.Model
     public class Author
     {
         public string Name { get; set; }
+        public string Username { get; set; }
         public string ShortName
         {
             get
