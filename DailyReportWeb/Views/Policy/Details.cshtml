@@ -1,0 +1,405 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>
+    </title>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    @Styles.Render("~/Content/maincss")   
+</head>
+
+<body>
+    <div id="jumbo" class="jumbotron">
+        <div class="container">
+            <h1>
+                Alyssa Report Details
+            </h1>
+            <p class="help-block">
+                Use this page to configure all options for the daily report.
+            </p>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Send at:
+                        </label>
+                        <input type="text" class="form-control" placeholder="09:00 AM">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container">
+        <h1>Advanced options</h1>
+        <h3>Recipients</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>
+                        Send draft to:
+                    </label>
+                    <input type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com">
+                    <p class="help-block">Leave blank to send to everyone in the team.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>
+                        Send final report to:
+                    </label>
+                    <input type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com">
+                    <p class="help-block">Leave blank to send to everyone in the team.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container container-alternate">
+        <h3>
+            Planning
+        </h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>
+                        Expected daily team work rate (hours/day):
+                    </label>
+                    <input type="text" class="form-control" placeholder="24">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>
+                        Monthly hour limit:
+                    </label>
+                    <input type="text" class="form-control" placeholder="400">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>
+            Source control
+        </h3>
+        <div class="form-group">
+            <div>
+                <label>
+                    Type:
+                </label>
+            </div>
+            <label class="radio-inline">
+                <input type="radio" name="SourceControlType" value="" checked />
+                None
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="SourceControlType" value="SVN" />
+                SVN
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="SourceControlType" value="GitHub" />
+                GitHub
+            </label>
+        </div>
+    </div>
+
+    <div class="container container-alternate">
+        <h3>
+            User options
+        </h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Select user:</label>
+                    <select class="form-control">
+                        <option>Dan Badea</option>
+                        <option>Catalin Criveteanu</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Dan Badea</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Source control account:
+                            </label>
+                            <div class="input-group">
+                                <select class="form-control">
+                                    <option>--none--</option>
+                                    <option selected="selected">dan</option>
+                                    <option>catalin</option>
+                                    <option>sebi</option>
+                                </select>
+                                <span class="input-group-btn">
+                                    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Email override:</label>
+                            <input class="form-control" type="text" placeholder="dan.badea@equilobe.com" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" />
+                                Exclude from report
+                            </label>
+                            <p class="help-block">An excluded user wown't show up in the report and won't receive the report.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="container">
+        <h3>
+            Monthly options
+        </h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Select month:</label>
+                    <select class="form-control">
+                        <option>January</option>
+                        <option>Feruary</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>January</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Expected daily team work rate (hours/day):
+                            </label>
+                            <input type="text" class="form-control" placeholder="24" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Monthly hour limit:
+                            </label>
+                            <input type="text" class="form-control" placeholder="400" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Free days:
+                            </label>
+                            <input type="text" class="form-control" placeholder="1 12 23" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>
+            Advanced
+        </h3>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        Do not send a draft report to each user
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        Do not send a draft report
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>
+                        Report title:
+                    </label>
+                    <input type="text" class="form-control" placeholder="Alyssa Daily Report" />
+                    <p class="help-block">
+                        If left blank the default will be used: Alyssa Daily Report.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>
+                        Weekend days:
+                    </label>
+                    <div>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" />
+                            Monday
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" />
+                            Tuesday
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" />
+                            Wednesday
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" />
+                            Thursday
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" />
+                            Friday
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" checked />
+                            Saturday
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" checked />
+                            Sunday
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>
+                        Label used for permanent tasks:
+                    </label>
+                    <input type="text" class="form-control" placeholder="permanent" />
+                    <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>
+                        Reopened tasks status:
+                    </label>
+                    <input type="text" class="form-control" placeholder="Reopened" />
+                    <p class="help-block">
+                        If left blank the default will be used: Reopened.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+
+    </div>
+    <div class="container">
+        <button class="btn btn-success">Save advanced options</button>
+    </div>
+
+    <div class="how-it-works">
+        <div class=" container">
+            <h1>How it works</h1>
+            <div class="row steps-row">
+                <div class="col-sm-4">
+                    <div class="alert alert-warning step">
+                        <div class="step-number">1</div>
+                        <h3>
+                            Individual draft report
+                        </h3>
+                        <p class="help-block">
+                            sent to and confirmed by
+                            <br />
+                            <strong>each team member</strong>
+                        </p>
+                        <div class="step-icon">
+                            <div class="daily-report daily-report-big"></div>
+                        </div>
+                        <p class="help-block step-facts">
+                            add work logs<br />
+                            correct report errors<br />
+                            update estimates<br />
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="alert alert-info step">
+                        <div class="step-number">2</div>
+                        <h3>
+                            Full draft report
+                        </h3>
+                        <p class="help-block">
+                            sent to and confirmed by
+                            <br />
+                            <strong>the project manager</strong>
+                        </p>
+                        <div class="step-icon">
+                            <div class="daily-report daily-report-big"></div>
+                        </div>
+                        <p class="help-block step-facts">
+                            update sprint scope<br />
+                            correct high-level report errors<br />
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="alert alert-success step">
+                        <div class="step-number">3</div>
+                        <h3>
+                            Final report
+                        </h3>
+                        <p class="help-block">
+                            sent to the entire team
+                            <br />
+                            <strong>and other stakeholders</strong>
+                        </p>
+                        <div class="step-icon">
+                            <div class="daily-report daily-report-big"></div>
+                        </div>
+                        <p class="help-block step-facts">
+                            add work logs<br />
+                            correct report errors<br />
+                            update estimates<br />
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js">
+    </script>
+</body>
+</html>
