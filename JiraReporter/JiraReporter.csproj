@@ -51,6 +51,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -83,6 +84,7 @@
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
+    <Compile Include="ReportEmailJira.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="JiraModels\User.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="TimesheetService.cs" />
+    <Compile Include="WebDownloads.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
