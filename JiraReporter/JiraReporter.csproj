@@ -35,6 +35,9 @@
     <Reference Include="AnotherJiraRestClient">
       <HintPath>libs\AnotherJiraRestClient.dll</HintPath>
     </Reference>
+    <Reference Include="JWT">
+      <HintPath>..\packages\JWT.1.3.2\lib\3.5\JWT.dll</HintPath>
+    </Reference>
     <Reference Include="Octokit">
       <HintPath>..\libs\Octokit.dll</HintPath>
     </Reference>
@@ -77,6 +80,7 @@
     <Compile Include="JiraModels\SprintReport.cs" />
     <Compile Include="JiraModels\Views.cs" />
     <Compile Include="JiraService.cs" />
+    <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\DayLog.cs" />

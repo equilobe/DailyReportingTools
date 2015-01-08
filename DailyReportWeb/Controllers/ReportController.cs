@@ -53,7 +53,7 @@ namespace DailyReportWeb.Controllers
                         task.Run();
                         return true;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         return false;
                     }

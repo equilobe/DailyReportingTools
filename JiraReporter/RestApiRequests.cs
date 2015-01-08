@@ -19,6 +19,14 @@ namespace JiraReporter
             return client.Execute(request).Content;
         }
 
+        public static string ResolveRequestJwt(SourceControlLogReporter.Model.Policy policy, RestRequest request)
+        {
+            var client = new RestClient(policy.BaseUrl);
+            client.Authenticator = new JwtAuthenticator(request, policy.SharedSecret);
+
+            return client.Execute(request).Content;
+        }
+
         public static Timesheet GetTimesheet(SourceControlLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
         {
             var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);

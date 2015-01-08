@@ -219,6 +219,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JiraReporter\JiraReporter.csproj">
+      <Project>{d1e02075-5930-4ae3-a552-bf3fae984aa9}</Project>
+      <Name>JiraReporter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SvnLogReporter\SourceControlLogReporter.csproj">
+      <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>
+      <Name>SourceControlLogReporter</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
