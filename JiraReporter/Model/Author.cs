@@ -26,6 +26,7 @@ namespace JiraReporter.Model
             }
         }
         public string Initials { get; set; }
+        public string EmailAdress { get; set; }
 
         public string TimeLogged { get; set; }
         public int TimeSpent { get; set; }

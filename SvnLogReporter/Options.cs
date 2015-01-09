@@ -22,6 +22,8 @@ namespace SourceControlLogReporter
         public bool NoEmail { get; set; }
         [Option(null, "draft", Required = false)]
         public bool IsDraft { get; set; }
+        [Option(null, "individualDraft", Required = false)]
+        public bool IsIndividualDraft { get; set; }
 
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }

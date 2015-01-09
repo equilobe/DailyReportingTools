@@ -82,6 +82,7 @@
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\IndividualReport.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="ReportEmailJira.cs" />
