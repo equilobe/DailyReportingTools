@@ -64,12 +64,24 @@ namespace SourceControlLogReporter
 
         public virtual void EmailReport(string reportPath)
         {
-            var smtp = new SmtpClient { EnableSsl = true };
-            smtp.Send(GetMessage(reportPath));
+            EmailReportMessage(GetMessage(reportPath), reportPath);
+        }
 
+        protected void EmailReportMessage(MailMessage message, string reportPath)
+        {
+            var smtp = new SmtpClient { EnableSsl = true };
+            smtp.Send(message);
             MoveToSent(reportPath);
-            if (policy.IsDraft == false)
-                policy.WriteDateToPolicy(options.PolicyPath, DateTime.Now.ToOriginalTimeZone());
+            UpdateLastReportSentDate();
+        }
+
+        protected void UpdateLastReportSentDate()
+        {
+            if (policy.IsDraft)
+                return;
+
+            policy.LastReportSentDate = options.ToDate;
+            policy.SaveToFile(options.PolicyPath);
         }
 
         public MailMessage GetMessage(string reportPath)

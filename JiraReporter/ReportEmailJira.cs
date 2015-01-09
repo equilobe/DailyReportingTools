@@ -39,7 +39,6 @@ namespace JiraReporter
 
         public override void EmailReport(string reportPath)
         {
-            var smtp = new SmtpClient { EnableSsl = true };
             var message = GetMessage(reportPath);
 
             foreach (var author in Authors)
@@ -48,11 +47,7 @@ namespace JiraReporter
                 AddAttachementImage(image, author.Username, message);
             }
 
-            smtp.Send(message);
-
-            MoveToSent(reportPath);
-            if (policy.IsDraft == false)
-                policy.WriteDateToPolicy(options.PolicyPath, DateTime.Now.ToOriginalTimeZone());
+            EmailReportMessage(message, reportPath);
         }
     }
 }

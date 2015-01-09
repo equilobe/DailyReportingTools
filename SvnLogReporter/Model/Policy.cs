@@ -165,16 +165,6 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void WriteDateToPolicy(string filePath, DateTime date)
-        {
-            XDocument xDocument = XDocument.Load(filePath);
-            XElement root = xDocument.Element("Policy");
-            if (root.Elements("LastReportSentDate").Any())
-                root.Elements("LastReportSentDate").Remove();
-            root.AddFirst(new XElement("LastReportSentDate", date));
-            xDocument.Save(filePath);
-        }
-
         public void SetPermanentTaskLabel()
         {
             this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
