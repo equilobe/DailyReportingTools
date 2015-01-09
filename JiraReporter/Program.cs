@@ -32,7 +32,7 @@ namespace JiraReporter
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
-            if (policy.LastReportSentDateFormat.Date.DayOfYear == DateTime.Now.ToOriginalTimeZone().Date.DayOfYear)
+            if (policy.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
                 return false;
 
             if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)

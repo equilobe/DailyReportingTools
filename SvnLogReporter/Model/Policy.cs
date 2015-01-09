@@ -51,24 +51,8 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public string LastReportSentDate { get; set; }
-        [XmlIgnore]
-        public DateTime LastReportSentDateFormat
-        {
-            get
-            {
-                try
-                {
-                    DateTime.Parse(LastReportSentDate);
+        public DateTime LastReportSentDate { get; set; }
 
-                    return DateTime.Parse(LastReportSentDate);
-                }
-                catch (Exception)
-                {
-                    return new DateTime();
-                }
-            }
-        }
         public string ReportTitle { get; set; }
         public string ReportTime { get; set; }
         [XmlIgnore]
@@ -78,8 +62,6 @@ namespace SourceControlLogReporter.Model
             {
                 try
                 {
-                    DateTime.Parse(ReportTime);
-
                     return DateTime.Parse(ReportTime);
                 }
                 catch (Exception)
@@ -96,8 +78,6 @@ namespace SourceControlLogReporter.Model
             {
                 try
                 {
-                    DateTime.Parse(DraftTime);
-
                     return DateTime.Parse(DraftTime);
                 }
                 catch (Exception)

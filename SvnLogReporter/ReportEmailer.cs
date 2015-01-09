@@ -70,7 +70,7 @@ namespace SourceControlLogReporter
             MoveToSent(reportPath);
 
             if (policy.IsDraft == false)
-                policy.WriteDataToPolicy(options.PolicyPath, "LastReportSentDate", DateTime.Now.ToOriginalTimeZone().ToString());
+                policy.WriteDataToPolicy(options.PolicyPath, "LastReportSentDate", DateTime.Now.ToOriginalTimeZone());
         }
 
         private MailMessage GetMessage(string reportPath)
