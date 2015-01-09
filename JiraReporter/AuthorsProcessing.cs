@@ -68,7 +68,7 @@ namespace JiraReporter
             SetAuthorTimeSpent(author, timesheetCollection);
             SetAuthorTimeFormat(author);
             GetAuthorCommits(policy, author, commits);
-            author.Name = GetName(author.Name);
+            author.Name = GetCleanName(author.Name);
             SetCommitsAllTasks(author, sprintTasks);
             SetUncompletedTasks(sprintTasks, author, policy);
             SetAuthorDayLogs(author, options);
@@ -77,7 +77,7 @@ namespace JiraReporter
             SetRemainingEstimate(author);
         }
 
-        public static string GetName(string name)
+        public static string GetCleanName(string name)
         {
             string delimiter = "(\\[.*\\])";
             if (name != null)
