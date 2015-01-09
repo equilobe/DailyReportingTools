@@ -1,6 +1,7 @@
 ﻿using AnotherJiraRestClient;
 using JiraReporter.Model;
 using RestSharp;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,63 +12,74 @@ namespace JiraReporter
 {
     class RestApiRequests
     {
-        public static string ResolveRequest(SourceControlLogReporter.Model.Policy policy, RestRequest request)
+        public static T ResolveRequest<T>(Policy policy, RestRequest request, bool isXml = false)
         {
             var client = new RestClient(policy.BaseUrl);
             client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
 
-            return client.Execute(request).Content;
+            var results = client.Execute(request).Content;
+
+            if (isXml)
+                return Deserialization.XmlDeserialize<T>(results);
+            else
+                return Deserialization.JsonDeserialize<T>(results);
         }
 
-        public static string ResolveRequestJwt(SourceControlLogReporter.Model.Policy policy, RestRequest request)
+        public static T ResolveRequestJwt<T>(Policy policy, RestRequest request, bool isXml = false)
         {
             var client = new RestClient(policy.BaseUrl);
-            client.Authenticator = new JwtAuthenticator(request, policy.SharedSecret);
+            var jwt = JwtAuthenticator.CreateJwt("com.equilobe.drt", policy.SharedSecret, request.Resource, request.Method.ToString());
+            client.Authenticator = new JwtAuthenticator(jwt);
 
-            return client.Execute(request).Content;
+            var results = client.Execute(request).Content;
+
+            if (isXml)
+                return Deserialization.XmlDeserialize<T>(results);
+            else
+                return Deserialization.JsonDeserialize<T>(results);
         }
 
-        public static Timesheet GetTimesheet(SourceControlLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
+        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
         {
             var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
-            var xmlString = ResolveRequest(policy, request);
+            var xmlString = ResolveRequest<Timesheet>(policy, request, true);
 
-            return Deserialization.XmlDeserialize<Timesheet>(xmlString);
+            return xmlString;
         }
 
-        public static List<User> GetUsers(SourceControlLogReporter.Model.Policy policy)
+        public static List<JiraUser> GetUsers(Policy policy)
         {
             var request = new RestRequest(ApiUrls.Users(policy.ProjectKey), Method.GET);
-            var contentString = ResolveRequest(policy, request);
+            var contentString = ResolveRequest<List<JiraUser>>(policy, request);
 
-            return Deserialization.JsonDeserialize<List<User>>(contentString);
+            return contentString;
         }
 
-        public static RapidView GetRapidView(string id, SourceControlLogReporter.Model.Policy policy)
+        public static RapidView GetRapidView(string id, Policy policy)
         {
             var request = new RestRequest(ApiUrls.RapidView(id), Method.GET);
-            var contentString = ResolveRequest(policy, request);
+            var contentString = ResolveRequest<RapidView>(policy, request);
 
-            return Deserialization.JsonDeserialize<RapidView>(contentString);
+            return contentString;
         }
        
-        public static List<View> GetRapidViews(SourceControlLogReporter.Model.Policy policy)
+        public static List<View> GetRapidViews(Policy policy)
         {
             var request = new RestRequest(ApiUrls.RapidViews(), Method.GET);
-            var contentString = ResolveRequest(policy, request);
+            var contentString = ResolveRequest<Views>(policy, request);
 
-            return Deserialization.JsonDeserialize<Views>(contentString).views;
+            return contentString.views;
         }
 
-        public static SprintReport GetSprintReport(string rapidViewId, string sprintId, SourceControlLogReporter.Model.Policy policy)
+        public static SprintReport GetSprintReport(string rapidViewId, string sprintId, Policy policy)
         {
             var request = new RestRequest(ApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
-            var contentString = ResolveRequest(policy, request);
+            var contentString = ResolveRequest<SprintReport>(policy, request);
 
-            return Deserialization.JsonDeserialize<SprintReport>(contentString);
+            return contentString;
         }
 
-        public static AnotherJiraRestClient.Issues GetCompletedIssues(SourceControlLogReporter.Model.Policy policy, DateTime startDate, DateTime endDate)
+        public static Issues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
             var issues = client.GetIssuesByJql(ApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)), 0, 250);
@@ -75,7 +87,7 @@ namespace JiraReporter
             return issues;
         }
 
-        public static AnotherJiraRestClient.Issues GetSprintTasks(SourceControlLogReporter.Model.Policy policy)
+        public static Issues GetSprintTasks(Policy policy)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
             var tasks = client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.ProjectKey), 0, 250);
@@ -83,7 +95,7 @@ namespace JiraReporter
             return tasks;
         }
 
-        public static AnotherJiraRestClient.Issue GetIssue(string issueKey, SourceControlLogReporter.Model.Policy policy)
+        public static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
             var issue = client.GetIssue(issueKey);

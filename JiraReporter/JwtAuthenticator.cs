@@ -1,25 +1,50 @@
 ﻿using JWT;
 using RestSharp;
+using RestSharp.Contrib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace JiraReporter
 {
     public class JwtAuthenticator : IAuthenticator
     {
-        private readonly string jwtToken;
+        private readonly string _jwtToken;
 
-        public JwtAuthenticator(RestRequest request, string sharedSecret)
+        public JwtAuthenticator(string jwtToken)
         {
-            var path = request.Resource.Split('?')[0];
+            _jwtToken = jwtToken;
+        }
+
+        public void Authenticate(IRestClient client, IRestRequest request)
+        {
+            request.AddParameter("jwt", _jwtToken, ParameterType.UrlSegment);
+        }
+
+        public static string CreateJwt(string addonKey, string sharedSecret, string query, string method)
+        {
+            var path = query.Split('?')[0];
             if (!path.StartsWith("/"))
                 path = "/" + path;
 
-            var unhashedQshClaim = string.Format("{0}&{1}&", request.Method.ToString().ToUpper(), path);
+            var queryString = HttpUtility.ParseQueryString(query);
+            var sortedQueryStringKeys = queryString
+                .Cast<string>()
+                .OrderBy(x => x)
+                .ToList();
+
+            var queryStringsForClaim = sortedQueryStringKeys
+                .Where(x => x != "jwt")
+                .Select(x => string.Format("{0}={1}", x, HttpUtility.UrlEncode(queryString[x])));
+
+            var queryStringClaim = String.Join("&", queryStringsForClaim);
+            queryStringClaim = new Regex(@"%[a-f0-9]{2}").Replace(queryStringClaim, m => m.Value.ToUpperInvariant());
+
+            var unhashedQshClaim = string.Format("{0}&{1}&{2}", method, path, queryStringClaim);
 
             string hashedQshClaim;
             using (var sha = SHA256.Create())
@@ -32,14 +57,9 @@ namespace JiraReporter
             tokenBuilder.Claims.Add("qsh", hashedQshClaim);
             tokenBuilder.Claims.Add("iat", DateTime.UtcNow.AsUnixTimestampSeconds());
             tokenBuilder.Claims.Add("exp", DateTime.UtcNow.AddMinutes(5).AsUnixTimestampSeconds());
-            tokenBuilder.Claims.Add("iss", "com.equilobe.drt");
+            tokenBuilder.Claims.Add("iss", addonKey);
 
-            jwtToken = tokenBuilder.Encode().JwtTokenString;
-        }
-
-        public void Authenticate(IRestClient client, IRestRequest request)
-        {
-            request.AddParameter("jwt", jwtToken, ParameterType.QueryString);
+            return tokenBuilder.Encode().JwtTokenString;
         }
     }
 

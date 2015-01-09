@@ -13,7 +13,7 @@ using JiraReporter.JiraModels;
 namespace JiraReporter.Model
 {
     [DataContract]
-    public class User
+    public class JiraUser
     {
         [DataMember]
         public string self { get; set; }
