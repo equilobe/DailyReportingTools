@@ -13,55 +13,34 @@ namespace JiraReporter
     {
         public static Image ImageFromURL(string Url, string username, string password)
         {
-            byte[] imageData = DownloadData(Url, username, password);
+
+            var webClient = new WebClient();
+            webClient.Headers.Add("Content-Type", "image/png");
+            webClient = AuthorizeClient(username, password, webClient);
+
+            var imageData = webClient.DownloadData(Url);
 
             MemoryStream stream = new MemoryStream(imageData);
             var img = Image.FromStream(stream);
             stream.Close();
 
-
             return img;
         }
 
-        private static byte[] DownloadData(string Url, string username, string password)
+        public static WebClient AuthorizeClient(string username, string password, WebClient client)
         {
-            byte[] downloadedData = new byte[0];
-            try
-            {
-                WebRequest req = WebRequest.Create(Url);
-                req.Credentials = new NetworkCredential(username, password);
-                WebResponse response = req.GetResponse();
-                Stream stream = response.GetResponseStream();
+            var credentials = string.Format("{0}:{1}", username, password);
+            var credentialsBase64 = GetBase64String(credentials);
 
-                byte[] buffer = new byte[1024];
-
-                int dataLength = (int)response.ContentLength;
-
-                MemoryStream memStream = new MemoryStream();
-                while (true)
-                {
-                    int bytesRead = stream.Read(buffer, 0, buffer.Length);
-
-                    if (bytesRead == 0)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        memStream.Write(buffer, 0, bytesRead);
-                    }
-                }
-
-                downloadedData = memStream.ToArray();
-
-                stream.Close();
-                memStream.Close();
-            }
-            catch (Exception e)
-            {
-                Console.Write(e.Message);
-            }
-            return downloadedData;
+            client.Headers.Add("Authorization", "Basic " + credentialsBase64);
+            return client;
         }
+
+        public static string GetBase64String (string randomString)
+        {
+            var byteString = UTF8Encoding.UTF8.GetBytes(randomString);
+            return Convert.ToBase64String(byteString);
+        }
+       
     }
 }
