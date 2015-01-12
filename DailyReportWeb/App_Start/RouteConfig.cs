@@ -12,7 +12,7 @@ namespace DailyReportWeb
 
             routes.MapRoute(
                 name: "descriptor",
-                url: "atlassian-connect.json",
+                url: "atlassian-connect",
                 defaults: new
                 {
                     controller = "Home",
