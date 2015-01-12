@@ -19,9 +19,9 @@ namespace JiraReporter
         static void Main(string[] args)
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
-            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);          
+            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             LoadReportDates(policy, options);
-           // policy.SetCurrentOverride(options);
+            // policy.SetCurrentOverride(options);
             policy.SetPermanentTaskLabel();
             policy.SetDraftMode(options);
             if (RunReport(policy, options) == true)
@@ -55,9 +55,28 @@ namespace JiraReporter
 
             var report = ReportGenerator.GenerateReport(policy, options);
 
-            SaveReportToFile(report);
+            if (policy.IsIndividualDraft == false)
+            {
+                string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
+                var reportPath = GetReportPath(report);
+                SaveReportToFile(report, reportPath, policy, viewPath);
+                policy.SetEmailCollection();
+                SendReport(report);
+            }
+            else
+            {
+                foreach (var author in report.Authors)
+                {
+                    var individualReport = ReportGenerator.GetIndividualReport(report, author);
+                    policy.SetIndividualEmail("sebastian.dumitrascu@equilobe.com");
 
-            SendReport(report);
+                    string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
+                    var reportPath = GetReportPath(individualReport);
+                    SaveReportToFile(individualReport, reportPath, policy, viewPath);
+                    SendReport(individualReport);
+                }
+            }
+
         }
 
         private static void SetTemplateGlobal()
@@ -73,12 +92,10 @@ namespace JiraReporter
             return options;
         }
 
-        private static void SaveReportToFile(Report report)
+        private static void SaveReportToFile<T>(T report, string reportPath, SourceControlLogReporter.Model.Policy policy, string viewPath)
         {
-            string reportPath = GetReportPath(report);
-
-            var repCont = ReportProcessor.ProcessReport(report);
-            SourceControlLogReporter.Reporter.WriteReport(report.Policy, repCont, reportPath);
+            var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
+            SourceControlLogReporter.Reporter.WriteReport(policy, repCont, reportPath);
         }
 
         private static void SendReport(Report report)
@@ -92,8 +109,16 @@ namespace JiraReporter
         private static string GetReportPath(Report report)
         {
             string reportPath = report.Policy.ReportsPath;
-            Directory.CreateDirectory(reportPath);
+            SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
+            return reportPath;
+        }
+
+        private static string GetReportPath(IndividualReport report)
+        {
+            string reportPath = report.Policy.ReportsPath;
+            SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
+            reportPath = Path.Combine(reportPath, report.Author.Name + "_" + report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }
 

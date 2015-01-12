@@ -7,7 +7,7 @@ using System.IO;
 
 namespace SourceControlLogReporter
 {
-    class Validation
+    public class Validation
     {
         public static void EnsureDirectoryExists(string path)
         {

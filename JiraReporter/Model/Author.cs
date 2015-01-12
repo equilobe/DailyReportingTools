@@ -1,6 +1,7 @@
 ﻿using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -175,5 +176,6 @@ namespace JiraReporter.Model
         public List<DayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
+        public Image Image { get; set; }
     }
 }

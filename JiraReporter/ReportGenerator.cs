@@ -42,6 +42,21 @@ namespace JiraReporter
             return report;
         }
 
+        public static IndividualReport GetIndividualReport(Report report, Author author)
+        {
+            var individualReport = new IndividualReport(report.Policy, report.Options)
+            {
+                Summary = report.Summary,
+                PullRequests = report.PullRequests,
+                Date = report.Date,
+                SprintTasks = report.SprintTasks,
+                Author = author,
+                Authors = report.Authors,
+                Title = report.Title
+            };
+            return individualReport;
+        }
+
         private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();

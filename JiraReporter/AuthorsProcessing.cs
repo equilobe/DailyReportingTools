@@ -93,6 +93,7 @@ namespace JiraReporter
             SetAuthorErrors(author);
             SetAuthorInitials(author);
             SetRemainingEstimate(author);
+            SetImage(author, policy);
         }
 
         public static string GetCleanName(string name)
@@ -332,6 +333,11 @@ namespace JiraReporter
             author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
             author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));
             author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.TimeLoggedPerDayAverage / 3600));
+        }
+
+        private static void SetImage(Author author, SourceControlLogReporter.Model.Policy policy)
+        {
+            author.Image = WebDownloads.ImageFromURL(author.AvatarLink.OriginalString, policy.Username, policy.Password);
         }
     }
 }

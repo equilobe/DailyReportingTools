@@ -17,7 +17,8 @@ namespace JiraReporter
     {
         public List<Author> Authors { get; set; }
 
-        public ReportEmailJira(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options) : base(policy, options)
+        public ReportEmailJira(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+            : base(policy, options)
         {
             this.policy = policy;
             this.options = options;
@@ -40,12 +41,9 @@ namespace JiraReporter
         public override void EmailReport(string reportPath)
         {
             var message = GetMessage(reportPath);
-
-            foreach (var author in Authors)
-            {
-                var image = WebDownloads.ImageFromURL(author.AvatarLink.OriginalString, policy.Username, policy.Password);
-                AddAttachementImage(image, author.Username, message);
-            }
+            if (Authors != null)
+                foreach (var author in Authors)
+                    AddAttachementImage(author.Image, author.Username, message);
 
             EmailReportMessage(message, reportPath);
         }

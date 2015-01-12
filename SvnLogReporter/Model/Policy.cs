@@ -25,6 +25,8 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public bool IsDraft { get; set; }
         [XmlIgnore]
+        public bool IsIndividualDraft { get; set; }
+        [XmlIgnore]
         public Uri DraftConfirmationUrl
         {
             get
@@ -136,15 +138,20 @@ namespace SourceControlLogReporter.Model
         }
 
         [XmlIgnore]
-        public IEnumerable<string> EmailCollection
+        public List<string> EmailCollection {get;set;}
+
+        public void SetEmailCollection()
         {
-            get
-            {
-                if (IsDraft == true)
-                    return DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-                else
-                    return Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-            }
+            if (IsDraft == true)
+                EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            else
+                EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public void SetIndividualEmail(string emailAdress)
+        {
+            EmailCollection = new List<string>();
+            EmailCollection.Add(emailAdress);
         }
 
         public static Policy CreateFromFile(string filePath)
@@ -177,6 +184,9 @@ namespace SourceControlLogReporter.Model
                 this.ReportTitle = "DRAFT " + this.ReportTitle;
                 IsDraft = true;
             }
+
+            if (options.IsIndividualDraft == true)
+                IsIndividualDraft = true;
         }
 
         //public void SetCurrentOverride(Options options)
