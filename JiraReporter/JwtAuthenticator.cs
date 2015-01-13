@@ -8,58 +8,87 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace JiraReporter
 {
     public class JwtAuthenticator : IAuthenticator
     {
-        private readonly string _jwtToken;
+        private string _sharedSecret;
 
-        public JwtAuthenticator(string jwtToken)
+        public JwtAuthenticator(string sharedSecret)
         {
-            _jwtToken = jwtToken;
+            _sharedSecret = sharedSecret;
         }
 
         public void Authenticate(IRestClient client, IRestRequest request)
-        {
-            request.AddParameter("jwt", _jwtToken, ParameterType.UrlSegment);
+        {            
+            var jwtToken = CreateJwt(ConfigurationManager.AppSettings["addonKey"], _sharedSecret, request.Resource, request.Method.ToString());
+            request.AddParameter("jwt", jwtToken, ParameterType.UrlSegment);
         }
 
         public static string CreateJwt(string addonKey, string sharedSecret, string query, string method)
         {
-            var path = query.Split('?')[0];
-            if (!path.StartsWith("/"))
-                path = "/" + path;
-
-            var queryString = HttpUtility.ParseQueryString(query);
-            var sortedQueryStringKeys = queryString
-                .Cast<string>()
-                .OrderBy(x => x)
-                .ToList();
-
-            var queryStringsForClaim = sortedQueryStringKeys
-                .Where(x => x != "jwt")
-                .Select(x => string.Format("{0}={1}", x, HttpUtility.UrlEncode(queryString[x])));
-
-            var queryStringClaim = String.Join("&", queryStringsForClaim);
-            queryStringClaim = new Regex(@"%[a-f0-9]{2}").Replace(queryStringClaim, m => m.Value.ToUpperInvariant());
-
-            var unhashedQshClaim = string.Format("{0}&{1}&{2}", method, path, queryStringClaim);
-
-            string hashedQshClaim;
-            using (var sha = SHA256.Create())
-            {
-                var computedHash = sha.ComputeHash(Encoding.UTF8.GetBytes(unhashedQshClaim));
-                hashedQshClaim = BitConverter.ToString(computedHash).Replace("-", "").ToLower();
-            }
-
             var tokenBuilder = new DecodedJwtToken(sharedSecret);
+            
+            string hashedQshClaim = GetHashedQshClaim(query, method);
             tokenBuilder.Claims.Add("qsh", hashedQshClaim);
+
             tokenBuilder.Claims.Add("iat", DateTime.UtcNow.AsUnixTimestampSeconds());
             tokenBuilder.Claims.Add("exp", DateTime.UtcNow.AddMinutes(5).AsUnixTimestampSeconds());
             tokenBuilder.Claims.Add("iss", addonKey);
 
             return tokenBuilder.Encode().JwtTokenString;
+        }
+
+        private static string GetHashedQshClaim(string relativeUrl, string method)
+        {
+            var unhashedQshClaim = GetUnhasedQshClaim(relativeUrl, method);
+            return HashQshClaim(unhashedQshClaim);
+        }
+
+        private static string HashQshClaim(string unhashedQshClaim)
+        {
+            using (var sha = SHA256.Create())
+            {
+                var computedHash = sha.ComputeHash(Encoding.UTF8.GetBytes(unhashedQshClaim));
+                return BitConverter.ToString(computedHash)
+                                             .Replace("-", "")
+                                             .ToLower();
+            }
+        }
+
+        private static string GetUnhasedQshClaim(string relativeUrl, string method)
+        {
+            var queryStringClaim = GetQueryStringClaim(relativeUrl);
+            var path = GetPath(relativeUrl);
+            return string.Format("{0}&{1}&{2}", method, path, queryStringClaim);
+        }
+
+        private static string GetQueryStringClaim(string relativeUrl)
+        {
+            var sortedQueryString = GetSortedQueryString(relativeUrl);            
+            return new Regex(@"%[a-f0-9]{2}").Replace(sortedQueryString, m => m.Value.ToUpperInvariant());
+        }
+
+        private static string GetSortedQueryString(string relativeUrl)
+        {
+            var elements = HttpUtility.ParseQueryString(relativeUrl);
+            var sortedKeys = elements.AllKeys
+                        .OrderBy(x => x)
+                        .ToList();
+
+            return String.Join("&", sortedKeys
+                    .Where(x => x != "jwt")
+                    .Select(x => string.Format("{0}={1}", x, HttpUtility.UrlEncode(elements[x]))));
+        }
+
+        private static string GetPath(string relativeUrl)
+        {
+            var path = relativeUrl.Split('?')[0];
+            if (!path.StartsWith("/"))
+                path = "/" + path;
+            return path;
         }
     }
 

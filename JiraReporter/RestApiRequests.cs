@@ -28,8 +28,7 @@ namespace JiraReporter
         public static T ResolveRequestJwt<T>(Policy policy, RestRequest request, bool isXml = false)
         {
             var client = new RestClient(policy.BaseUrl);
-            var jwt = JwtAuthenticator.CreateJwt("com.equilobe.drt", policy.SharedSecret, request.Resource, request.Method.ToString());
-            client.Authenticator = new JwtAuthenticator(jwt);
+            client.Authenticator = new JwtAuthenticator(policy.SharedSecret);
 
             var results = client.Execute(request).Content;
 
