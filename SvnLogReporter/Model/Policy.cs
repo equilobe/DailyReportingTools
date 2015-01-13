@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-
 namespace SourceControlLogReporter.Model
 {
     public class Policy
@@ -60,14 +59,10 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                try
-                {
+                if (ReportTime != null)
                     return DateTime.Parse(ReportTime);
-                }
-                catch (Exception)
-                {
+                else
                     return new DateTime();
-                }
             }
         }
         public string DraftTime { get; set; }
@@ -76,14 +71,10 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                try
-                {
+                if (DraftTime != null)
                     return DateTime.Parse(DraftTime);
-                }
-                catch (Exception)
-                {
+                else
                     return new DateTime();
-                }
             }
         }
         public string BaseUrl { get; set; }
