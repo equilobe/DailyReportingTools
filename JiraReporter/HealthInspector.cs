@@ -94,9 +94,9 @@ namespace JiraReporter
         {
             var now = DateTime.Now.ToOriginalTimeZone();
             if (now <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
-                return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, Policy.CurrentOverrides);
+                return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, Policy.Overrides);
 
-            return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), Policy.CurrentOverrides);
+            return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), Policy.Overrides);
         }
 
         public Health GetMonthHealth(double allocatedHours, double totalTimeWorked)
@@ -104,9 +104,9 @@ namespace JiraReporter
             if (allocatedHours == 0)
                 return Health.None;
 
-            var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.CurrentOverrides);
+            var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.Overrides);
             var workedPerDay = totalTimeWorked / workedDays;
-            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.CurrentOverrides);
+            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
             var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
             return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }

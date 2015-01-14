@@ -1,6 +1,7 @@
 ﻿using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace JiraReporter.Model
     public class Author
     {
         public string Name { get; set; }
+        public string Username { get; set; }
         public string ShortName
         {
             get
@@ -25,6 +27,7 @@ namespace JiraReporter.Model
             }
         }
         public string Initials { get; set; }
+        public string EmailAdress { get; set; }
 
         public string TimeLogged { get; set; }
         public int TimeSpent { get; set; }
@@ -173,5 +176,6 @@ namespace JiraReporter.Model
         public List<DayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
+        public Image Image { get; set; }
     }
 }

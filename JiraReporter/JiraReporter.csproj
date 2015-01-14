@@ -54,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -85,8 +86,11 @@
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\IndividualReport.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
+    <Compile Include="ReportEmailJira.cs" />
+    <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="JiraModels\User.cs" />
     <Compile Include="Model\Author.cs" />
@@ -101,10 +105,12 @@
     <Compile Include="ReportProcessor.cs" />
     <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
+    <Compile Include="SummaryCharts\WidthHelpers.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="TimesheetService.cs" />
+    <Compile Include="WebDownloads.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -134,6 +140,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Views\entryComments.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\IndividualReportTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Views\parentTask.cshtml">

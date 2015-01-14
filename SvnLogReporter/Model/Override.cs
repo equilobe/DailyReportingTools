@@ -39,7 +39,7 @@ namespace SourceControlLogReporter.Model
             var currentOverride = new Override();
             if(overrides!=null)
                  currentOverride = SearchOverride(overrides, date);
-            if (currentOverride.Days == null)
+            if (currentOverride == null || currentOverride.Days == null)
                 return false;
             else
                 return currentOverride.NonWorkingDays.Exists(d => d == date.Day);

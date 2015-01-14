@@ -134,7 +134,7 @@ namespace JiraReporter
             SetIssueTimeFormat(issue);
             if(timesheet!= null)
                 SetIssueExists(issue, timesheet.Worklog.Issues);                
-            issue.Assignee = AuthorsProcessing.GetName(issue.Assignee);
+            issue.Assignee = AuthorsProcessing.GetCleanName(issue.Assignee);
             AdjustIssuePullRequests(issue, pullRequests);
             SetIssueLink(issue, policy);
             HasWorkLoggedByAssignee(issue, timesheet);
@@ -365,12 +365,12 @@ namespace JiraReporter
         public static void SetLoggedAuthor(Issue issue, string authorName)
         {
             if (issue.LoggedAuthor == null)
-                issue.LoggedAuthor = AuthorsProcessing.GetName(authorName);
+                issue.LoggedAuthor = AuthorsProcessing.GetCleanName(authorName);
         }
         
         public static void ChangeLoggedAuthor(Issue issue, string authorName)
         {
-            issue.LoggedAuthor = AuthorsProcessing.GetName(authorName);
+            issue.LoggedAuthor = AuthorsProcessing.GetCleanName(authorName);
         }
 
         public static void SetSubtasksLoggedAuthor(Issue issue, string authorName)

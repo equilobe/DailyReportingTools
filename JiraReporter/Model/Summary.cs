@@ -101,14 +101,7 @@ namespace JiraReporter.Model
                 return hoursLeft.RoundDoubleOneDecimal();
             }
         }
-        public double SprintTasksTimeLeftPixelWidth { get; set; }
-        public string SprintTasksTimeLeftPixelWidthString
-        {
-            get
-            {
-                return SprintTasksTimeLeftPixelWidth.ToString() + "px";
-            }
-        }
+
         public double SprintHourRate { get; set; }  //hour rate per day to complete sprint
         public string SprintHourRateString
         {
@@ -133,14 +126,7 @@ namespace JiraReporter.Model
                 return hoursWorked.RoundDoubleOneDecimal();
             }
         }
-        public double AverageTimeWorkedPixelWidth { get; set; }
-        public string AverageTimeWorkedPixelWidthString
-        {
-            get
-            {
-                return AverageTimeWorkedPixelWidth.ToString() + "px";
-            }
-        }
+
         public double AllocatedHoursPerDay { get; set; } //hour rate per day for developers team (set in policy)
         public string AllocatedHoursPerDayString
         {
@@ -196,23 +182,14 @@ namespace JiraReporter.Model
                 return hoursWorked.RoundDoubleOneDecimal();
             }
         }
-        public double SprintWorkedPerDayPixelWidth { get; set; }
-        public string SprintWorkedPerDayPixelWidthString
+
+        public double SprintAverageEstimate
         {
             get
             {
-                return SprintWorkedPerDayPixelWidth.ToString() + "px";
+                return Policy.AllocatedHoursPerDay * 3600;
             }
         }
-        public int SprintTotalEstimate { get; set; }
-        public string SprintTotalEstimateString
-        {
-            get
-            {
-                return TimeFormatting.SetTimeFormat(SprintTotalEstimate);
-            }
-        }
-        public double SprintAverageEstimate { get; set; }
         public string SprintAverageEstimateWithDecimals
         {
             get
@@ -221,14 +198,7 @@ namespace JiraReporter.Model
                 return estimatedHours.RoundDoubleOneDecimal();
             }
         }
-        public double SprintEstimatePixelWidth { get; set; }
-        public string SprintEstimatePixelWidthString
-        {
-            get
-            {
-                return SprintEstimatePixelWidth.ToString() + "px";
-            }
-        }
+
         public double RemainingMonthHours { get; set; }
         public string RemainingMonthHoursString
         {
@@ -237,22 +207,16 @@ namespace JiraReporter.Model
                 return TimeFormatting.SetTimeFormat8Hour((int)(RemainingMonthHours * 3600));
             }
         }
-        public double RemainingMonthHoursAverage { get; set; }
+        public double RemainingMonthAverage { get; set; }
         public string RemainingMonthHoursAverageWithDecimals
         {
             get
             {
-                return RemainingMonthHoursAverage.RoundDoubleOneDecimal();
+                var remainingHours = RemainingMonthAverage / 3600;
+                return remainingHours.RoundDoubleOneDecimal();
             }
         }
-        public double RemainingMonthHoursPixelWidth { get; set; }
-        public string RemainingMonthHoursPixelWidthString
-        {
-            get
-            {
-                return RemainingMonthHoursPixelWidth.ToString() + "px";
-            }
-        }
+
         public double MonthHourRate { get; set; }
         public string MonthHourRateString
         {
@@ -277,14 +241,6 @@ namespace JiraReporter.Model
                 return hoursWorked.RoundDoubleOneDecimal();
             }
         }
-        public double MonthTotalEstimate { get; set; }
-        public string MonthTotalEstimateString
-        {
-            get
-            {
-                return TimeFormatting.SetTimeFormat((int)MonthTotalEstimate);
-            }
-        }
         public double MonthAverageEstimated { get; set; }
         public string MonthAverageEstimatedWithDecimals
         {
@@ -306,7 +262,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.CurrentOverrides);
+                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
                 var seconds = days * 28800;
                 return TimeFormatting.SetTimeFormat8Hour(seconds);
             }
@@ -334,6 +290,9 @@ namespace JiraReporter.Model
         public string SprintStatus { get; set; }
         public string MonthStatus { get; set; }
 
+        public StatusChartWidths SprintWidths { get; set; }
+        public StatusChartWidths MonthWidths { get; set; }
+
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
@@ -358,24 +317,31 @@ namespace JiraReporter.Model
             PullRequests = pullRequests;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
             SetDates(options);
+            SetAllocatedTime();
 
-            var reportWorkingDays = GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.CurrentOverrides);
-            var monthWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.CurrentOverrides);
-            var monthWorkingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.CurrentOverrides);
-            var monthWorkingDaysLeft = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.CurrentOverrides);
+            var reportWorkingDays = GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.Overrides);
+            var monthWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.Overrides);
+            var monthWorkingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
+            var monthWorkingDaysLeft = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
             int sprintRemainingDays = 0;
             int sprintWorkedDays = 0;
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
             {
                 var sprintEndDate = timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1);
                 var sprintStartDate = timesheetCollection[TimesheetType.SprintTimesheet].StartDate.ToOriginalTimeZone();
-                sprintRemainingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, Policy.CurrentOverrides);
-                sprintWorkedDays = GetWorkingDays(sprintStartDate, sprintEndDate, Policy.CurrentOverrides);
+                sprintRemainingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, Policy.Overrides);
+                sprintWorkingDays = GetWorkingDays(sprintStartDate, sprintEndDate, Policy.Overrides);
+                sprintWorkedDays = GetWorkingDays(sprintStartDate, DateTime.Now.ToOriginalTimeZone().AddDays(-1), policy.Overrides);
             }
             SetTimeWorked(timesheetCollection);
+            SetMonthEstimatedValue(monthWorkingDays);
             SetAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
-            SetAllocatedTime();
             SetSummaryTasksTimeLeft(sprintTasks);
+            SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
+            SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
+            SetAverageRemainingTimePerDay(monthWorkingDaysLeft, sprintRemainingDays);
+
+
 
             GetTasksCount(sprintTasks);
 
@@ -383,8 +349,6 @@ namespace JiraReporter.Model
             InProgressUnassignedTasksSecondsLeft = JiraReporter.TasksService.GetTimeLeftForSpecificAuthorTasks(sprintTasks.InProgressTasks, null);
             UnassignedTasksSecondsLeft = OpenUnassignedTasksSecondsLeft + InProgressUnassignedTasksSecondsLeft;
 
-            SetRemainingMonthlyHours(timesheetCollection[TimesheetType.MonthTimesheet]);
-            SprintTasksTimeLeftSeconds = GetSprintTimeLeftSeconds();
             SetHourRates(monthWorkingDaysLeft, sprintRemainingDays);
 
             SetHealthColors();
@@ -393,7 +357,7 @@ namespace JiraReporter.Model
             SetHealth(timesheetCollection);
             SetHealthStatuses();
 
-            SetSummaryChartWidths();
+            SetWidths();
 
             SetErrors(sprintTasks);
         }
@@ -444,16 +408,48 @@ namespace JiraReporter.Model
 
         private void SetAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
-            SetTotalAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays);
+            SetTotalAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
             SetAuthorsAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
         }
 
-        private void SetTotalAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays)
+        private void SetTotalAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             if (monthWorkedDays > 0)
                 MonthWorkedPerDay = (MonthHoursWorked * 3600) / monthWorkedDays;
             if (sprintWorkedDays > 0)
                 SprintWorkedPerDay = (SprintHoursWorked * 3600) / sprintWorkedDays;
+            if (reportWorkingDays > 0)
+                AverageTimeWorked = (double)TotalTimeSeconds / reportWorkingDays;
+        }
+
+        private void SetAverageRemainingTimePerDay(int monthRemainingDays, int sprintRemainingDays)
+        {
+            if (monthRemainingDays == 0)
+                RemainingMonthAverage = 0;
+            else
+                RemainingMonthAverage = (RemainingMonthHours * 3600) / monthRemainingDays;
+
+            if (sprintRemainingDays == 0)
+                SprintTasksTimeLeftPerDay = 0;
+            else
+                SprintTasksTimeLeftPerDay = SprintTasksTimeLeftSeconds / sprintRemainingDays;
+        }
+
+        private void SetMonthEstimatedValue(int monthWorkingDays)
+        {
+            int hours = 0;
+            if (monthWorkingDays > 0)
+                hours = Policy.AllocatedHoursPerMonth / monthWorkingDays;
+            MonthAverageEstimated = hours * 3600;
+        }
+
+        private int GetTimesheetTotalEstimate(Timesheet timesheet)
+        {
+            var timesheetService = new TimesheetService();
+            if (timesheet == null)
+                return 0;
+            else
+                return timesheetService.GetTotalOriginalEstimate(timesheet);
         }
 
         private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
@@ -519,7 +515,7 @@ namespace JiraReporter.Model
         private void SetHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             var healthInspector = new HealthInspector(Policy);
-            WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.CurrentOverrides), TotalTimeHours);
+            WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.Overrides), TotalTimeHours);
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
             {
                 DayHealth = healthInspector.GetDayHealth(AllocatedHoursPerDay, SprintHourRate);
@@ -613,7 +609,7 @@ namespace JiraReporter.Model
             }
         }
 
-        private double GetWorkSummaryMax()
+        private int GetWorkSummaryMax()
         {
             var max = new List<double>();
             foreach (var author in Authors)
@@ -649,22 +645,45 @@ namespace JiraReporter.Model
             var max = new List<double>();
             max.Add(MonthAverageEstimated);
             max.Add(MonthWorkedPerDay);
-            max.Add(RemainingMonthHoursAverage);
+            max.Add(RemainingMonthAverage);
             var maxHours = max.Max() / 3600;
             return maxHours;
         }
 
-        private void SetSummaryChartWidths()
+        private void SetWidths()
         {
-            SetAuthorsWorkSummaryChartWidths();
+            var widthHelper = new WidthHelpers(ChartMaxBarWidth);
+            var workSummaryMax = GetWorkSummaryMax();
+            widthHelper.SetWorkSummaryChartWidths(Authors, workSummaryMax);
+
+            var statusMax = GetStatusMax();
+            GetStatusValues();
+            widthHelper.SetStatusChartWidths(statusMax, SprintWidths, MonthWidths);
         }
 
-        private void SetAuthorsWorkSummaryChartWidths()
+        private void GetStatusValues()
         {
-            var max = GetWorkSummaryMax();
-            foreach (var author in Authors)
-                AuthorsProcessing.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, max);
+            GetStatusSprintValues();
+            GetStatusMonthValues();
         }
 
+        private void GetStatusSprintValues()
+        {
+            SprintWidths = new StatusChartWidths();
+            SprintWidths.DaySeconds = AverageTimeWorked;
+            SprintWidths.EstimatedSeconds = SprintAverageEstimate;
+            SprintWidths.DoneSeconds = SprintWorkedPerDay;
+            SprintWidths.RemainingSeconds = SprintTasksTimeLeftPerDay;
+        }
+
+        private void GetStatusMonthValues()
+        {
+            MonthWidths = new StatusChartWidths();
+            MonthWidths.EstimatedSeconds = MonthAverageEstimated;
+            MonthWidths.DoneSeconds = MonthWorkedPerDay;
+            MonthWidths.RemainingSeconds = RemainingMonthAverage;
+        }
+
+        public int sprintWorkingDays { get; set; }
     }
 }

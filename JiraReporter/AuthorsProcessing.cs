@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using RestSharp;
 
 namespace JiraReporter
 {
@@ -12,43 +15,61 @@ namespace JiraReporter
     {
         public static List<Author> GetAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
         {
-            var sprintAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.SprintTimesheet);
-            var loggedAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.ReportTimesheet);
-            var reportAuthors = sprintAuthors.Concat(loggedAuthors).Distinct().ToList();
+            var reportAuthors = GetAllAuthors(timesheetCollection);
 
-            var authors = GetAuthorsDict(timesheetCollection[TimesheetType.ReportTimesheet], reportAuthors);
-            var authorsNew = new List<Author>();
+            var authors = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
             if (policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
                 users.RemoveAll(u => policy.IgnoredAuthors.Exists(a => a == u.displayName));
 
             foreach (var user in users)
             {
-                if (authors.ContainsKey(user.displayName))
-                    authorsNew.Add(new Author { Name = user.displayName, Issues = authors[user.displayName], AvatarLink = user.avatarUrls.Big });
-                else
-                    authorsNew.Add(new Author { Name = user.displayName });
-                SetAuthor(report, authorsNew.Last(), policy, commits, options, timesheetCollection);
-            }
-
-            authorsNew.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
-            return authorsNew;
-        }
-
-        private static Dictionary<string, List<Issue>> GetAuthorsDict(Timesheet timesheet, List<string> reportAuthors)
-        {
-            var authors = new Dictionary<string, List<Issue>>();
-            if (reportAuthors.Count > 0)
-                foreach (var author in reportAuthors)
+                var author = CreateAuthor(user);
+                if (reportAuthors.Contains(user.displayName))
                 {
-                    var issues = timesheet.Worklog.Issues.Where(i => i.Entries.First().AuthorFullName == author).ToList();
-                    if (issues != null && issues.Count > 0)
-                        foreach (var issue in issues)
-                            IssueAdapter.SetLoggedAuthor(issue, author);
-                    authors.Add(author, issues);
+                    var issues = GetAuthorIssuesFromTimesheet(timesheetCollection[TimesheetType.ReportTimesheet], user.displayName);
+                    author.Issues = issues;
                 }
 
+                SetAuthor(report, author, policy, commits, options, timesheetCollection);
+                authors.Add(author);
+            }
+
+            authors.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
             return authors;
+        }
+
+        private static Author CreateAuthor(User user)
+        {
+            var author = new Author
+            {
+                Name = user.displayName,
+                Username = user.key,
+                AvatarLink = user.avatarUrls.Big,
+                EmailAdress = user.emailAddress
+            };
+            return author;
+        }
+
+        private static List<string> GetAllAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection)
+        {
+            var sprintAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.SprintTimesheet);
+            var loggedAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.ReportTimesheet);
+            var monthAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.MonthTimesheet);
+            var reportAuthors = sprintAuthors.Concat(loggedAuthors)
+                                             .Concat(monthAuthors)
+                                             .Distinct()
+                                             .ToList();
+            return reportAuthors;
+        }
+
+        private static List<Issue> GetAuthorIssuesFromTimesheet(Timesheet timesheet, string author)
+        {
+            var issues = timesheet.Worklog.Issues.Where(i => i.Entries.First().AuthorFullName == author).ToList();
+            if (issues != null && issues.Count > 0)
+                foreach (var issue in issues)
+                    IssueAdapter.SetLoggedAuthor(issue, author);
+            return issues;
         }
 
         private static List<string> GetTimesheetCollectionAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, TimesheetType key)
@@ -65,16 +86,17 @@ namespace JiraReporter
             SetAuthorTimeSpent(author, timesheetCollection);
             SetAuthorTimeFormat(author);
             GetAuthorCommits(policy, author, commits);
-            author.Name = GetName(author.Name);
+            author.Name = GetCleanName(author.Name);
             SetCommitsAllTasks(author, sprintTasks);
             SetUncompletedTasks(sprintTasks, author, policy);
             SetAuthorDayLogs(author, options);
             SetAuthorErrors(author);
             SetAuthorInitials(author);
             SetRemainingEstimate(author);
+            SetImage(author, policy);
         }
 
-        public static string GetName(string name)
+        public static string GetCleanName(string name)
         {
             string delimiter = "(\\[.*\\])";
             if (name != null)
@@ -306,11 +328,16 @@ namespace JiraReporter
             return max;
         }
 
-        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, double maxValue)
+        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, int maxValue)
         {
             author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
             author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));
-            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.TimeLoggedPerDayAverage / 3600));
+            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.TimeLoggedPerDayAverage / 3600));
+        }
+
+        private static void SetImage(Author author, SourceControlLogReporter.Model.Policy policy)
+        {
+            author.Image = WebDownloads.ImageFromURL(author.AvatarLink.OriginalString, policy.Username, policy.Password);
         }
     }
 }

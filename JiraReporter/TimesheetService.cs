@@ -32,9 +32,20 @@ namespace JiraReporter
 
         public void SetTimesheetCollection(Dictionary<TimesheetType, Timesheet> timesheetCollection, Policy policy, Options options, List<PullRequest> pullRequests)
         {
-            foreach (var timesheet in timesheetCollection)
-                if(timesheet.Key != TimesheetType.MonthTimesheet)
-                     SetTimesheetIssues(timesheet.Value, policy, options, pullRequests);
+            if (timesheetCollection != null)
+                foreach (var timesheet in timesheetCollection)
+                    SetTimesheetIssues(timesheet.Value, policy, options, pullRequests);
+        }
+
+        public int GetTotalOriginalEstimate(Timesheet timesheet)
+        {
+            int sum = 0;
+            if (timesheet != null && timesheet.Worklog != null && timesheet.Worklog.Issues != null)
+            {
+                var issues = timesheet.Worklog.Issues;
+                sum = issues.Sum(i => i.OriginalEstimateSeconds);
+            }
+            return sum;
         }
     }
 }

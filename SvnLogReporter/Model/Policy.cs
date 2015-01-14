@@ -25,6 +25,8 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public bool IsDraft { get; set; }
         [XmlIgnore]
+        public bool IsIndividualDraft { get; set; }
+        [XmlIgnore]
         public Uri DraftConfirmationUrl
         {
             get
@@ -44,7 +46,7 @@ namespace SourceControlLogReporter.Model
             {
                 var now = DateTime.Now.ToOriginalTimeZone();
                 if (IsDraft == true)
-                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "draft" + "?date=" + now.ToString());
+                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
                 else
                     return null;
             }
@@ -101,8 +103,8 @@ namespace SourceControlLogReporter.Model
 
         public List<Override> Overrides { get; set; }
 
-        [XmlIgnore]
-        public List<Override> CurrentOverrides { get; set; }
+     //   [XmlIgnore]
+     //   public List<Override> CurrentOverrides { get; set; }
 
         public Override CurrentOverride
         {
@@ -137,15 +139,20 @@ namespace SourceControlLogReporter.Model
         }
 
         [XmlIgnore]
-        public IEnumerable<string> EmailCollection
+        public List<string> EmailCollection {get;set;}
+
+        public void SetEmailCollection()
         {
-            get
-            {
-                if (IsDraft == true)
-                    return DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-                else
-                    return Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-            }
+            if (IsDraft == true)
+                EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            else
+                EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public void SetIndividualEmail(string emailAdress)
+        {
+            EmailCollection = new List<string>();
+            EmailCollection.Add(emailAdress);
         }
 
         public static Policy CreateFromFile(string filePath)
@@ -166,16 +173,6 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void WriteDateToPolicy(string filePath, DateTime date)
-        {
-            XDocument xDocument = XDocument.Load(filePath);
-            XElement root = xDocument.Element("Policy");
-            if (root.Elements("LastReportSentDate").Any())
-                root.Elements("LastReportSentDate").Remove();
-            root.AddFirst(new XElement("LastReportSentDate", date));
-            xDocument.Save(filePath);
-        }
-
         public void SetPermanentTaskLabel()
         {
             this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
@@ -188,31 +185,34 @@ namespace SourceControlLogReporter.Model
                 this.ReportTitle = "DRAFT " + this.ReportTitle;
                 IsDraft = true;
             }
+
+            if (options.IsIndividualDraft == true)
+                IsIndividualDraft = true;
         }
 
-        public void SetCurrentOverride(Options options)
-        {
-            var day = options.FromDate;
-            if(Overrides!=null)
-                while (day < options.ToDate)
-                {
-                    if (Override.SearchOverride(CurrentOverrides, day) == null)
-                    {
-                        var currentOverride = Override.SearchOverride(Overrides, day);
-                        AddOverride(currentOverride);
-                    }
-                    day = day.AddDays(1);
-                }
-        }
+        //public void SetCurrentOverride(Options options)
+        //{
+        //    var day = options.FromDate;
+        //    if(Overrides!=null)
+        //        while (day < options.ToDate)
+        //        {
+        //            if (Override.SearchOverride(CurrentOverrides, day) == null)
+        //            {
+        //                var currentOverride = Override.SearchOverride(Overrides, day);
+        //                AddOverride(currentOverride);
+        //            }
+        //            day = day.AddDays(1);
+        //        }
+        //}
 
-        private void AddOverride(Override currentOverride)
-        {
-            if (currentOverride != null)
-            {
-                if (CurrentOverrides == null)
-                    CurrentOverrides = new List<Override>();
-                CurrentOverrides.Add(currentOverride);
-            }
-        }
+        //private void AddOverride(Override currentOverride)
+        //{
+        //    if (currentOverride != null)
+        //    {
+        //        if (CurrentOverrides == null)
+        //            CurrentOverrides = new List<Override>();
+        //        CurrentOverrides.Add(currentOverride);
+        //    }
+        //}
     }
 }

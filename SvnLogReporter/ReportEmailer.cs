@@ -15,8 +15,8 @@ namespace SourceControlLogReporter
 {
     public class ReportEmailer
     {
-        Policy policy;
-        Options options;
+        public Policy policy;
+        public Options options;
 
         public ReportEmailer(Policy p, Options o)
         {
@@ -62,18 +62,29 @@ namespace SourceControlLogReporter
             }
         }
 
-        void EmailReport(string reportPath)
+        public virtual void EmailReport(string reportPath)
         {
-            var smtp = new SmtpClient { EnableSsl = true };
-            smtp.Send(GetMessage(reportPath));
-
-            MoveToSent(reportPath);
-
-            if (policy.IsDraft == false)
-                policy.WriteDateToPolicy(options.PolicyPath, DateTime.Now.ToOriginalTimeZone());
+            EmailReportMessage(GetMessage(reportPath), reportPath);
         }
 
-        private MailMessage GetMessage(string reportPath)
+        protected void EmailReportMessage(MailMessage message, string reportPath)
+        {
+            var smtp = new SmtpClient { EnableSsl = true };
+            smtp.Send(message);
+            MoveToSent(reportPath);
+            UpdateLastReportSentDate();
+        }
+
+        protected void UpdateLastReportSentDate()
+        {
+            if (policy.IsDraft)
+                return;
+
+            policy.LastReportSentDate = options.ToDate;
+            policy.SaveToFile(options.PolicyPath);
+        }
+
+        public MailMessage GetMessage(string reportPath)
         {
             var message = new MailMessage
             {
@@ -81,13 +92,12 @@ namespace SourceControlLogReporter
                 Body = File.ReadAllText(reportPath),
                 IsBodyHtml = true
             };
-
             foreach (string addr in policy.EmailCollection)
                 message.To.Add(addr);
             return message;
         }
 
-        private string GetReportSubject(string reportPath)
+        public string GetReportSubject(string reportPath)
         {
             string subject = policy.ReportTitle + " " + policy.EmailSubject;
             if ((options.ToDate - options.FromDate).Days > 1)
@@ -96,7 +106,7 @@ namespace SourceControlLogReporter
                 return subject + " " + options.FromDate.ToString("dddd, dd MMMM yyyy");
         }
 
-        private void MoveToSent(string path)
+        public void MoveToSent(string path)
         {
             Validation.EnsureDirectoryExists(policy.ReportsPath);
 

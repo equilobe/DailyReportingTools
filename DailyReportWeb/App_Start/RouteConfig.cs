@@ -7,11 +7,12 @@ namespace DailyReportWeb
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
+            
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
                 name: "descriptor",
-                url: "atlassian-connect.json",
+                url: "atlassian-connect",
                 defaults: new
                 {
                     controller = "Home",
