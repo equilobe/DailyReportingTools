@@ -24,21 +24,24 @@ namespace JiraReporter
             // policy.SetCurrentOverride(options);
             policy.SetPermanentTaskLabel();
             policy.SetDraftMode(options);
+
             if (RunReport(policy, options) == true)
                 RunReportTool(args, policy, options);
+            else
+                Console.WriteLine("Unable to run report tool due to policy settings or final report already generated.");
         }
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
-            var today = DateTime.Now.ToOriginalTimeZone().Date;
-            if (policy.IsDraft == false && today == policy.LastReportSentDate.Date)
+            if (policy.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
                 return false;
-            if (policy.IsDraft == true && today == policy.LastReportSentDate.Date)
-                return false;
+
             if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)
                 return false;
+
             if (CheckDayFromOverrides(policy) == true)
                 return false;
+
             return true;
         }
 

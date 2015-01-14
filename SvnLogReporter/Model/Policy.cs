@@ -86,6 +86,7 @@ namespace SourceControlLogReporter.Model
 
         public string Username { get; set; }
         public string Password { get; set; }
+        public string SharedSecret { get; set; }
         public string Emails { get; set; }
         public string DraftEmails { get; set; }
         public string EmailSubject { get; set; }

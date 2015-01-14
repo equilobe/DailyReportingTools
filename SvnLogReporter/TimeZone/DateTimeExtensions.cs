@@ -9,12 +9,20 @@ namespace System
 {
     public static class DateTimeExtensions
     {
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         static DateTimeExtensions() {
             OffsetFromUtc = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
         }
 
-       
+        public static long AsUnixTimestampSeconds(this DateTime time)
+        {
+            if (time > UnixEpoch)
+                return (long)(time - UnixEpoch).TotalSeconds;
+
+            return 0L;
+        }
+
         public static TimeSpan OffsetFromUtc { get; set; }
 
         public static DateTime ToOriginalTimeZone(this DateTime date)

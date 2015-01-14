@@ -1,7 +1,10 @@
 ﻿using Atlassian.Connect;
+using Atlassian.Connect.Entities;
 using Atlassian.Connect.Jwt;
+using Newtonsoft.Json;
 using System;
 using System.Dynamic;
+using System.Web;
 using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
@@ -45,8 +48,8 @@ namespace DailyReportWeb.Controllers
         {
             var descriptor = new ConnectDescriptor()
             {
-                name = "Daily Reporting Tool",
-                description = "A Connect add-on that makes JIRA info available to Daily Reporting Tool",
+                name = "Daily Report Tool",
+                description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
                 key = "com.equilobe.drt",
                 vendor = new ConnectDescriptorVendor()
                 {
@@ -99,6 +102,25 @@ namespace DailyReportWeb.Controllers
             SecretKeyPersister.SaveSecretKey(Request);
 
             return Content(String.Empty);
+        }
+
+        static class SecretKeyPersister
+        {
+            public static void SaveSecretKey(HttpRequestBase request)
+            {
+                using (var dbContext = new InstancesContext())
+                {
+                    var bodyText = new System.IO.StreamReader(request.InputStream).ReadToEnd();
+
+                    var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
+
+                    var baseUrl = instanceData.BaseUrl;
+                    var sharedSecret = instanceData.SharedSecret;
+
+                    dbContext.InstalledInstances.Add(instanceData);
+                    dbContext.SaveChanges();
+                }
+            }
         }
     }
 }

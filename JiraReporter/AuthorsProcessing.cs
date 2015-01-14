@@ -39,7 +39,7 @@ namespace JiraReporter
             return authors;
         }
 
-        private static Author CreateAuthor(User user)
+        private static Author CreateAuthor(JiraUser user)
         {
             var author = new Author
             {
