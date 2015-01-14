@@ -15,20 +15,11 @@ namespace JiraReporter
         public static T ResolveRequest<T>(Policy policy, RestRequest request, bool isXml = false)
         {
             var client = new RestClient(policy.BaseUrl);
-            client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
 
-            var results = client.Execute(request).Content;
-
-            if (isXml)
-                return Deserialization.XmlDeserialize<T>(results);
+            if (!String.IsNullOrEmpty(policy.SharedSecret))
+                client.Authenticator = new JwtAuthenticator(policy.SharedSecret);
             else
-                return Deserialization.JsonDeserialize<T>(results);
-        }
-
-        public static T ResolveRequestJwt<T>(Policy policy, RestRequest request, bool isXml = false)
-        {
-            var client = new RestClient(policy.BaseUrl);
-            client.Authenticator = new JwtAuthenticator(policy.SharedSecret);
+                client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
 
             var results = client.Execute(request).Content;
 
@@ -41,65 +32,57 @@ namespace JiraReporter
         public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
         {
             var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
-            var xmlString = ResolveRequest<Timesheet>(policy, request, true);
 
-            return xmlString;
+            return ResolveRequest<Timesheet>(policy, request, true);
         }
 
         public static List<JiraUser> GetUsers(Policy policy)
         {
             var request = new RestRequest(ApiUrls.Users(policy.ProjectKey), Method.GET);
-            var contentString = ResolveRequest<List<JiraUser>>(policy, request);
 
-            return contentString;
+            return ResolveRequest<List<JiraUser>>(policy, request);
         }
 
         public static RapidView GetRapidView(string id, Policy policy)
         {
             var request = new RestRequest(ApiUrls.RapidView(id), Method.GET);
-            var contentString = ResolveRequest<RapidView>(policy, request);
-
-            return contentString;
+            
+            return ResolveRequest<RapidView>(policy, request);
         }
        
         public static List<View> GetRapidViews(Policy policy)
         {
             var request = new RestRequest(ApiUrls.RapidViews(), Method.GET);
-            var contentString = ResolveRequest<Views>(policy, request);
 
-            return contentString.views;
+            return ResolveRequest<Views>(policy, request).views;
         }
 
         public static SprintReport GetSprintReport(string rapidViewId, string sprintId, Policy policy)
         {
             var request = new RestRequest(ApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
-            var contentString = ResolveRequest<SprintReport>(policy, request);
-
-            return contentString;
+            
+            return ResolveRequest<SprintReport>(policy, request);
         }
 
         public static Issues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
-            var issues = client.GetIssuesByJql(ApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)), 0, 250);
 
-            return issues;
+            return client.GetIssuesByJql(ApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)), 0, 250);
         }
 
         public static Issues GetSprintTasks(Policy policy)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
-            var tasks = client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.ProjectKey), 0, 250);
-
-            return tasks;
+            
+            return client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.ProjectKey), 0, 250);
         }
 
         public static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
-            var issue = client.GetIssue(issueKey);
 
-            return issue;
+            return client.GetIssue(issueKey);
         }
     }
 }
