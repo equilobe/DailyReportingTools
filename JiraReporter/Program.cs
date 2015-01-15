@@ -21,9 +21,7 @@ namespace JiraReporter
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             LoadReportDates(policy, options);
-            // policy.SetCurrentOverride(options);
             policy.SetPermanentTaskLabel();
-            policy.SetDraftMode(options);
             if (RunReport(policy, options))
                 RunReportTool(args, policy, options);
             else
@@ -64,7 +62,7 @@ namespace JiraReporter
 
         private static void ProcessAndSendReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Report report)
         {
-            if (!policy.IsIndividualDraft)
+            if (policy.AdvancedOptions.NoIndividualDraft)
             {
                 var reportProcessor = new BaseReportProcessor(policy, options);
                 reportProcessor.ProcessReport(report);

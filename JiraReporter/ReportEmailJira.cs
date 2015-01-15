@@ -63,7 +63,7 @@ namespace JiraReporter
 
         private void AddMailAttachments(MailMessage message)
         {
-            if (policy.IsIndividualDraft)
+            if (!policy.AdvancedOptions.NoIndividualDraft)
                 AddAttachementImage(Author.Image, Author.Username, message);
             else
                 foreach (var author in Authors)

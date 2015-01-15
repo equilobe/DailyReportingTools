@@ -77,7 +77,7 @@ namespace SourceControlLogReporter
 
         protected void UpdateLastReportSentDate()
         {
-            if (policy.IsDraft)
+            if (!policy.AdvancedOptions.NoDraft)
                 return;
 
             policy.LastReportSentDate = options.ToDate;

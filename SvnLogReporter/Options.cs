@@ -19,11 +19,7 @@ namespace SourceControlLogReporter
         [Option(null, "from", Required = false)]
         public string StringFromDate { get; set; }
         [Option(null, "noemail", Required = false, HelpText = "Don't email report")]
-        public bool NoEmail { get; set; }
-        [Option(null, "draft", Required = false)]
-        public bool IsDraft { get; set; }
-        [Option(null, "individualDraft", Required = false)]
-        public bool IsIndividualDraft { get; set; }
+        public bool NoEmail { get; set; }      
 
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }

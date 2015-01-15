@@ -23,19 +23,15 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
         [XmlIgnore]
-        public bool IsDraft { get; set; }
-        [XmlIgnore]
-        public bool IsIndividualDraft { get; set; }
-        [XmlIgnore]
         public Uri DraftConfirmationUrl
         {
             get
             {
                 var now = DateTime.Now.ToOriginalTimeZone();
-                if (IsDraft == true)
-                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
-                else
+                if (AdvancedOptions.NoDraft)
                     return null;
+
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
@@ -45,75 +41,73 @@ namespace SourceControlLogReporter.Model
             get
             {
                 var now = DateTime.Now.ToOriginalTimeZone();
-                if (IsDraft == true)
-                    return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
-                else
+                if (AdvancedOptions.NoDraft)
                     return null;
+
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
         public DateTime LastReportSentDate { get; set; }
 
         public string ReportTitle { get; set; }
+
+        public string BaseUrl { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string SharedSecret { get; set; }
+        public string ProjectKey { get; set; }
         public string ReportTime { get; set; }
+
         [XmlIgnore]
         public DateTime ReportTimeDateFormat
         {
             get
             {
-                if (ReportTime != null)
-                    return DateTime.Parse(ReportTime);
-                else
+                if (ReportTime == null)
                     return new DateTime();
+
+                return DateTime.Parse(ReportTime);
             }
         }
-        public string DraftTime { get; set; }
-        [XmlIgnore]
-        public DateTime DraftTimeDateFormat
-        {
-            get
-            {
-                if (DraftTime != null)
-                    return DateTime.Parse(DraftTime);
-                else
-                    return new DateTime();
-            }
-        }
-        public string BaseUrl { get; set; }
+
+        public string Emails { get; set; }
+        public string DraftEmails { get; set; }
+
+        public int AllocatedHoursPerMonth { get; set; }
+        public int AllocatedHoursPerDay { get; set; }
+
+        public AdvancedOptions AdvancedOptions { get; set; }
+
+
+        //TODO: delete following 
         public string TargetGroup { get; set; }
+        public string ProjectName { get; set; }
+
         public string PermanentTaskLabel { get; set; }
         public List<string> AdditionalWorkflowStatuses { get; set; }
 
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string SharedSecret { get; set; }
-        public string Emails { get; set; }
-        public string DraftEmails { get; set; }
         public string EmailSubject { get; set; }
-        public string ProjectKey { get; set; }
+
         public string UniqueProjectKey { get; set; }
-        public string ProjectName { get; set; }
+
         public string ReopenedStatus { get; set; }
         public bool IsWeekendReportActive { get; set; }
-        public int AllocatedHoursPerMonth { get; set; }
-        public int AllocatedHoursPerDay { get; set; }
+
         public SourceControl SourceControl { get; set; }
         public List<User> AuthorsCorrelation { get; set; }
         public List<string> IgnoredAuthors { get; set; }
 
         public List<Override> Overrides { get; set; }
 
-     //   [XmlIgnore]
-     //   public List<Override> CurrentOverrides { get; set; }
-
         public Override CurrentOverride
         {
             get
             {
-                if (Overrides != null)
-                    return Overrides.Find(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
-                else
+                if (Overrides == null)
                     return null;
+
+                return Overrides.Find(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
             }
         }
 
@@ -122,10 +116,10 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                if (Overrides != null)
-                    return Overrides.Exists(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
-                else
+                if (Overrides == null)
                     return false;
+
+                return Overrides.Exists(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
             }
         }
 
@@ -139,11 +133,11 @@ namespace SourceControlLogReporter.Model
         }
 
         [XmlIgnore]
-        public List<string> EmailCollection {get;set;}
+        public List<string> EmailCollection { get; set; }
 
         public void SetEmailCollection()
         {
-            if (IsDraft == true)
+            if (!AdvancedOptions.NoDraft)
                 EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             else
                 EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -177,42 +171,5 @@ namespace SourceControlLogReporter.Model
         {
             this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
         }
-
-        public void SetDraftMode(Options options)
-        {
-            if (options.IsDraft || options.IsIndividualDraft)
-            {
-                this.ReportTitle = "DRAFT " + this.ReportTitle;
-                IsDraft = true;
-            }
-
-            if (options.IsIndividualDraft)
-                IsIndividualDraft = true;
-        }
-
-        //public void SetCurrentOverride(Options options)
-        //{
-        //    var day = options.FromDate;
-        //    if(Overrides!=null)
-        //        while (day < options.ToDate)
-        //        {
-        //            if (Override.SearchOverride(CurrentOverrides, day) == null)
-        //            {
-        //                var currentOverride = Override.SearchOverride(Overrides, day);
-        //                AddOverride(currentOverride);
-        //            }
-        //            day = day.AddDays(1);
-        //        }
-        //}
-
-        //private void AddOverride(Override currentOverride)
-        //{
-        //    if (currentOverride != null)
-        //    {
-        //        if (CurrentOverrides == null)
-        //            CurrentOverrides = new List<Override>();
-        //        CurrentOverrides.Add(currentOverride);
-        //    }
-        //}
     }
 }
