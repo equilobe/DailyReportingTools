@@ -84,7 +84,7 @@ namespace SourceControlLogReporter
             policy.SaveToFile(options.PolicyPath);
         }
 
-        public MailMessage GetMessage(string reportPath)
+        public virtual MailMessage GetMessage(string reportPath)
         {
             var message = new MailMessage
             {

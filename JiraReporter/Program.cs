@@ -24,8 +24,7 @@ namespace JiraReporter
             // policy.SetCurrentOverride(options);
             policy.SetPermanentTaskLabel();
             policy.SetDraftMode(options);
-
-            if (RunReport(policy, options) == true)
+            if (RunReport(policy, options))
                 RunReportTool(args, policy, options);
             else
                 Console.WriteLine("Unable to run report tool due to policy settings or final report already generated.");
@@ -33,6 +32,8 @@ namespace JiraReporter
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
+            var today = DateTime.Now.ToOriginalTimeZone().Date;
+
             if (policy.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
                 return false;
 
@@ -58,28 +59,25 @@ namespace JiraReporter
 
             var report = ReportGenerator.GenerateReport(policy, options);
 
-            if (policy.IsIndividualDraft == false)
+            ProcessAndSendReport(policy, options, report);
+        }
+
+        private static void ProcessAndSendReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Report report)
+        {
+            if (!policy.IsIndividualDraft)
             {
-                string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
-                var reportPath = GetReportPath(report);
-                SaveReportToFile(report, reportPath, policy, viewPath);
-                policy.SetEmailCollection();
-                SendReport(report);
+                var reportProcessor = new BaseReportProcessor(policy, options);
+                reportProcessor.ProcessReport(report);
             }
             else
             {
                 foreach (var author in report.Authors)
                 {
                     var individualReport = ReportGenerator.GetIndividualReport(report, author);
-                    policy.SetIndividualEmail("sebastian.dumitrascu@equilobe.com");
-
-                    string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
-                    var reportPath = GetReportPath(individualReport);
-                    SaveReportToFile(individualReport, reportPath, policy, viewPath);
-                    SendReport(individualReport);
+                    var reportProcessor = new IndividualReportProcessor(policy, options);
+                    reportProcessor.ProcessReport(individualReport);
                 }
             }
-
         }
 
         private static void SetTemplateGlobal()
@@ -93,36 +91,6 @@ namespace JiraReporter
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
-        }
-
-        private static void SaveReportToFile<T>(T report, string reportPath, SourceControlLogReporter.Model.Policy policy, string viewPath)
-        {
-            var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
-            SourceControlLogReporter.Reporter.WriteReport(policy, repCont, reportPath);
-        }
-
-        private static void SendReport(Report report)
-        {
-            var emailer = new ReportEmailJira(report.Policy, report.Options);
-            emailer.Authors = report.Authors;
-
-            emailer.TrySendEmails();
-        }
-
-        private static string GetReportPath(Report report)
-        {
-            string reportPath = report.Policy.ReportsPath;
-            SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
-            reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
-            return reportPath;
-        }
-
-        private static string GetReportPath(IndividualReport report)
-        {
-            string reportPath = report.Policy.ReportsPath;
-            SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
-            reportPath = Path.Combine(reportPath, report.Author.Name + "_" + report.Date.ToString("yyyy-MM-dd") + ".html");
-            return reportPath;
         }
 
         private static void LoadReportDates(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)

@@ -83,10 +83,12 @@
     <Compile Include="JiraService.cs" />
     <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
+    <Compile Include="Model\BaseReportProcessor.cs" />
     <Compile Include="Model\Commit.cs" />
     <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\IndividualReport.cs" />
+    <Compile Include="Model\IndividualReportProcessor.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="ReportEmailJira.cs" />
@@ -102,7 +104,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportGenerator.cs" />
-    <Compile Include="ReportProcessor.cs" />
     <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
     <Compile Include="SummaryCharts\WidthHelpers.cs" />

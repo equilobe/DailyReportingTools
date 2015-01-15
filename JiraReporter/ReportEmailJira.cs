@@ -16,6 +16,7 @@ namespace JiraReporter
     public class ReportEmailJira : ReportEmailer
     {
         public List<Author> Authors { get; set; }
+        public Author Author { get; set; }
 
         public ReportEmailJira(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
             : base(policy, options)
@@ -38,14 +39,35 @@ namespace JiraReporter
             mailMessage.Attachments.Add(attachment);
         }
 
-        public override void EmailReport(string reportPath)
+        public override MailMessage GetMessage(string reportPath)
         {
-            var message = GetMessage(reportPath);
-            if (Authors != null)
+            var message = new MailMessage
+            {
+                Subject = GetReportSubject(reportPath),
+                Body = File.ReadAllText(reportPath),
+                IsBodyHtml = true
+            };
+
+            AddMailAttachments(message);
+
+            AddMailRecipients(message);
+
+            return message;
+        }
+
+        private void AddMailRecipients(MailMessage message)
+        {
+            foreach (string addr in policy.EmailCollection)
+                message.To.Add(addr);
+        }
+
+        private void AddMailAttachments(MailMessage message)
+        {
+            if (policy.IsIndividualDraft)
+                AddAttachementImage(Author.Image, Author.Username, message);
+            else
                 foreach (var author in Authors)
                     AddAttachementImage(author.Image, author.Username, message);
-
-            EmailReportMessage(message, reportPath);
         }
     }
 }
