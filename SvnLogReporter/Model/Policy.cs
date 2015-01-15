@@ -180,13 +180,13 @@ namespace SourceControlLogReporter.Model
 
         public void SetDraftMode(Options options)
         {
-            if (options.IsDraft == true)
+            if (options.IsDraft || options.IsIndividualDraft)
             {
                 this.ReportTitle = "DRAFT " + this.ReportTitle;
                 IsDraft = true;
             }
 
-            if (options.IsIndividualDraft == true)
+            if (options.IsIndividualDraft)
                 IsIndividualDraft = true;
         }
 

@@ -49,6 +49,7 @@ namespace JiraReporter.Model
         public string OpenTasksTimeLeft { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public int OpenUnassignedCount { get; set; }
+        public int UnassignedTasksCount { get; set; }
 
         public int OpenUnassignedTasksSecondsLeft { get; set; }
         public string OpenUnassignedTasksTimeLeft
@@ -316,6 +317,7 @@ namespace JiraReporter.Model
             CommitsCount = authors.Sum(a => a.Commits.Count);
             PullRequests = pullRequests;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
+            UnassignedTasksCount = sprintTasks.UnassignedTasks.Count(t => t.SubTask == false);
             SetDates(options);
             SetAllocatedTime();
 
