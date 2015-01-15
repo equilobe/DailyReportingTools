@@ -24,14 +24,14 @@ namespace JiraReporter
         public void Authenticate(IRestClient client, IRestRequest request)
         {            
             var jwtToken = CreateJwt(ConfigurationManager.AppSettings["addonKey"], _sharedSecret, request.Resource, request.Method.ToString());
-            request.AddParameter("jwt", jwtToken, ParameterType.UrlSegment);
+            request.AddParameter("jwt", jwtToken, ParameterType.QueryString);
         }
 
         public static string CreateJwt(string addonKey, string sharedSecret, string query, string method)
         {
             var tokenBuilder = new DecodedJwtToken(sharedSecret);
             
-            string hashedQshClaim = GetHashedQshClaim(query, method);
+            string hashedQshClaim = GetHashedClaim(query, method);
             tokenBuilder.Claims.Add("qsh", hashedQshClaim);
 
             tokenBuilder.Claims.Add("iat", DateTime.UtcNow.AsUnixTimestampSeconds());
@@ -41,13 +41,13 @@ namespace JiraReporter
             return tokenBuilder.Encode().JwtTokenString;
         }
 
-        private static string GetHashedQshClaim(string relativeUrl, string method)
+        private static string GetHashedClaim(string relativeUrl, string method)
         {
-            var unhashedQshClaim = GetUnhasedQshClaim(relativeUrl, method);
-            return HashQshClaim(unhashedQshClaim);
+            var unhashedQshClaim = GetUnhashedClaim(relativeUrl, method);
+            return HashClaim(unhashedQshClaim);
         }
 
-        private static string HashQshClaim(string unhashedQshClaim)
+        private static string HashClaim(string unhashedQshClaim)
         {
             using (var sha = SHA256.Create())
             {
@@ -58,7 +58,7 @@ namespace JiraReporter
             }
         }
 
-        private static string GetUnhasedQshClaim(string relativeUrl, string method)
+        private static string GetUnhashedClaim(string relativeUrl, string method)
         {
             var queryStringClaim = GetQueryStringClaim(relativeUrl);
             var path = GetPath(relativeUrl);
@@ -73,7 +73,8 @@ namespace JiraReporter
 
         private static string GetSortedQueryString(string relativeUrl)
         {
-            var elements = HttpUtility.ParseQueryString(relativeUrl);
+            var queryString = GetQueryString(relativeUrl);
+            var elements = HttpUtility.ParseQueryString(queryString);
             var sortedKeys = elements.AllKeys
                         .OrderBy(x => x)
                         .ToList();
@@ -81,6 +82,11 @@ namespace JiraReporter
             return String.Join("&", sortedKeys
                     .Where(x => x != "jwt")
                     .Select(x => string.Format("{0}={1}", x, HttpUtility.UrlEncode(elements[x]))));
+        }
+
+        private static string GetQueryString(string relativeUrl)
+        {
+            return relativeUrl.IndexOf('?') != -1 ? relativeUrl.Substring(relativeUrl.IndexOf('?')) : String.Empty;
         }
 
         private static string GetPath(string relativeUrl)
