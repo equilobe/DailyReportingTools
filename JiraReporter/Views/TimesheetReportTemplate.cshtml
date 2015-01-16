@@ -206,7 +206,7 @@
 
     @Partial("Views/completedTasks.cshtml", Model.SprintTasks)
    
-    @if (Model.Policy.IsDraft == true)
+    @if (!Model.Policy.AdvancedOptions.NoDraft)
     {
         <div>
             <table style="margin-top:50px; width:500px; height:150px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">

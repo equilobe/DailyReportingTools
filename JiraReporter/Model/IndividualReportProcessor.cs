@@ -34,7 +34,7 @@ namespace JiraReporter.Model
 
         private string GetReportPath(IndividualReport report)
         {
-            string reportPath = report.Policy.ReportsPath;
+            string reportPath = report.Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, report.Author.Name + "_" + report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;

@@ -19,8 +19,7 @@ namespace JiraReporter
 
             var authors = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            if (policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
-                users.RemoveAll(u => policy.IgnoredAuthors.Exists(a => a == u.displayName));
+            users = RemoveIgnoredUsers(users, policy);
 
             foreach (var user in users)
             {
@@ -37,6 +36,19 @@ namespace JiraReporter
 
             authors.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
             return authors;
+        }
+
+        private static List<JiraUser> RemoveIgnoredUsers(List<JiraUser> users, SourceControlLogReporter.Model.Policy policy)
+        {
+            try
+            {
+                users.RemoveAll(u => policy.UserOptions.Find(user => user.JiraUserKey == u.displayName).Ignored == true);
+                return users;
+            }
+            catch(Exception)
+            {
+                return users;
+            }
         }
 
         private static Author CreateAuthor(JiraUser user)

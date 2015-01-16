@@ -104,7 +104,7 @@ namespace JiraReporter
             if (issue.Entries == null)
                 issue.Entries = new List<Entries>();
             issue.Priority = jiraIssue.fields.priority;
-            issue.PolicyReopenedStatus = policy.ReopenedStatus;
+            issue.PolicyReopenedStatus = policy.AdvancedOptions.ReopenedStatus;
             if (jiraIssue.fields.assignee != null)
                 issue.Assignee = jiraIssue.fields.assignee.displayName;
             issue.RemainingEstimateSeconds = jiraIssue.fields.aggregatetimeestimate;
@@ -186,7 +186,7 @@ namespace JiraReporter
         private static void SetLabel(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue)
         {
             foreach (var label in jiraIssue.fields.labels)
-                if (label == policy.PermanentTaskLabel)
+                if (label == policy.AdvancedOptions.PermanentTaskLabel)
                     issue.Label = label;
         }
 
@@ -313,7 +313,7 @@ namespace JiraReporter
         public static void SetIssueErrors(Issue issue, SourceControlLogReporter.Model.Policy policy)
         {
             issue.Errors = new List<Error>();
-            if(issue.SubTask == false && issue.Label != policy.PermanentTaskLabel)
+            if(issue.SubTask == false && issue.Label != policy.AdvancedOptions.PermanentTaskLabel)
             {
                 if (issue.StatusCategory.name == "Done")
                 {
@@ -355,9 +355,9 @@ namespace JiraReporter
 
         public static void SetDisplayStatus(Issue issue, SourceControlLogReporter.Model.Policy policy)
         {
-            if (policy.AdditionalWorkflowStatuses != null)
+            if (policy.AdvancedOptions.WorkflowStatuses != null)
             {
-                if(policy.AdditionalWorkflowStatuses.Exists(s=>s == issue.Status))
+                if (policy.AdvancedOptions.WorkflowStatuses.Exists(s => s == issue.Status))
                     issue.DisplayStatus = true;
             }
         }

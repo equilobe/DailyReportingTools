@@ -20,6 +20,7 @@ namespace JiraReporter
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
+            policy.SetDefaultProperties();
             LoadReportDates(policy, options);
             policy.SetPermanentTaskLabel();
             if (RunReport(policy, options))
@@ -32,7 +33,7 @@ namespace JiraReporter
         {
             var today = DateTime.Now.ToOriginalTimeZone().Date;
 
-            if (policy.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
+            if (policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
                 return false;
 
             if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)
@@ -47,7 +48,7 @@ namespace JiraReporter
         private static bool CheckDayFromOverrides(SourceControlLogReporter.Model.Policy policy)
         {
             if (policy.CurrentOverride != null && policy.CurrentOverride.NonWorkingDays != null)
-                return policy.CurrentOverride.NonWorkingDays.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
+                return policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
             return false;
         }
 
