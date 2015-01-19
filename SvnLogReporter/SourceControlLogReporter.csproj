@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="RazorEngine\ExtendedTemplateBase.cs" />
     <Compile Include="ReportBase.cs" />
+    <Compile Include="ReportDateFormatter.cs" />
     <Compile Include="ReportEmailer.cs" />
     <Compile Include="Reporter.cs" />
     <Compile Include="SvnNotAvailableException.cs" />

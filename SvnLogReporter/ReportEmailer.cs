@@ -100,13 +100,10 @@ namespace SourceControlLogReporter
         public virtual string GetReportSubject(string reportPath)
         {
             string subject = string.Empty;
-            if (!policy.AdvancedOptions.NoDraft)
-                subject += "DRAFT ";
-            subject += policy.AdvancedOptions.ReportTitle + " for ";
-            if ((options.ToDate - options.FromDate).Days > 1)
-                return subject + " " + options.FromDate.ToString("ddd, dd MMM") + " - " + options.ToDate.AddDays(-1).ToString("ddd, dd MMM");
-            else
-                return subject + " " + options.FromDate.ToString("ddd, dd MMM yyyy");
+            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+
+            return subject;
         }
 
         public void MoveToSent(string path)

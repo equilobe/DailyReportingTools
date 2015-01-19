@@ -30,5 +30,16 @@ namespace JiraReporter.Model
                 return PullRequests.FindAll(p => p.TaskSynced == false);
             }
         }
+
+        public virtual string GetReportTitle()
+        {
+            var title = string.Empty;
+            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
+            if (!Policy.AdvancedOptions.NoDraft)
+                title += "DRAFT | ";
+            title += Policy.ProjectName + " Daily Report | " + reportDate;
+
+            return title;
+        }
     }
 }

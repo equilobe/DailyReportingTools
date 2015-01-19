@@ -73,15 +73,15 @@ namespace JiraReporter
         public override string GetReportSubject(string reportPath)
         {
             string subject = string.Empty;
+
             if (!policy.AdvancedOptions.NoDraft)
-                subject += "DRAFT ";
+                subject += "DRAFT | ";
             if (!policy.AdvancedOptions.NoIndividualDraft)
-                subject += Author.Name + " ";
-            subject += policy.ProjectKey + " Daily Report ";
-            if ((options.ToDate - options.FromDate).Days > 1)
-                return subject + " " + options.FromDate.ToString("ddd, dd MMM") + " - " + options.ToDate.AddDays(-1).ToString("ddd, dd MMM");
-            else
-                return subject + " " + options.FromDate.ToString("ddd, dd MMM yyyy");
+                subject += Author.Name + " | ";
+            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+
+            return subject;
         }
     }
 }
