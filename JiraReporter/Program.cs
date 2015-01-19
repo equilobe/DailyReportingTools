@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using JiraReporter.JiraModels;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;
@@ -20,9 +21,10 @@ namespace JiraReporter
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
+            var project = RestApiRequests.GetProject(policy);
+            SetProjectInfo(policy, project);
             policy.SetDefaultProperties();
             LoadReportDates(policy, options);
-            policy.SetPermanentTaskLabel();
             if (RunReport(policy, options))
                 RunReportTool(args, policy, options);
             else
@@ -97,6 +99,12 @@ namespace JiraReporter
             var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             options.LoadDates(policy);
+        }
+
+        private static void SetProjectInfo(SourceControlLogReporter.Model.Policy policy, Project project)
+        {
+            policy.ProjectName = project.Name;
+            policy.ProjectKey = project.Key;
         }
     }
 }

@@ -44,6 +44,7 @@ namespace SourceControlLogReporter.Model
         public string Password { get; set; }
         public string SharedSecret { get; set; }
         public string ProjectKey { get; set; } // check for id 
+        public int ProjectId { get; set; }
         public string ReportTime { get; set; }
 
         [XmlIgnore]
@@ -76,12 +77,12 @@ namespace SourceControlLogReporter.Model
 
         public List<Month> MonthlyOptions { get; set; }
 
-        public SourceControl SourceControl { get; set; }
+        public SourceControlOptions SourceControlOptions { get; set; }
 
         public List<User> UserOptions { get; set; }
 
         public GeneratedProperties GeneratedProperties { get; set; }
-       
+
         [XmlIgnore]
         public Month CurrentOverride
         {
@@ -150,17 +151,29 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void SetPermanentTaskLabel()
+        public void SetDefaultProperties()
         {
-            this.AdvancedOptions.PermanentTaskLabel = this.AdvancedOptions.PermanentTaskLabel.ToLower();
+            SetReportTitle();
+            SetRootPath();
+            SetPermanentTaskLabel();
         }
 
-        public void SetDefaultProperties()
+        private void SetRootPath()
+        {
+            if (GeneratedProperties.RootPath == null)
+                GeneratedProperties.RootPath = Path.GetFullPath(ProjectName);
+        }
+
+        private void SetReportTitle()
         {
             if (AdvancedOptions.ReportTitle == null)
                 AdvancedOptions.ReportTitle = ProjectName + " Daily Report";
-            if (GeneratedProperties.RootPath == null)
-                GeneratedProperties.RootPath = Path.GetFullPath(ProjectName);
+        }
+
+        private void SetPermanentTaskLabel()
+        {
+            if (AdvancedOptions.PermanentTaskLabel != null)
+                AdvancedOptions.PermanentTaskLabel = AdvancedOptions.PermanentTaskLabel.ToLower();
         }
     }
 }

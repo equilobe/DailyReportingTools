@@ -19,7 +19,7 @@ namespace JiraReporter
 
         public static SourceControlLogReporter.Model.Log GetSourceControlLog(Policy policy, Options options)
         {
-            var processors = SourceControlProcessor.Processors[policy.SourceControl.Type](policy, options);
+            var processors = SourceControlProcessor.Processors[policy.SourceControlOptions.Type](policy, options);
             var log = processors.CreateLog();
             return log;
         }

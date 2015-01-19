@@ -355,9 +355,9 @@ namespace JiraReporter
 
         public static void SetDisplayStatus(Issue issue, SourceControlLogReporter.Model.Policy policy)
         {
-            if (policy.AdvancedOptions.WorkflowStatuses != null)
+            if (policy.AdvancedOptions.AdditionalWorkflowStatuses != null)
             {
-                if (policy.AdvancedOptions.WorkflowStatuses.Exists(s => s == issue.Status))
+                if (policy.AdvancedOptions.AdditionalWorkflowStatuses.Exists(s => s == issue.Status))
                     issue.DisplayStatus = true;
             }
         }

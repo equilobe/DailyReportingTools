@@ -94,7 +94,7 @@
     <Compile Include="Model\Policy.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="LogProcessor.cs" />
-    <Compile Include="Model\SourceControl.cs" />
+    <Compile Include="Model\SourceControlOptions.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />

@@ -18,6 +18,7 @@ using CommandLine.Text;
 using Octokit;
 using Octokit.Internal;
 using System.Globalization;
+using SourceControlLogReporter;
 
 namespace SourceControlLogReporter
 {
@@ -59,7 +60,7 @@ namespace SourceControlLogReporter
             Policy p = Policy.CreateFromFile(options.PolicyPath);
             options.LoadDates(p);
 
-            var processor = Processors[p.SourceControl.Type](p, options);
+            var processor = Processors[p.SourceControlOptions.Type](p, options);
             var report = processor.GenerateReport();
             Reporter.WriteReport(p, report, processor.PathToLog);
 

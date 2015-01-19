@@ -262,8 +262,8 @@ namespace JiraReporter
         {
             if (commits != null)
                 foreach (var commit in commits)
-                    if (commit.Entry.Link == null && policy.SourceControl.CommitUrl != null)
-                        commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
+                    if (commit.Entry.Link == null && policy.SourceControlOptions.CommitUrl != null)
+                        commit.Entry.Link = policy.SourceControlOptions.CommitUrl + commit.Entry.Revision;
         }
 
         private static void SetAuthorInitials(Author author)

@@ -29,6 +29,13 @@ namespace JiraReporter
                 return Deserialization.JsonDeserialize<T>(results);
         }
 
+        public static JiraReporter.JiraModels.Project GetProject(Policy policy)
+        {
+            var request = new RestRequest(ApiUrls.Project(policy.ProjectId.ToString()), Method.GET);
+
+            return ResolveRequest<JiraReporter.JiraModels.Project>(policy, request);
+        }
+
         public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
         {
             var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);

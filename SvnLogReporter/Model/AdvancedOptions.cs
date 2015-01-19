@@ -25,18 +25,18 @@ namespace SourceControlLogReporter.Model
         [DefaultValue("Reopened")]
         public string ReopenedStatus { get; set; }
 
-        public string AdditionalWorkflowStatuses { get; set; }
+        public List<string> AdditionalWorkflowStatuses { get; set; }
 
-        public List<string> WorkflowStatuses
-        {
-            get
-            {
-                if (AdditionalWorkflowStatuses == null)
-                    return null;
+        //public List<string> WorkflowStatuses
+        //{
+        //    get
+        //    {
+        //        if (AdditionalWorkflowStatuses == null)
+        //            return null;
 
-                return AdditionalWorkflowStatuses.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            }
-        }
+        //        return AdditionalWorkflowStatuses.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //    }
+        //}
 
         [DefaultValue("Saturday Sunday")]
         public string WeekendDays { get; set; }
@@ -72,6 +72,8 @@ namespace SourceControlLogReporter.Model
             PermanentTaskLabel = "permanent";
             WeekendDays = "Saturday Sunday";
             ReopenedStatus = "Reopened";
+            if (NoDraft)
+                NoIndividualDraft = false;
         }
     }
 }

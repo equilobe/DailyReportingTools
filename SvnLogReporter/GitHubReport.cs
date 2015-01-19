@@ -1,6 +1,7 @@
 ﻿using Octokit;
 using Octokit.Internal;
 using RazorEngine;
+using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace SourceControlLogReporter
 
         public override Log CreateLog()
         {
-            var pullRequests = GetPullRequests(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName).ToList();
+            var pullRequests = GetPullRequests(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName).ToList();
             var commits = GetReportCommits();
             return LoadLog(commits, pullRequests);
         }
@@ -69,7 +70,7 @@ namespace SourceControlLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControlOptions.Username, Policy.SourceControlOptions.Password))));
             return connectionAll.GetAll<GitHubCommit>(ApiUrls.RepositoryCommitsBranchDate(owner, name, sinceDate, untilDate, branch)).Result;
         }
 
@@ -77,7 +78,7 @@ namespace SourceControlLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControlOptions.Username, Policy.SourceControlOptions.Password))));
             return connectionAll.GetAll<Branch>(ApiUrls.RepoBranches(owner, name)).Result;
         }
 
@@ -85,7 +86,7 @@ namespace SourceControlLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControlOptions.Username, Policy.SourceControlOptions.Password))));
             return connectionAll.GetAll<PullRequest>(ApiUrls.PullRequests(owner,name)).Result;
         }
 
@@ -109,14 +110,14 @@ namespace SourceControlLogReporter
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
+            ApiConnection connectionAll = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControlOptions.Username, Policy.SourceControlOptions.Password))));
             return connectionAll.GetAll<Octokit.User>(ApiUrls.RepositoryContributors(owner, name)).Result;
         }
 
         public Octokit.User GetUserInfo(string username)
         {
             Ensure.ArgumentNotNullOrEmptyString(username, "username");
-            ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControl.Username, Policy.SourceControl.Password))));
+            ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControlOptions.Username, Policy.SourceControlOptions.Password))));
             return connection.Get<Octokit.User>(ApiUrls.User(username)).Result;
         }
 
@@ -146,7 +147,7 @@ namespace SourceControlLogReporter
         {
             string fromDate = Options.DateToISO(Options.FromDate.ToGithubTime());
             string toDate = Options.DateToISO(Options.ToDate.ToGithubTime());
-            var commits = ConcatCommits(Policy.SourceControl.RepoOwner, Policy.SourceControl.RepoName, fromDate, toDate);
+            var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
             commits = RemoveDuplicateCommits(commits);
 
             AddName(commits);
