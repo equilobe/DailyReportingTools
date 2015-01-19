@@ -2,25 +2,39 @@
     var day = string.Empty;
     var imgSrc = string.Empty;
 }
-@if ((Model.Options.ToDate - Model.Options.FromDate).TotalDays > 1)
-{
-    day = "Day avg.";
-}
-else
-{
-    day = Model.Options.FromDate.DayOfWeek.ToString();
-}
-<div style="margin-top:20px; font-size:12px">
-    @if ((Model.Options.ToDate - Model.Options.FromDate).Days > 1)
-    {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM") - @Model.Options.ToDate.AddDays(-1).ToString("dddd, dd MMMM")  </h2>
-    }
-    else
-    {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM yyyy") </h2>
-    }
 
-    <div>
+
+<div style="margin-top:20px; font-size:12px">
+    <table>
+        <tbody>
+            <tr>
+                @if (!Model.Policy.AdvancedOptions.NoDraft)
+                {
+                    <td style="border-right:1px solid black; display:inline-block; line-height:20px; height:20px">
+                        <h3 style="color:black; padding-right:10px;; display:inline">DRAFT</h3>
+                    </td>
+                }
+                <td style="border-right:1px solid black; display:inline-block; line-height:20px; height:20px">
+                    <h3 style="color:black; padding-left:10px; padding-right:10px; display:inline"> @Model.Author.Name </h3>
+                </td>
+                <td style="border-right:1px solid black; display:inline-block; line-height:20px; height:20px">
+                    <h3 style="color:black; padding-left:10px; padding-right:10px; display:inline">@Model.Policy.ProjectKey Daily Report</h3>
+                </td>
+                <td style="display:inline-block; line-height:20px; height:20px" ">
+                    @if ((Model.Options.ToDate - Model.Options.FromDate).Days > 1)
+                    {
+                        <h3 style="color:black; padding-left:10px; display:inline"> @Model.Options.FromDate.ToString("ddd, dd MMM") - @Model.Options.ToDate.AddDays(-1).ToString("ddd, dd MMM")  </h3>
+                    }
+                    else
+                    {
+                        <h3 style="color:black; padding-left:10px; display:inline"> @Model.Options.FromDate.ToString("ddd, dd MMM yyyy") </h3>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:20px">
         @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
         {
             <table style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
@@ -104,7 +118,6 @@ else
         @if (Model.Author.DayLogs.Count > 0 || Model.Author.InProgressTasks.Count > 0 || Model.Author.OpenTasks.Count > 0)
         {
         <div style="margin-top:40px;">
-            <h1 style="color:black; line-height:1.4em">@Model.Author.Name</h1>
             @if (Model.Author.DayLogs.Count > 0)
             {
                 foreach (var dayLog in Model.Author.DayLogs)
