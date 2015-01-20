@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using AnotherJiraRestClient;
-using AnotherJiraRestClient.JiraModel;
 
 namespace JiraReporter.Model
 {
@@ -37,7 +35,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string LoggedAuthor { get; set; }
         [XmlIgnore]
-        public AnotherJiraRestClient.Priority Priority { get; set; }
+        public Priority Priority { get; set; }
         [XmlIgnore]
         public int RemainingEstimateSeconds { get; set; }
         [XmlIgnore]
@@ -83,7 +81,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public DateTime UpdatedDate { get; set; }
         [XmlIgnore]
-        public List<AnotherJiraRestClient.Subtask> Subtasks { get; set; }
+        public List<Subtask> Subtasks { get; set; }
         [XmlIgnore]
         public List<Issue> SubtasksIssues { get; set; }
         [XmlIgnore]

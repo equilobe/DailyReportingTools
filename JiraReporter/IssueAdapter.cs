@@ -81,13 +81,13 @@ namespace JiraReporter
         {
             foreach (var issue in timesheet.Worklog.Issues)
             {
-                var jiraIssue = new AnotherJiraRestClient.Issue();
+                var jiraIssue = new JiraIssue();
                 jiraIssue = RestApiRequests.GetIssue(issue.Key, policy);
                 SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
             }
         }
 
-        public static void SetIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, JiraIssue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             SetGenericIssue(issue, policy, jiraIssue, timesheet, pullRequests);
             if (issue.SubTask == true)
@@ -99,7 +99,7 @@ namespace JiraReporter
                 SetSubtasksIssues(issue, policy, timesheet, pullRequests);
         }
 
-        public static void SetGenericIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetGenericIssue(Issue issue, SourceControlLogReporter.Model.Policy policy, JiraIssue jiraIssue, Timesheet timesheet, List<PullRequest> pullRequests)
         {    
             if (issue.Entries == null)
                 issue.Entries = new List<Entries>();
@@ -145,7 +145,7 @@ namespace JiraReporter
 
         public static void SetSubtasksIssues(Issue issue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
-            var jiraIssue = new AnotherJiraRestClient.Issue();
+            var jiraIssue = new JiraIssue();
             issue.SubtasksIssues = new List<Issue>();
             foreach (var task in issue.Subtasks)
             {
@@ -183,7 +183,7 @@ namespace JiraReporter
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
-        private static void SetLabel(Issue issue, SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue)
+        private static void SetLabel(Issue issue, SourceControlLogReporter.Model.Policy policy, JiraIssue jiraIssue)
         {
             foreach (var label in jiraIssue.fields.labels)
                 if (label == policy.PermanentTaskLabel)
@@ -195,7 +195,7 @@ namespace JiraReporter
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
 
-        public static void SetParent(Issue issue, AnotherJiraRestClient.Issue jiraIssue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
+        public static void SetParent(Issue issue, JiraIssue jiraIssue, SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, List<PullRequest> pullRequests)
         {
             issue.Parent = new Issue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(issue.Parent.Key, policy);

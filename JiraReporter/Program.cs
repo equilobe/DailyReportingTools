@@ -22,10 +22,11 @@ namespace JiraReporter
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             LoadReportDates(policy, options);
             policy.SetPermanentTaskLabel();
+
             if (RunReport(policy, options))
                 RunReportTool(args, policy, options);
             else
-                Console.WriteLine("Unable to run report tool due to policy settings or final report already generated.");
+                throw new JiraException("\r\nUnable to run report tool due to policy settings or final report already generated.\r\n");
         }
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
@@ -97,5 +98,13 @@ namespace JiraReporter
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             options.LoadDates(policy);
         }
+    }
+
+    [Serializable()]
+    public class JiraException : Exception
+    {
+        public JiraException() : base() { }
+        public JiraException(string message) : base(message) { }
+        public JiraException(string message, Exception inner) : base(message, inner) { }
     }
 }
