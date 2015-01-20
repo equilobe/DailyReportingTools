@@ -16,7 +16,7 @@ namespace DailyReportWeb.Controllers.Api
         {
             return new PolicySummary[] 
             {
-                new PolicySummary { Id= "asdf1", ProjectName="Alyssa", ReportTime = "09:00 AM" },
+                new PolicySummary { Id= "asdf1", ProjectName="Alyssa", ReportTime = "10:00 AM" },
                 new PolicySummary { Id= "asdf2", ProjectName="Board Prospects" },
                 new PolicySummary { Id= "asdf3", ProjectName="Daily Report Tool ", ReportTime = "09:00 AM" },
             };

@@ -2,7 +2,7 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="policyEditorApp">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +12,11 @@
     </title>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
     @Styles.Render("~/Content/maincss")
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/app/js/policyEditorApp.js"></script>
 </head>
 
-<body>
+<body ng-controller="policyListPage">
     <div id="jumbo" class="jumbotron">
         <div class="container">
             <h1>
@@ -39,48 +41,15 @@
                     Options
                 </th>
             </tr>
-            <tr>
+            <tr ng-repeat="policy in policyList">
                 <td>
-                    Alyssa
+                    {{policy.ProjectName}}
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
+                    <input type="text" class="form-control" placeholder="9:30 AM" ng-model="policy.ReportTime" />
                 </td>
                 <td>
-                    <a href="~/Policy/Details" class="btn btn-default">Details</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Alyssa
-                </td>
-                <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
-                </td>
-                <td>
-                    <button class="btn btn-default">Details</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Alyssa
-                </td>
-                <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
-                </td>
-                <td>
-                    <button class="btn btn-default">Details</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Alyssa
-                </td>
-                <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
-                </td>
-                <td>
-                    <button class="btn btn-default">Details</button>
+                    <a href="~/Policy/Details/{{policy.Id}}" class="btn btn-default">Details</a>
                 </td>
             </tr>
         </table>

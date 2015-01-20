@@ -10,8 +10,9 @@ namespace DailyReportWeb
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            GlobalConfiguration.Configuration.InitApiRoutes();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            RouteTable.Routes.RegisterRoutes();
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }
