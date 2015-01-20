@@ -70,7 +70,6 @@ namespace SourceControlLogReporter.Model
 
         //TODO: delete following 
         public string TargetGroup { get; set; }
-        public bool IsWeekendReportActive { get; set; }
 
         public AdvancedOptions AdvancedOptions { get; set; }
 

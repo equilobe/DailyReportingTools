@@ -38,7 +38,7 @@ namespace JiraReporter
             if (policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
                 return false;
 
-            if (policy.IsWeekendReportActive == true && options.IsWeekend() == true)
+            if (options.IsWeekend() == true)
                 return false;
 
             if (CheckDayFromOverrides(policy) == true)
