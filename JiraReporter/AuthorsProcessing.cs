@@ -13,29 +13,49 @@ namespace JiraReporter
 {
     class AuthorsProcessing
     {
-        public static List<Author> GetAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection, SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
+        public static List<Author> GetAuthors(SprintTasks report, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<Commit> commits)
         {
-            var reportAuthors = GetAllAuthors(timesheetCollection);
-
-            var authors = new List<Author>();
+            //var reportAuthors = GetAllAuthors(timesheetCollection);
             var users = RestApiRequests.GetUsers(policy);
             users = RemoveIgnoredUsers(users, policy);
+            var authors = AuthorsWithTimesheet(users, options, policy);
 
-            foreach (var user in users)
-            {
-                var author = CreateAuthor(user);
-                if (reportAuthors.Contains(user.displayName))
-                {
-                    var issues = GetAuthorIssuesFromTimesheet(timesheetCollection[TimesheetType.ReportTimesheet], user.displayName);
-                    author.Issues = issues;
-                }
+            //foreach (var user in users)
+            //{
+            //    var author = new Author(user);
+            //    if (reportAuthors.Contains(user.displayName))
+            //    {
+            //        var issues = GetAuthorIssuesFromTimesheet(timesheetCollection[TimesheetType.ReportTimesheet], user.displayName);
+            //        author.Issues = issues;
+            //    }
 
-                SetAuthor(report, author, policy, commits, options, timesheetCollection);
-                authors.Add(author);
-            }
+            //    SetAuthor(report, author, policy, commits, options, timesheetCollection);
+            //    authors.Add(author);
+            //}
 
-            authors.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
+            //authors.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
             return authors;
+        }
+
+        private static List<Author> AuthorsWithTimesheet(List<JiraUser> users, SourceControlLogReporter.Options options, SourceControlLogReporter.Model.Policy policy)
+        {
+            var authors = new List<Author>();
+            var sprint = ReportGenerator.GenerateSprint(policy);
+            foreach (var user in users)
+                authors.Add(GetAuthorWithTimesheet(user, options, policy, sprint));
+
+            return authors;
+        }
+
+        private static Author GetAuthorWithTimesheet(JiraUser user, SourceControlLogReporter.Options options, SourceControlLogReporter.Model.Policy policy, Sprint sprint)
+        {
+            var author = new Author(user);
+            author.CurrentTimesheet = RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1), author.Username);
+            if(sprint != null)
+                author.SprintTimesheet = RestApiRequests.GetTimesheet(policy, sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone(), author.Username);
+            author.MonthTimesheet = RestApiRequests.GetTimesheet(policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), author.Username);
+
+            return author;
         }
 
         private static List<JiraUser> RemoveIgnoredUsers(List<JiraUser> users, SourceControlLogReporter.Model.Policy policy)
@@ -45,22 +65,10 @@ namespace JiraReporter
                 users.RemoveAll(u => policy.UserOptions.Find(user => user.JiraUserKey == u.key).Ignored == true);
                 return users;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return users;
             }
-        }
-
-        private static Author CreateAuthor(JiraUser user)
-        {
-            var author = new Author
-            {
-                Name = user.displayName,
-                Username = user.key,
-                AvatarLink = user.avatarUrls.Big,
-                EmailAdress = user.emailAddress
-            };
-            return author;
         }
 
         private static List<string> GetAllAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection)

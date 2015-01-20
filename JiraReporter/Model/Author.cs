@@ -150,6 +150,9 @@ namespace JiraReporter.Model
                 return MonthChartPixelWidth.ToString() + "px";
             }
         }
+        public Timesheet CurrentTimesheet { get; set; }
+        public Timesheet MonthTimesheet { get; set; }
+        public Timesheet SprintTimesheet { get; set; }
 
         public List<Issue> Issues { get; set; }
         public List<Issue> InProgressTasks { get; set; }
@@ -177,5 +180,18 @@ namespace JiraReporter.Model
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
         public Image Image { get; set; }
+
+        public Author()
+        {
+
+        }
+
+        public Author(JiraUser user)
+        {
+            Name = user.displayName;
+            EmailAdress = user.emailAddress;
+            Username = user.key;
+            AvatarLink = user.avatarUrls.Big;
+        }
     }
 }
