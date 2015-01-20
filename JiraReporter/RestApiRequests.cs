@@ -49,8 +49,8 @@ namespace JiraReporter
 
         private static void validateResponse(IRestResponse response)
         {
-            if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest)
-                throw new JiraException(string.Format("\r\nRestSharp response status: {0}\r\n- HTTP response: {1}\r\n", response.ResponseStatus, response.StatusDescription));
+            if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
+                throw new JiraException(string.Format("\r\nRestSharp status: {0}\r\n- HTTP response: {1}\r\n", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
         }
 
         public static JiraModels.Project GetProject(Policy policy)
