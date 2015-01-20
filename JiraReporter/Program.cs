@@ -103,8 +103,8 @@ namespace JiraReporter
 
         private static void SetProjectInfo(SourceControlLogReporter.Model.Policy policy, Project project)
         {
-            policy.ProjectName = project.Name;
-            policy.ProjectKey = project.Key;
+            policy.GeneratedProperties.ProjectName = project.Name;
+            policy.GeneratedProperties.ProjectKey = project.Key;
         }
     }
 }

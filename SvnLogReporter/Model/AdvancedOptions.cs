@@ -72,8 +72,6 @@ namespace SourceControlLogReporter.Model
             PermanentTaskLabel = "permanent";
             WeekendDays = "Saturday Sunday";
             ReopenedStatus = "Reopened";
-            if (NoDraft)
-                NoIndividualDraft = false;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace JiraReporter
 
         public static List<JiraUser> GetUsers(Policy policy)
         {
-            var request = new RestRequest(ApiUrls.Users(policy.ProjectKey), Method.GET);
+            var request = new RestRequest(ApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(policy, request);
         }
@@ -81,8 +81,8 @@ namespace JiraReporter
         public static Issues GetSprintTasks(Policy policy)
         {
             var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
-            
-            return client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.ProjectKey), 0, 250);
+
+            return client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.GeneratedProperties.ProjectKey), 0, 250);
         }
 
         public static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)

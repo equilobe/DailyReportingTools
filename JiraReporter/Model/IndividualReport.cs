@@ -23,7 +23,7 @@ namespace JiraReporter.Model
         {
             var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
 
-            return "DRAFT | " + Author.Name + " | " + Policy.ProjectName + " Daily Report | " + reportDate;
+            return "DRAFT | " + Author.Name + " | " + Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
         }
     }
 }

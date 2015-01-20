@@ -37,7 +37,7 @@ namespace JiraReporter.Model
             var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
             if (!Policy.AdvancedOptions.NoDraft)
                 title += "DRAFT | ";
-            title += Policy.ProjectName + " Daily Report | " + reportDate;
+            title += Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
 
             return title;
         }

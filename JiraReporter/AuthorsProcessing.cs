@@ -42,7 +42,7 @@ namespace JiraReporter
         {
             try
             {
-                users.RemoveAll(u => policy.UserOptions.Find(user => user.JiraUserKey == u.displayName).Ignored == true);
+                users.RemoveAll(u => policy.UserOptions.Find(user => user.JiraUserKey == u.key).Ignored == true);
                 return users;
             }
             catch(Exception)
@@ -234,13 +234,24 @@ namespace JiraReporter
         {
             var find = new List<Commit>();
             author.Commits = new List<Commit>();
-            if (policy.Users.ContainsKey(author.Name))
-                if (policy.Users[author.Name] != "")
-                    find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
-            author.Commits = find;
+            author.Commits = GetSourceControlUsersCommits(policy, author, commits);
             SetCommitsLink(commits, policy);
             // IssueAdapter.AdjustIssueCommits(author);           
         }
+
+        private static List<Commit> GetSourceControlUsersCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
+        {
+            var commitsList = new List<Commit>();
+            if (policy.Users.ContainsKey(author.Username))
+                if (policy.Users[author.Username].Count > 0)
+                    foreach (var sourceControlUser in policy.Users[author.Username])
+                    {
+                        var userCommits = commits.FindAll(commit => commit.Entry.Author == sourceControlUser);
+                        commitsList = commitsList.Concat(userCommits).ToList();
+                    }
+            return commitsList;
+        }
+
         public static void SetAuthorDayLogs(Author author, SourceControlLogReporter.Options options)
         {
             author.DayLogs = new List<DayLog>();
