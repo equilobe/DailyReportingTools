@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SourceControlLogReporter.Model
 {
-    public class SourceControl
+    public class SourceControlOptions
     {
         public SourceControlType Type { get; set; }
         public string RepoOwner { get; set; }

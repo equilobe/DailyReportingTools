@@ -1,12 +1,30 @@
 <div style="margin-top:15px; font-size:12px; color:#000000;">
-    @if ((Model.Options.ToDate - Model.Options.FromDate).Days > 1)
-    {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM") - @Model.Options.ToDate.AddDays(-1).ToString("dddd, dd MMMM")  </h2>
-    }
-    else
-    {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM yyyy") </h2>
-    }
+    @*<table>
+        <tbody>
+            <tr>
+                @if (!Model.Policy.AdvancedOptions.NoDraft)
+                {
+                    <td style="border-right:1px solid black; display:inline-block; line-height:20px; height:20px">
+                        <h3 style="color:black; padding-right:10px;; display:inline">DRAFT</h3>
+                    </td>
+                }
+                <td style="border-right:1px solid black; display:inline-block; line-height:20px; height:20px"">
+                    <h3 style="color:black; padding-left:10px; padding-right:10px; display:inline">@Model.Policy.ProjectKey Daily Report</h3>
+                </td>
+                <td style="display:inline-block; line-height:20px; height:20px"">
+                    @if ((Model.Options.ToDate - Model.Options.FromDate).Days > 1)
+                    {
+                        <h3 style="color:black; padding-left:10px; display:inline"> @Model.Options.FromDate.ToString("ddd, dd MMM") - @Model.Options.ToDate.AddDays(-1).ToString("ddd, dd MMM")  </h3>
+                    }
+                    else
+                    {
+                        <h3 style="color:black; padding-left:10px; display:inline"> @Model.Options.FromDate.ToString("ddd, dd MMM yyyy") </h3>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>*@
+    <h3 style="color:black">@Model.Title</h3>
 
     @{
         var bold = "";

@@ -18,5 +18,12 @@ namespace JiraReporter.Model
             Policy = policy;
             Options = options;
         }
+
+        public override string GetReportTitle()
+        {
+            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
+
+            return "DRAFT | " + Author.Name + " | " + Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
+        }
     }
 }

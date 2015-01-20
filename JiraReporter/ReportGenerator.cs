@@ -35,9 +35,9 @@ namespace JiraReporter
                 SprintTasks = sprintTasks,
                 PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, timesheetCollection),
-                Title = policy.AdvancedOptions.ReportTitle
+                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, timesheetCollection)
             };
+            report.Title = report.GetReportTitle();
                          
             return report;
         }
@@ -51,9 +51,10 @@ namespace JiraReporter
                 Date = report.Date,
                 SprintTasks = report.SprintTasks,
                 Author = author,
-                Authors = report.Authors,
-                Title = report.Title
+                Authors = report.Authors
             };
+            individualReport.Title = individualReport.GetReportTitle();
+
             return individualReport;
         }
 

@@ -97,16 +97,13 @@ namespace SourceControlLogReporter
             return message;
         }
 
-        public string GetReportSubject(string reportPath)
+        public virtual string GetReportSubject(string reportPath)
         {
             string subject = string.Empty;
-            if (!policy.AdvancedOptions.NoDraft)
-                subject += "DRAFT ";
-            subject += policy.AdvancedOptions.ReportTitle + " for ";
-            if ((options.ToDate - options.FromDate).Days > 1)
-                return subject + " " + options.FromDate.ToString("dddd, dd MMMM") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM");
-            else
-                return subject + " " + options.FromDate.ToString("dddd, dd MMMM yyyy");
+            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+
+            return subject;
         }
 
         public void MoveToSent(string path)

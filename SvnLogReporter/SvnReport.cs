@@ -42,9 +42,9 @@ namespace SourceControlLogReporter
         private string GetCommandString()
         {
             return string.Format("svn log {0} --xml --username \"{1}\" --password \"{2}\" -r{{{3:yyyy-MM-ddTHH:mmZ}}}:{{{4:yyyy-MM-ddTHH:mmZ}}} > \"{5}\"",
-                            Policy.SourceControl.RepoUrl,
-                            Policy.SourceControl.Username,
-                            Policy.SourceControl.Password,
+                            Policy.SourceControlOptions.RepoUrl,
+                            Policy.SourceControlOptions.Username,
+                            Policy.SourceControlOptions.Password,
                             Options.FromDate,
                             Options.ToDate,
                             PathToLog);

@@ -21,7 +21,7 @@ namespace SourceControlLogReporter.Model
                 if (AdvancedOptions.NoDraft)
                     return null;
 
-                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
@@ -34,7 +34,7 @@ namespace SourceControlLogReporter.Model
                 if (AdvancedOptions.NoDraft)
                     return null;
 
-                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
@@ -43,7 +43,8 @@ namespace SourceControlLogReporter.Model
         public string Username { get; set; }
         public string Password { get; set; }
         public string SharedSecret { get; set; }
-        public string ProjectKey { get; set; } // check for id 
+       
+        public int ProjectId { get; set; }
         public string ReportTime { get; set; }
 
         [XmlIgnore]
@@ -69,19 +70,17 @@ namespace SourceControlLogReporter.Model
 
         //TODO: delete following 
         public string TargetGroup { get; set; }
-        public string ProjectName { get; set; }
-        public bool IsWeekendReportActive { get; set; }
 
         public AdvancedOptions AdvancedOptions { get; set; }
 
         public List<Month> MonthlyOptions { get; set; }
 
-        public SourceControl SourceControl { get; set; }
+        public SourceControlOptions SourceControlOptions { get; set; }
 
         public List<User> UserOptions { get; set; }
 
         public GeneratedProperties GeneratedProperties { get; set; }
-       
+
         [XmlIgnore]
         public Month CurrentOverride
         {
@@ -107,11 +106,11 @@ namespace SourceControlLogReporter.Model
         }
 
 
-        public IDictionary<string, string> Users
+        public IDictionary<string, List<string>> Users
         {
             get
             {
-                return UserOptions.ToDictionary(d => d.JiraUserKey, d => d.SourceControlAuthor);
+                return UserOptions.ToDictionary(d => d.JiraUserKey, d => d.SourceControlUsernames);
             }
         }
 
@@ -150,17 +149,36 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void SetPermanentTaskLabel()
-        {
-            this.AdvancedOptions.PermanentTaskLabel = this.AdvancedOptions.PermanentTaskLabel.ToLower();
-        }
-
         public void SetDefaultProperties()
         {
-            if (AdvancedOptions.ReportTitle == null)
-                AdvancedOptions.ReportTitle = ProjectName + " Daily Report";
+            SetReportTitle();
+            SetRootPath();
+            SetPermanentTaskLabel();
+            SetDraft();
+        }
+
+        private void SetDraft()
+        {
+            if (AdvancedOptions.NoDraft)
+                AdvancedOptions.NoIndividualDraft = true;
+        }
+
+        private void SetRootPath()
+        {
             if (GeneratedProperties.RootPath == null)
-                GeneratedProperties.RootPath = Path.GetFullPath(ProjectName);
+                GeneratedProperties.RootPath = Path.GetFullPath(GeneratedProperties.ProjectName);
+        }
+
+        private void SetReportTitle()
+        {
+            if (AdvancedOptions.ReportTitle == null)
+                AdvancedOptions.ReportTitle = GeneratedProperties.ProjectName + " Daily Report";
+        }
+
+        private void SetPermanentTaskLabel()
+        {
+            if (AdvancedOptions.PermanentTaskLabel != null)
+                AdvancedOptions.PermanentTaskLabel = AdvancedOptions.PermanentTaskLabel.ToLower();
         }
     }
 }

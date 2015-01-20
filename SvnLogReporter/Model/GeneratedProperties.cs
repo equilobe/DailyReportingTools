@@ -13,6 +13,9 @@ namespace SourceControlLogReporter.Model
         public DateTime LastReportSentDate { get; set; }
         public string UniqueProjectKey { get; set; }
         public string RootPath { get; set; }
+        public string ProjectKey { get; set; }
+        public string ProjectName { get; set; }
+
         [XmlIgnore]
         public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }
         [XmlIgnore]

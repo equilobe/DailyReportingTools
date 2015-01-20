@@ -94,7 +94,7 @@
     <Compile Include="Model\Policy.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="LogProcessor.cs" />
-    <Compile Include="Model\SourceControl.cs" />
+    <Compile Include="Model\SourceControlOptions.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="RazorEngine\ExtendedTemplateBase.cs" />
     <Compile Include="ReportBase.cs" />
+    <Compile Include="ReportDateFormatter.cs" />
     <Compile Include="ReportEmailer.cs" />
     <Compile Include="Reporter.cs" />
     <Compile Include="SvnNotAvailableException.cs" />
