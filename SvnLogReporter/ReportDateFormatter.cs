@@ -11,7 +11,7 @@ namespace SourceControlLogReporter
 
         public static string GetReportDate(DateTime fromDate, DateTime toDate)
         {
-            if ((toDate - fromDate).Days > 1)
+            if ((toDate - fromDate).Days == 1)
                 return fromDate.ToString("ddd, dd MMM yyyy");
 
             return fromDate.ToString("ddd, dd MMM yyyy") + " - " + toDate.AddDays(-1).ToString("ddd, dd MMM yyyy");
