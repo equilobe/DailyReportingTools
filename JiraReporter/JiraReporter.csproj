@@ -71,6 +71,7 @@
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="JiraModels\Avatar.cs" />
     <Compile Include="JiraModels\Filter.cs" />
+    <Compile Include="JiraModels\Project.cs" />
     <Compile Include="JiraModels\RapidView.cs" />
     <Compile Include="JiraModels\SprintsData.cs" />
     <Compile Include="JiraModels\View.cs" />
@@ -92,7 +93,7 @@
     <Compile Include="ReportEmailJira.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
-    <Compile Include="JiraModels\User.cs" />
+    <Compile Include="JiraModels\JiraUser.cs" />
     <Compile Include="Model\Author.cs" />
     <Compile Include="Model\Entries.cs" />
     <Compile Include="Model\Issue.cs" />
@@ -116,7 +117,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <Content Include="Policies\DailyReportTool.xml" />
     <None Include="Views\confirmationButton.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -181,7 +181,9 @@
       <Name>SourceControlLogReporter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Policies\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -263,7 +263,7 @@ namespace JiraReporter.Model
         {
             get
             {
-                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
+                var days = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.MonthlyOptions);
                 var seconds = days * 28800;
                 return TimeFormatting.SetTimeFormat8Hour(seconds);
             }
@@ -321,19 +321,19 @@ namespace JiraReporter.Model
             SetDates(options);
             SetAllocatedTime();
 
-            var reportWorkingDays = GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.Overrides);
-            var monthWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.Overrides);
-            var monthWorkingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
-            var monthWorkingDaysLeft = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.Overrides);
+            var reportWorkingDays = GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.MonthlyOptions);
+            var monthWorkedDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.MonthlyOptions);
+            var monthWorkingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.MonthlyOptions);
+            var monthWorkingDaysLeft = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.MonthlyOptions);
             int sprintRemainingDays = 0;
             int sprintWorkedDays = 0;
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
             {
                 var sprintEndDate = timesheetCollection[TimesheetType.SprintTimesheet].EndDate.ToOriginalTimeZone().AddDays(-1);
                 var sprintStartDate = timesheetCollection[TimesheetType.SprintTimesheet].StartDate.ToOriginalTimeZone();
-                sprintRemainingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, Policy.Overrides);
-                sprintWorkingDays = GetWorkingDays(sprintStartDate, sprintEndDate, Policy.Overrides);
-                sprintWorkedDays = GetWorkingDays(sprintStartDate, DateTime.Now.ToOriginalTimeZone().AddDays(-1), policy.Overrides);
+                sprintRemainingDays = GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, Policy.MonthlyOptions);
+                sprintWorkingDays = GetWorkingDays(sprintStartDate, sprintEndDate, Policy.MonthlyOptions);
+                sprintWorkedDays = GetWorkingDays(sprintStartDate, DateTime.Now.ToOriginalTimeZone().AddDays(-1), policy.MonthlyOptions);
             }
             SetTimeWorked(timesheetCollection);
             SetMonthEstimatedValue(monthWorkingDays);
@@ -487,13 +487,13 @@ namespace JiraReporter.Model
                 SprintHourRate = (double)SprintTasksTimeLeftHours / sprintWorkingDaysLeft;
         }
 
-        public static int GetWorkingDays(DateTime startDate, DateTime endDate, List<Override> currentOverrides)
+        public static int GetWorkingDays(DateTime startDate, DateTime endDate, List<Month> currentOverrides)
         {
             DateTime dateIterator = startDate.Date;
             int days = 0;
             while (dateIterator <= endDate)
             {
-                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday && Override.SearchDateInOverrides(currentOverrides, dateIterator) == false)
+                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday && Month.SearchDateInOverrides(currentOverrides, dateIterator) == false)
                     days++;
                 dateIterator = dateIterator.AddDays(1);
             }
@@ -517,7 +517,7 @@ namespace JiraReporter.Model
         private void SetHealth(Dictionary<TimesheetType, Timesheet> timesheetCollection)
         {
             var healthInspector = new HealthInspector(Policy);
-            WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.Overrides), TotalTimeHours);
+            WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(AllocatedHoursPerDay * GetWorkingDays(FromDate, ToDate.AddDays(-1), Policy.MonthlyOptions), TotalTimeHours);
             if (timesheetCollection.TimesheetExists(TimesheetType.SprintTimesheet))
             {
                 DayHealth = healthInspector.GetDayHealth(AllocatedHoursPerDay, SprintHourRate);

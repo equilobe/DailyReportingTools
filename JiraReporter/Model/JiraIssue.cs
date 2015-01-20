@@ -92,7 +92,7 @@ namespace JiraReporter.Model
         public JiraAuthor assignee { get; set; }
         public List<object> attachment { get; set; }
         public int aggregatetimeestimate { get; set; }
-        public Project project { get; set; }
+        public JiraProject project { get; set; }
         public Parent parent { get; set; }
         public List<object> versions { get; set; }
         public string environment { get; set; }
@@ -236,7 +236,7 @@ namespace JiraReporter.Model
         public List<Worklog> worklogs { get; set; }
     }
 
-    public class Project
+    public class JiraProject
     {
         public string self { get; set; }
         public string id { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -11,17 +12,6 @@ namespace SourceControlLogReporter.Model
 {
     public class Policy
     {
-        string _rootPath = string.Empty;
-        public string RootPath { get { return Path.GetFullPath(_rootPath); } set { _rootPath = value; } }
-
-        [XmlIgnore]
-        public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }
-        [XmlIgnore]
-        public string LogArchivePath { get { return Path.Combine(RootPath, "LogArchive"); } }
-        [XmlIgnore]
-        public string ReportsPath { get { return Path.Combine(RootPath, "Reports"); } }
-        [XmlIgnore]
-        public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
         [XmlIgnore]
         public Uri DraftConfirmationUrl
         {
@@ -31,7 +21,7 @@ namespace SourceControlLogReporter.Model
                 if (AdvancedOptions.NoDraft)
                     return null;
 
-                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
@@ -44,19 +34,17 @@ namespace SourceControlLogReporter.Model
                 if (AdvancedOptions.NoDraft)
                     return null;
 
-                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + ProjectKey + UniqueProjectKey + "?date=" + now.ToString());
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
-        public DateTime LastReportSentDate { get; set; }
-
-        public string ReportTitle { get; set; }
-
+        //Base Properties
         public string BaseUrl { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string SharedSecret { get; set; }
-        public string ProjectKey { get; set; }
+       
+        public int ProjectId { get; set; }
         public string ReportTime { get; set; }
 
         [XmlIgnore]
@@ -74,40 +62,34 @@ namespace SourceControlLogReporter.Model
         public string Emails { get; set; }
         public string DraftEmails { get; set; }
 
+
+        [DefaultValue(0)]
         public int AllocatedHoursPerMonth { get; set; }
+        [DefaultValue(0)]
         public int AllocatedHoursPerDay { get; set; }
-
-        public AdvancedOptions AdvancedOptions { get; set; }
-
 
         //TODO: delete following 
         public string TargetGroup { get; set; }
-        public string ProjectName { get; set; }
 
-        public string PermanentTaskLabel { get; set; }
-        public List<string> AdditionalWorkflowStatuses { get; set; }
+        public AdvancedOptions AdvancedOptions { get; set; }
 
-        public string EmailSubject { get; set; }
+        public List<Month> MonthlyOptions { get; set; }
 
-        public string UniqueProjectKey { get; set; }
+        public SourceControlOptions SourceControlOptions { get; set; }
 
-        public string ReopenedStatus { get; set; }
-        public bool IsWeekendReportActive { get; set; }
+        public List<User> UserOptions { get; set; }
 
-        public SourceControl SourceControl { get; set; }
-        public List<User> AuthorsCorrelation { get; set; }
-        public List<string> IgnoredAuthors { get; set; }
+        public GeneratedProperties GeneratedProperties { get; set; }
 
-        public List<Override> Overrides { get; set; }
-
-        public Override CurrentOverride
+        [XmlIgnore]
+        public Month CurrentOverride
         {
             get
             {
-                if (Overrides == null)
+                if (MonthlyOptions == null)
                     return null;
 
-                return Overrides.Find(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
+                return MonthlyOptions.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
             }
         }
 
@@ -116,19 +98,19 @@ namespace SourceControlLogReporter.Model
         {
             get
             {
-                if (Overrides == null)
+                if (MonthlyOptions == null)
                     return false;
 
-                return Overrides.Exists(o => o.Month.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
+                return MonthlyOptions.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
             }
         }
 
 
-        public IDictionary<string, string> Users
+        public IDictionary<string, List<string>> Users
         {
             get
             {
-                return AuthorsCorrelation.ToDictionary(d => d.JiraAuthor, d => d.SourceControlAuthor);
+                return UserOptions.ToDictionary(d => d.JiraUserKey, d => d.SourceControlUsernames);
             }
         }
 
@@ -167,9 +149,36 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void SetPermanentTaskLabel()
+        public void SetDefaultProperties()
         {
-            this.PermanentTaskLabel = this.PermanentTaskLabel.ToLower();
+            SetReportTitle();
+            SetRootPath();
+            SetPermanentTaskLabel();
+            SetDraft();
+        }
+
+        private void SetDraft()
+        {
+            if (AdvancedOptions.NoDraft)
+                AdvancedOptions.NoIndividualDraft = true;
+        }
+
+        private void SetRootPath()
+        {
+            if (GeneratedProperties.RootPath == null)
+                GeneratedProperties.RootPath = Path.GetFullPath(GeneratedProperties.ProjectName);
+        }
+
+        private void SetReportTitle()
+        {
+            if (AdvancedOptions.ReportTitle == null)
+                AdvancedOptions.ReportTitle = GeneratedProperties.ProjectName + " Daily Report";
+        }
+
+        private void SetPermanentTaskLabel()
+        {
+            if (AdvancedOptions.PermanentTaskLabel != null)
+                AdvancedOptions.PermanentTaskLabel = AdvancedOptions.PermanentTaskLabel.ToLower();
         }
     }
 }

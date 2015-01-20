@@ -8,6 +8,10 @@ namespace JiraReporter
 {
     class ApiUrls
     {
+        public static string Project(string id)
+        {
+            return string.Format("/rest/api/2/project/{0}", id);
+        }
         public static string Timesheet(string targetGroup, string fromDate, string toDate)
         {
             return string.Format("/rest/timesheet-gadget/1.0/raw-timesheet.xml?targetGroup={0}&startDate={1}&endDate={2}", targetGroup, fromDate, toDate);

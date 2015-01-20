@@ -19,7 +19,7 @@ namespace SourceControlLogReporter
         [Option(null, "from", Required = false)]
         public string StringFromDate { get; set; }
         [Option(null, "noemail", Required = false, HelpText = "Don't email report")]
-        public bool NoEmail { get; set; }      
+        public bool NoEmail { get; set; }
 
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
@@ -127,10 +127,7 @@ namespace SourceControlLogReporter
 
         private void SetDates()
         {
-            if (Policy.LastReportSentDate == new DateTime())
-                if (Policy.IsWeekendReportActive && DateTime.Now.ToOriginalTimeZone().DayOfWeek == DayOfWeek.Monday)
-                    SetWeekendDates();
-                else
+            if (Policy.GeneratedProperties.LastReportSentDate == new DateTime())
                 {
                     FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date;
                     ToDate = DateTime.Now.ToOriginalTimeZone().Date;
@@ -139,15 +136,15 @@ namespace SourceControlLogReporter
                 SetDatesFromLastSentReport();
         }
 
-        private void SetWeekendDates()
-        {
-            FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
-            ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-        }
+        //private void SetWeekendDates()
+        //{
+        //    FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
+        //    ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+        //}
 
         private void SetDatesFromLastSentReport()
         {
-            FromDate = Policy.LastReportSentDate.Date;
+            FromDate = Policy.GeneratedProperties.LastReportSentDate.Date;
             ToDate = DateTime.Now.ToOriginalTimeZone().Date;
         }
 
@@ -162,7 +159,8 @@ namespace SourceControlLogReporter
 
         public bool IsWeekend()
         {
-            if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)
+            var today = DateTime.Now.ToOriginalTimeZone().DayOfWeek;
+            if (Policy.AdvancedOptions.WeekendDaysList.Exists(d => d == today))
                 return true;
             return false;
         }

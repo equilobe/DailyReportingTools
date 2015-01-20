@@ -69,5 +69,19 @@ namespace JiraReporter
                 foreach (var author in Authors)
                     AddAttachementImage(author.Image, author.Username, message);
         }
+
+        public override string GetReportSubject(string reportPath)
+        {
+            string subject = string.Empty;
+
+            if (!policy.AdvancedOptions.NoDraft)
+                subject += "DRAFT | ";
+            if (!policy.AdvancedOptions.NoIndividualDraft)
+                subject += Author.Name + " | ";
+            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+
+            return subject;
+        }
     }
 }

@@ -53,6 +53,13 @@ namespace JiraReporter
                 throw new JiraException(string.Format("\r\nRestSharp response status: {0}\r\n- HTTP response: {1}\r\n", response.ResponseStatus, response.StatusDescription));
         }
 
+        public static JiraModels.Project GetProject(Policy policy)
+        {
+            var request = new RestRequest(ApiUrls.Project(policy.ProjectId.ToString()), Method.GET);
+
+            return ResolveRequest<JiraModels.Project>(policy, request);
+        }
+
         public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
         {
             var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
@@ -62,7 +69,7 @@ namespace JiraReporter
 
         public static List<JiraUser> GetUsers(Policy policy)
         {
-            var request = new RestRequest(ApiUrls.Users(policy.ProjectKey), Method.GET);
+            var request = new RestRequest(ApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(policy, request);
         }
@@ -104,7 +111,7 @@ namespace JiraReporter
 
         public static JiraIssues GetSprintTasks(Policy policy)
         {
-            var request = GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.ProjectKey));
+            var request = GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.GeneratedProperties.ProjectKey));
 
             return ResolveJiraRequest<JiraIssues>(policy, request);
         }

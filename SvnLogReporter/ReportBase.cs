@@ -20,7 +20,7 @@ namespace SourceControlLogReporter
         {
             get
             {
-                return GetLogFilePath(Policy.LogPath, Options.ReportDate);
+                return GetLogFilePath(Policy.GeneratedProperties.LogPath, Options.ReportDate);
             }
         }
 
@@ -74,7 +74,7 @@ namespace SourceControlLogReporter
             var viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\ReportTemplate.cshtml";
             foreach (var report in reports)
             {
-                report.Title = Policy.ReportTitle;
+                report.Title = Policy.AdvancedOptions.ReportTitle;
                 reportContent += ProcessReport(report, viewPath);
             }
             return reportContent;
@@ -107,7 +107,7 @@ namespace SourceControlLogReporter
                     if (dayLog.LogEntries.Count > 0)
                         report = LogProcessor.GetReport(dayLog.LogEntries);
                     else
-                        report = new Report { ReportDate = dayLog.Date, Title = Policy.ReportTitle };
+                        report = new Report { ReportDate = dayLog.Date, Title = Policy.AdvancedOptions.ReportTitle };
                     report.ReportDate = dayLog.Date;
                     reports.Add(report);
                 }

@@ -19,8 +19,7 @@ namespace JiraReporter
 
             var authors = new List<Author>();
             var users = RestApiRequests.GetUsers(policy);
-            if (policy.IgnoredAuthors != null && policy.IgnoredAuthors.Count > 0)
-                users.RemoveAll(u => policy.IgnoredAuthors.Exists(a => a == u.displayName));
+            users = RemoveIgnoredUsers(users, policy);
 
             foreach (var user in users)
             {
@@ -37,6 +36,19 @@ namespace JiraReporter
 
             authors.RemoveAll(a => reportAuthors.Exists(t => t == a.Name) == false && AuthorIsEmpty(a));
             return authors;
+        }
+
+        private static List<JiraUser> RemoveIgnoredUsers(List<JiraUser> users, SourceControlLogReporter.Model.Policy policy)
+        {
+            try
+            {
+                users.RemoveAll(u => policy.UserOptions.Find(user => user.JiraUserKey == u.key).Ignored == true);
+                return users;
+            }
+            catch(Exception)
+            {
+                return users;
+            }
         }
 
         private static Author CreateAuthor(JiraUser user)
@@ -222,13 +234,24 @@ namespace JiraReporter
         {
             var find = new List<Commit>();
             author.Commits = new List<Commit>();
-            if (policy.Users.ContainsKey(author.Name))
-                if (policy.Users[author.Name] != "")
-                    find = commits.FindAll(commit => commit.Entry.Author == policy.Users[author.Name]);
-            author.Commits = find;
+            author.Commits = GetSourceControlUsersCommits(policy, author, commits);
             SetCommitsLink(commits, policy);
             // IssueAdapter.AdjustIssueCommits(author);           
         }
+
+        private static List<Commit> GetSourceControlUsersCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
+        {
+            var commitsList = new List<Commit>();
+            if (policy.Users.ContainsKey(author.Username))
+                if (policy.Users[author.Username].Count > 0)
+                    foreach (var sourceControlUser in policy.Users[author.Username])
+                    {
+                        var userCommits = commits.FindAll(commit => commit.Entry.Author == sourceControlUser);
+                        commitsList = commitsList.Concat(userCommits).ToList();
+                    }
+            return commitsList;
+        }
+
         public static void SetAuthorDayLogs(Author author, SourceControlLogReporter.Options options)
         {
             author.DayLogs = new List<DayLog>();
@@ -250,8 +273,8 @@ namespace JiraReporter
         {
             if (commits != null)
                 foreach (var commit in commits)
-                    if (commit.Entry.Link == null && policy.SourceControl.CommitUrl != null)
-                        commit.Entry.Link = policy.SourceControl.CommitUrl + commit.Entry.Revision;
+                    if (commit.Entry.Link == null && policy.SourceControlOptions.CommitUrl != null)
+                        commit.Entry.Link = policy.SourceControlOptions.CommitUrl + commit.Entry.Revision;
         }
 
         private static void SetAuthorInitials(Author author)

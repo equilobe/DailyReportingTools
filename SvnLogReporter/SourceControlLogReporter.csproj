@@ -87,13 +87,14 @@
     <Compile Include="Model\AdvancedOptions.cs" />
     <Compile Include="Model\Author.cs" />
     <Compile Include="Model\DayLog.cs" />
+    <Compile Include="Model\GeneratedProperties.cs" />
     <Compile Include="Model\Log.cs" />
     <Compile Include="Model\LogEntry.cs" />
-    <Compile Include="Model\Override.cs" />
+    <Compile Include="Model\Month.cs" />
     <Compile Include="Model\Policy.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="LogProcessor.cs" />
-    <Compile Include="Model\SourceControl.cs" />
+    <Compile Include="Model\SourceControlOptions.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
@@ -105,6 +106,7 @@
     </Compile>
     <Compile Include="RazorEngine\ExtendedTemplateBase.cs" />
     <Compile Include="ReportBase.cs" />
+    <Compile Include="ReportDateFormatter.cs" />
     <Compile Include="ReportEmailer.cs" />
     <Compile Include="Reporter.cs" />
     <Compile Include="SvnNotAvailableException.cs" />

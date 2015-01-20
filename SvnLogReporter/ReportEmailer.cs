@@ -30,9 +30,9 @@ namespace SourceControlLogReporter
             if (options.NoEmail)
                 return;
 
-            Validation.EnsureDirectoryExists(policy.UnsentReportsPath);
+            Validation.EnsureDirectoryExists(policy.GeneratedProperties.UnsentReportsPath);
 
-            foreach (var file in Directory.GetFiles(policy.UnsentReportsPath))
+            foreach (var file in Directory.GetFiles(policy.GeneratedProperties.UnsentReportsPath))
             {
                 TryEmailReport(file);
             }
@@ -80,7 +80,7 @@ namespace SourceControlLogReporter
             if (!policy.AdvancedOptions.NoDraft)
                 return;
 
-            policy.LastReportSentDate = options.ToDate;
+            policy.GeneratedProperties.LastReportSentDate = options.ToDate;
             policy.SaveToFile(options.PolicyPath);
         }
 
@@ -97,20 +97,20 @@ namespace SourceControlLogReporter
             return message;
         }
 
-        public string GetReportSubject(string reportPath)
+        public virtual string GetReportSubject(string reportPath)
         {
-            string subject = policy.ReportTitle + " " + policy.EmailSubject;
-            if ((options.ToDate - options.FromDate).Days > 1)
-                return subject + " " + options.FromDate.ToString("dddd, dd MMMM") + " - " + options.ToDate.AddDays(-1).ToString("dddd, dd MMMM");
-            else
-                return subject + " " + options.FromDate.ToString("dddd, dd MMMM yyyy");
+            string subject = string.Empty;
+            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+
+            return subject;
         }
 
         public void MoveToSent(string path)
         {
-            Validation.EnsureDirectoryExists(policy.ReportsPath);
+            Validation.EnsureDirectoryExists(policy.GeneratedProperties.ReportsPath);
 
-            var newFilePath = Path.Combine(policy.ReportsPath, Path.GetFileName(path));
+            var newFilePath = Path.Combine(policy.GeneratedProperties.ReportsPath, Path.GetFileName(path));
 
             File.Copy(path, newFilePath, overwrite: true);
             File.Delete(path);

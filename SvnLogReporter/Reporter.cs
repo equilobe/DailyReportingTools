@@ -20,9 +20,9 @@ namespace SourceControlLogReporter
 
         public static void WriteReport(Policy p, string report, string path)
         {
-            Validation.EnsureDirectoryExists(p.LogArchivePath);
+            Validation.EnsureDirectoryExists(p.GeneratedProperties.LogArchivePath);
 
-            var archivedFilePath = Path.Combine(p.LogArchivePath, Path.GetFileName(path));
+            var archivedFilePath = Path.Combine(p.GeneratedProperties.LogArchivePath, Path.GetFileName(path));
 
             if (File.Exists(path))
             {
@@ -34,9 +34,9 @@ namespace SourceControlLogReporter
                 File.WriteAllText(archivedFilePath, report);
             }
 
-            Validation.EnsureDirectoryExists(p.UnsentReportsPath);
+            Validation.EnsureDirectoryExists(p.GeneratedProperties.UnsentReportsPath);
 
-            var reportPath = Path.Combine(p.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
+            var reportPath = Path.Combine(p.GeneratedProperties.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
 
             File.WriteAllText(reportPath, report);
         }
