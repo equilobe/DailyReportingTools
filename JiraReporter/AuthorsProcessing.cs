@@ -362,5 +362,28 @@ namespace JiraReporter
         {
             author.Image = WebDownloads.ImageFromURL(author.AvatarLink.OriginalString, policy.Username, policy.Password);
         }
+
+        public static List<Author> GetActiveAuthors(List<Author> authors)
+        {
+            var activeAuthors = new List<Author>();
+            foreach (var author in authors)
+                if (IsActive(author))
+                    activeAuthors.Add(author);
+            return activeAuthors;
+        }
+
+        private static bool IsActive(Author author)
+        {
+            if (author.Issues != null && author.Issues.Count > 0)
+                return true;
+            if (author.InProgressTasks != null && author.InProgressTasks.Count > 0)
+                return true;
+            if (author.OpenTasks != null && author.OpenTasks.Count > 0)
+                return true;
+            if (author.Commits != null && author.Commits.Count > 0)
+                return true;
+
+            return false;
+        }
     }
 }
