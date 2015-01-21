@@ -29,7 +29,13 @@ namespace JiraReporter.Model
         public string Initials { get; set; }
         public string EmailAdress { get; set; }
 
-        public string TimeLogged { get; set; }
+        public string TimeLogged
+        {
+            get
+            {
+                return ((int)TimeSpent).SetTimeFormat();
+            }
+        }
         public int TimeSpent { get; set; }
         public double TimeSpentHours
         {
@@ -192,6 +198,14 @@ namespace JiraReporter.Model
             EmailAdress = user.emailAddress;
             Username = user.key;
             AvatarLink = user.avatarUrls.Big;
+        }
+
+        public bool HasIssues()
+        {
+            if (Issues == null || Issues.Count == 0)
+                return false;
+
+            return true;
         }
     }
 }

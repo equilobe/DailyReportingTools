@@ -23,14 +23,14 @@ namespace JiraReporter.Model
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }
 
-        public void SetSprintTasks(SourceControlLogReporter.Model.Policy policy, Timesheet timesheet, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
+        public void SetSprintTasks(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var tasksService = new TasksService();
             var issues = RestApiRequests.GetSprintTasks(policy);
             var unfinishedTasks = tasksService.GetUnfinishedTasks(policy);
-            tasksService.SetUnfinishedTasks(unfinishedTasks, this, timesheet, pullRequests, policy);
+            tasksService.SetUnfinishedTasks(unfinishedTasks, this, pullRequests, policy);
 
-            var completedTasks = tasksService.GetCompletedTasks(policy, options, timesheet);
+            var completedTasks = tasksService.GetCompletedTasks(policy, options);
             tasksService.SetCompletedTasks(tasksService.GroupCompletedTasks(completedTasks), this);
             tasksService.SortTasks(this);
             SetSprintTasksErrors(policy);

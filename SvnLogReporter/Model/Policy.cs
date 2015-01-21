@@ -68,9 +68,6 @@ namespace SourceControlLogReporter.Model
         [DefaultValue(0)]
         public int AllocatedHoursPerDay { get; set; }
 
-        //TODO: delete following 
-        public string TargetGroup { get; set; }
-
         public AdvancedOptions AdvancedOptions { get; set; }
 
         public List<Month> MonthlyOptions { get; set; }

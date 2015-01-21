@@ -24,17 +24,7 @@ namespace JiraReporter
         public void SetTimesheetIssues(Timesheet timesheet, Policy policy, Options options, List<PullRequest> pullRequests)
         {
             var issues = new List<Issue>(timesheet.Worklog.Issues);
-            foreach (var issue in issues)
-                IssueAdapter.SetIssueEntries(issue.Entries, issue, timesheet.Worklog.Issues);
-            IssueAdapter.RemoveWrongEntries(timesheet.Worklog.Issues);
-            IssueAdapter.SetIssues(timesheet, policy, options, pullRequests);
-        }
-
-        public void SetTimesheetCollection(Dictionary<TimesheetType, Timesheet> timesheetCollection, Policy policy, Options options, List<PullRequest> pullRequests)
-        {
-            if (timesheetCollection != null)
-                foreach (var timesheet in timesheetCollection)
-                    SetTimesheetIssues(timesheet.Value, policy, options, pullRequests);
+            IssueAdapter.SetIssues(issues, policy, options, pullRequests);
         }
 
         public int GetTotalOriginalEstimate(Timesheet timesheet)

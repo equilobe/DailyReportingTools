@@ -7,38 +7,39 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    public enum TimesheetType { ReportTimesheet, MonthTimesheet, SprintTimesheet};
 
     class ReportGenerator
     {
         public static Report GenerateReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var timesheetService = new TimesheetService();
+            var pullRequests = new List<PullRequest>();
+            var commits = new List<Commit>();
 
-            var log = SourceControlProcessor.GetSourceControlLog(policy, options);
-            var pullRequests = SourceControlProcessor.GetPullRequests(log);
-            var commits = SourceControlProcessor.GetCommits(log);
-
-           // var timesheetCollection = GenerateReportTimesheets(policy, options);  
-
-         //   timesheetService.SetTimesheetCollection(timesheetCollection, policy, options, pullRequests);
+            if (policy.SourceControlOptions != null)
+            {
+                var log = SourceControlProcessor.GetSourceControlLog(policy, options);
+                pullRequests = SourceControlProcessor.GetPullRequests(log);
+                commits = SourceControlProcessor.GetCommits(log);
+            }
 
             return GetReport(policy, options, pullRequests, commits);
         }
         private static Report GetReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
         {
-            var sprintTasks = GetSprintReport(policy, options, null, pullRequests);           
-            var authors = AuthorsProcessing.GetAuthors(sprintTasks, policy, options, commits);
+            var sprintTasks = GetSprintReport(policy, options, pullRequests);
+            var sprint = GenerateSprint(policy);
+            var authors = AuthorsProcessing.GetAuthors(sprintTasks, policy, commits, options, pullRequests, sprint);
             var report = new Report(policy, options)
             {
                 Authors = authors,
                 SprintTasks = sprintTasks,
                 PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, null)
+                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, sprint)
             };
             report.Title = report.GetReportTitle();
-                         
+
             return report;
         }
 
@@ -58,10 +59,10 @@ namespace JiraReporter
             return individualReport;
         }
 
-        private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
+        private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();
-            report.SetSprintTasks(policy, timesheet, options, pullRequests);
+            report.SetSprintTasks(policy, options, pullRequests);
             return report;
         }
 
