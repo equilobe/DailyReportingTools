@@ -11,7 +11,7 @@
     <title>
     </title>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    @Styles.Render("~/Content/maincss")
+    @Styles.Render("~/Content/maincss")    
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/app/js/policyEditorApp.js"></script>
 </head>
@@ -56,76 +56,8 @@
 
     </div>
 
-    <div class="how-it-works">
-        <div class="container">
-            <h1>How it works</h1>
-            <div class="row steps-row">
-                <div class="col-sm-4">
-                    <div class="alert alert-warning step">
-                        <div class="step-number">1</div>
-                        <h3>
-                            Individual draft report
-                        </h3>
-                        <p class="help-block">
-                            sent to and confirmed by
-                            <br />
-                            <strong>each team member</strong>
-                        </p>
-                        <div class="step-icon">
-                            <div class="daily-report daily-report-big"></div>
-                        </div>
-                        <p class="help-block step-facts">
-                            add work logs<br />
-                            correct report errors<br />
-                            update estimates<br />
-                        </p>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="alert alert-info step">
-                        <div class="step-number">2</div>
-                        <h3>
-                            Full draft report
-                        </h3>
-                        <p class="help-block">
-                            sent to and confirmed by
-                            <br />
-                            <strong>the project manager</strong>
-                        </p>
-                        <div class="step-icon">
-                            <div class="daily-report daily-report-big"></div>
-                        </div>
-                        <p class="help-block step-facts">
-                            update sprint scope<br />
-                            correct high-level report errors<br />
-                        </p>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="alert alert-success step">
-                        <div class="step-number">3</div>
-                        <h3>
-                            Final report
-                        </h3>
-                        <p class="help-block">
-                            sent to the entire team
-                            <br />
-                            <strong>and other stakeholders</strong>
-                        </p>
-                        <div class="step-icon">
-                            <div class="daily-report daily-report-big"></div>
-                        </div>
-                        <p class="help-block step-facts">
-                            add work logs<br />
-                            correct report errors<br />
-                            update estimates<br />
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     
+    @Html.Partial("_HowItWorks")
 
 
 
