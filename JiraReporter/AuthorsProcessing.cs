@@ -15,26 +15,12 @@ namespace JiraReporter
     {
         public static List<Author> GetAuthors(SprintTasks sprintTasks, SourceControlLogReporter.Model.Policy policy, List<Commit> commits, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, Sprint sprint)
         {
-            //var reportAuthors = GetAllAuthors(timesheetCollection);
             var users = RestApiRequests.GetUsers(policy);
             users = RemoveIgnoredUsers(users, policy);
             var authors = AuthorsWithTimesheet(users, options, policy, sprint);
 
             foreach (var author in authors)
                 SetAuthor(sprintTasks, author, policy, commits, options, pullRequests);
-
-            //foreach (var user in users)
-            //{
-            //    var author = new Author(user);
-            //    if (reportAuthors.Contains(user.displayName))
-            //    {
-            //        var issues = GetAuthorIssuesFromTimesheet(timesheetCollection[TimesheetType.ReportTimesheet], user.displayName);
-            //        author.Issues = issues;
-            //    }
-
-            //    SetAuthor(report, author, policy, commits, options, timesheetCollection);
-            //    authors.Add(author);
-            //}
 
             authors.RemoveAll(a => AuthorIsEmpty(a));
             return authors;
@@ -72,18 +58,6 @@ namespace JiraReporter
                 return users;
             }
         }
-
-        //private static List<string> GetAllAuthors(Dictionary<TimesheetType, Timesheet> timesheetCollection)
-        //{
-        //    var sprintAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.SprintTimesheet);
-        //    var loggedAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.ReportTimesheet);
-        //    var monthAuthors = GetTimesheetCollectionAuthors(timesheetCollection, TimesheetType.MonthTimesheet);
-        //    var reportAuthors = sprintAuthors.Concat(loggedAuthors)
-        //                                     .Concat(monthAuthors)
-        //                                     .Distinct()
-        //                                     .ToList();
-        //    return reportAuthors;
-        //}
 
         private static void GetAuthorIssuesFromTimesheet(Author author)
         {
@@ -234,8 +208,7 @@ namespace JiraReporter
             {
                 author.Commits = GetSourceControlUsersCommits(policy, author, commits);
                 SetCommitsLink(commits, policy);
-            }
-            // IssueAdapter.AdjustIssueCommits(author);           
+            }         
         }
 
         private static List<Commit> GetSourceControlUsersCommits(SourceControlLogReporter.Model.Policy policy, Author author, List<Commit> commits)
@@ -310,13 +283,6 @@ namespace JiraReporter
                 author.Errors = author.Errors.Concat(openTasksErrors).ToList();
             }
         }
-
-        //public static bool AuthorExistsInTimesheet(Author author, Timesheet timesheet)
-        //{
-        //    if (timesheet != null && timesheet.Worklog.Issues != null)
-        //        return timesheet.Worklog.Issues.Exists(i => i.Assignee == author.Name);
-        //    return false;
-        //}
 
         public static List<string> GetAuthorsFromTimesheet(Timesheet timesheet)
         {
