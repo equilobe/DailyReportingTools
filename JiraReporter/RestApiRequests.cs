@@ -36,9 +36,9 @@ namespace JiraReporter
             return ResolveRequest<JiraReporter.JiraModels.Project>(policy, request);
         }
 
-        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
+        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate, string targetUser)
         {
-            var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
+            var request = new RestRequest(ApiUrls.Timesheet(targetUser, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
 
             return ResolveRequest<Timesheet>(policy, request, true);
         }

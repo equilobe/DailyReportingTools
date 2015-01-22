@@ -12,9 +12,9 @@ namespace JiraReporter
         {
             return string.Format("/rest/api/2/project/{0}", id);
         }
-        public static string Timesheet(string targetGroup, string fromDate, string toDate)
+        public static string Timesheet(string targetUser, string fromDate, string toDate)
         {
-            return string.Format("/rest/timesheet-gadget/1.0/raw-timesheet.xml?targetGroup={0}&startDate={1}&endDate={2}", targetGroup, fromDate, toDate);
+            return string.Format("/rest/timesheet-gadget/1.0/raw-timesheet.xml?targetUser={0}&startDate={1}&endDate={2}", targetUser, fromDate, toDate);
         }
 
         public static string User(string userName)

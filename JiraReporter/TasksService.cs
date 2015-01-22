@@ -10,14 +10,14 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public List<Issue> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
+        public List<Issue> GetCompletedTasks(Policy policy, Options options)
         {
             var completedTasks = new List<Issue>();
             var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());
             foreach (var issue in issues.issues)
             {
                 if (issue.fields.issuetype.subtask == false)
-                    SetTask(policy, issue, timesheet, completedTasks, null);
+                    SetTask(policy, issue, completedTasks, null);
             }
             completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
             return completedTasks;
@@ -28,7 +28,7 @@ namespace JiraReporter
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(AnotherJiraRestClient.Issues jiraIssues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
+        public void SetUnfinishedTasks(AnotherJiraRestClient.Issues jiraIssues, SprintTasks tasks, List<PullRequest> pullRequests, Policy policy)
         {
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
@@ -41,7 +41,7 @@ namespace JiraReporter
                     Key = jiraIssue.key,
                     Summary = jiraIssue.fields.summary
                 };
-                IssueAdapter.SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
+                IssueAdapter.SetIssue(issue, policy, jiraIssue, pullRequests); 
                 IssueAdapter.SetIssueErrors(issue, policy);
 
                 if (issue.StatusCategory.name == "In Progress")
@@ -54,7 +54,7 @@ namespace JiraReporter
             }
         }
 
-        public void SetTask(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
+        public void SetTask(SourceControlLogReporter.Model.Policy policy, AnotherJiraRestClient.Issue jiraIssue, List<Issue> tasks, List<PullRequest> pullRequests)
         {
             tasks.Add(new Issue
             {
@@ -62,7 +62,7 @@ namespace JiraReporter
                 Summary = jiraIssue.fields.summary
             });
 
-            IssueAdapter.SetIssue(tasks.Last(), policy, jiraIssue, timesheet, pullRequests);
+            IssueAdapter.SetIssue(tasks.Last(), policy, jiraIssue, pullRequests);
             IssueAdapter.SetIssueErrors(tasks.Last(), policy);
         }
 
