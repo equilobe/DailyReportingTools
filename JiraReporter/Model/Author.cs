@@ -186,6 +186,7 @@ namespace JiraReporter.Model
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
         public Image Image { get; set; }
+        public SourceControlLogReporter.Model.IndividualDraftInfo IndividualDraftInfo { get; set; }
 
         public Author()
         {

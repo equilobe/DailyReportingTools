@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DailyReportWeb.Helpers;
+using SourceControlLogReporter.Model;
+using System.Configuration;
 
 namespace DailyReportWeb.Controllers
 {
@@ -32,6 +34,16 @@ namespace DailyReportWeb.Controllers
                 return Content("Draft report was resent");
             else 
                 return Content("Error in resending draft report");
-        }     
+        }
+
+        //Testing purpose
+        [HttpGet]
+        public ActionResult SendIndividualDraft(string id, DateTime date, string userKey) 
+        {
+            if (date.Date != DateTime.Today)
+                return Content("Cannot confirm report for another date");
+
+            return Content("Report confirmed");
+        }
     }
 }

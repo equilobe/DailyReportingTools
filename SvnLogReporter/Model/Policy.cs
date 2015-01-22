@@ -38,6 +38,32 @@ namespace SourceControlLogReporter.Model
             }
         }
 
+        [XmlIgnore]
+        public Uri IndividualDraftConfirmationUrl
+        {
+            get
+            {
+                var now = DateTime.Now.ToOriginalTimeZone();
+                if (AdvancedOptions.NoIndividualDraft)
+                    return null;
+
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            }
+        }
+
+        [XmlIgnore]
+        public Uri ResendIndividualDraft
+        {
+            get
+            {
+                var now = DateTime.Now.ToOriginalTimeZone();
+                if (AdvancedOptions.NoIndividualDraft)
+                    return null;
+
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            }
+        }
+
         //Base Properties
         public string BaseUrl { get; set; }
         public string Username { get; set; }

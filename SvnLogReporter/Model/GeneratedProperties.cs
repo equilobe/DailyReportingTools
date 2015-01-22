@@ -15,6 +15,7 @@ namespace SourceControlLogReporter.Model
         public string RootPath { get; set; }
         public string ProjectKey { get; set; }
         public string ProjectName { get; set; }
+        public List<IndividualDraftInfo> IndividualDrafts { get; set; }
 
         [XmlIgnore]
         public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }

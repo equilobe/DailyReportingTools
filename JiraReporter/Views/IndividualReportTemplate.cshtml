@@ -249,7 +249,7 @@
                 </tr>*@
                 <tr>
                     <td width="100px" height="40px">
-                        @Partial("Views/confirmationButton.cshtml", "")
+                        @Partial("Views/confirmationButton.cshtml", Model.Author.IndividualDraftInfo.ConfirmationDraftUrl)
                     </td>
                 </tr>
                 <tr>
@@ -284,7 +284,7 @@
                 </tr>
                 <tr>
                     <td width="100px" height="40px">
-                        @Partial("Views/resendDraftButton.cshtml", "")
+                        @Partial("Views/resendDraftButton.cshtml", Model.Author.IndividualDraftInfo.ResendDraftUrl)
                     </td>
                 </tr>
                 <tr>
