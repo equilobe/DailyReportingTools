@@ -1,10 +1,10 @@
-﻿using AnotherJiraRestClient;
-using JiraReporter.Model;
+﻿using JiraReporter.Model;
 using RestSharp;
 using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace JiraReporter
 {
     class RestApiRequests
     {
-        public static T ResolveRequest<T>(Policy policy, RestRequest request, bool isXml = false)
+        public static RestClient ClientLogin(Policy policy)
         {
             var client = new RestClient(policy.BaseUrl);
 
@@ -21,19 +21,43 @@ namespace JiraReporter
             else
                 client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
 
-            var results = client.Execute(request).Content;
-
-            if (isXml)
-                return Deserialization.XmlDeserialize<T>(results);
-            else
-                return Deserialization.JsonDeserialize<T>(results);
+            return client;
         }
 
-        public static JiraReporter.JiraModels.Project GetProject(Policy policy)
+        public static T ResolveRequest<T>(Policy policy, RestRequest request, bool isXml = false)
+        {
+            var client = ClientLogin(policy);
+            var response = client.Execute(request);
+
+            ValidateResponse(response);
+
+            if (isXml)
+                return Deserialization.XmlDeserialize<T>(response.Content);
+            else
+                return Deserialization.JsonDeserialize<T>(response.Content);
+        }
+
+        public static T ResolveJiraRequest<T>(Policy policy, RestRequest request) where T : new()
+        {
+            var client = ClientLogin(policy);
+            var response = client.Execute<T>(request);
+
+            ValidateResponse(response);
+
+            return response.Data;
+        }
+
+        private static void ValidateResponse(IRestResponse response)
+        {
+            if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
+                throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
+        }
+
+        public static JiraModels.Project GetProject(Policy policy)
         {
             var request = new RestRequest(ApiUrls.Project(policy.ProjectId.ToString()), Method.GET);
 
-            return ResolveRequest<JiraReporter.JiraModels.Project>(policy, request);
+            return ResolveRequest<JiraModels.Project>(policy, request);
         }
 
         public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
@@ -71,25 +95,30 @@ namespace JiraReporter
             return ResolveRequest<SprintReport>(policy, request);
         }
 
-        public static Issues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
+        public static JiraIssue GetIssue(string issueKey, Policy policy)
         {
-            var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
+            var request = new RestRequest(ApiUrls.IssueByKey(issueKey), Method.GET);
 
-            return client.GetIssuesByJql(ApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)), 0, 250);
+            return ResolveJiraRequest<JiraIssue>(policy, request);
         }
 
-        public static Issues GetSprintTasks(Policy policy)
+        public static JiraIssues GetCompletedIssues(Policy policy, DateTime startDate, DateTime endDate)
         {
-            var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
+            var request = GetIssuesByJql(ApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
 
-            return client.GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.GeneratedProperties.ProjectKey), 0, 250);
+            return ResolveJiraRequest<JiraIssues>(policy, request);
         }
 
-        public static AnotherJiraRestClient.Issue GetIssue(string issueKey, Policy policy)
+        public static JiraIssues GetSprintTasks(Policy policy)
         {
-            var client = new JiraClient(new JiraAccount(policy.BaseUrl, policy.Username, policy.Password));
+            var request = GetIssuesByJql(ApiUrls.IssuesInOpenSprints(policy.GeneratedProperties.ProjectKey));
 
-            return client.GetIssue(issueKey);
+            return ResolveJiraRequest<JiraIssues>(policy, request);
+        }
+
+        public static RestRequest GetIssuesByJql(string jql)
+        {
+            return new RestRequest(ApiUrls.Search(jql), Method.GET);
         }
     }
 }
