@@ -19,7 +19,7 @@ namespace JiraReporter.Model
 
         public DayLog(Author author, DateTime date, SourceControlLogReporter.Options options)
         {
-            this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
+            this.Commits = AuthorHelpers.GetDayLogCommits(author, date);
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
 

@@ -29,7 +29,7 @@ namespace JiraReporter
         {
             var sprintTasks = GetSprintReport(policy, options, pullRequests);
             var sprint = GenerateSprint(policy);
-            var authors = AuthorsProcessing.GetAuthors(sprintTasks, policy, commits, options, pullRequests, sprint);
+            var authors = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests).GetAuthors();
             var report = new Report(policy, options)
             {
                 Authors = authors,
