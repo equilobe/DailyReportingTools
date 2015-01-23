@@ -73,6 +73,7 @@
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="IssueAdapter.cs" />
+    <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraModels\Avatar.cs" />
     <Compile Include="JiraModels\Filter.cs" />
     <Compile Include="JiraModels\Project.cs" />

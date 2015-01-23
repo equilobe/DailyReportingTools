@@ -98,15 +98,16 @@ namespace JiraReporter
         private void LoadTimesheetIssueDetails()
         {
             var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _policy, _options, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _policy, _options, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _policy, _options, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _policy, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _policy, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _policy, _pullRequests);
         }
 
         private void SetIssues()
         {
             if (_currentAuthor.CurrentTimesheet != null && _currentAuthor.CurrentTimesheet.Worklog.Issues != null)
-                _currentAuthor.Issues = _currentAuthor.CurrentTimesheet.Worklog.Issues;            
+                _currentAuthor.Issues = _currentAuthor.CurrentTimesheet.Worklog.Issues;
+            _currentAuthor.Issues.ForEach(issue => IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name));
         }
 
         private void OrderIssues()
@@ -165,7 +166,7 @@ namespace JiraReporter
                         if (_currentAuthor.Issues == null)
                             _currentAuthor.Issues = new List<Issue>();
                         issue.ExistsInTimesheet = true;
-                        IssueAdapter.ChangeLoggedAuthor(issue, _currentAuthor.Name);
+                        IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name);
                         _currentAuthor.Issues.Add(new Issue(issue));
                     }
                 }
@@ -209,10 +210,6 @@ namespace JiraReporter
                 return true;
             return false;
         }
-
-
-
-
 
         private void SetAuthorDayLogs()
         {

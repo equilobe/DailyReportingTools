@@ -31,8 +31,8 @@ namespace JiraReporter.Model
                     {
                         this.Issues.Add(new Issue(issue));
                         IssueAdapter.RemoveWrongEntries(this.Issues.Last(), date);
-                        IssueAdapter.SetIssueTimeSpent(this.Issues.Last());
-                        IssueAdapter.SetIssueTimeFormat(this.Issues.Last());
+                        IssueAdapter.TimeSpentFromEntries(this.Issues.Last());
+                        IssueAdapter.SetTimeFormat(this.Issues.Last());
                         this.TimeSpent += this.Issues.Last().TimeSpent;
                     }
                 }

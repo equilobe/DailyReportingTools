@@ -89,7 +89,7 @@
                                                         }
                                                         if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
                                                         {
-                                                            if (issue.SubTask == false)
+                                                            if (issue.IsSubtask == false)
                                                             {
                                                                 @Partial("Views/workedTask.cshtml", issue)
                                                             }
@@ -212,7 +212,7 @@
                 <tbody>
                     @foreach (var task in Model.SprintTasks.UnassignedTasks)
                     {
-                        if (task.SubTask == false)
+                        if (task.IsSubtask == false)
                         {
                             @Partial("Views/uncompletedTask.cshtml", task)
                         }

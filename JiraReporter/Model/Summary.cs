@@ -321,7 +321,7 @@ namespace JiraReporter.Model
             PullRequests = pullRequests;
             Sprint = sprint;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
-            UnassignedTasksCount = sprintTasks.UnassignedTasks.Count(t => t.SubTask == false);
+            UnassignedTasksCount = sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
             SetDates(options);
             SetAllocatedTime();
             WorkingDays = new WorkingDaysInfo(Sprint, policy, options);
