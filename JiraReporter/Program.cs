@@ -28,7 +28,7 @@ namespace JiraReporter
             if (RunReport(policy, options))
                 RunReportTool(args, policy, options);
             else
-                throw new JiraException("\r\nUnable to run report tool due to policy settings or final report already generated.\r\n");
+                throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
@@ -106,13 +106,5 @@ namespace JiraReporter
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;
         }
-    }
-
-    [Serializable()]
-    public class JiraException : Exception
-    {
-        public JiraException() : base() { }
-        public JiraException(string message) : base(message) { }
-        public JiraException(string message, Exception inner) : base(message, inner) { }
     }
 }

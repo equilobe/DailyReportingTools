@@ -2,7 +2,7 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="policyEditorApp">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,12 @@
     <title>
     </title>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    @Styles.Render("~/Content/maincss")
+    @Styles.Render("~/Content/maincss")    
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/app/js/policyEditorApp.js"></script>
 </head>
 
-<body>
+<body ng-controller="policyListPage">
     <div id="jumbo" class="jumbotron">
         <div class="container">
             <h1>
@@ -39,124 +41,23 @@
                     Options
                 </th>
             </tr>
-            <tr>
+            <tr ng-repeat="policy in policyList">
                 <td>
-                    Alyssa
+                    {{policy.ProjectName}}
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
+                    <input type="text" class="form-control" placeholder="9:30 AM" ng-model="policy.ReportTime" />
                 </td>
                 <td>
-                    <a href="~/Policy/Details" class="btn btn-default">Details</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Alyssa
-                </td>
-                <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
-                </td>
-                <td>
-                    <button class="btn btn-default">Details</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Alyssa
-                </td>
-                <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
-                </td>
-                <td>
-                    <button class="btn btn-default">Details</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Alyssa
-                </td>
-                <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" />
-                </td>
-                <td>
-                    <button class="btn btn-default">Details</button>
+                    <a href="~/Policy/Details/{{policy.Id}}" class="btn btn-default">Details</a>
                 </td>
             </tr>
         </table>
 
     </div>
 
-    <div class="how-it-works">
-        <div class="container">
-            <h1>How it works</h1>
-            <div class="row steps-row">
-                <div class="col-sm-4">
-                    <div class="alert alert-warning step">
-                        <div class="step-number">1</div>
-                        <h3>
-                            Individual draft report
-                        </h3>
-                        <p class="help-block">
-                            sent to and confirmed by
-                            <br />
-                            <strong>each team member</strong>
-                        </p>
-                        <div class="step-icon">
-                            <div class="daily-report daily-report-big"></div>
-                        </div>
-                        <p class="help-block step-facts">
-                            add work logs<br />
-                            correct report errors<br />
-                            update estimates<br />
-                        </p>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="alert alert-info step">
-                        <div class="step-number">2</div>
-                        <h3>
-                            Full draft report
-                        </h3>
-                        <p class="help-block">
-                            sent to and confirmed by
-                            <br />
-                            <strong>the project manager</strong>
-                        </p>
-                        <div class="step-icon">
-                            <div class="daily-report daily-report-big"></div>
-                        </div>
-                        <p class="help-block step-facts">
-                            update sprint scope<br />
-                            correct high-level report errors<br />
-                        </p>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="alert alert-success step">
-                        <div class="step-number">3</div>
-                        <h3>
-                            Final report
-                        </h3>
-                        <p class="help-block">
-                            sent to the entire team
-                            <br />
-                            <strong>and other stakeholders</strong>
-                        </p>
-                        <div class="step-icon">
-                            <div class="daily-report daily-report-big"></div>
-                        </div>
-                        <p class="help-block step-facts">
-                            add work logs<br />
-                            correct report errors<br />
-                            update estimates<br />
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     
+    @Html.Partial("_HowItWorks")
 
 
 

@@ -29,7 +29,7 @@ namespace JiraReporter
             var client = ClientLogin(policy);
             var response = client.Execute(request);
 
-            validateResponse(response);
+            ValidateResponse(response);
 
             if (isXml)
                 return Deserialization.XmlDeserialize<T>(response.Content);
@@ -42,15 +42,15 @@ namespace JiraReporter
             var client = ClientLogin(policy);
             var response = client.Execute<T>(request);
 
-            validateResponse(response);
+            ValidateResponse(response);
 
             return response.Data;
         }
 
-        private static void validateResponse(IRestResponse response)
+        private static void ValidateResponse(IRestResponse response)
         {
             if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
-                throw new JiraException(string.Format("\r\nRestSharp status: {0}\r\n- HTTP response: {1}\r\n", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
+                throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
         }
 
         public static JiraModels.Project GetProject(Policy policy)
