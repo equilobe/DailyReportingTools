@@ -24,7 +24,7 @@ namespace JiraReporter
         public void Authenticate(IRestClient client, IRestRequest request)
         {            
             var jwtToken = CreateJwt(ConfigurationManager.AppSettings["addonKey"], _sharedSecret, request.Resource, request.Method.ToString());
-            request.AddParameter("jwt", jwtToken);
+            request.AddParameter("Authorization", "JWT " + jwtToken, ParameterType.HttpHeader);
         }
 
         public static string CreateJwt(string addonKey, string sharedSecret, string query, string method)
