@@ -46,7 +46,7 @@
                     {{policy.ProjectName}}
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="9:30 AM" ng-model="policy.ReportTime" />
+                    <input type="time" class="form-control" value="{{policy.ReportTime}}"/>
                 </td>
                 <td>
                     <a href="~/Policy/Details/{{policy.Id}}" class="btn btn-default">Details</a>
