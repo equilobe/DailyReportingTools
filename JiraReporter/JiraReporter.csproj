@@ -67,7 +67,6 @@
     <Compile Include="ApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="AuthorLoader.cs" />
-    <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="IssueAdapter.cs" />
