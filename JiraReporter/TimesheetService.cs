@@ -21,10 +21,11 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, Policy policy, Options options, List<PullRequest> pullRequests)
+        public void SetTimesheetIssues(Timesheet timesheet, Policy policy, List<PullRequest> pullRequests)
         {
             var issues = new List<Issue>(timesheet.Worklog.Issues);
-            IssueAdapter.SetIssues(issues, policy, options, pullRequests);
+            var issueProcessor = new IssueProcessor(policy, pullRequests);
+            issueProcessor.SetIssues(issues);
         }
 
         public int GetTotalOriginalEstimate(Timesheet timesheet)

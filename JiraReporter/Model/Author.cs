@@ -16,14 +16,14 @@ namespace JiraReporter.Model
         {
             get
             {
-                return AuthorsProcessing.GetShortName(Name);
+                return AuthorHelpers.GetShortName(Name);
             }
         }
         public string FirstName
         {
             get
             {
-                return AuthorsProcessing.GetFirstName(Name);
+                return AuthorHelpers.GetFirstName(Name);
             }
         }
         public string Initials { get; set; }

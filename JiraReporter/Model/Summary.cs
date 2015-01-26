@@ -321,7 +321,7 @@ namespace JiraReporter.Model
             PullRequests = pullRequests;
             Sprint = sprint;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
-            UnassignedTasksCount = sprintTasks.UnassignedTasks.Count(t => t.SubTask == false);
+            UnassignedTasksCount = sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
             SetDates(options);
             SetAllocatedTime();
             WorkingDays = new WorkingDaysInfo(Sprint, policy, options);
@@ -455,7 +455,7 @@ namespace JiraReporter.Model
         private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             foreach (var author in Authors)
-                AuthorsProcessing.SetAuthorAverageWorkPerDay(author, monthWorkedDays, sprintWorkedDays, reportWorkingDays);
+                AuthorHelpers.SetAuthorAverageWorkPerDay(author, monthWorkedDays, sprintWorkedDays, reportWorkingDays);
         }
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
@@ -616,7 +616,7 @@ namespace JiraReporter.Model
             var max = new List<double>();
             foreach (var author in Authors)
             {
-                var maxFromAuthor = AuthorsProcessing.GetAuthorMaxAverage(author);
+                var maxFromAuthor = AuthorHelpers.GetAuthorMaxAverage(author);
                 max.Add(maxFromAuthor);
             }
             double maxHours = (double)max.Max() / 3600;

@@ -1,11 +1,11 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
-
+using System.Web.Http;
 namespace DailyReportWeb
 {
-    public class RouteConfig
+    public static class RouteConfig
     {
-        public static void RegisterRoutes(RouteCollection routes)
+        public static void RegisterRoutes(this RouteCollection routes)
         {
             
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
@@ -47,6 +47,17 @@ namespace DailyReportWeb
                     id = UrlParameter.Optional
                 }
             );
+        }
+
+        public static HttpConfiguration InitApiRoutes(this HttpConfiguration config)
+        {
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+
+            return config;
         }
     }
 }

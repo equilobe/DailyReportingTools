@@ -126,7 +126,7 @@
                                             }
                                             if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
                                             {
-                                                if (issue.SubTask == false)
+                                                if (issue.IsSubtask == false)
                                                 {
                                                     @Partial("Views/workedTask.cshtml", issue)
                                                 }

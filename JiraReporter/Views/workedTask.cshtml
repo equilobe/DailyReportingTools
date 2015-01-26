@@ -12,7 +12,7 @@ else
 {
     remainingEstimate = Model.RemainingEstimate;
 }
-@if (Model.SubTask == true)
+@if (Model.IsSubtask == true)
 {
     colspan = "";
     test =true;
@@ -59,7 +59,7 @@ else
             }
             <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
             <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
-            @if (Model.ExceededOriginalEstimate == true && Model.SubTask == false)
+            @if (Model.ExceededOriginalEstimate == true && Model.IsSubtask == false)
             {
                 color = "orange";
             }
@@ -68,7 +68,7 @@ else
                 color = "black";
             }
             <span style="color:@color;"> &#x25cf; @Model.TimeLoggedTotal spent</span>
-            @if (Model.Label != null || Model.SubTask == true)
+            @if (Model.Label != null || Model.IsSubtask == true)
             {
                 color = "orange";
             }

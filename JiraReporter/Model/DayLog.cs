@@ -19,7 +19,7 @@ namespace JiraReporter.Model
 
         public DayLog(Author author, DateTime date, SourceControlLogReporter.Options options)
         {
-            this.Commits = AuthorsProcessing.GetDayLogCommits(author, date);
+            this.Commits = AuthorHelpers.GetDayLogCommits(author, date);
             this.Date = date;
             this.Title = TimeFormatting.GetStringDay(date);
 
@@ -31,8 +31,8 @@ namespace JiraReporter.Model
                     {
                         this.Issues.Add(new Issue(issue));
                         IssueAdapter.RemoveWrongEntries(this.Issues.Last(), date);
-                        IssueAdapter.SetIssueTimeSpent(this.Issues.Last());
-                        IssueAdapter.SetIssueTimeFormat(this.Issues.Last());
+                        IssueAdapter.TimeSpentFromEntries(this.Issues.Last());
+                        IssueAdapter.SetTimeFormat(this.Issues.Last());
                         this.TimeSpent += this.Issues.Last().TimeSpent;
                     }
                 }
