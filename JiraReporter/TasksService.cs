@@ -32,7 +32,7 @@ namespace JiraReporter
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<PullRequest> pullRequests, Policy policy)
         {
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
@@ -55,7 +55,7 @@ namespace JiraReporter
             }
         }
 
-        private static Issue GetCompleteIssue(List<PullRequest> pullRequests, Policy policy, AnotherJiraRestClient.Issue jiraIssue)
+        private static Issue GetCompleteIssue(List<PullRequest> pullRequests, Policy policy, JiraIssue jiraIssue)
         {
             var issue = new Issue(jiraIssue);
             var issueProcessor = new IssueProcessor(policy, pullRequests);

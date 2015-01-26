@@ -106,11 +106,6 @@ namespace JiraReporter
 
         public static JiraIssue GetIssue(string issueKey, Policy policy)        
         {
-            var request = new RestRequest(ApiUrls.AllSprints(rapidViewId), Method.GET);
-
-            return ResolveRequest<Sprints>(policy, request).sprints;
-        }
-        public static JiraIssue GetIssue(string issueKey, Policy policy)        {
             var request = new RestRequest(ApiUrls.IssueByKey(issueKey), Method.GET);
 
             return ResolveJiraRequest<JiraIssue>(policy, request);

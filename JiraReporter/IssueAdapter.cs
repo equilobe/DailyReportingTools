@@ -50,8 +50,6 @@ namespace JiraReporter
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
-
-        {
         public static void SetIssuesExistInTimesheet(List<Issue> issues, List<Issue> timesheet)
         {
             foreach (var issue in issues)

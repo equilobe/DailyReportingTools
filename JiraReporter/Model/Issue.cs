@@ -187,7 +187,7 @@ namespace JiraReporter.Model
             this.DisplayStatus = issue.DisplayStatus;
         }
 
-        public Issue(AnotherJiraRestClient.Issue jiraIssue)
+        public Issue(JiraIssue jiraIssue)
         {
             Summary = jiraIssue.fields.summary;
             Key = jiraIssue.key;

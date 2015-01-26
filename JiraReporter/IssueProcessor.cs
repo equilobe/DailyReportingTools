@@ -12,7 +12,7 @@ namespace JiraReporter
         SourceControlLogReporter.Model.Policy _policy;
         List<PullRequest> _pullRequests;
         Issue _currentIssue;
-        AnotherJiraRestClient.Issue _currentJiraIssue;
+        JiraIssue _currentJiraIssue;
 
         public IssueProcessor(SourceControlLogReporter.Model.Policy policy, List<PullRequest> pullRequests)
         {
@@ -24,13 +24,13 @@ namespace JiraReporter
         {
             foreach (var issue in issues)
             {
-                var jiraIssue = new AnotherJiraRestClient.Issue();
+                var jiraIssue = new JiraIssue();
                 jiraIssue = RestApiRequests.GetIssue(issue.Key, _policy);
                 SetIssue(issue, jiraIssue);
             }
         }
 
-        public void SetIssue(Issue issue, AnotherJiraRestClient.Issue jiraIssue)
+        public void SetIssue(Issue issue, JiraIssue jiraIssue)
         {
             SetGenericIssue(issue, jiraIssue);
             if (issue.IsSubtask)
@@ -42,7 +42,7 @@ namespace JiraReporter
                 SetSubtasks(issue);
         }
 
-        private void SetGenericIssue(Issue issue, AnotherJiraRestClient.Issue jiraIssue)
+        private void SetGenericIssue(Issue issue, JiraIssue jiraIssue)
         {
             this._currentIssue = issue;
             this._currentJiraIssue = jiraIssue;
@@ -135,7 +135,7 @@ namespace JiraReporter
             _currentIssue.OriginalEstimateSeconds = _currentJiraIssue.fields.timeoriginalestimate;
         }
 
-        private void SetParent(AnotherJiraRestClient.Issue jiraIssue)
+        private void SetParent(JiraIssue jiraIssue)
         {
             _currentIssue.Parent = new Issue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(_currentIssue.Parent.Key, _policy);
@@ -144,7 +144,7 @@ namespace JiraReporter
 
         private void SetSubtasks(Issue issue)
         {
-            var jiraIssue = new AnotherJiraRestClient.Issue();
+            var jiraIssue = new JiraIssue();
             issue.SubtasksIssues = new List<Issue>();
             foreach (var task in issue.Subtasks)
             {
