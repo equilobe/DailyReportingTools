@@ -45,8 +45,9 @@
                 <td>
                     {{policy.ProjectName}}
                 </td>
-                <td>
-                    <input type="time" class="form-control" value="{{policy.ReportTime}}"/>
+                <td style="position: relative;">
+                    <input type="text" class="form-control" ng-model="policy.ReportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" placeholder="08:00" />
+                    <span class="reportTime-notification"><b>Enter valid time</b> (23:59)</span>
                 </td>
                 <td>
                     <a href="~/Policy/Details/{{policy.Id}}" class="btn btn-default">Details</a>
@@ -64,6 +65,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
     </script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js">
+    </script>
+
+    <script type="text/javascript">
+        $(window).load(function () {
+            $("input").on("keyup", function () {
+                var selectedInput = $(this);
+
+                if (selectedInput.hasClass("ng-invalid")) {
+                    selectedInput.parent().addClass("has-error")
+                        .find('.reportTime-notification').show();
+                }
+                else {
+                    selectedInput.parent().removeClass("has-error")
+                        .find('.reportTime-notification').hide();;
+                }
+            });
+
+            $(".reportTime-notification").on("click", function () {
+                $(this).prev().focus();
+            });
+        })
     </script>
 </body>
 </html>
