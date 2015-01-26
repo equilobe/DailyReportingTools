@@ -69,6 +69,7 @@
     <Compile Include="AuthorLoader.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
+    <Compile Include="IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraModels\Avatar.cs" />
