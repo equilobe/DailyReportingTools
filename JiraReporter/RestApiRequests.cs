@@ -1,4 +1,6 @@
-﻿using JiraReporter.Model;
+﻿using JiraReporter.JiraModels;
+using JiraReporter.JiraModels;
+using JiraReporter.Model;
 using RestSharp;
 using SourceControlLogReporter.Model;
 using System;
@@ -60,9 +62,9 @@ namespace JiraReporter
             return ResolveRequest<JiraModels.Project>(policy, request);
         }
 
-        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
+        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate, string targetUser)
         {
-            var request = new RestRequest(ApiUrls.Timesheet(policy.TargetGroup, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
+            var request = new RestRequest(ApiUrls.Timesheet(targetUser, TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
 
             return ResolveRequest<Timesheet>(policy, request, true);
         }
@@ -95,7 +97,14 @@ namespace JiraReporter
             return ResolveRequest<SprintReport>(policy, request);
         }
 
-        public static JiraIssue GetIssue(string issueKey, Policy policy)
+        public static List<Sprint> GetAllSprints(string rapidViewId, Policy policy)
+        {
+            var request = new RestRequest(ApiUrls.AllSprints(rapidViewId), Method.GET);
+
+            return ResolveRequest<Sprints>(policy, request).sprints;
+        }
+
+        public static JiraIssue GetIssue(string issueKey, Policy policy)        
         {
             var request = new RestRequest(ApiUrls.IssueByKey(issueKey), Method.GET);
 

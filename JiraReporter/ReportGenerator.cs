@@ -7,38 +7,39 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    public enum TimesheetType { ReportTimesheet, MonthTimesheet, SprintTimesheet};
 
     class ReportGenerator
     {
         public static Report GenerateReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
             var timesheetService = new TimesheetService();
+            var pullRequests = new List<PullRequest>();
+            var commits = new List<Commit>();
 
-            var log = SourceControlProcessor.GetSourceControlLog(policy, options);
-            var pullRequests = SourceControlProcessor.GetPullRequests(log);
-            var commits = SourceControlProcessor.GetCommits(log);
+            if (policy.SourceControlOptions != null)
+            {
+                var log = SourceControlProcessor.GetSourceControlLog(policy, options);
+                pullRequests = SourceControlProcessor.GetPullRequests(log);
+                commits = SourceControlProcessor.GetCommits(log);
+            }
 
-            var timesheetCollection = GenerateReportTimesheets(policy, options);
-
-            timesheetService.SetTimesheetCollection(timesheetCollection, policy, options, pullRequests);
-
-            return GetReport(timesheetCollection, policy, options, pullRequests, commits);
+            return GetReport(policy, options, pullRequests, commits);
         }
-        private static Report GetReport(Dictionary<TimesheetType, Timesheet> timesheetCollection, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
+        private static Report GetReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
         {
-            var sprintTasks = GetSprintReport(policy, options, timesheetCollection[TimesheetType.ReportTimesheet], pullRequests);           
-            var authors = AuthorsProcessing.GetAuthors(timesheetCollection, sprintTasks, policy, options, commits);
+            var sprintTasks = GetSprintReport(policy, options, pullRequests);
+            var sprint = GenerateSprint(policy, options);
+            var authors = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests).GetAuthors();
             var report = new Report(policy, options)
             {
                 Authors = authors,
                 SprintTasks = sprintTasks,
                 PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, timesheetCollection)
+                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, sprint)
             };
             report.Title = report.GetReportTitle();
-                         
+
             return report;
         }
 
@@ -58,27 +59,16 @@ namespace JiraReporter
             return individualReport;
         }
 
-        private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Timesheet timesheet, List<PullRequest> pullRequests)
+        private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();
-            report.SetSprintTasks(policy, timesheet, options, pullRequests);
+            report.SetSprintTasks(policy, options, pullRequests);
             return report;
         }
 
-        private static Dictionary<TimesheetType, Timesheet> GenerateReportTimesheets(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        public static Sprint GenerateSprint(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
-            var timesheetDictionary = new Dictionary<TimesheetType, Timesheet>();
-            var sprint = GenerateSprint(policy);
-            timesheetDictionary.Add(TimesheetType.ReportTimesheet, RestApiRequests.GetTimesheet(policy, options.FromDate, options.ToDate.AddDays(-1)));
-            timesheetDictionary.Add(TimesheetType.MonthTimesheet, RestApiRequests.GetTimesheet(policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)));
-            if(sprint != null)
-                 timesheetDictionary.Add(TimesheetType.SprintTimesheet, RestApiRequests.GetTimesheet(policy, sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone()));
-            return timesheetDictionary;
-        }
-
-        private static Sprint GenerateSprint(SourceControlLogReporter.Model.Policy policy)
-        {
-            var jira = new JiraService(policy);
+            var jira = new JiraService(policy, options);
             return jira.GetLatestSprint();
         }
     }

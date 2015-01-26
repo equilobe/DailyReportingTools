@@ -65,14 +65,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiUrls.cs" />
-    <Compile Include="AuthorsProcessing.cs" />
+    <Compile Include="AuthorHelpers.cs" />
+    <Compile Include="AuthorLoader.cs" />
+    <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="IssueAdapter.cs" />
+    <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraModels\Avatar.cs" />
     <Compile Include="JiraModels\Filter.cs" />
     <Compile Include="JiraModels\Project.cs" />
     <Compile Include="JiraModels\RapidView.cs" />
+    <Compile Include="JiraModels\Sprints.cs" />
     <Compile Include="JiraModels\SprintsData.cs" />
     <Compile Include="JiraModels\View.cs" />
     <Compile Include="JiraModels\Sprint.cs" />
@@ -90,6 +94,7 @@
     <Compile Include="Model\JiraIssue.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
+    <Compile Include="Model\WorkingDaysInfo.cs" />
     <Compile Include="ReportEmailJira.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />

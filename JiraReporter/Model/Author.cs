@@ -16,20 +16,26 @@ namespace JiraReporter.Model
         {
             get
             {
-                return AuthorsProcessing.GetShortName(Name);
+                return AuthorHelpers.GetShortName(Name);
             }
         }
         public string FirstName
         {
             get
             {
-                return AuthorsProcessing.GetFirstName(Name);
+                return AuthorHelpers.GetFirstName(Name);
             }
         }
         public string Initials { get; set; }
         public string EmailAdress { get; set; }
 
-        public string TimeLogged { get; set; }
+        public string TimeLogged
+        {
+            get
+            {
+                return ((int)TimeSpent).SetTimeFormat();
+            }
+        }
         public int TimeSpent { get; set; }
         public double TimeSpentHours
         {
@@ -150,6 +156,9 @@ namespace JiraReporter.Model
                 return MonthChartPixelWidth.ToString() + "px";
             }
         }
+        public Timesheet CurrentTimesheet { get; set; }
+        public Timesheet MonthTimesheet { get; set; }
+        public Timesheet SprintTimesheet { get; set; }
 
         public List<Issue> Issues { get; set; }
         public List<Issue> InProgressTasks { get; set; }
@@ -177,5 +186,26 @@ namespace JiraReporter.Model
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
         public Image Image { get; set; }
+
+        public Author()
+        {
+
+        }
+
+        public Author(JiraUser user)
+        {
+            Name = user.displayName;
+            EmailAdress = user.emailAddress;
+            Username = user.key;
+            AvatarLink = user.avatarUrls.Big;
+        }
+
+        public bool HasIssues()
+        {
+            if (Issues == null || Issues.Count == 0)
+                return false;
+
+            return true;
+        }
     }
 }

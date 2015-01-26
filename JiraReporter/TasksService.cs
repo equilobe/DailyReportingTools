@@ -10,14 +10,18 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public List<Issue> GetCompletedTasks(Policy policy, Options options, Timesheet timesheet)
+        public List<Issue> GetCompletedTasks(Policy policy, Options options)
         {
             var completedTasks = new List<Issue>();
             var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());
-            foreach (var issue in issues.issues)
+            foreach (var jiraIssue in issues.issues)
             {
-                if (issue.fields.issuetype.subtask == false)
-                    SetTask(policy, issue, timesheet, completedTasks, null);
+                if (jiraIssue.fields.issuetype.subtask == false)
+                {
+                    var issue = GetCompleteIssue(null, policy, jiraIssue);
+
+                    completedTasks.Add(issue);
+                }
             }
             completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
             return completedTasks;
@@ -28,7 +32,7 @@ namespace JiraReporter
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, Timesheet timesheet, List<PullRequest> pullRequests, Policy policy)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<PullRequest> pullRequests, Policy policy)
         {
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
@@ -36,34 +40,29 @@ namespace JiraReporter
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
-                var issue = new Issue
-                {
-                    Key = jiraIssue.key,
-                    Summary = jiraIssue.fields.summary
-                };
-                IssueAdapter.SetIssue(issue, policy, jiraIssue, timesheet, pullRequests);
-                IssueAdapter.SetIssueErrors(issue, policy);
+                var issue = GetCompleteIssue(pullRequests, policy, jiraIssue);
 
                 if (issue.StatusCategory.name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
                 else
                     if (issue.Resolution == null)
+                    {
+                        IssueAdapter.HasSubtasksInProgress(issue);
                         tasks.OpenTasks.Add(issue);
+                    }
                 if (issue.Assignee == null && issue.StatusCategory.name != "Done")
                     tasks.UnassignedTasks.Add(issue);
             }
         }
 
-        public void SetTask(SourceControlLogReporter.Model.Policy policy, JiraIssue jiraIssue, Timesheet timesheet, List<Issue> tasks, List<PullRequest> pullRequests)
+        private static Issue GetCompleteIssue(List<PullRequest> pullRequests, Policy policy, JiraIssue jiraIssue)
         {
-            tasks.Add(new Issue
-            {
-                Key = jiraIssue.key,
-                Summary = jiraIssue.fields.summary
-            });
+            var issue = new Issue(jiraIssue);
+            var issueProcessor = new IssueProcessor(policy, pullRequests);
 
-            IssueAdapter.SetIssue(tasks.Last(), policy, jiraIssue, timesheet, pullRequests);
-            IssueAdapter.SetIssueErrors(tasks.Last(), policy);
+            issueProcessor.SetIssue(issue, jiraIssue);
+            IssueAdapter.SetIssueErrors(issue, policy);
+            return issue;
         }
 
         public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)
@@ -104,7 +103,7 @@ namespace JiraReporter
             foreach (var task in tasks)
             {
                 IssueAdapter.SetSubtasksLoggedAuthor(task, author.Name);
-                if (task.SubTask == true)
+                if (task.IsSubtask == true)
                 {
                     IssueAdapter.SetLoggedAuthor(task, author.Name);
                     var parentIssue = parentTasks.Find(t => t.Key == task.Parent.Key);
@@ -126,7 +125,7 @@ namespace JiraReporter
                     }
                 }
             }
-            parentTasks.RemoveAll(t => t.SubTask == true);
+            parentTasks.RemoveAll(t => t.IsSubtask == true);
             return parentTasks;
         }
 

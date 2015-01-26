@@ -81,22 +81,12 @@ namespace JiraReporter
             return GetHealthFromPercentage(allocatedHours, sprintHourRate);
         }
 
-        public Health GetSprintHealth(Timesheet sprint, double allocatedHours, double totalTime)
+        public Health GetSprintHealth(int sprintDaysWorked, double allocatedHours, double totalTime)
         {
             if (allocatedHours == 0)
                 return Health.None;
 
-            int daysWorked = GetDaysWorked(sprint);
-            return GetHealthFromPercentage(allocatedHours * daysWorked, totalTime);
-        }
-
-        private int GetDaysWorked(Timesheet sprint)
-        {
-            var now = DateTime.Now.ToOriginalTimeZone();
-            if (now <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
-                return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, Policy.MonthlyOptions);
-
-            return Summary.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), Policy.MonthlyOptions);
+            return GetHealthFromPercentage(allocatedHours * sprintDaysWorked, totalTime);
         }
 
         public Health GetMonthHealth(double allocatedHours, double totalTimeWorked)

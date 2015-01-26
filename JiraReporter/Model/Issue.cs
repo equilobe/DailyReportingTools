@@ -65,7 +65,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public string Type { get; set; }
         [XmlIgnore]
-        public bool SubTask { get; set; }
+        public bool IsSubtask { get; set; }
         [XmlIgnore]
         public Issue Parent { get; set; }
         [XmlIgnore]
@@ -151,7 +151,7 @@ namespace JiraReporter.Model
                 this.StringResolutionDate = issue.StringResolutionDate;
             }
             this.Status = issue.Status;
-            this.SubTask = issue.SubTask;
+            this.IsSubtask = issue.IsSubtask;
             this.Summary = issue.Summary;
             this.TimeLogged = issue.TimeLogged;
             this.TimeLoggedTotal = issue.TimeLoggedTotal;
@@ -185,6 +185,12 @@ namespace JiraReporter.Model
             //this.ErrorsCount = issue.ErrorsCount;
             this.StatusType = issue.StatusType;
             this.DisplayStatus = issue.DisplayStatus;
+        }
+
+        public Issue(JiraIssue jiraIssue)
+        {
+            Summary = jiraIssue.fields.summary;
+            Key = jiraIssue.key;
         }
     }
 }
