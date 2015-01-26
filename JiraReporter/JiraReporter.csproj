@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AnotherJiraRestClient">
-      <HintPath>libs\AnotherJiraRestClient.dll</HintPath>
-    </Reference>
     <Reference Include="JWT">
       <HintPath>..\packages\JWT.1.3.2\lib\3.5\JWT.dll</HintPath>
     </Reference>
@@ -70,6 +67,7 @@
     <Compile Include="ApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="AuthorLoader.cs" />
+    <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="IssueAdapter.cs" />
@@ -78,6 +76,7 @@
     <Compile Include="JiraModels\Filter.cs" />
     <Compile Include="JiraModels\Project.cs" />
     <Compile Include="JiraModels\RapidView.cs" />
+    <Compile Include="JiraModels\Sprints.cs" />
     <Compile Include="JiraModels\SprintsData.cs" />
     <Compile Include="JiraModels\View.cs" />
     <Compile Include="JiraModels\Sprint.cs" />
@@ -92,6 +91,7 @@
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\IndividualReport.cs" />
     <Compile Include="Model\IndividualReportProcessor.cs" />
+    <Compile Include="Model\JiraIssue.cs" />
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />

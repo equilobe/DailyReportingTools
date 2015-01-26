@@ -36,43 +36,43 @@ namespace JiraReporter
             if (issue.IsSubtask)
             {
                 SetParent(jiraIssue);
-                SetSubtasksIssues(issue.Parent);
+                SetSubtasks(issue.Parent);
             }
             if (issue.Subtasks != null)
-                SetSubtasksIssues(issue);
+                SetSubtasks(issue);
         }
 
-        public void SetGenericIssue(Issue issue, AnotherJiraRestClient.Issue jiraIssue)
+        private void SetGenericIssue(Issue issue, AnotherJiraRestClient.Issue jiraIssue)
         {
             this._currentIssue = issue;
             this._currentJiraIssue = jiraIssue;
 
             SetEmptyEntries();
-            Priority();
-            Status();
+            SetPriority();
+            SetStatus();
             SetAssignee();
             SetEstimatesAndRemaining();
             SetResolution();
-            IssueType();
-            Subtasks();
+            SetIssueType();
+            SetSubtasks();
             SetLabel();
             SetDates();
             SetTimeSpent();
             IssueAdapter.SetTimeFormat(issue);
-            AdjustIssuePullRequests(issue, _pullRequests);
+            AdjustIssuePullRequests();
             SetIssueLink();
             SetStatusType();
             SetDisplayStatus();
-            HasWorkLoggedByAssignee();
+            SetHasWorkLoggedByAssignee();
         }
 
-        private void Subtasks()
+        private void SetSubtasks()
         {
             if (_currentJiraIssue.fields.subtasks != null)
                 _currentIssue.Subtasks = _currentJiraIssue.fields.subtasks;
         }
 
-        private void Priority()
+        private void SetPriority()
         {
             _currentIssue.Priority = _currentJiraIssue.fields.priority;
         }
@@ -83,7 +83,7 @@ namespace JiraReporter
                 _currentIssue.Entries = new List<Entries>();
         }
 
-        private void IssueType()
+        private void SetIssueType()
         {
             _currentIssue.Type = _currentJiraIssue.fields.issuetype.name;
             _currentIssue.IsSubtask = _currentJiraIssue.fields.issuetype.subtask;
@@ -95,7 +95,7 @@ namespace JiraReporter
                 _currentIssue.Assignee = AuthorHelpers.GetCleanName(_currentJiraIssue.fields.assignee.displayName);
         }
 
-        private void Status()
+        private void SetStatus()
         {
             _currentIssue.Status = _currentJiraIssue.fields.status.name;
             _currentIssue.PolicyReopenedStatus = _policy.AdvancedOptions.ReopenedStatus;
@@ -135,14 +135,14 @@ namespace JiraReporter
             _currentIssue.OriginalEstimateSeconds = _currentJiraIssue.fields.timeoriginalestimate;
         }
 
-        public void SetParent(AnotherJiraRestClient.Issue jiraIssue)
+        private void SetParent(AnotherJiraRestClient.Issue jiraIssue)
         {
             _currentIssue.Parent = new Issue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(_currentIssue.Parent.Key, _policy);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
-        private void SetSubtasksIssues(Issue issue)
+        private void SetSubtasks(Issue issue)
         {
             var jiraIssue = new AnotherJiraRestClient.Issue();
             issue.SubtasksIssues = new List<Issue>();
@@ -161,13 +161,13 @@ namespace JiraReporter
                     _currentIssue.Label = label;
         }
 
-        private void AdjustIssuePullRequests(Issue issue, List<PullRequest> pullRequests)
+        private void AdjustIssuePullRequests()
         {
-            if (pullRequests != null)
+            if (_pullRequests != null)
             {
-                issue.PullRequests = new List<PullRequest>();
-                issue.PullRequests = pullRequests.FindAll(pr => IssueAdapter.ContainsKey(pr.GithubPullRequest.Title, issue.Key) == true);
-                EditIssuePullRequests(issue);
+                _currentIssue.PullRequests = new List<PullRequest>();
+                _currentIssue.PullRequests = _pullRequests.FindAll(pr => IssueAdapter.ContainsKey(pr.GithubPullRequest.Title, _currentIssue.Key) == true);
+                EditIssuePullRequests(_currentIssue);
             }
         }
 
@@ -201,7 +201,7 @@ namespace JiraReporter
                     _currentIssue.StatusType = "Open";
         }
 
-        private void HasWorkLoggedByAssignee()
+        private void SetHasWorkLoggedByAssignee()
         {
             if (_currentIssue != null)
                 if (_currentIssue.Assignee != null)

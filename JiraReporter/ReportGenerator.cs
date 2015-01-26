@@ -28,7 +28,7 @@ namespace JiraReporter
         private static Report GetReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
         {
             var sprintTasks = GetSprintReport(policy, options, pullRequests);
-            var sprint = GenerateSprint(policy);
+            var sprint = GenerateSprint(policy, options);
             var authors = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests).GetAuthors();
             var report = new Report(policy, options)
             {
@@ -66,9 +66,9 @@ namespace JiraReporter
             return report;
         }
 
-        public static Sprint GenerateSprint(SourceControlLogReporter.Model.Policy policy)
+        public static Sprint GenerateSprint(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
         {
-            var jira = new JiraService(policy);
+            var jira = new JiraService(policy, options);
             return jira.GetLatestSprint();
         }
     }

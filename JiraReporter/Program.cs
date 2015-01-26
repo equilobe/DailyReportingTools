@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using JiraReporter.JiraModels;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;
@@ -25,10 +24,11 @@ namespace JiraReporter
             SetProjectInfo(policy, project);
             policy.SetDefaultProperties();
             LoadReportDates(policy, options);
+
             if (RunReport(policy, options))
                 RunReportTool(args, policy, options);
             else
-                Console.WriteLine("Unable to run report tool due to policy settings or final report already generated.");
+                throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
         private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
@@ -101,7 +101,7 @@ namespace JiraReporter
             options.LoadDates(policy);
         }
 
-        private static void SetProjectInfo(SourceControlLogReporter.Model.Policy policy, Project project)
+        private static void SetProjectInfo(SourceControlLogReporter.Model.Policy policy, JiraModels.Project project)
         {
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;

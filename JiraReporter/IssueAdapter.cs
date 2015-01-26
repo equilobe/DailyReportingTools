@@ -27,19 +27,6 @@ namespace JiraReporter
                 issues.RemoveAll(i => i.Entries.Count == 0 && i.Commits.Count == 0);
         }
 
-        public static void AddIssue(Issue issue, List<Issue> issues)
-        {
-            if (issues == null)
-                issues = new List<Issue>();
-            issues.Add(issue);
-        }
-
-        private static void AddEntry(Issue issue, Entries entry)
-        {
-            issue.Entries.Add(entry);
-        }
-
-
         public static void TimeSpentFromEntries(Issue issue)
         {
             issue.TimeSpent = issue.Entries.Sum(e => e.TimeSpent);
@@ -63,6 +50,8 @@ namespace JiraReporter
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
+
+        {
         public static void SetIssuesExistInTimesheet(List<Issue> issues, List<Issue> timesheet)
         {
             foreach (var issue in issues)
@@ -75,11 +64,12 @@ namespace JiraReporter
                 return true;
             return false;
         }
-
-        public static List<Issue> OrderIssues(List<Issue> issues)
+		public static List<Issue> OrderIssues(List<Issue> issues)
         {
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
+
+
 
         public static void AdjustIssueCommits(DayLog dayLog)
         {

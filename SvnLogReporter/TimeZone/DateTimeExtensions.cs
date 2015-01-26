@@ -17,10 +17,7 @@ namespace System
 
         public static long AsUnixTimestampSeconds(this DateTime time)
         {
-            if (time > UnixEpoch)
-                return (long)(time - UnixEpoch).TotalSeconds;
-
-            return 0L;
+            return Convert.ToInt64((time - UnixEpoch).TotalSeconds);
         }
 
         public static TimeSpan OffsetFromUtc { get; set; }
