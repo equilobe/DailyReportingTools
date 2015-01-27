@@ -69,6 +69,13 @@ namespace JiraReporter
             return ResolveRequest<Timesheet>(policy, request, true);
         }
 
+        public static JiraUser GetUser(string username, Policy policy)
+        {
+            var request = new RestRequest(ApiUrls.User(username), Method.GET);
+
+            return ResolveRequest<JiraUser>(policy, request);
+        }
+
         public static List<JiraUser> GetUsers(Policy policy)
         {
             var request = new RestRequest(ApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);

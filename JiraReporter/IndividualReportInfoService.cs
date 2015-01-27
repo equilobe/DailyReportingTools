@@ -9,7 +9,7 @@ namespace JiraReporter
 {
     class IndividualReportInfoService
     {
-        public void GetIndividualDraftInfo(List<Author> authors, SourceControlLogReporter.Model.Policy policy)
+        public void SetIndividualDraftInfo(List<Author> authors, SourceControlLogReporter.Model.Policy policy)
         {
             if(!policy.AdvancedOptions.NoIndividualDraft)
             {
@@ -49,6 +49,16 @@ namespace JiraReporter
             var url = string.Format("draftKey={0}", individualDraft.UserKey);
 
             return new Uri(baseUrl + "&" + url);
+        }
+
+        public SourceControlLogReporter.Model.IndividualDraftInfo GetIndividualDraftInfo(string key, SourceControlLogReporter.Model.Policy policy)
+        {
+            var draft = new SourceControlLogReporter.Model.IndividualDraftInfo();
+            if (policy.GeneratedProperties.IndividualDrafts != null)
+                draft = policy.GeneratedProperties.IndividualDrafts.Find(d => d.UserKey == key);
+            SetIndividualUrls(draft, policy);
+
+            return draft;
         }
     }
 }

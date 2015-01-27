@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-
     class ReportGenerator
     {
         public static Report GenerateReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
@@ -29,7 +28,9 @@ namespace JiraReporter
         {
             var sprintTasks = GetSprintReport(policy, options, pullRequests);
             var sprint = GenerateSprint(policy, options);
-            var authors = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests).GetAuthors();
+
+            var authors = GetReportAuthors(policy, options, pullRequests, commits, sprintTasks, sprint);
+
             var report = new Report(policy, options)
             {
                 Authors = authors,
@@ -41,6 +42,21 @@ namespace JiraReporter
             report.Title = report.GetReportTitle();
 
             return report;
+        }
+
+        private static List<Author> GetReportAuthors(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits, SprintTasks sprintTasks, Sprint sprint)
+        {
+            var authors = new List<Author>();
+            var authorLoader = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests);
+            if (options.DraftKey != null)
+            {
+                var author = authorLoader.GetAuthorByKey(options.DraftKey, policy);
+                authors.Add(author);
+            }
+            else
+                authors = authorLoader.GetAuthors();
+
+            return authors;
         }
 
         public static IndividualReport GetIndividualReport(Report report, Author author)
