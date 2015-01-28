@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using DailyReportWeb.Helpers;
 using SourceControlLogReporter.Model;
 using System.Configuration;
+using JiraReporter;
 
 namespace DailyReportWeb.Controllers
 {
@@ -22,9 +23,12 @@ namespace DailyReportWeb.Controllers
             var policy = PolicyService.LoadPolicy(id);
             var policyPath = PolicyService.GetPolicyPath(id);
 
+            if (!policy.CanSendFullDraft())
+                return Content("Not all individual drafts were confirmed");
+
             PolicyService.SetPolicyFinalReport(policy, policyPath);
 
-            if (ReportRunner.TryRunReport(id))           
+            if (ReportRunner.TryRunReport(id))
                 return Content("Report confirmed. Final report sent");
             else
                 return Content("Error in sending the final report");
@@ -36,6 +40,12 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend draft for another date");
 
+            var policy = PolicyService.LoadPolicy(id);
+            var policyPath = PolicyService.GetPolicyPath(id);
+
+            if (!policy.CanSendFullDraft())
+                return Content("Cannot send report if not all individual drafts were confirmed");
+
             if (ReportRunner.TryRunReport(id))
                 return Content("Draft report was resent");
             else
@@ -43,7 +53,7 @@ namespace DailyReportWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult SendIndividualDraft(string id, DateTime date, string draftKey)
+        public ActionResult ConfirmIndividualDraft(string id, DateTime date, string draftKey)
         {
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
@@ -51,38 +61,37 @@ namespace DailyReportWeb.Controllers
             var policyPath = PolicyService.GetPolicyPath(id);
             var policy = Policy.CreateFromFile(policyPath);
 
-            var confirm = ReportRunner.SetIndividualDraftConfirmation(draftKey, policy, policyPath);
+            var confirm = policy.SetIndividualDraftConfirmation(draftKey, policyPath);
             if (!confirm)
                 return Content("Error in confirmation");
 
-            if (ReportRunner.IndividualReportConfirmedByAll(policy))
+            if (policy.CanSendFullDraft())
             {
                 PolicyService.SetPolicyFullDraft(policy, policyPath);
 
-                if (ReportRunner.TryRunReport(id) == true)
-                    return Content("Report confirmed. Full draft sent");
-                else
+                if (!ReportRunner.TryRunReport(id))
                     return Content("Report confirmed. Error in sending full draft report");
+
+                return Content("Report confirmed. Full draft sent");
             }
 
             return Content("Report confirmed");
         }
 
         [HttpGet]
-        public ActionResult ResendIndividualDraft(string id, DateTime date, string draftKey)
+        public ActionResult SendIndividualDraft(string id, DateTime date, string draftKey)
         {
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend report for another date");
 
             var policy = PolicyService.LoadPolicy(id);
 
-            if (!ReportRunner.CheckConfirmed(draftKey, policy))
-            {
-                CmdProcess.RunProcess(id, draftKey);
-                return Content("Report resend");
-            }
+            if (policy.CheckIndividualDraftConfirmation(draftKey))
+                return Content("Draft is already confirmed. Can't resend");
 
-            return Content("Draft is already confirmed. Can't resend");                        
+            ReportRunner.RunReportDirectly(id, draftKey);
+
+            return Content("Report resend");
         }
     }
 }

@@ -21,7 +21,7 @@ namespace JiraReporter.Model
         public void ProcessReport(IndividualReport report)
         {
             SaveReport(Policy, report);
-            Policy.SetIndividualEmail(report.Author.EmailAdress);
+            Policy.SetIndividualEmail("sebastian.dumitrascu@equilobe.com");
             SendReport(report);
         }
 

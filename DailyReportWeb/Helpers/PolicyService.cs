@@ -11,22 +11,33 @@ namespace DailyReportWeb.Helpers
     {
         public static void SetPolicyFullDraft(Policy policy, string policyPath)
         {
-            policy.AdvancedOptions.NoIndividualDraft = true;
-            policy.AdvancedOptions.NoDraft = false;
+         //   policy.AdvancedOptions.NoIndividualDraft = true;
+         //   policy.AdvancedOptions.NoDraft = false;
+
+            //policy.GeneratedProperties.IsDraft = true;
+            //policy.GeneratedProperties.IsIndividualDraft = false;
+            policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+            policy.GeneratedProperties.AreIndividualDraftsConfirmed = true;
+
             policy.GeneratedProperties.IndividualDrafts = null;
             policy.SaveToFile(policyPath);
         }
 
         public static void SetPolicyFinalReport(Policy policy, string policyPath)
         {
-            policy.AdvancedOptions.NoDraft = true;
+            //policy.AdvancedOptions.NoDraft = true;
+            //policy.GeneratedProperties.IsIndividualDraft = false;
+            //policy.GeneratedProperties.IsIndividualDraft = false;
+            policy.GeneratedProperties.AreIndividualDraftsConfirmed = true;
+            policy.GeneratedProperties.IsFinalDraftConfirmed = true;
+
             policy.SaveToFile(policyPath);
         }
 
         public static string GetPolicyPath(string key)
         {
             var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var policyPath = basePath + "\\Policies\\" + key + ".xml";
+            var policyPath = basePath + @"\Policies\" + key + ".xml";
             return policyPath;
         }
 
