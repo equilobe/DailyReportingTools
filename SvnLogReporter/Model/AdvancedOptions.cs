@@ -12,9 +12,11 @@ namespace SourceControlLogReporter.Model
     public class AdvancedOptions
     {
         [XmlAttribute]
+        [DefaultValue(false)]
         public bool NoDraft { get; set; }
 
         [XmlAttribute]
+        [DefaultValue(false)]
         public bool NoIndividualDraft { get; set; }
 
         public string ReportTitle { get; set; }

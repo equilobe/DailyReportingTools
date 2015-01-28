@@ -47,7 +47,7 @@ namespace SourceControlLogReporter.Model
                 if (AdvancedOptions.NoIndividualDraft)
                     return null;
 
-                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/confirmIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
@@ -60,7 +60,7 @@ namespace SourceControlLogReporter.Model
                 if (AdvancedOptions.NoIndividualDraft)
                     return null;
 
-                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
             }
         }
 
@@ -69,7 +69,7 @@ namespace SourceControlLogReporter.Model
         public string Username { get; set; }
         public string Password { get; set; }
         public string SharedSecret { get; set; }
-       
+
         public int ProjectId { get; set; }
         public string ReportTime { get; set; }
 
@@ -177,13 +177,36 @@ namespace SourceControlLogReporter.Model
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();
-            SetDraft();
+            SetDraftMode();
         }
 
-        private void SetDraft()
+        private void SetDraftMode()
         {
             if (AdvancedOptions.NoDraft)
+            {
                 AdvancedOptions.NoIndividualDraft = true;
+                GeneratedProperties.IsDraft = false;
+                GeneratedProperties.IsIndividualDraft = false;
+            }
+            else
+                if (AdvancedOptions.NoIndividualDraft)
+                {
+                    GeneratedProperties.IsDraft = true;
+                    GeneratedProperties.IsIndividualDraft = false;
+                }
+
+            if (GeneratedProperties.IsFinalDraftConfirmed)
+            {
+                GeneratedProperties.IsDraft = false;
+                GeneratedProperties.IsIndividualDraft = false;
+            }
+            else if (!GeneratedProperties.AreIndividualDraftsConfirmed)
+                GeneratedProperties.IsIndividualDraft = true;
+            else
+            {
+                GeneratedProperties.IsIndividualDraft = false;
+                GeneratedProperties.IsDraft = true;
+            }
         }
 
         private void SetRootPath()

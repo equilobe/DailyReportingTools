@@ -5,6 +5,7 @@ using System.Web;
 using Microsoft.Win32.TaskScheduler;
 using SourceControlLogReporter.Model;
 using System.Configuration;
+using SourceControlLogReporter;
 
 namespace DailyReportWeb.Helpers
 {
@@ -33,60 +34,19 @@ namespace DailyReportWeb.Helpers
             }
         }
 
-        public static bool IndividualReportConfirmedByAll(Policy policy)
-        {
-            var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
-            if (draftsInfo.Exists(i => i.Confirmed == false))
-                return false;
-
-            return true;
-        }
-
-        public static bool SetIndividualDraftConfirmation(string key, Policy policy, string policyPath)
-        {
-            try
-            {
-                var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
-                var draft = draftsInfo.Find(d => d.UserKey == key);
-                draft.Confirmed = true;
-                policy.SaveToFile(policyPath);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public static void SetPolicyFullDraft(Policy policy, string policyPath)
-        {
-            policy.AdvancedOptions.NoIndividualDraft = true;
-            policy.AdvancedOptions.NoDraft = false;
-            policy.GeneratedProperties.IndividualDrafts = null;
-            policy.SaveToFile(policyPath);
-        }
-
-        public static void SetPolicyFinalReport(Policy policy, string policyPath)
-        {
-            policy.AdvancedOptions.NoDraft = true;
-            policy.SaveToFile(policyPath);
-        }
-
-        public static string GetPolicyPath(string key)
+        public static void RunReportDirectly(string policyName, string draftKey)
         {
             var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var policyPath = basePath + "\\Policies\\" + key + ".xml";
-            return policyPath;
+            var command = GetCommand(policyName, draftKey);
+            Cmd.ExecuteSingleCommand(command, basePath);
         }
 
-        public static bool CheckConfirmed(string key, Policy policy)
+        private static string GetCommand(string policyName, string draftKey)
         {
-            {
-                var draft = policy.GeneratedProperties.IndividualDrafts.Find(dr => dr.UserKey == key);
+            var draftKeyOption = " --draftKey " + draftKey;
+            var command = "jiraReporter.exe" + " --policy" + @" Policies\" + policyName + ".xml" + draftKeyOption;
 
-                return draft.Confirmed;
-            }
+            return command;
         }
     }
 }
