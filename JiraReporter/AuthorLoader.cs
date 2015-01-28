@@ -33,11 +33,6 @@ namespace JiraReporter
 
         public List<Author> GetAuthors()
         {
-
-            // TODO: Move this to SVN log reporter
-            SetCommitsLink();
-
-
             var authors = RestApiRequests.GetUsers(_policy)
                             .Where(UserIsNotIgnored)
                             .Select(u => new Author(u))

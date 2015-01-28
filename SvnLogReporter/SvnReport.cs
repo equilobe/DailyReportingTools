@@ -22,7 +22,18 @@ namespace SourceControlLogReporter
             ExecuteSvnCommand();
             var log= Log.LoadLog(PathToLog);
             log.RemoveWrongEntries(Options.FromDate);
+            SetCommitsLink(log.Entries);
             return log;
+        }
+
+        private void SetCommitsLink(List<LogEntry> entries)
+        {
+            if (entries == null)
+                return;
+
+            foreach (var entry in entries)
+                if (entry.Link == null && Policy.SourceControlOptions.CommitUrl != null)
+                    entry.Link = Policy.SourceControlOptions.CommitUrl + entry.Revision;
         }
 
         private void ExecuteSvnCommand()
