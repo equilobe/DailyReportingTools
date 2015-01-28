@@ -29,12 +29,12 @@ namespace DailyReportWeb
                 }
             );
             routes.MapRoute(
-                name: "test-plugin",
-                url: "test-plugin",
+				name: "setup-policies",
+				url: "setup",
                 defaults: new
                 {
-                    controller = "Home",
-                    action = "Plugin"
+					controller = "Policy",
+					action = "Index"
                 }
             );
             routes.MapRoute(

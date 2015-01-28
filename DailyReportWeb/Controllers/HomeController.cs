@@ -73,10 +73,10 @@ namespace DailyReportWeb.Controllers
                         {
                             name = new 
                             {
-                                value = "test DRT"
+                                value = "DRT"
                             },
-                            url = "/test-plugin",
-                            key = "drt-test",
+                            url = "/setup",
+                            key = "drt-setup",
                             location = "system.top.navigation.bar",
                             conditions = new[]
                             {
