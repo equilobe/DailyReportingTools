@@ -24,7 +24,7 @@ namespace JiraReporter
         {
             var views = RestApiRequests.GetRapidViews(Policy);
             var rapidViews = new List<View>();
-            foreach(var view in views)
+            foreach (var view in views)
             {
                 if (view.filter.query.ToLower().Contains(Policy.GeneratedProperties.ProjectKey.ToLower()) || view.filter.query.ToLower().Contains(Policy.GeneratedProperties.ProjectName.ToLower()))
                     rapidViews.Add(view);
@@ -49,30 +49,25 @@ namespace JiraReporter
             var rapidView = GetRapidView(activeView);
             var rapidViewId = rapidView.rapidViewId.ToString();
             var sprints = RestApiRequests.GetAllSprints(rapidViewId, Policy);
-            sprints = GetCompleteSprints(sprints, rapidViewId);
-            if (sprints.Count > 0)
-                return GetSprintFromReportDates(sprints);
-            else
+            var sprint = GetCompleteSprint(sprints.Last(), rapidViewId);
+            sprint = GetSprintFromReportDates(sprint);
+
+            return sprint;
+        }
+
+        public Sprint GetSprintFromReportDates(Sprint sprint)
+        {
+            if (sprint.EndDate < Options.FromDate)
                 return null;
+
+            return sprint;
         }
 
-        public Sprint GetSprintFromReportDates(List<Sprint> sprints)
+        public Sprint GetCompleteSprint(Sprint sprint, string rapidViewId)
         {
-            var sprintList = new List<Sprint>();
-            sprintList = sprints.FindAll(s => s.StartDate >= Options.FromDate || s.EndDate >= Options.FromDate);
-            return sprintList.Last();
-        }
+            var completedSprint = RestApiRequests.GetSprintReport(rapidViewId, sprint.id.ToString(), Policy).sprint;
 
-        public List<Sprint> GetCompleteSprints(List<Sprint> sprints, string rapidViewId)
-        {
-            var completeSprints = new List<Sprint>();
-            foreach(var sprint in sprints)
-            {
-                var completeSprint = RestApiRequests.GetSprintReport(rapidViewId, sprint.id.ToString(), Policy).sprint;
-                completeSprints.Add(completeSprint);
-            }
-
-            return completeSprints;
+            return completedSprint;
         }
     }
 }
