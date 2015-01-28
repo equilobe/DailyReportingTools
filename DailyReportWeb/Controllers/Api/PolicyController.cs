@@ -6,6 +6,9 @@ using System.Net.Http;
 using System.Web.Http;
 using DailyReportWeb.Models;
 using SourceControlLogReporter.Model;
+using System.Web;
+using Atlassian.Connect;
+using RestSharp;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -14,12 +17,19 @@ namespace DailyReportWeb.Controllers.Api
         // GET: api/Policy
         public IEnumerable<PolicySummary> Get()
         {
-            return new PolicySummary[] 
-            {
-                new PolicySummary { Id= "asdf1", ProjectName="Alyssa", ReportTime = "10:00" },
-                new PolicySummary { Id= "asdf2", ProjectName="Board Prospects" },
-                new PolicySummary { Id= "asdf3", ProjectName="Daily Report Tool ", ReportTime = "09:00" },
-            };
+			var urlQs = HttpUtility.ParseQueryString(Request.Headers.Referrer.Query);
+			var baseUrl = urlQs["xdm_e"] + urlQs["cp"];
+
+			var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+
+			var policy = new Policy();
+			policy.BaseUrl = baseUrl;
+			policy.SharedSecret = sharedSecret;
+			
+			var request = new RestRequest(JiraReporter.ApiUrls.Project(), Method.GET);
+
+			var policies = JiraReporter.RestApiRequests.ResolveRequest<List<PolicySummary>>(policy, request);
+			return policies;
         }
 
         // GET: api/Policy/5
