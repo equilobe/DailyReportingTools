@@ -30,7 +30,7 @@ namespace DailyReportWeb.Helpers
             return policyPath;
         }
 
-        public static Policy CreatePolicy(string id)
+        public static Policy LoadPolicy(string id)
         {
             var policyPath = PolicyService.GetPolicyPath(id);
             var policy = Policy.CreateFromFile(policyPath);

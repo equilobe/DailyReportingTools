@@ -19,7 +19,7 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
 
-            var policy = PolicyService.CreatePolicy(id);
+            var policy = PolicyService.LoadPolicy(id);
             var policyPath = PolicyService.GetPolicyPath(id);
 
             PolicyService.SetPolicyFinalReport(policy, policyPath);
@@ -74,7 +74,7 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend report for another date");
 
-            var policy = PolicyService.CreatePolicy(id);
+            var policy = PolicyService.LoadPolicy(id);
 
             if (!ReportRunner.CheckConfirmed(draftKey, policy))
             {
