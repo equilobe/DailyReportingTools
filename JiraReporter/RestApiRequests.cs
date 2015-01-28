@@ -1,5 +1,4 @@
 ﻿using JiraReporter.JiraModels;
-using JiraReporter.JiraModels;
 using JiraReporter.Model;
 using RestSharp;
 using SourceControlLogReporter.Model;
