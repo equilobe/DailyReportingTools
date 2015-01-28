@@ -10,18 +10,17 @@ namespace DailyReportWeb.Helpers
 {
     public class CmdProcess
     {
-        public static void RunProcess(string policyPath, string draftKey)
-        {
-            var command = GetCommand(policyPath, draftKey);
-            Cmd.ExecuteSingleCommand(command);
-        }
-
-        private static string GetCommand(string policyPath, string draftKey)
+        public static void RunProcess(string policyName, string draftKey)
         {
             var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var exePath = basePath + "\\jiraReporter.exe";
-            var draftKeyOption = " --draftKey=" + draftKey;
-            var command = "start " + exePath + " --policy=" + policyPath + draftKeyOption;
+            var command = GetCommand(policyName, draftKey);
+            Cmd.ExecuteSingleCommand(command, basePath);
+        }
+
+        private static string GetCommand(string policyName, string draftKey)
+        {           
+            var draftKeyOption = " --draftKey " + draftKey;
+            var command = "jiraReporter.exe" + " --policy Policies\\" + policyName + ".xml" + draftKeyOption;
 
             return command;
         }

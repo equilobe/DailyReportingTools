@@ -59,27 +59,6 @@ namespace DailyReportWeb.Helpers
             }
         }
 
-        public static void SetPolicyFullDraft(Policy policy, string policyPath)
-        {
-            policy.AdvancedOptions.NoIndividualDraft = true;
-            policy.AdvancedOptions.NoDraft = false;
-            policy.GeneratedProperties.IndividualDrafts = null;
-            policy.SaveToFile(policyPath);
-        }
-
-        public static void SetPolicyFinalReport(Policy policy, string policyPath)
-        {
-            policy.AdvancedOptions.NoDraft = true;
-            policy.SaveToFile(policyPath);
-        }
-
-        public static string GetPolicyPath(string key)
-        {
-            var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var policyPath = basePath + "\\Policies\\" + key + ".xml";
-            return policyPath;
-        }
-
         public static bool CheckConfirmed(string key, Policy policy)
         {
             {

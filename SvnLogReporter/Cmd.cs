@@ -25,5 +25,17 @@ namespace SourceControlLogReporter
             //   throw new ApplicationException(error);
           
         }
+
+        public static void ExecuteSingleCommand(string command, string directory)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.WorkingDirectory = directory;
+            process.StartInfo.Arguments = string.Format("/c {0}", command);
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.UseShellExecute = false;
+            process.Start();
+            process.WaitForExit();
+        }
     }
 }
