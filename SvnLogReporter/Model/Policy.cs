@@ -184,7 +184,7 @@ namespace SourceControlLogReporter.Model
         {
             if (AdvancedOptions.NoDraft || GeneratedProperties.IsFinalDraftConfirmed)
             {
-                SetFinalDraftMode();
+                SetFinalReportMode();
             }
             else
                 SetFinalAndIndividualDrafts();
@@ -204,7 +204,7 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        private void SetFinalDraftMode()
+        private void SetFinalReportMode()
         {
             GeneratedProperties.IsFinalDraft = false;
             GeneratedProperties.IsIndividualDraft = false;

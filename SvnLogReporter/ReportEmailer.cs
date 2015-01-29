@@ -78,13 +78,14 @@ namespace SourceControlLogReporter
 
         protected void UpdatePolicy()
         {
-            if (!policy.GeneratedProperties.IsIndividualDraft)
-                policy.GeneratedProperties.IndividualDrafts = null;
+            if (policy.GeneratedProperties.IsFinalDraft)
+                policy.GeneratedProperties.IsFinalDraftConfirmed = false;
 
             if (policy.GeneratedProperties.IsFinalReport)
             {
                 policy.GeneratedProperties.LastReportSentDate = options.ToDate;
                 policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+                policy.GeneratedProperties.IndividualDrafts = null;
             }
 
             policy.SaveToFile(options.PolicyPath);
