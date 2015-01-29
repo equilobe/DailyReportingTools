@@ -10,6 +10,8 @@ namespace DailyReportWeb.Models
         public string id { get; set; }
         public string key { get; set; }
         public string name { get; set; }
-        public string time { get; set; } 
+        public string time { get; set; }
+        public string baseUrl { get; set; }
+        public string sharedSecret { get; set; }
     }
 }

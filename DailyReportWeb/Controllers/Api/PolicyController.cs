@@ -28,8 +28,14 @@ namespace DailyReportWeb.Controllers.Api
 			
 			var request = new RestRequest(JiraReporter.ApiUrls.Project(), Method.GET);
 
-			var policies = JiraReporter.RestApiRequests.ResolveRequest<List<PolicySummary>>(policy, request);
-			return policies;
+			var policiesSumary = JiraReporter.RestApiRequests.ResolveRequest<List<PolicySummary>>(policy, request);
+			foreach (PolicySummary policySumary in policiesSumary)
+			{
+				policySumary.baseUrl = policy.BaseUrl;
+				policySumary.sharedSecret = policy.SharedSecret;
+			}
+
+			return policiesSumary;
         }
 
         // GET: api/Policy/5
@@ -49,6 +55,18 @@ namespace DailyReportWeb.Controllers.Api
         {
             // TODO: save the updated policy
         }
+
+		public void Put([FromBody]PolicySummary policySummary)
+		{
+			var policy = new Policy();
+			policy.BaseUrl = policySummary.baseUrl;
+			policy.SharedSecret = policySummary.sharedSecret;
+			policy.ProjectId = Int32.Parse(policySummary.id);
+			//policy.ProjectKey = policySummary.key;
+			policy.ReportTime = policySummary.time;
+
+			policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
+		}
 
         // Policies are not deleted directly!
         // DELETE: api/Policy/5
