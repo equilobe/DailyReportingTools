@@ -93,6 +93,7 @@
     <Compile Include="Model\LogEntry.cs" />
     <Compile Include="Model\Month.cs" />
     <Compile Include="Model\Policy.cs" />
+    <Compile Include="Model\PolicyExtensions.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="LogProcessor.cs" />
     <Compile Include="Model\SourceControlOptions.cs" />

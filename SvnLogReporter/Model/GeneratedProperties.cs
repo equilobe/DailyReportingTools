@@ -16,10 +16,11 @@ namespace SourceControlLogReporter.Model
         public string ProjectKey { get; set; }
         public string ProjectName { get; set; }
         public List<IndividualDraftInfo> IndividualDrafts { get; set; }
-        public bool IsDraft { get; set; }
+        public bool IsFinalDraft { get; set; }
         public bool IsIndividualDraft { get; set; }
+        public bool IsFinalReport { get; set; }
         public bool IsFinalDraftConfirmed { get; set; }
-        public bool AreIndividualDraftsConfirmed { get; set; }
+     //   public bool AreIndividualDraftsConfirmed { get; set; }
 
         [XmlIgnore]
         public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }

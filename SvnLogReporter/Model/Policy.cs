@@ -182,31 +182,33 @@ namespace SourceControlLogReporter.Model
 
         private void SetDraftMode()
         {
-            if (AdvancedOptions.NoDraft)
+            if (AdvancedOptions.NoDraft || GeneratedProperties.IsFinalDraftConfirmed)
             {
-                AdvancedOptions.NoIndividualDraft = true;
-                GeneratedProperties.IsDraft = false;
-                GeneratedProperties.IsIndividualDraft = false;
+                SetFinalDraftMode();
             }
             else
-                if (AdvancedOptions.NoIndividualDraft)
-                {
-                    GeneratedProperties.IsDraft = true;
-                    GeneratedProperties.IsIndividualDraft = false;
-                }
+                SetFinalAndIndividualDrafts();
+        }
 
-            if (GeneratedProperties.IsFinalDraftConfirmed)
+        private void SetFinalAndIndividualDrafts()
+        {
+            if (this.CanSendFullDraft())
             {
-                GeneratedProperties.IsDraft = false;
+                GeneratedProperties.IsFinalDraft = true;
                 GeneratedProperties.IsIndividualDraft = false;
             }
-            else if (!GeneratedProperties.AreIndividualDraftsConfirmed)
-                GeneratedProperties.IsIndividualDraft = true;
             else
             {
-                GeneratedProperties.IsIndividualDraft = false;
-                GeneratedProperties.IsDraft = true;
+                GeneratedProperties.IsFinalDraft = false;
+                GeneratedProperties.IsIndividualDraft = true;
             }
+        }
+
+        private void SetFinalDraftMode()
+        {
+            GeneratedProperties.IsFinalDraft = false;
+            GeneratedProperties.IsIndividualDraft = false;
+            GeneratedProperties.IsFinalReport = true;
         }
 
         private void SetRootPath()
