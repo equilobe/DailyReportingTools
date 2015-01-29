@@ -65,12 +65,7 @@ namespace JiraReporter
 
         private static void ProcessAndSendReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Report report)
         {
-            if (policy.AdvancedOptions.NoIndividualDraft)
-            {
-                var reportProcessor = new BaseReportProcessor(policy, options);
-                reportProcessor.ProcessReport(report);
-            }
-            else
+            if (policy.GeneratedProperties.IsIndividualDraft)
             {
                 foreach (var author in report.Authors)
                 {
@@ -79,6 +74,11 @@ namespace JiraReporter
                     reportProcessor.ProcessReport(individualReport);
                 }
                 policy.SaveToFile(options.PolicyPath);
+            }
+            else
+            {
+                var reportProcessor = new BaseReportProcessor(policy, options);
+                reportProcessor.ProcessReport(report);
             }
         }
 

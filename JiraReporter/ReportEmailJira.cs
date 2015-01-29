@@ -63,7 +63,7 @@ namespace JiraReporter
 
         private void AddMailAttachments(MailMessage message)
         {
-            if (!policy.AdvancedOptions.NoIndividualDraft)
+            if (policy.GeneratedProperties.IsIndividualDraft)
                 AddAttachementImage(Author.Image, Author.Username, message);
             else
                 foreach (var author in Authors)
@@ -74,9 +74,9 @@ namespace JiraReporter
         {
             string subject = string.Empty;
 
-            if (!policy.AdvancedOptions.NoDraft)
+            if (policy.GeneratedProperties.IsFinalDraft || policy.GeneratedProperties.IsIndividualDraft)
                 subject += "DRAFT | ";
-            if (!policy.AdvancedOptions.NoIndividualDraft)
+            if (policy.GeneratedProperties.IsIndividualDraft)
                 subject += Author.Name + " | ";
             subject += policy.AdvancedOptions.ReportTitle + " | ";
             subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);

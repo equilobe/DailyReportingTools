@@ -11,7 +11,7 @@ namespace JiraReporter
     {
         public void SetIndividualDraftInfo(List<Author> authors, SourceControlLogReporter.Model.Policy policy)
         {
-            if(!policy.AdvancedOptions.NoIndividualDraft)
+            if(!policy.AdvancedOptions.NoIndividualDraft && policy.GeneratedProperties.IsIndividualDraft)
             {
                 var individualDrafts = new List<SourceControlLogReporter.Model.IndividualDraftInfo>();
                 foreach(var author in authors)

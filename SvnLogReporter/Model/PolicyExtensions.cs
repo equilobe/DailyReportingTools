@@ -13,6 +13,9 @@ namespace SourceControlLogReporter.Model
             if (policy.AdvancedOptions.NoIndividualDraft)
                 return true;
 
+            if (policy.GeneratedProperties.IndividualDrafts == null || policy.GeneratedProperties.IndividualDrafts.Count == 0)
+                return false;
+
             var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
             if (draftsInfo.Exists(i => i.Confirmed == false))
                 return false;

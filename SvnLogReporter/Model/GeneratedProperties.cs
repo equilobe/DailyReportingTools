@@ -16,8 +16,11 @@ namespace SourceControlLogReporter.Model
         public string ProjectKey { get; set; }
         public string ProjectName { get; set; }
         public List<IndividualDraftInfo> IndividualDrafts { get; set; }
+        [XmlIgnore]
         public bool IsFinalDraft { get; set; }
+        [XmlIgnore]
         public bool IsIndividualDraft { get; set; }
+        [XmlIgnore]
         public bool IsFinalReport { get; set; }
         public bool IsFinalDraftConfirmed { get; set; }
      //   public bool AreIndividualDraftsConfirmed { get; set; }
