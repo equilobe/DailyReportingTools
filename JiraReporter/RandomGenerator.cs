@@ -8,10 +8,9 @@ namespace JiraReporter
 {
     class RandomGenerator
     {
-        public static string RandomString(int length)
+        public static string RandomString(int length, Random random)
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new Random();
             var randomString = new string(
                 Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)])

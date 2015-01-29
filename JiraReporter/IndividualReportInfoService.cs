@@ -14,9 +14,11 @@ namespace JiraReporter
             if(!policy.AdvancedOptions.NoIndividualDraft && policy.GeneratedProperties.IsIndividualDraft)
             {
                 var individualDrafts = new List<SourceControlLogReporter.Model.IndividualDraftInfo>();
+                var random = new Random();
+
                 foreach(var author in authors)
                 {
-                    var individualDraft = GenerateIndividualDraftInfo(author, policy);
+                    var individualDraft = GenerateIndividualDraftInfo(author, policy, random);
                     individualDrafts.Add(individualDraft);
                     author.IndividualDraftInfo = individualDraft;
                 }
@@ -25,13 +27,13 @@ namespace JiraReporter
             }
         }
 
-        private SourceControlLogReporter.Model.IndividualDraftInfo GenerateIndividualDraftInfo(Author author, SourceControlLogReporter.Model.Policy policy)
+        private SourceControlLogReporter.Model.IndividualDraftInfo GenerateIndividualDraftInfo(Author author, SourceControlLogReporter.Model.Policy policy, Random random)
         {
             var individualDraft = new SourceControlLogReporter.Model.IndividualDraftInfo
             {
                 Name = author.Name,
                 Username = author.Username,
-                UserKey = RandomGenerator.RandomString(10)
+                UserKey = RandomGenerator.RandomString(10, random)
             };
             SetIndividualUrls(individualDraft, policy);
 

@@ -90,7 +90,7 @@ namespace DailyReportWeb.Controllers
 
             ReportRunner.RunReportDirectly(id, draftKey);
 
-            return Content("Report resend");
+            return Content("Report resent");
         }
     }
 }
