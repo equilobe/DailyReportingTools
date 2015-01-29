@@ -45,16 +45,15 @@
 				<td>
 					{{policy.name}}
 				</td>
-				<td style="position: relative;">
-					<input type="text" class="form-control" ng-model="policy.time" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" placeholder="08:00" />
-					<span class="reportTime-notification"><b>Enter valid time</b> (23:59)</span>
+				<td ng-form="reportForm">
+					<input name="reportTime" type="text" class="form-control" ng-model="policy.time" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" placeholder="08:00" />
+					<span ng-show="reportForm.reportTime.$error.pattern" class="reportTime-notification"><b>Enter valid time</b> (23:59)</span>
 				</td>
 				<td>
 					<a href="~/Policy/Details/{{policy.id}}" class="btn btn-default">Details</a>
 				</td>
 			</tr>
         </table>
-
     </div>
 
     

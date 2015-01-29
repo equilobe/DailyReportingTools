@@ -73,8 +73,11 @@ div.disabled {
     background-color: #eee;
 }
 
+td[ng-form=reportForm] {
+	position: relative;
+}
+
 .reportTime-notification {
-    display: none;
     position: absolute;
     top: 15px;
     right: 15px;
