@@ -94,6 +94,7 @@ namespace JiraReporter
             SetAuthorInitials();
             SetRemainingEstimate();
             SetImage();
+            SetOverrideEmail();
         }
 
         private void CleanName()
@@ -301,6 +302,13 @@ namespace JiraReporter
         {
             _currentAuthor.RemainingEstimateSeconds = _currentAuthor.InProgressTasksTimeLeftSeconds + _currentAuthor.OpenTasksTimeLeftSeconds;
             _currentAuthor.RemainingEstimateHours = _currentAuthor.RemainingEstimateSeconds / 3600;
+        }
+
+        private void SetOverrideEmail()
+        {
+            var author = _policy.UserOptions.Find(u => _currentAuthor.Username == u.JiraUserKey && u.EmailOverride != null);
+            if (author != null)
+                _currentAuthor.EmailAdress = author.EmailOverride;
         }
     }
 }
