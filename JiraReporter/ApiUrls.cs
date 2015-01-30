@@ -8,14 +8,21 @@ namespace JiraReporter
 {
     class ApiUrls
     {
-        public static string Project(string id)
+        public static string Project(string id = "")
         {
-            return string.Format("rest/api/2/project/{0}", id);
+			if (string.IsNullOrEmpty(id))
+				return "rest/api/2/project";
+			else
+				return string.Format("rest/api/2/project/{0}", id);
         }
-        public static string Timesheet(string targetUser, string fromDate, string toDate)
-        {
-            return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?targetUser={0}&startDate={1}&endDate={2}", targetUser, fromDate, toDate);
-        }
+
+		public static string Timesheet(string fromDate, string toDate, string targetUser = "")
+		{
+			if (string.IsNullOrEmpty(targetUser))
+				return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?startDate={0}&endDate={1}", targetUser, fromDate, toDate);
+			else
+				return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?targetUser={0}&startDate={1}&endDate={2}", targetUser, fromDate, toDate);
+		}
 
         public static string User(string userName)
         {
@@ -46,14 +53,12 @@ namespace JiraReporter
         {
             return string.Format("rest/greenhopper/1.0/sprintquery/{0}", rapidViewId);
         }
-        public static string IssueByKey(string issueKey)
+        public static string Issue(string key = "")
         {
-            return string.Format("rest/api/2/issue/{0}", issueKey);
-        }
-
-        public static string Issue()
-        {
-            return "rest/api/2/issue";
+			if (string.IsNullOrEmpty(key))
+				return "rest/api/2/issue";
+			else
+				return string.Format("rest/api/2/issue/{0}", key);
         }
 
         public static string Priority()
@@ -81,14 +86,12 @@ namespace JiraReporter
             return string.Format("rest/api/2/attachment/{0}", attachmentId);
         }
 
-        public static string Project()
+        public static string Search(string jql = "")
         {
-            return "rest/api/2/project";
-        }
-
-        public static string Search(string jql)
-        {
-            return string.Format("rest/api/2/search?jql={0}", jql);
+			if (string.IsNullOrEmpty(jql))
+				return ("rest/api/2/search");
+			else
+				return string.Format("rest/api/2/search?jql={0}", jql);
         }
 
         public static string ResolvedIssues(string fromDate, string endDate)
