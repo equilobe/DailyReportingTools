@@ -11,11 +11,14 @@ namespace DailyReportWeb.Helpers
 {
     public class ReportRunner
     {
-        public static bool TryRunReport(string id)
+        public static bool TryRunReport(string id, string draftKey="")
         {
             try
             {
-                RunReport(id);
+                if (string.IsNullOrEmpty(draftKey))
+                    RunReport(id);
+                else
+                    RunReportDirectly(id, draftKey, true);
                 return true;
             }
             catch
@@ -34,16 +37,20 @@ namespace DailyReportWeb.Helpers
             }
         }
 
-        public static void RunReportDirectly(string policyName, string draftKey)
+        public static void RunReportDirectly(string policyName, string draftKey, bool isForced = false)
         {
             var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var command = GetCommand(policyName, draftKey);
+            var command = GetCommand(policyName, draftKey, isForced);
             Cmd.ExecuteSingleCommand(command, basePath);
         }
 
-        private static string GetCommand(string policyName, string draftKey)
+        private static string GetCommand(string policyName, string draftKey, bool isForced = false)
         {
-            var draftKeyOption = " --draftKey " + draftKey;
+            var draftKeyOption = string.Empty;
+            if (isForced)
+                draftKeyOption = " --triggerKey " + draftKey;
+            else
+                draftKeyOption = " --draftKey " + draftKey;
             var command = "jiraReporter.exe" + " --policy" + @" Policies\" + policyName + ".xml" + draftKeyOption;
 
             return command;

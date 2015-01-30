@@ -172,27 +172,27 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void SetDefaultProperties()
+        public void SetDefaultProperties(Options options)
         {
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();
-            SetDraftMode();
+            SetDraftMode(options);
         }
 
-        private void SetDraftMode()
+        private void SetDraftMode(Options options)
         {
             if (AdvancedOptions.NoDraft || GeneratedProperties.IsFinalDraftConfirmed)
             {
                 SetFinalReportMode();
             }
             else
-                SetFinalAndIndividualDrafts();
+                SetFinalAndIndividualDrafts(options);
         }
 
-        private void SetFinalAndIndividualDrafts()
+        private void SetFinalAndIndividualDrafts(Options options)
         {
-            if (this.CanSendFullDraft())
+            if (this.CanSendFullDraft(options.TriggerKey))
             {
                 GeneratedProperties.IsFinalDraft = true;
                 GeneratedProperties.IsIndividualDraft = false;

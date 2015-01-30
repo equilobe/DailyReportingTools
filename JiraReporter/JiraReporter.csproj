@@ -147,6 +147,9 @@
     <None Include="Views\entryComments.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\forceDraftButton.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\IndividualReportTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

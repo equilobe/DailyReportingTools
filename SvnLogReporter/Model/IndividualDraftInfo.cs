@@ -13,9 +13,12 @@ namespace SourceControlLogReporter.Model
         public string Username { get; set; }
         public string UserKey { get; set; }
         public bool Confirmed { get; set; }
+        public bool IsLead { get; set; }
         [XmlIgnore]
         public Uri ConfirmationDraftUrl { get; set; }
         [XmlIgnore]
         public Uri ResendDraftUrl { get; set; }
+        [XmlIgnore]
+        public Uri ForceDraftUrl { get; set; }
     }
 }

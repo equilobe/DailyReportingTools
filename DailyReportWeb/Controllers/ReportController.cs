@@ -34,7 +34,7 @@ namespace DailyReportWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult ResendDraft(string id, DateTime date)
+        public ActionResult ResendDraft(string id, DateTime date, string draftKey="")
         {
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend draft for another date");
@@ -42,13 +42,13 @@ namespace DailyReportWeb.Controllers
             var policy = PolicyService.LoadPolicy(id);
             var policyPath = PolicyService.GetPolicyPath(id);
 
-            if (!policy.CanSendFullDraft())
+            if (!policy.CanSendFullDraft(draftKey))
                 return Content("Cannot send report if not all individual drafts were confirmed");
 
-            if (ReportRunner.TryRunReport(id))
+            if (ReportRunner.TryRunReport(id, draftKey))
                 return Content("Draft report was resent");
             else
-                return Content("Error in resending draft report");
+                return Content("Error in sending draft report");
         }
 
         [HttpGet]

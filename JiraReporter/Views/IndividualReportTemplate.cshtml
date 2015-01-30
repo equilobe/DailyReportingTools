@@ -240,13 +240,8 @@
     </div>
 
     <div>
-        <table style="margin-top:50px; width:500px; height:150px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
+        <table style="margin-top:50px; width:500px; height:200px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
             <tbody>
-                @*<tr>
-                    <td>
-                        <h3 style="margin-left:10px; margin-bottom:5px; color:#468847;">Project Manager Only!</h3>
-                    </td>
-                </tr>*@
                 <tr>
                     <td width="100px" height="40px">
                         @Partial("Views/confirmationButton.cshtml", Model.Author.IndividualDraftInfo.ConfirmationDraftUrl)
@@ -272,11 +267,6 @@
                         <p style="color:#808080; margin:0px 0px 0px 10px">- all work has been logged</p>
                     </td>
                 </tr>
-                @*<tr>
-                    <td>
-                        <p style="color:#808080; margin:0px 0px 0px 10px">- sprint scope has been adjusted (if necessary)</p>
-                    </td>
-                </tr>*@
                 <tr>
                     <td>
                         <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
@@ -292,6 +282,24 @@
                         <p style="color:#808080; margin:5px 0px 5px 10px">If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.</p>
                     </td>
                 </tr>
+                @if (Model.Author.IsProjectLead == true)
+                {
+                    <tr>
+                        <td>
+                            <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Partial("Views/forceDraftButton.cshtml", Model.Author.IndividualDraftInfo.ForceDraftUrl)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="color:#808080; margin:5px 0px 5px 10px">Press this button to force sending full draft</p>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

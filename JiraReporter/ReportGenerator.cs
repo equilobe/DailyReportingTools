@@ -50,7 +50,7 @@ namespace JiraReporter
             var authorLoader = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests);
             if (options.DraftKey != null)
             {
-                var author = authorLoader.GetAuthorByKey(options.DraftKey, policy);
+                var author = authorLoader.CreateAuthorByKey(options.DraftKey, policy);
                 authors.Add(author);
             }
             else

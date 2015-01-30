@@ -22,6 +22,8 @@ namespace SourceControlLogReporter
         public bool NoEmail { get; set; }
         [Option(null, "draftKey", Required = false)]
         public string DraftKey { get; set; }
+        [Option(null, "triggerKey", Required = false)]
+        public string TriggerKey { get; set; }
 
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }

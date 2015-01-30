@@ -23,7 +23,9 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public bool IsFinalReport { get; set; }
         public bool IsFinalDraftConfirmed { get; set; }
-     //   public bool AreIndividualDraftsConfirmed { get; set; }
+
+        [XmlIgnore]
+        public string ProjectManager { get; set; }
 
         [XmlIgnore]
         public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }

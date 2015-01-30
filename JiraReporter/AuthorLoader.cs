@@ -43,16 +43,17 @@ namespace JiraReporter
                             .Select(u => new Author(u))
                             .ToList();
 
-            authors.ForEach(SetAuthorAdvancedProperties);          
-            authors.RemoveAll(AuthorIsEmpty);
-
+            SetProjectLead(authors);
+            authors.ForEach(SetAuthorAdvancedProperties);
+            authors.RemoveAll(a=> a.IsProjectLead == false && AuthorIsEmpty(a));
+           
             var individualReportService = new IndividualReportInfoService();
             individualReportService.SetIndividualDraftInfo(authors, _policy);
 
             return authors;
         }
 
-        public Author GetAuthorByKey(string key, SourceControlLogReporter.Model.Policy policy)
+        public Author CreateAuthorByKey(string key, SourceControlLogReporter.Model.Policy policy)
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
@@ -309,6 +310,27 @@ namespace JiraReporter
             var author = _policy.UserOptions.Find(u => _currentAuthor.Username == u.JiraUserKey && u.EmailOverride != null);
             if (author != null)
                 _currentAuthor.EmailAdress = author.EmailOverride;
+        }
+
+        private void SetProjectLead(List<Author> authors)
+        {
+            var lead = authors.Find(a => a.Username == _policy.GeneratedProperties.ProjectManager);
+            if (lead == null)
+            {
+                var projectManager = GetProjectLead(_policy.GeneratedProperties.ProjectManager);
+                authors.Add(projectManager);
+            }
+            else
+                lead.IsProjectLead = true;
+        }
+
+        private Author GetProjectLead(string username)
+        {
+            var lead = RestApiRequests.GetUser(username, _policy);
+            var projectManager = new Author(lead);
+            projectManager.IsProjectLead = true;
+
+            return projectManager;
         }
     }
 }

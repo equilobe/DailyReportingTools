@@ -33,7 +33,8 @@ namespace JiraReporter
             {
                 Name = author.Name,
                 Username = author.Username,
-                UserKey = RandomGenerator.RandomString(10, random)
+                UserKey = RandomGenerator.RandomString(10, random),
+                IsLead = author.IsProjectLead
             };
             SetIndividualUrls(individualDraft, policy);
 
@@ -42,11 +43,13 @@ namespace JiraReporter
 
         private void SetIndividualUrls(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, SourceControlLogReporter.Model.Policy policy)
         {
-            individualDraft.ConfirmationDraftUrl = SetUrl(individualDraft, policy.IndividualDraftConfirmationUrl);
-            individualDraft.ResendDraftUrl = SetUrl(individualDraft, policy.ResendIndividualDraft);
+            individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, policy.IndividualDraftConfirmationUrl);
+            individualDraft.ResendDraftUrl = GetUrl(individualDraft, policy.ResendIndividualDraft);
+            if (individualDraft.IsLead)
+                individualDraft.ForceDraftUrl = GetUrl(individualDraft, policy.ResendDraftUrl);
         }
 
-        private static Uri SetUrl(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, Uri baseUrl)
+        private static Uri GetUrl(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, Uri baseUrl)
         {
             var url = string.Format("draftKey={0}", individualDraft.UserKey);
 
