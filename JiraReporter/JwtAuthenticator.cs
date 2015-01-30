@@ -15,25 +15,25 @@ namespace JiraReporter
     public class JwtAuthenticator : IAuthenticator
     {
         private string _sharedSecret;
-		
+
         public JwtAuthenticator(string sharedSecret)
         {
             _sharedSecret = sharedSecret;
         }
 
         public void Authenticate(IRestClient client, IRestRequest request)
-        {            
+        {
             var jwtToken = CreateJwt(ConfigurationManager.AppSettings["addonKey"], _sharedSecret, request.Resource, request.Method.ToString());
             request.AddParameter("Authorization", "JWT " + jwtToken, ParameterType.HttpHeader);
         }
 
         public static string CreateJwt(string addonKey, string sharedSecret, string relativeUrl, string method)
         {
-			var canonicalUrl = GenerateCanonicalRequest(relativeUrl, method);
-			var qsh = CalculateHash(canonicalUrl);
+            var canonicalUrl = GenerateCanonicalRequest(relativeUrl, method);
+            var qsh = CalculateHash(canonicalUrl);
 
             var tokenBuilder = new DecodedJwtToken(sharedSecret);
-			tokenBuilder.Claims.Add("qsh", qsh);
+            tokenBuilder.Claims.Add("qsh", qsh);
             tokenBuilder.Claims.Add("iat", DateTime.UtcNow.AsUnixTimestampSeconds());
             tokenBuilder.Claims.Add("exp", DateTime.UtcNow.AddMinutes(5).AsUnixTimestampSeconds());
             tokenBuilder.Claims.Add("iss", addonKey);
@@ -41,58 +41,48 @@ namespace JiraReporter
             return tokenBuilder.Encode().JwtTokenString;
         }
 
-		public static string GenerateCanonicalRequest(string relativeUrl, string method)
-		{
-			var result = new StringBuilder();
+        public static string GenerateCanonicalRequest(string relativeUrl, string method)
+        {
+            return new StringBuilder()
+                .Append(method)
+                .Append("&")
+                .Append(GetPath(relativeUrl))
+                .Append("&")
+                .Append(GetCanonicalQueryString(relativeUrl))
+                .ToString();
+        }
 
-			result.Append(method.ToUpperInvariant());
+        public static string CalculateHash(string canonicalRequest)
+        {
+            using (var sha = SHA256.Create())
+            {
+                var computedHash = sha.ComputeHash(Encoding.UTF8.GetBytes(canonicalRequest));
+                return BitConverter.ToString(computedHash).Replace("-", "").ToLower();
+            }
+        }
 
-			result.Append("&");
-
-			result.Append(GetPath(relativeUrl));
-
-			result.Append("&");
-
-			var canonicalQueryString = GetSortedQueryString(relativeUrl);
-			if (!String.IsNullOrEmpty(canonicalQueryString))
-			{
-				result.Append(canonicalQueryString);
-			}
-
-			return result.ToString();
-		}
-
-		public static string CalculateHash(string canonicalRequest)
-		{
-			using (var sha = SHA256.Create())
-			{
-				var computedHash = sha.ComputeHash(Encoding.UTF8.GetBytes(canonicalRequest));
-				return BitConverter.ToString(computedHash).Replace("-", "").ToLower();
-			}
-		}
-
-        private static string GetSortedQueryString(string relativeUrl)
+        private static string GetCanonicalQueryString(string relativeUrl)
         {
             var queryString = GetQueryString(relativeUrl);
-			var queryStringItems = HttpUtility.ParseQueryString(queryString);
+            var queryStringItems = HttpUtility.ParseQueryString(queryString);
 
-			return String.Join("&", queryStringItems
-				.AllKeys
-				.Where(x => x != "jwt")
-				.Select(x => new KeyValuePair<String, String[]>(x, queryStringItems.GetValues(x)))
-				.OrderBy(x => x.Key)
-				.Select(x =>
-				{
-					return String.Format("{0}={1}", x.Key,
-						String.Join(",", x.Value
-							.OrderBy(i => i)
-							.Select(EscapeUriDataStringRfc3986)));
-				}));
+            return String.Join("&", queryStringItems
+                .AllKeys
+                .Where(x => x != "jwt")
+                .Select(x => new KeyValuePair<String, String[]>(x, queryStringItems.GetValues(x)))
+                .OrderBy(x => x.Key)
+                .Select(x =>
+                {
+                    return String.Format("{0}={1}", x.Key,
+                        String.Join(",", x.Value
+                            .OrderBy(i => i)
+                            .Select(EscapeUriDataStringRfc3986)));
+                }));
         }
 
         private static string GetQueryString(string relativeUrl)
         {
-			return relativeUrl.IndexOf('?') != -1 ? relativeUrl.Substring(relativeUrl.IndexOf('?') + 1) : String.Empty;
+            return relativeUrl.IndexOf('?') != -1 ? relativeUrl.Substring(relativeUrl.IndexOf('?') + 1) : String.Empty;
         }
 
         private static string GetPath(string relativeUrl)
@@ -103,17 +93,15 @@ namespace JiraReporter
             return path;
         }
 
-		private static readonly string[] UriRfc3986CharsToEscape = new[] { "!", "*", "'", "(", ")" };
-		internal static string EscapeUriDataStringRfc3986(string value)
-		{
-			StringBuilder escaped = new StringBuilder(Uri.EscapeDataString(value));
-			for (int i = 0; i < UriRfc3986CharsToEscape.Length; i++)
-			{
-				escaped.Replace(UriRfc3986CharsToEscape[i], Uri.HexEscape(UriRfc3986CharsToEscape[i][0]));
-			}
+        private static readonly char[] UriRfc3986CharsToEscape = new[] { '!', '*', '\'', '(', ')' };
+        internal static string EscapeUriDataStringRfc3986(string value)
+        {
+            StringBuilder escaped = new StringBuilder(Uri.EscapeDataString(value));
+            foreach (char charToEscape in UriRfc3986CharsToEscape)
+                escaped.Replace(charToEscape.ToString(), Uri.HexEscape(charToEscape));
 
-			return escaped.ToString();
-		}
+            return escaped.ToString();
+        }
     }
 
     public class EncodedJwtToken

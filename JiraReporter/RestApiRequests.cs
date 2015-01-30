@@ -61,9 +61,16 @@ namespace JiraReporter
             return ResolveRequest<JiraModels.Project>(policy, request);
         }
 
-        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate, string targetUser)
+        public static Timesheet GetTimesheetForUser(Policy policy, DateTime startDate, DateTime endDate, string targetUser)
         {
-			var request = new RestRequest(ApiUrls.Timesheet(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate), targetUser), Method.GET);
+            var request = new RestRequest(ApiUrls.TimesheetForUser(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate), targetUser), Method.GET);
+
+            return ResolveRequest<Timesheet>(policy, request, true);
+        }
+
+        public static Timesheet GetTimesheet(Policy policy, DateTime startDate, DateTime endDate)
+        {
+            var request = new RestRequest(ApiUrls.Timesheet(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
 
             return ResolveRequest<Timesheet>(policy, request, true);
         }

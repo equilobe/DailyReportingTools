@@ -23,12 +23,12 @@ namespace JiraReporter
 
         public void SetTimesheetIssues(Timesheet timesheet, Policy policy, List<PullRequest> pullRequests)
         {
-			if (timesheet != null)
-			{
-				var issues = new List<Issue>(timesheet.Worklog.Issues);
-				var issueProcessor = new IssueProcessor(policy, pullRequests);
-				issueProcessor.SetIssues(issues);
-			}
+            if (timesheet == null)
+                return;
+
+            var issues = new List<Issue>(timesheet.Worklog.Issues);
+            var issueProcessor = new IssueProcessor(policy, pullRequests);
+            issueProcessor.SetIssues(issues);
         }
 
         public int GetTotalOriginalEstimate(Timesheet timesheet)
