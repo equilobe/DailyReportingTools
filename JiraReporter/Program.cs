@@ -22,7 +22,7 @@ namespace JiraReporter
             SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
-            policy.SetDefaultProperties();
+            policy.SetDefaultProperties(options);
             LoadReportDates(policy, options);
 
             if (RunReport(policy, options))
@@ -42,6 +42,9 @@ namespace JiraReporter
                 return false;
 
             if (CheckDayFromOverrides(policy) == true)
+                return false;
+
+            if (options.TriggerKey != null && !policy.IsForcedByLead(options.TriggerKey))
                 return false;
 
             return true;
@@ -106,6 +109,8 @@ namespace JiraReporter
         {
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;
+            if (project.Lead != null)
+                policy.GeneratedProperties.ProjectManager = project.Lead.key;
         }
     }
 }

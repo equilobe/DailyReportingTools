@@ -75,6 +75,21 @@ else
                                             </tr>
                                         }
                                     }
+                                    @if (Model.Policy.GeneratedProperties.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
+                                    {
+                                        if(Model.AuthorsNotConfirmed.Count > 0)
+                                        {
+                                            foreach(var author in Model.AuthorsNotConfirmed)
+                                            {
+                                                <tr>
+                                                    <td style="vertical-align:top; width:15px">
+                                                        <span>&#x25cf;</span>
+                                                    </td>
+                                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has not confirmed draft</b></td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
                                 </tbody>
                             </table>
                         </div>

@@ -281,6 +281,8 @@ namespace JiraReporter.Model
         public List<Error> CompletedWithEstimateErrors { get; set; }
         public List<Error> CompletedWithNoWorkErrors { get; set; }
         public List<Error> UnassignedErrors { get; set; }
+        public List<Error> ConfirmationErrors { get; set; }
+        public List<Author> AuthorsNotConfirmed { get; set; }
         public List<Author> AuthorsWithErrors { get; set; }
 
         public WorkingDaysInfo WorkingDays { get; set; }
@@ -317,7 +319,7 @@ namespace JiraReporter.Model
             Policy = policy;
             AuthorsInvolved = authors.Count;
             Authors = authors;
-            CommitsCount = authors.Sum(a => a.Commits.Count);
+            CommitsCount = authors.Where(a => a.Commits != null).Sum(a => a.Commits.Count);
             PullRequests = pullRequests;
             Sprint = sprint;
             UnrelatedPullRequests = PullRequests.FindAll(p => p.TaskSynced == false);
@@ -560,6 +562,7 @@ namespace JiraReporter.Model
         private void SetErrors(SprintTasks tasks)
         {
             SetAuthorsWithErrors();
+            SetAuthorsNotConfirmed();
             GetCompletedTasksErrors(tasks);
             GetUnassignedErrors(tasks);
             GetAllErrors();
@@ -576,6 +579,8 @@ namespace JiraReporter.Model
                 errors = errors.Concat(CompletedWithNoWorkErrors).ToList();
             if (UnassignedErrors != null)
                 errors = errors.Concat(UnassignedErrors).ToList();
+            if (ConfirmationErrors != null)
+                errors = errors.Concat(ConfirmationErrors).ToList();
             Errors = errors;
         }
 
@@ -583,6 +588,25 @@ namespace JiraReporter.Model
         {
             AuthorsWithErrors = new List<Author>();
             AuthorsWithErrors = Authors.FindAll(a => a.Errors != null && a.Errors.Count > 0).ToList();
+        }
+
+        private void SetAuthorsNotConfirmed()
+        {
+            if (!Policy.GeneratedProperties.IsFinalDraft || Policy.AdvancedOptions.NoIndividualDraft)
+                return;
+
+            AuthorsNotConfirmed = new List<Author>();
+            ConfirmationErrors = new List<Error>();
+            var notConfirmed = Policy.GeneratedProperties.IndividualDrafts.Where(d => !d.Confirmed).ToList();
+            foreach (var author in Authors)
+            {
+                var notConfirmedAuthor = Authors.Exists(a => a.Username == author.Username);
+                if (notConfirmedAuthor != null)
+                {
+                    AuthorsNotConfirmed.Add(author);
+                    ConfirmationErrors.Add(new Error(ErrorType.NotConfirmed));
+                }
+            }
         }
 
         private void GetCompletedTasksErrors(SprintTasks tasks)
