@@ -83,10 +83,10 @@ namespace JiraReporter
 
         private void SetTimesheets()
         {
-            _currentAuthor.CurrentTimesheet = RestApiRequests.GetTimesheet(_policy, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.CurrentTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
             if (_sprint != null)
-                _currentAuthor.SprintTimesheet = RestApiRequests.GetTimesheet(_policy, _sprint.StartDate.ToOriginalTimeZone(), _sprint.EndDate.ToOriginalTimeZone(), _currentAuthor.Username);
-            _currentAuthor.MonthTimesheet = RestApiRequests.GetTimesheet(_policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), _currentAuthor.Username);
+                _currentAuthor.SprintTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _sprint.StartDate.ToOriginalTimeZone(), _sprint.EndDate.ToOriginalTimeZone(), _currentAuthor.Username);
+            _currentAuthor.MonthTimesheet = RestApiRequests.GetTimesheetForUser(_policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), _currentAuthor.Username);
         }
 
 

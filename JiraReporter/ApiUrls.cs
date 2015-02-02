@@ -12,9 +12,20 @@ namespace JiraReporter
         {
             return string.Format("rest/api/2/project/{0}", id);
         }
-        public static string Timesheet(string targetUser, string fromDate, string toDate)
+
+        public static string Projects()
+        {
+            return "rest/api/2/project";
+        }
+
+        public static string TimesheetForUser(string fromDate, string toDate, string targetUser)
         {
             return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?targetUser={0}&startDate={1}&endDate={2}", targetUser, fromDate, toDate);
+        }
+
+        public static string Timesheet(string fromDate, string toDate)
+        {
+            return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?startDate={0}&endDate={1}", fromDate, toDate);
         }
 
         public static string User(string userName)
@@ -46,44 +57,10 @@ namespace JiraReporter
         {
             return string.Format("rest/greenhopper/1.0/sprintquery/{0}", rapidViewId);
         }
-        public static string IssueByKey(string issueKey)
-        {
-            return string.Format("rest/api/2/issue/{0}", issueKey);
-        }
 
-        public static string Issue()
+        public static string Issue(string key)
         {
-            return "rest/api/2/issue";
-        }
-
-        public static string Priority()
-        {
-            return "rest/api/2/priority";
-        }
-
-        public static string CreateMeta()
-        {
-            return "rest/api/2/issue/createmeta";
-        }
-
-        public static string Status()
-        {
-            return "rest/api/2/status";
-        }
-
-        public static string ApplicationProperties()
-        {
-            return "rest/api/2/application-properties";
-        }
-
-        public static string AttachmentById(string attachmentId)
-        {
-            return string.Format("rest/api/2/attachment/{0}", attachmentId);
-        }
-
-        public static string Project()
-        {
-            return "rest/api/2/project";
+            return string.Format("rest/api/2/issue/{0}", key);
         }
 
         public static string Search(string jql)

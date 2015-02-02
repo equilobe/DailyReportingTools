@@ -23,6 +23,9 @@ namespace JiraReporter
 
         public void SetTimesheetIssues(Timesheet timesheet, Policy policy, List<PullRequest> pullRequests)
         {
+            if (timesheet == null)
+                return;
+
             var issues = new List<Issue>(timesheet.Worklog.Issues);
             var issueProcessor = new IssueProcessor(policy, pullRequests);
             issueProcessor.SetIssues(issues);
