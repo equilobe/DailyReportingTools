@@ -19,6 +19,22 @@ namespace SourceControlLogReporter.Model
         [DefaultValue(false)]
         public bool NoIndividualDraft { get; set; }
 
+        [DefaultValue(false)]
+        public bool SendDraftToAllUsers { get; set; }
+
+        [DefaultValue(true)]
+        public bool SendDraftToProjectManager { get; set; }
+
+        [DefaultValue(false)]
+        public bool SendDraftToOthers { get; set; }
+
+        [DefaultValue(true)]
+        public bool SendFinalToAllUsers { get; set; }
+
+        [DefaultValue(false)]
+        public bool SendFinalToOthers { get; set; }
+
+
         public string ReportTitle { get; set; }
 
         [DefaultValue("permanent")]
@@ -74,6 +90,8 @@ namespace SourceControlLogReporter.Model
             PermanentTaskLabel = "permanent";
             WeekendDays = "Saturday Sunday";
             ReopenedStatus = "Reopened";
+            SendDraftToProjectManager = true;
+            SendFinalToAllUsers = true;
         }
     }
 }

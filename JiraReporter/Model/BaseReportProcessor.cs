@@ -21,7 +21,8 @@ namespace JiraReporter.Model
         public virtual void ProcessReport(Report report)
         {
             SaveReport(Policy, report);
-            Policy.SetEmailCollection();
+            //      Policy.SetEmailCollection();
+            SetEmailCollection(report.Authors);
             SendReport(report);
         }
 
@@ -52,6 +53,43 @@ namespace JiraReporter.Model
             emailer.Authors = report.Authors;
 
             emailer.TrySendEmails();
+        }
+
+        protected void SetEmailCollection(List<Author> authors)
+        {
+            Policy.EmailCollection = new List<string>();
+
+            if (Policy.GeneratedProperties.IsFinalDraft)
+                SetDraftEmailCollection(authors);
+            else
+                SetFinalReportEmailCollection(authors);
+
+            Policy.EmailCollection = Policy.EmailCollection.Distinct().ToList();
+        }
+
+        private void SetFinalReportEmailCollection(List<Author> authors)
+        {
+                if (Policy.AdvancedOptions.SendFinalToOthers)
+                    Policy.EmailCollection = Policy.GetFinalAddedEmails();
+                if (Policy.AdvancedOptions.SendFinalToAllUsers)
+                    AddUsersEmailAdresses(authors);
+        }
+
+        private void SetDraftEmailCollection(List<Author> authors)
+        {
+                if (Policy.AdvancedOptions.SendDraftToOthers)
+                    Policy.EmailCollection = Policy.GetDraftAddedEmails();
+                if (!Policy.AdvancedOptions.SendDraftToAllUsers && Policy.AdvancedOptions.SendDraftToProjectManager)
+                    Policy.EmailCollection.Add(authors.Find(a => a.IsProjectLead).EmailAdress);
+                else
+                    AddUsersEmailAdresses(authors);
+        }
+
+        private void AddUsersEmailAdresses(List<Author> authors)
+        {
+            foreach (var author in authors)
+                if (author.EmailAdress != null)
+                    Policy.EmailCollection.Add(author.EmailAdress);
         }
     }
 }

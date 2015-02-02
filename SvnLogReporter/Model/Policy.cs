@@ -140,12 +140,22 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public List<string> EmailCollection { get; set; }
 
-        public void SetEmailCollection()
+        //public void SetEmailCollection()
+        //{
+        //    if (GeneratedProperties.IsFinalDraft)
+        //        EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //    else
+        //        EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //}
+
+        public List<string> GetDraftAddedEmails()
         {
-            if (!AdvancedOptions.NoDraft)
-                EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            else
-                EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public List<string> GetFinalAddedEmails()
+        {
+            return EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         public void SetIndividualEmail(string emailAdress)
