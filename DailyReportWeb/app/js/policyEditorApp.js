@@ -5,10 +5,7 @@
     	});
 
     	$scope.updateReportTime = function (policySelected) {
-    		$http.put("/api/policy",
-				$scope.policyList.filter(function (policy) {
-					return policy == policySelected;
-				})[0]
+    		$http.put("/api/policy", policySelected
     		).success(function () {
     			console.log("success");
     		}).error(function () {
