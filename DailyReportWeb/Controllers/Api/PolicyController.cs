@@ -22,18 +22,7 @@ namespace DailyReportWeb.Controllers.Api
 
 			var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
-			var policy = new Policy();
-			policy.BaseUrl = baseUrl;
-			policy.SharedSecret = sharedSecret;
-			
-			var request = new RestRequest(JiraReporter.ApiUrls.Project(), Method.GET);
-
-			var policiesSumary = JiraReporter.RestApiRequests.ResolveRequest<List<PolicySummary>>(policy, request);
-			foreach (PolicySummary policySumary in policiesSumary)
-			{
-				policySumary.baseUrl = policy.BaseUrl;
-				policySumary.sharedSecret = policy.SharedSecret;
-			}
+            var policiesSumary = PolicySummary.GetPoliciesSummary(baseUrl, sharedSecret);
 
 			return policiesSumary;
         }
@@ -56,16 +45,17 @@ namespace DailyReportWeb.Controllers.Api
             // TODO: save the updated policy
         }
 
-		public void Put([FromBody]PolicySummary policySummary)
+        public void Put([FromBody]PolicySummary policySummary)
 		{
-			var policy = new Policy();
-			policy.BaseUrl = policySummary.baseUrl;
-			policy.SharedSecret = policySummary.sharedSecret;
-			policy.ProjectId = Int32.Parse(policySummary.id);
-			//policy.ProjectKey = policySummary.key;
-			policy.ReportTime = policySummary.time;
+            var policy = new Policy
+            {
+                BaseUrl = policySummary.BaseUrl,
+                SharedSecret = policySummary.SharedSecret,
+                ProjectId = Int32.Parse(policySummary.id),
+                ReportTime = policySummary.time
+            };
 
-			policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
+            policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
 		}
 
         // Policies are not deleted directly!
