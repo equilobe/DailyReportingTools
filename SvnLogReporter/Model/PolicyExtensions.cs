@@ -11,7 +11,7 @@ namespace System
     {
         public static bool CanSendFullDraft(this Policy policy, string draftKey="")
         {
-            if (policy.IsForcedByLead(draftKey))
+            if (policy.IsForcedByLead(draftKey) || policy.GeneratedProperties.WasForcedByLead)
                 return true;
 
             if (policy.AdvancedOptions.NoIndividualDraft)

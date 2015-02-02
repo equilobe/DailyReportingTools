@@ -82,7 +82,7 @@ namespace SourceControlLogReporter
             {
                 policy.GeneratedProperties.IsFinalDraftConfirmed = false;
                 if (policy.IsForcedByLead(options.TriggerKey))
-                    policy.GeneratedProperties.IsForcedByLead = true;
+                    policy.GeneratedProperties.WasForcedByLead = true;
             }
 
             if (policy.GeneratedProperties.IsFinalReport)
@@ -90,7 +90,7 @@ namespace SourceControlLogReporter
                 policy.GeneratedProperties.LastReportSentDate = options.ToDate;
                 policy.GeneratedProperties.IsFinalDraftConfirmed = false;
                 policy.GeneratedProperties.IndividualDrafts = null;
-                policy.GeneratedProperties.IsForcedByLead = false;
+                policy.GeneratedProperties.WasForcedByLead = false;
             }
 
             policy.SaveToFile(options.PolicyPath);
