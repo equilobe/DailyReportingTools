@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
-	[JwtAuthentication]
+    [JwtAuthentication]
     public class PolicyController : Controller
     {
         // GET: Policy

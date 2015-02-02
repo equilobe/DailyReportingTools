@@ -17,14 +17,14 @@ namespace DailyReportWeb.Controllers.Api
         // GET: api/Policy
         public IEnumerable<PolicySummary> Get()
         {
-			var urlQs = HttpUtility.ParseQueryString(Request.Headers.Referrer.Query);
-			var baseUrl = urlQs["xdm_e"] + urlQs["cp"];
+            var urlQs = HttpUtility.ParseQueryString(Request.Headers.Referrer.Query);
+            var baseUrl = urlQs["xdm_e"] + urlQs["cp"];
 
-			var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+            var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
             var policiesSumary = PolicySummary.GetPoliciesSummary(baseUrl, sharedSecret);
 
-			return policiesSumary;
+            return policiesSumary;
         }
 
         // GET: api/Policy/5
@@ -46,7 +46,7 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         public void Put([FromBody]PolicySummary policySummary)
-		{
+        {
             var policy = new Policy
             {
                 BaseUrl = policySummary.BaseUrl,
@@ -56,7 +56,7 @@ namespace DailyReportWeb.Controllers.Api
             };
 
             policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
-		}
+        }
 
         // Policies are not deleted directly!
         // DELETE: api/Policy/5

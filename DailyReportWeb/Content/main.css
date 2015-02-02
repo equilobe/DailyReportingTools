@@ -16,9 +16,9 @@ div.disabled {
     margin-right: 10px;
 }
 
-.checkbox-inline + .checkbox-inline:last-child {
-    margin-right: 0;
-}
+    .checkbox-inline + .checkbox-inline:last-child {
+        margin-right: 0;
+    }
 
 .step-number {
     background-color: white;
@@ -74,7 +74,7 @@ div.disabled {
 }
 
 td[ng-form=reportForm] {
-	position: relative;
+    position: relative;
 }
 
 .reportTime-notification {
@@ -82,7 +82,7 @@ td[ng-form=reportForm] {
     top: 15px;
     right: 15px;
     color: rgba(185, 74, 72, 0.8);
-    background-color: rgb(255, 255, 255)
+    background-color: rgb(255, 255, 255);
 }
 
 @media only screen and (max-width : 520px) {

@@ -17,7 +17,8 @@ namespace DailyReportWeb.Models
 
         public static List<PolicySummary> GetPoliciesSummary(string baseUrl, string sharedSecret)
         {
-            var policy = new Policy {
+            var policy = new Policy
+            {
                 BaseUrl = baseUrl,
                 SharedSecret = sharedSecret
             };
