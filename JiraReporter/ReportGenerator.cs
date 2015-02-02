@@ -51,6 +51,8 @@ namespace JiraReporter
             if (options.DraftKey != null)
             {
                 var author = authorLoader.CreateAuthorByKey(options.DraftKey, policy);
+                if (policy.GeneratedProperties.ProjectManager == author.Username)
+                    author.IsProjectLead = true;
                 authors.Add(author);
             }
             else

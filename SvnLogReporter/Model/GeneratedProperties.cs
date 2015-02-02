@@ -23,6 +23,7 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public bool IsFinalReport { get; set; }
         public bool IsFinalDraftConfirmed { get; set; }
+        public bool IsForcedByLead { get; set; }
 
         [XmlIgnore]
         public string ProjectManager { get; set; }

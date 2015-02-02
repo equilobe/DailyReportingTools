@@ -192,7 +192,7 @@ namespace SourceControlLogReporter.Model
 
         private void SetFinalAndIndividualDrafts(Options options)
         {
-            if (this.CanSendFullDraft(options.TriggerKey))
+            if (this.CanSendFullDraft(options.TriggerKey) || GeneratedProperties.IsForcedByLead)
             {
                 GeneratedProperties.IsFinalDraft = true;
                 GeneratedProperties.IsIndividualDraft = false;

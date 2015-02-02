@@ -600,8 +600,8 @@ namespace JiraReporter.Model
             var notConfirmed = Policy.GeneratedProperties.IndividualDrafts.Where(d => !d.Confirmed).ToList();
             foreach (var author in Authors)
             {
-                var notConfirmedAuthor = Authors.Exists(a => a.Username == author.Username);
-                if (notConfirmedAuthor != null)
+                var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);
+                if (notConfirmedAuthor)
                 {
                     AuthorsNotConfirmed.Add(author);
                     ConfirmationErrors.Add(new Error(ErrorType.NotConfirmed));

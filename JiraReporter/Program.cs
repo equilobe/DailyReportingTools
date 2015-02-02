@@ -76,7 +76,7 @@ namespace JiraReporter
                     var reportProcessor = new IndividualReportProcessor(policy, options);
                     reportProcessor.ProcessReport(individualReport);
                 }
-                policy.SaveToFile(options.PolicyPath);
+        //        policy.SaveToFile(options.PolicyPath);
             }
             else
             {
