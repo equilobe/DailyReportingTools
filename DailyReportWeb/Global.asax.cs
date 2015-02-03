@@ -15,5 +15,10 @@ namespace DailyReportWeb
             RouteTable.Routes.RegisterRoutes();
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
+        {
+            AuthenticationHelpers.SetUser();
+        }
     }
 }
