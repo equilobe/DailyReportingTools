@@ -12,11 +12,13 @@ using RestSharp;
 
 namespace DailyReportWeb.Controllers.Api
 {
+    [Authorize]
     public class PolicyController : ApiController
     {
         // GET: api/Policy
         public IEnumerable<PolicySummary> Get()
         {
+            var baseUrl2 = User.GetBaseUrl();
             var urlQs = HttpUtility.ParseQueryString(Request.Headers.Referrer.Query);
             var baseUrl = urlQs["xdm_e"] + urlQs["cp"];
 
