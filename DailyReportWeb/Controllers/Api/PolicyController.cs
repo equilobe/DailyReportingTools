@@ -51,8 +51,8 @@ namespace DailyReportWeb.Controllers.Api
             {
                 BaseUrl = policySummary.BaseUrl,
                 SharedSecret = policySummary.SharedSecret,
-                ProjectId = Int32.Parse(policySummary.id),
-                ReportTime = policySummary.time
+                ProjectId = Int32.Parse(policySummary.Id),
+                ReportTime = policySummary.Time
             };
 
             policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
