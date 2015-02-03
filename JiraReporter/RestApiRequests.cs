@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    class RestApiRequests
+    public class RestApiRequests
     {
         public static RestClient ClientLogin(Policy policy)
         {

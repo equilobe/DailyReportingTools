@@ -1,6 +1,9 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Http;
+using System.Linq;
+using System.Net.Http.Formatting;
+
 namespace DailyReportWeb
 {
     public static class RouteConfig
@@ -56,6 +59,9 @@ namespace DailyReportWeb
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            var jsonFormatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
+            jsonFormatter.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
 
             return config;
         }

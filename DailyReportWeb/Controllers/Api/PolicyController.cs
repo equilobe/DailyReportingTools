@@ -6,6 +6,9 @@ using System.Net.Http;
 using System.Web.Http;
 using DailyReportWeb.Models;
 using SourceControlLogReporter.Model;
+using System.Web;
+using Atlassian.Connect;
+using RestSharp;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -14,12 +17,12 @@ namespace DailyReportWeb.Controllers.Api
         // GET: api/Policy
         public IEnumerable<PolicySummary> Get()
         {
-            return new PolicySummary[] 
-            {
-                new PolicySummary { Id= "asdf1", ProjectName="Alyssa", ReportTime = "10:00" },
-                new PolicySummary { Id= "asdf2", ProjectName="Board Prospects" },
-                new PolicySummary { Id= "asdf3", ProjectName="Daily Report Tool ", ReportTime = "09:00" },
-            };
+            var urlQs = HttpUtility.ParseQueryString(Request.Headers.Referrer.Query);
+            var baseUrl = urlQs["xdm_e"] + urlQs["cp"];
+
+            var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+
+            return PolicySummary.GetPoliciesSummary(baseUrl, sharedSecret);
         }
 
         // GET: api/Policy/5
@@ -38,6 +41,19 @@ namespace DailyReportWeb.Controllers.Api
         public void Put(string id, [FromBody]Policy updatedPolicy)
         {
             // TODO: save the updated policy
+        }
+
+        public void Put([FromBody]PolicySummary policySummary)
+        {
+            var policy = new Policy
+            {
+                BaseUrl = policySummary.BaseUrl,
+                SharedSecret = policySummary.SharedSecret,
+                ProjectId = Int32.Parse(policySummary.Id),
+                ReportTime = policySummary.Time
+            };
+
+            policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
         }
 
         // Policies are not deleted directly!
