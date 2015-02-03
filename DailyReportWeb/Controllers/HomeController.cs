@@ -6,6 +6,9 @@ using System;
 using System.Dynamic;
 using System.Web;
 using System.Web.Mvc;
+using System.Linq;
+using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Storage;
 
 namespace DailyReportWeb.Controllers
 {
@@ -13,6 +16,12 @@ namespace DailyReportWeb.Controllers
     {
         public ActionResult Index()
         {
+
+            using (var db = new ReportsDb())
+            {
+                db.ReportSettings.Add(new ReportSettings { BaseUrl = "nice" });
+                db.SaveChanges();
+            }
             return View();
         }
 

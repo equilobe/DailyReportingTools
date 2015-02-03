@@ -28,7 +28,7 @@ namespace DailyReportWeb.Models
 
         public bool IsInRole(string role)
         {
-            return false;
+            return true;
         }
     }
 }

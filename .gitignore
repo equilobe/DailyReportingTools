@@ -69,3 +69,4 @@ packages/
 
 #Policies files
 [Pp]olicies/
+/DailyReportWeb/ConnectionStrings.config

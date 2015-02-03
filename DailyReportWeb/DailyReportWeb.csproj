@@ -180,6 +180,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Views\Home\Plugin.cshtml" />
     <Content Include="Content\main.css" />
+    <Content Include="ConnectionStrings.config" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -248,6 +249,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Equilobe.DailyReport.DAL\Equilobe.DailyReport.DAL.csproj">
+      <Project>{7bad124b-c59f-45f6-8111-136b2ea61c3a}</Project>
+      <Name>Equilobe.DailyReport.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
+      <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
+      <Name>Equilobe.DailyReport.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JiraReporter\JiraReporter.csproj">
       <Project>{d1e02075-5930-4ae3-a552-bf3fae984aa9}</Project>
       <Name>JiraReporter</Name>

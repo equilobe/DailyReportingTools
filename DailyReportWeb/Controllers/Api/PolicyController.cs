@@ -18,9 +18,7 @@ namespace DailyReportWeb.Controllers.Api
         // GET: api/Policy
         public IEnumerable<PolicySummary> Get()
         {
-            var baseUrl2 = User.GetBaseUrl();
-            var urlQs = HttpUtility.ParseQueryString(Request.Headers.Referrer.Query);
-            var baseUrl = urlQs["xdm_e"] + urlQs["cp"];
+            var baseUrl = User.GetBaseUrl();
 
             var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 

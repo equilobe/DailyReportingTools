@@ -20,19 +20,21 @@ namespace DailyReportWeb.Controllers
 
         private string GetJiraBaseUrl()
         {
-            return string.Empty;
+            var baserUrl = Request.QueryString["xdm_e"] + Request.QueryString["cp"];
+            return baserUrl;
         }
 
         private string GetJiraUsername()
         {
-            return string.Empty;
+            var userId = Request.QueryString["user_id"];
+            return userId;
         }
 
         [Authorize]
         public ActionResult Details()
         {
             var baseUrl = User.GetBaseUrl();
-            return View();
+            return View((object)baseUrl);
         }
     }
 }
