@@ -27,21 +27,15 @@ namespace DailyReportWeb.Models
 
         public static List<PolicySummary> GetPoliciesSummary(string baseUrl, string sharedSecret)
         {
-            var projectsInfo = GetProjectsInfo(baseUrl, sharedSecret);
-
-            var policiesSumary = new List<PolicySummary>();
-            foreach (ProjectInfo projectInfo in projectsInfo)
-            {
-                policiesSumary.Add(new PolicySummary
+            return GetProjectsInfo(baseUrl, sharedSecret)
+                .Select(projectInfo => new PolicySummary
                 {
                     BaseUrl = baseUrl,
                     SharedSecret = sharedSecret,
                     Id = projectInfo.Id,
                     Name = projectInfo.Name
-                });
-            }
-
-            return policiesSumary;
+                })
+                .ToList();
         }
 
         private static List<ProjectInfo> GetProjectsInfo(string baseUrl, string sharedSecret)
