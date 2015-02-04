@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Linq;
 using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Storage;
+using System.Configuration;
 
 namespace DailyReportWeb.Controllers
 {
@@ -46,7 +47,7 @@ namespace DailyReportWeb.Controllers
             {
                 name = "Daily Report Tool",
                 description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
-                key = "com.equilobe.drt",
+                key = ConfigurationManager.AppSettings["addonKey"],
                 vendor = new ConnectDescriptorVendor()
                 {
                     name = "Equilobe Software",
