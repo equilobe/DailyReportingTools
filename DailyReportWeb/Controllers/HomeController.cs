@@ -6,6 +6,10 @@ using System;
 using System.Dynamic;
 using System.Web;
 using System.Web.Mvc;
+using System.Linq;
+using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Storage;
+using System.Configuration;
 
 namespace DailyReportWeb.Controllers
 {
@@ -13,6 +17,12 @@ namespace DailyReportWeb.Controllers
     {
         public ActionResult Index()
         {
+
+            using (var db = new ReportsDb())
+            {
+                db.ReportSettings.Add(new ReportSettings { BaseUrl = "nice" });
+                db.SaveChanges();
+            }
             return View();
         }
 
@@ -30,19 +40,6 @@ namespace DailyReportWeb.Controllers
             return View();
         }
 
-        [JwtAuthentication]
-        public ActionResult Plugin()
-        {
-            var client = Request.CreateConnectHttpClient("com.equilobe.drt");
-
-            var response = client.GetAsync("rest/api/latest/project").Result;
-            var results = response.Content.ReadAsStringAsync().Result;
-
-            dynamic model = new ExpandoObject();
-            model.projects = results;
-            return View(model);
-        }
-
         [HttpGet]
         public ActionResult Descriptor()
         {
@@ -50,7 +47,7 @@ namespace DailyReportWeb.Controllers
             {
                 name = "Daily Report Tool",
                 description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
-                key = "com.equilobe.drt",
+                key = ConfigurationManager.AppSettings["addonKey"],
                 vendor = new ConnectDescriptorVendor()
                 {
                     name = "Equilobe Software",
@@ -73,10 +70,10 @@ namespace DailyReportWeb.Controllers
                         {
                             name = new 
                             {
-                                value = "test DRT"
+                                value = "DRT"
                             },
-                            url = "/test-plugin",
-                            key = "drt-test",
+                            url = "/setup",
+                            key = "drt-setup",
                             location = "system.top.navigation.bar",
                             conditions = new[]
                             {
@@ -91,7 +88,7 @@ namespace DailyReportWeb.Controllers
             };
 
             descriptor.SetBaseUrlFromRequest(Request);
-            descriptor.scopes.Add("READ");
+            descriptor.scopes.Add("PROJECT_ADMIN");
 
             return Json(descriptor, JsonRequestBehavior.AllowGet);
         }

@@ -187,7 +187,17 @@ namespace SourceControlLogReporter.Model
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();
+            ResetToDefault();
             SetDraftMode(options);
+        }
+
+        private void ResetToDefault()
+        {
+            if (GeneratedProperties.LastDraftSentDate.Date == DateTime.Today || GeneratedProperties.LastDraftSentDate == new DateTime() || GeneratedProperties.WasResetToDefaultToday)
+                return;
+
+            ResetPolicyToDefault();
+            GeneratedProperties.WasResetToDefaultToday = true;
         }
 
         private void SetDraftMode(Options options)
@@ -235,6 +245,13 @@ namespace SourceControlLogReporter.Model
         {
             if (AdvancedOptions.PermanentTaskLabel != null)
                 AdvancedOptions.PermanentTaskLabel = AdvancedOptions.PermanentTaskLabel.ToLower();
+        }
+
+        public void ResetPolicyToDefault()
+        {
+            GeneratedProperties.IsFinalDraftConfirmed = false;
+            GeneratedProperties.IndividualDrafts = null;
+            GeneratedProperties.WasForcedByLead = false;
         }
     }
 }

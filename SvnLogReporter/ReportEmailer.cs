@@ -81,6 +81,7 @@ namespace SourceControlLogReporter
             if (policy.GeneratedProperties.IsFinalDraft)
             {
                 policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+                policy.GeneratedProperties.LastDraftSentDate = options.ToDate;
                 if (policy.IsForcedByLead(options.TriggerKey))
                     policy.GeneratedProperties.WasForcedByLead = true;
             }
@@ -88,9 +89,8 @@ namespace SourceControlLogReporter
             if (policy.GeneratedProperties.IsFinalReport)
             {
                 policy.GeneratedProperties.LastReportSentDate = options.ToDate;
-                policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-                policy.GeneratedProperties.IndividualDrafts = null;
-                policy.GeneratedProperties.WasForcedByLead = false;
+                policy.ResetPolicyToDefault();
+                policy.GeneratedProperties.WasResetToDefaultToday = false;
             }
 
             policy.SaveToFile(options.PolicyPath);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace SourceControlLogReporter.Model
     public class GeneratedProperties
     {
         public DateTime LastReportSentDate { get; set; }
+        public DateTime LastDraftSentDate { get; set; }
+        public bool WasResetToDefaultToday { get; set; }
         public string UniqueProjectKey { get; set; }
         public string RootPath { get; set; }
         public string ProjectKey { get; set; }
@@ -36,6 +39,5 @@ namespace SourceControlLogReporter.Model
         public string ReportsPath { get { return Path.Combine(RootPath, "Reports"); } }
         [XmlIgnore]
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
-
     }
 }
