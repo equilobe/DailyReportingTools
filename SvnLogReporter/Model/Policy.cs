@@ -38,12 +38,38 @@ namespace SourceControlLogReporter.Model
             }
         }
 
+        [XmlIgnore]
+        public Uri IndividualDraftConfirmationUrl
+        {
+            get
+            {
+                var now = DateTime.Now.ToOriginalTimeZone();
+                if (AdvancedOptions.NoIndividualDraft)
+                    return null;
+
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/confirmIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            }
+        }
+
+        [XmlIgnore]
+        public Uri ResendIndividualDraft
+        {
+            get
+            {
+                var now = DateTime.Now.ToOriginalTimeZone();
+                if (AdvancedOptions.NoIndividualDraft)
+                    return null;
+
+                return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + GeneratedProperties.ProjectKey + GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            }
+        }
+
         //Base Properties
         public string BaseUrl { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string SharedSecret { get; set; }
-       
+
         public int ProjectId { get; set; }
         public string ReportTime { get; set; }
 
@@ -114,12 +140,22 @@ namespace SourceControlLogReporter.Model
         [XmlIgnore]
         public List<string> EmailCollection { get; set; }
 
-        public void SetEmailCollection()
+        //public void SetEmailCollection()
+        //{
+        //    if (GeneratedProperties.IsFinalDraft)
+        //        EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //    else
+        //        EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //}
+
+        public List<string> GetDraftAddedEmails()
         {
-            if (!AdvancedOptions.NoDraft)
-                EmailCollection = DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            else
-                EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public List<string> GetFinalAddedEmails()
+        {
+            return EmailCollection = Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         public void SetIndividualEmail(string emailAdress)
@@ -128,7 +164,7 @@ namespace SourceControlLogReporter.Model
             EmailCollection.Add(emailAdress);
         }
 
-        public static Policy CreateFromFile(string filePath)
+        public static Policy LoadFromFile(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
@@ -146,18 +182,51 @@ namespace SourceControlLogReporter.Model
             }
         }
 
-        public void SetDefaultProperties()
+        public void SetDefaultProperties(Options options)
         {
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();
-            SetDraft();
+            ResetToDefault();
+            SetDraftMode(options);
         }
 
-        private void SetDraft()
+        private void ResetToDefault()
         {
-            if (AdvancedOptions.NoDraft)
-                AdvancedOptions.NoIndividualDraft = true;
+            if (GeneratedProperties.LastDraftSentDate.Date == DateTime.Today || GeneratedProperties.LastDraftSentDate == new DateTime() || GeneratedProperties.WasResetToDefaultToday)
+                return;
+
+            ResetPolicyToDefault();
+            GeneratedProperties.WasResetToDefaultToday = true;
+        }
+
+        private void SetDraftMode(Options options)
+        {
+            if (AdvancedOptions.NoDraft || GeneratedProperties.IsFinalDraftConfirmed)
+                SetFinalReportMode();
+            else
+                SetFinalAndIndividualDrafts(options);
+        }
+
+        private void SetFinalAndIndividualDrafts(Options options)
+        {
+            if (this.CanSendFullDraft(options.TriggerKey))
+            {
+                GeneratedProperties.IsFinalDraft = true;
+                GeneratedProperties.IsIndividualDraft = false;
+            }
+            else
+            {
+                GeneratedProperties.IsFinalDraft = false;
+                GeneratedProperties.IsIndividualDraft = true;
+            }
+        }
+
+        private void SetFinalReportMode()
+        {
+            GeneratedProperties.IsFinalDraft = false;
+            GeneratedProperties.IsIndividualDraft = false;
+            GeneratedProperties.IsFinalReport = true;
         }
 
         private void SetRootPath()
@@ -176,6 +245,13 @@ namespace SourceControlLogReporter.Model
         {
             if (AdvancedOptions.PermanentTaskLabel != null)
                 AdvancedOptions.PermanentTaskLabel = AdvancedOptions.PermanentTaskLabel.ToLower();
+        }
+
+        public void ResetPolicyToDefault()
+        {
+            GeneratedProperties.IsFinalDraftConfirmed = false;
+            GeneratedProperties.IndividualDrafts = null;
+            GeneratedProperties.WasForcedByLead = false;
         }
     }
 }

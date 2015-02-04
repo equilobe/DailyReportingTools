@@ -19,10 +19,10 @@ namespace JiraReporter
         static void Main(string[] args)
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
-            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
+            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.LoadFromFile(options.PolicyPath);
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
-            policy.SetDefaultProperties();
+            policy.SetDefaultProperties(options);
             LoadReportDates(policy, options);
 
             if (RunReport(policy, options))
@@ -42,6 +42,9 @@ namespace JiraReporter
                 return false;
 
             if (CheckDayFromOverrides(policy) == true)
+                return false;
+
+            if (options.TriggerKey != null && !policy.IsForcedByLead(options.TriggerKey))
                 return false;
 
             return true;
@@ -65,12 +68,7 @@ namespace JiraReporter
 
         private static void ProcessAndSendReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Report report)
         {
-            if (policy.AdvancedOptions.NoIndividualDraft)
-            {
-                var reportProcessor = new BaseReportProcessor(policy, options);
-                reportProcessor.ProcessReport(report);
-            }
-            else
+            if (policy.GeneratedProperties.IsIndividualDraft)
             {
                 foreach (var author in report.Authors)
                 {
@@ -78,6 +76,12 @@ namespace JiraReporter
                     var reportProcessor = new IndividualReportProcessor(policy, options);
                     reportProcessor.ProcessReport(individualReport);
                 }
+        //        policy.SaveToFile(options.PolicyPath);
+            }
+            else
+            {
+                var reportProcessor = new BaseReportProcessor(policy, options);
+                reportProcessor.ProcessReport(report);
             }
         }
 
@@ -105,6 +109,8 @@ namespace JiraReporter
         {
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;
+            if (project.Lead != null)
+                policy.GeneratedProperties.ProjectManager = project.Lead.key;
         }
     }
 }

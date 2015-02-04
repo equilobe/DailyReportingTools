@@ -38,10 +38,26 @@ namespace JiraReporter
                             .Select(u => new Author(u))
                             .ToList();
 
-            authors.ForEach(SetAuthorAdvancedProperties);          
-            authors.RemoveAll(AuthorIsEmpty);
+            SetProjectLead(authors);
+            authors.ForEach(SetAuthorAdvancedProperties);
+            authors.RemoveAll(a=> a.IsProjectLead == false && AuthorIsEmpty(a));
+           
+            var individualReportService = new IndividualReportInfoService();
+            individualReportService.SetIndividualDraftInfo(authors, _policy);
 
             return authors;
+        }
+
+        public Author CreateAuthorByKey(string key, SourceControlLogReporter.Model.Policy policy)
+        {
+            var draftInfoService = new IndividualReportInfoService();
+            var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
+            var user = RestApiRequests.GetUser(draft.Username, policy);
+            var author = new Author(user);
+            SetAuthorAdvancedProperties(author);
+            author.IndividualDraftInfo = draft;
+
+            return author;
         }
 
         private bool UserIsNotIgnored(JiraUser u)
@@ -55,7 +71,7 @@ namespace JiraReporter
 
 
 
-        private void SetAuthorAdvancedProperties(Author a)
+        public void SetAuthorAdvancedProperties(Author a)
         {
             this._currentAuthor = a;
             SetTimesheets();
@@ -74,6 +90,7 @@ namespace JiraReporter
             SetAuthorInitials();
             SetRemainingEstimate();
             SetImage();
+            SetOverrideEmail();
         }
 
         private void CleanName()
@@ -281,6 +298,34 @@ namespace JiraReporter
         {
             _currentAuthor.RemainingEstimateSeconds = _currentAuthor.InProgressTasksTimeLeftSeconds + _currentAuthor.OpenTasksTimeLeftSeconds;
             _currentAuthor.RemainingEstimateHours = _currentAuthor.RemainingEstimateSeconds / 3600;
+        }
+
+        private void SetOverrideEmail()
+        {
+            var author = _policy.UserOptions.Find(u => _currentAuthor.Username == u.JiraUserKey && u.EmailOverride != null);
+            if (author != null)
+                _currentAuthor.EmailAdress = author.EmailOverride;
+        }
+
+        private void SetProjectLead(List<Author> authors)
+        {
+            var lead = authors.Find(a => a.Username == _policy.GeneratedProperties.ProjectManager);
+            if (lead == null)
+            {
+                var projectManager = GetProjectLead(_policy.GeneratedProperties.ProjectManager);
+                authors.Add(projectManager);
+            }
+            else
+                lead.IsProjectLead = true;
+        }
+
+        private Author GetProjectLead(string username)
+        {
+            var lead = RestApiRequests.GetUser(username, _policy);
+            var projectManager = new Author(lead);
+            projectManager.IsProjectLead = true;
+
+            return projectManager;
         }
     }
 }

@@ -2,25 +2,13 @@
     var day = string.Empty;
     var imgSrc = string.Empty;
 }
-@if ((Model.Options.ToDate - Model.Options.FromDate).TotalDays > 1)
-{
-    day = "Day avg.";
-}
-else
-{
-    day = Model.Options.FromDate.DayOfWeek.ToString();
-}
-<div style="margin-top:20px; font-size:12px">
-    @if ((Model.Options.ToDate - Model.Options.FromDate).Days > 1)
-    {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM") - @Model.Options.ToDate.AddDays(-1).ToString("dddd, dd MMMM")  </h2>
-    }
-    else
-    {
-        <h2 style="color:black"> @Model.Title Daily Report for @Model.Options.FromDate.ToString("dddd, dd MMMM yyyy") </h2>
-    }
 
-    <div>
+
+<div style="margin-top:20px; font-size:12px">
+
+    <h3 style="color:black">@Model.Title</h3>
+
+    <div style="margin-top:20px">
         @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
         {
             <table style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
@@ -104,7 +92,6 @@ else
         @if (Model.Author.DayLogs.Count > 0 || Model.Author.InProgressTasks.Count > 0 || Model.Author.OpenTasks.Count > 0)
         {
         <div style="margin-top:40px;">
-            <h1 style="color:black; line-height:1.4em">@Model.Author.Name</h1>
             @if (Model.Author.DayLogs.Count > 0)
             {
                 foreach (var dayLog in Model.Author.DayLogs)
@@ -253,16 +240,11 @@ else
     </div>
 
     <div>
-        <table style="margin-top:50px; width:500px; height:150px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
+        <table style="margin-top:50px; width:500px; height:200px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
             <tbody>
                 <tr>
-                    <td>
-                        <h3 style="margin-left:10px; margin-bottom:5px; color:#468847;">Project Manager Only!</h3>
-                    </td>
-                </tr>
-                <tr>
                     <td width="100px" height="40px">
-                        @Partial("Views/confirmationButton.cshtml", "")
+                        @Partial("Views/confirmationButton.cshtml", Model.Author.IndividualDraftInfo.ConfirmationDraftUrl)
                     </td>
                 </tr>
                 <tr>
@@ -285,11 +267,6 @@ else
                         <p style="color:#808080; margin:0px 0px 0px 10px">- all work has been logged</p>
                     </td>
                 </tr>
-                @*<tr>
-                    <td>
-                        <p style="color:#808080; margin:0px 0px 0px 10px">- sprint scope has been adjusted (if necessary)</p>
-                    </td>
-                </tr>*@
                 <tr>
                     <td>
                         <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
@@ -297,7 +274,7 @@ else
                 </tr>
                 <tr>
                     <td width="100px" height="40px">
-                        @Partial("Views/resendDraftButton.cshtml", "")
+                        @Partial("Views/resendDraftButton.cshtml", Model.Author.IndividualDraftInfo.ResendDraftUrl)
                     </td>
                 </tr>
                 <tr>
@@ -305,6 +282,24 @@ else
                         <p style="color:#808080; margin:5px 0px 5px 10px">If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.</p>
                     </td>
                 </tr>
+                @if (Model.Author.IsProjectLead == true)
+                {
+                    <tr>
+                        <td>
+                            <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Partial("Views/forceDraftButton.cshtml", Model.Author.IndividualDraftInfo.ForceDraftUrl)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="color:#808080; margin:5px 0px 5px 10px">Press this button to force sending full draft</p>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

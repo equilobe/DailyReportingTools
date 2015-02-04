@@ -72,15 +72,27 @@ namespace SourceControlLogReporter
             var smtp = new SmtpClient { EnableSsl = true };
             smtp.Send(message);
             MoveToSent(reportPath);
-            UpdateLastReportSentDate();
+
+            UpdatePolicy();
         }
 
-        protected void UpdateLastReportSentDate()
+        protected void UpdatePolicy()
         {
-            if (!policy.AdvancedOptions.NoDraft)
-                return;
+            if (policy.GeneratedProperties.IsFinalDraft)
+            {
+                policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+                policy.GeneratedProperties.LastDraftSentDate = options.ToDate;
+                if (policy.IsForcedByLead(options.TriggerKey))
+                    policy.GeneratedProperties.WasForcedByLead = true;
+            }
 
-            policy.GeneratedProperties.LastReportSentDate = options.ToDate;
+            if (policy.GeneratedProperties.IsFinalReport)
+            {
+                policy.GeneratedProperties.LastReportSentDate = options.ToDate;
+                policy.ResetPolicyToDefault();
+                policy.GeneratedProperties.WasResetToDefaultToday = false;
+            }
+
             policy.SaveToFile(options.PolicyPath);
         }
 

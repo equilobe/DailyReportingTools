@@ -70,6 +70,7 @@
     <Compile Include="AuthorLoader.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
+    <Compile Include="IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraModels\Avatar.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />
+    <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailJira.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
@@ -144,6 +146,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Views\entryComments.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\forceDraftButton.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Views\IndividualReportTemplate.cshtml">

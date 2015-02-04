@@ -57,7 +57,7 @@ namespace SourceControlLogReporter
         private static void ExecuteReporter(string[] args)
         {
             Options options = GetCommandLineOptions(args);
-            Policy p = Policy.CreateFromFile(options.PolicyPath);
+            Policy p = Policy.LoadFromFile(options.PolicyPath);
             options.LoadDates(p);
 
             var processor = Processors[p.SourceControlOptions.Type](p, options);
