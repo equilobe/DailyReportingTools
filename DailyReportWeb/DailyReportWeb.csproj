@@ -178,7 +178,6 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Views\Home\Plugin.cshtml" />
     <Content Include="Content\main.css" />
     <Content Include="ConnectionStrings.config" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />

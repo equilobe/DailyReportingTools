@@ -39,19 +39,6 @@ namespace DailyReportWeb.Controllers
             return View();
         }
 
-        [JwtAuthentication]
-        public ActionResult Plugin()
-        {
-            var client = Request.CreateConnectHttpClient("com.equilobe.drt");
-
-            var response = client.GetAsync("rest/api/latest/project").Result;
-            var results = response.Content.ReadAsStringAsync().Result;
-
-            dynamic model = new ExpandoObject();
-            model.projects = results;
-            return View(model);
-        }
-
         [HttpGet]
         public ActionResult Descriptor()
         {
