@@ -40,23 +40,6 @@ namespace System
             return true;
         }
 
-        public static bool SetIndividualDraftConfirmation(this Policy policy, string key, string policyPath)
-        {
-            try
-            {
-                var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
-                var draft = draftsInfo.Find(d => d.UserKey == key);
-                draft.Confirmed = true;
-                policy.SaveToFile(policyPath);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         public static bool CheckIndividualDraftConfirmation(this Policy policy, string key)
         {
             var draft = policy.GeneratedProperties.IndividualDrafts.Find(dr => dr.UserKey == key);

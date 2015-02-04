@@ -28,5 +28,22 @@ namespace DailyReportWeb.Helpers
             var policy = Policy.LoadFromFile(policyPath);
             return policy;
         }
+
+        public static bool SetIndividualDraftConfirmation(Policy policy, string key, string policyPath)
+        {
+            try
+            {
+                var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
+                var draft = draftsInfo.Find(d => d.UserKey == key);
+                draft.Confirmed = true;
+                policy.SaveToFile(policyPath);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

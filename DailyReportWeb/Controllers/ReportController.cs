@@ -66,7 +66,7 @@ namespace DailyReportWeb.Controllers
             var policyPath = PolicyService.GetPolicyPath(id);
             var policy = Policy.LoadFromFile(policyPath);
 
-            var confirm = policy.SetIndividualDraftConfirmation(draftKey, policyPath);
+            var confirm = PolicyService.SetIndividualDraftConfirmation(policy, draftKey, policyPath);
             if (!confirm)
                 return Content("Error in confirmation");
 
