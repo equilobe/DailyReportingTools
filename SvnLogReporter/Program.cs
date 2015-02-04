@@ -19,6 +19,7 @@ using Octokit;
 using Octokit.Internal;
 using System.Globalization;
 using SourceControlLogReporter;
+using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace SourceControlLogReporter
 {

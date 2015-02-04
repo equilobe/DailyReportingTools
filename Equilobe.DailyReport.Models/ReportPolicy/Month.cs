@@ -22,35 +22,6 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
         public string NonWorkingDays { get; set; }
 
         [XmlIgnore]
-        public List<int> NonWorkingDaysList
-        {
-            get
-            {
-                var nonWorkingDays = new List<int>();
-                var daysString = NonWorkingDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var number in daysString)
-                    nonWorkingDays.Add(Int32.Parse(number));
-                return nonWorkingDays;
-            }
-        }
-
-        public static Month SearchOverride(List<Month> overrides, DateTime day)
-        {
-            if (overrides == null)
-                return null;
-            else
-                return (overrides.Find(o => o.MonthName.ToLower() == day.CurrentMonth().ToLower()));
-        }
-
-        public static bool SearchDateInOverrides(List<Month> overrides, DateTime date)
-        {
-            var currentOverride = new Month();
-            if(overrides!=null)
-                 currentOverride = SearchOverride(overrides, date);
-            if (currentOverride == null || currentOverride.NonWorkingDaysList == null)
-                return false;
-            else
-                return currentOverride.NonWorkingDaysList.Exists(d => d == date.Day);
-        }
+        public List<int> NonWorkingDaysList { get; set; }
     }
 }

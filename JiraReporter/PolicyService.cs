@@ -29,9 +29,19 @@ namespace JiraReporter
             Policy.CurrentOverride = GetCurrentOverride();
             Policy.IsThisMonthOverriden = IsThisMonthOverriden();
             Policy.Users = GetUsersDictionary();
+            Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
+            SetMonthlyNonWorkingDays();
+
 
             SetDefaultProperties();
 
+        }
+
+        private void SetMonthlyNonWorkingDays()
+        {
+            if (Policy.MonthlyOptions != null)
+                foreach (var month in Policy.MonthlyOptions)
+                    month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
         }
 
         private void SetUrls()
@@ -102,7 +112,7 @@ namespace JiraReporter
             return Policy.MonthlyOptions.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
         }
 
-        private IDictionary<string, List<string>>  GetUsersDictionary()
+        private IDictionary<string, List<string>> GetUsersDictionary()
         {
             return Policy.UserOptions.ToDictionary(d => d.JiraUserKey, d => d.SourceControlUsernames);
         }
@@ -213,6 +223,28 @@ namespace JiraReporter
             Policy.GeneratedProperties.IsFinalDraftConfirmed = false;
             Policy.GeneratedProperties.IndividualDrafts = null;
             Policy.GeneratedProperties.WasForcedByLead = false;
+        }
+
+        private List<DayOfWeek> GetWeekendDays()
+        {
+            var daysList = Policy.AdvancedOptions.WeekendDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var weekendDaysEnum = new List<DayOfWeek>();
+            try
+            {
+                foreach (var day in daysList)
+                {
+                    var dayOfWeek = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), day);
+                    weekendDaysEnum.Add(dayOfWeek);
+                }
+                return weekendDaysEnum;
+            }
+            catch (Exception)
+            {
+                return new List<DayOfWeek>(){
+                        DayOfWeek.Saturday,
+                        DayOfWeek.Sunday
+                    };
+            }
         }
     }
 }

@@ -96,6 +96,7 @@
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />
+    <Compile Include="MonthlyOptionsHelpers.cs" />
     <Compile Include="PolicyService.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailJira.cs" />

@@ -1,4 +1,5 @@
-﻿using JiraReporter.JiraModels;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.JiraModels;
 using JiraReporter.Model;
 using RestSharp;
 using SourceControlLogReporter.Model;

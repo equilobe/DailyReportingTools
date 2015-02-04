@@ -34,7 +34,6 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
         [DefaultValue(false)]
         public bool SendFinalToOthers { get; set; }
 
-
         public string ReportTitle { get; set; }
 
         [DefaultValue("permanent")]
@@ -45,45 +44,11 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
 
         public List<string> AdditionalWorkflowStatuses { get; set; }
 
-        //public List<string> WorkflowStatuses
-        //{
-        //    get
-        //    {
-        //        if (AdditionalWorkflowStatuses == null)
-        //            return null;
-
-        //        return AdditionalWorkflowStatuses.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        //    }
-        //}
-
         [DefaultValue("Saturday Sunday")]
         public string WeekendDays { get; set; }
 
         [XmlIgnore]
-        public List<DayOfWeek> WeekendDaysList
-        {
-            get
-            {
-                var daysList = WeekendDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                var weekendDaysEnum = new List<DayOfWeek>();
-                try
-                {
-                    foreach (var day in daysList)
-                    {
-                        var dayOfWeek = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), day);
-                        weekendDaysEnum.Add(dayOfWeek);
-                    }
-                    return weekendDaysEnum;
-                }
-                catch (Exception)
-                {
-                    return new List<DayOfWeek>(){
-                        DayOfWeek.Saturday,
-                        DayOfWeek.Sunday
-                    };
-                }
-            }
-        }
+        public List<DayOfWeek> WeekendDaysList { get; set; }
 
         public AdvancedOptions()
         {

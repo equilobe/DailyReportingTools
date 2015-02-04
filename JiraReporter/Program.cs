@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;
@@ -19,7 +20,8 @@ namespace JiraReporter
         static void Main(string[] args)
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
-            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.LoadFromFile(options.PolicyPath);
+            Policy policy = PolicyService.LoadFromFile(options.PolicyPath);
+            
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
             policy.SetDefaultProperties(options);
