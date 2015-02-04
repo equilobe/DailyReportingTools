@@ -32,7 +32,7 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                return db.ReportSettings.SingleOrDefault(qr => qr.Id == id);
+                return db.ReportSettings.SingleOrDefault(qr => qr.Id == id && qr.BaseUrl == User.GetBaseUrl());
             }
         }
 
@@ -50,15 +50,18 @@ namespace DailyReportWeb.Controllers.Api
 
         public void Put([FromBody]PolicySummary policySummary)
         {
-            var policy = new Policy
+            using (var db = new ReportsDb())
             {
-                BaseUrl = policySummary.BaseUrl,
-                SharedSecret = policySummary.SharedSecret,
-                ProjectId = Int32.Parse(policySummary.Id),
-                ReportTime = policySummary.Time
-            };
-
-            policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
+                db.ReportSettings.Add(new ReportSettings {
+                    BaseUrl = policySummary.BaseUrl,
+                    SharedSecret = policySummary.SharedSecret,
+                    ProjectId = policySummary.Id,
+                    ReportTime = policySummary.Time,
+                    PolicyXml = JiraReporter.Serialization.XmlSerialize(policySummary)
+                });
+                
+                db.SaveChanges();
+            }
         }
 
         // Policies are not deleted directly!
