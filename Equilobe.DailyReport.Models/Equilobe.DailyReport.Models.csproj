@@ -47,6 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportPolicy\AdvancedOptions.cs" />
+    <Compile Include="ReportPolicy\GeneratedProperties.cs" />
+    <Compile Include="ReportPolicy\IndividualDraftInfo.cs" />
+    <Compile Include="ReportPolicy\Month.cs" />
+    <Compile Include="ReportPolicy\Policy.cs" />
+    <Compile Include="ReportPolicy\SourceControlOptions.cs" />
+    <Compile Include="ReportPolicy\User.cs" />
     <Compile Include="Storage\ReportSettings.cs" />
   </ItemGroup>
   <ItemGroup>

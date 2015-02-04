@@ -96,6 +96,7 @@
     <Compile Include="Model\PullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />
+    <Compile Include="PolicyService.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailJira.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
@@ -186,6 +187,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
+      <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
+      <Name>Equilobe.DailyReport.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SvnLogReporter\SourceControlLogReporter.csproj">
       <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>
       <Name>SourceControlLogReporter</Name>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SourceControlLogReporter.Model
+namespace Equilobe.DailyReport.Models.ReportPolicy
 {
     public class SourceControlOptions
     {

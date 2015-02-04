@@ -1,4 +1,5 @@
-﻿using RazorEngine;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using RazorEngine;
 using RazorEngine.Templating;
 using SourceControlLogReporter.Model;
 using System;
