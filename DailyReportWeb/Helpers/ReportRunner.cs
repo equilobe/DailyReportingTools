@@ -11,14 +11,11 @@ namespace DailyReportWeb.Helpers
 {
     public class ReportRunner
     {
-        public static bool TryRunReport(string id, string draftKey="")
+        public static bool TryRunReportTask(string id)
         {
             try
             {
-                if (string.IsNullOrEmpty(draftKey))
-                    RunReport(id);
-                else
-                    RunReportDirectly(id, draftKey, true);
+                RunReportTask(id);
                 return true;
             }
             catch
@@ -27,7 +24,7 @@ namespace DailyReportWeb.Helpers
             }
         }
 
-        public static void RunReport(string id)
+        public static void RunReportTask(string id)
         {
             var key = "DRT-" + id;
             using (var ts = new TaskService())

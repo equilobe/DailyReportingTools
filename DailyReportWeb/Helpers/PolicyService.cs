@@ -9,12 +9,6 @@ namespace DailyReportWeb.Helpers
 {
     public class PolicyService
     {
-        public static void SetPolicyFullDraft(Policy policy, string policyPath)
-        {
-            policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-            policy.SaveToFile(policyPath);
-        }
-
         public static void SetPolicyFinalReport(Policy policy, string policyPath)
         {
             policy.GeneratedProperties.IsFinalDraftConfirmed = true;

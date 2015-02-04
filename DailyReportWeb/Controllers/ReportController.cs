@@ -27,7 +27,7 @@ namespace DailyReportWeb.Controllers
 
             PolicyService.SetPolicyFinalReport(policy, policyPath);
 
-            if (ReportRunner.TryRunReport(id))
+            if (ReportRunner.TryRunReportTask(id))
                 return Content("Report confirmed. Final report sent");
             else
                 return Content("Error in sending the final report");
@@ -45,7 +45,13 @@ namespace DailyReportWeb.Controllers
             if (!policy.CanSendFullDraft(draftKey))
                 return Content("Cannot send report if not all individual drafts were confirmed");
 
-            if (ReportRunner.TryRunReport(id, draftKey))
+            if (!string.IsNullOrEmpty(draftKey))
+            {
+                ReportRunner.RunReportDirectly(id, draftKey, true);
+                return Content("Draft report was sent");
+            }
+
+            if (ReportRunner.TryRunReportTask(id))
                 return Content("Draft report was resent");
             else
                 return Content("Error in sending draft report");
@@ -66,9 +72,7 @@ namespace DailyReportWeb.Controllers
 
             if (policy.CanSendFullDraft())
             {
-                PolicyService.SetPolicyFullDraft(policy, policyPath);
-
-                if (!ReportRunner.TryRunReport(id))
+                if (!ReportRunner.TryRunReportTask(id))
                     return Content("Report confirmed. Error in sending full draft report");
 
                 return Content("Report confirmed. Full draft sent");
