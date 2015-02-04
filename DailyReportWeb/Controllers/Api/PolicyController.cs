@@ -9,6 +9,8 @@ using SourceControlLogReporter.Model;
 using System.Web;
 using Atlassian.Connect;
 using RestSharp;
+using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Storage;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -26,9 +28,12 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // GET: api/Policy/5
-        public Policy Get(string id)
+        public ReportSettings Get(long id)
         {
-            return new Policy();
+            using (var db = new ReportsDb())
+            {
+                return db.ReportSettings.SingleOrDefault(qr => qr.Id == id);
+            }
         }
 
         // Policies are not created directly!

@@ -2,7 +2,7 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="policyEditorApp">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +11,17 @@
     <title>
     </title>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    @Styles.Render("~/Content/maincss")   
+    @Styles.Render("~/Content/maincss")
+    <script>var projectId = @Html.Raw(Model);</script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/app/js/policyEditorApp.js"></script>
 </head>
 
-<body>
+<body ng-controller="policyEditPage">
     <div id="jumbo" class="jumbotron">
         <div class="container">
             <h1>
-                Alyssa Report Details
-                @Model
+                {{reportPolicy.policy.name}} - Report Details
             </h1>
             <p class="help-block">
                 Use this page to configure all options for the daily report.
@@ -30,7 +32,7 @@
                         <label>
                             Send at:
                         </label>
-                        <input type="text" class="form-control" placeholder="09:00 AM">
+                        <input type="text" class="form-control" placeholder="08:00">
                     </div>
                 </div>
             </div>

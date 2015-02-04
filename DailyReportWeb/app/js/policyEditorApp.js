@@ -12,4 +12,9 @@
     		    console.log("error");
     		});
         };
+    }])
+    .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
+        $http.get("/api/policy/" + projectId).success(function (item) {
+            $scope.reportPolicy = item;
+        });
     }]);
