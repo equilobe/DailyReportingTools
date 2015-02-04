@@ -19,7 +19,7 @@ namespace JiraReporter
         static void Main(string[] args)
         {
             SourceControlLogReporter.Options options = GetCommandLineOptions(args);
-            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.CreateFromFile(options.PolicyPath);
+            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.LoadFromFile(options.PolicyPath);
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
             policy.SetDefaultProperties(options);

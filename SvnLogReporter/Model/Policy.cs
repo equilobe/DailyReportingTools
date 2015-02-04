@@ -164,7 +164,7 @@ namespace SourceControlLogReporter.Model
             EmailCollection.Add(emailAdress);
         }
 
-        public static Policy CreateFromFile(string filePath)
+        public static Policy LoadFromFile(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {

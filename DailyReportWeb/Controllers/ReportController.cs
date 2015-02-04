@@ -58,7 +58,7 @@ namespace DailyReportWeb.Controllers
                 return Content("Cannot confirm report for another date");
 
             var policyPath = PolicyService.GetPolicyPath(id);
-            var policy = Policy.CreateFromFile(policyPath);
+            var policy = Policy.LoadFromFile(policyPath);
 
             var confirm = policy.SetIndividualDraftConfirmation(draftKey, policyPath);
             if (!confirm)
