@@ -100,7 +100,7 @@ namespace DailyReportWeb.Controllers
             };
 
             descriptor.SetBaseUrlFromRequest(Request);
-            descriptor.scopes.Add("READ");
+            descriptor.scopes.Add("PROJECT_ADMIN");
 
             return Json(descriptor, JsonRequestBehavior.AllowGet);
         }
