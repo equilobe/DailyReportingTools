@@ -12,16 +12,16 @@ namespace DailyReportWeb.Models
     public class ProjectInfo
     {
         [DataMember(Name = "id")]
-        public long Id { get; set; }
+        public long ProjectId { get; set; }
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string ProjectName { get; set; }
     }
 
     public class PolicySummary
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Time { get; set; }
+        public long ProjectId { get; set; }
+        public string ProjectName { get; set; }
+        public string ReportTime { get; set; }
         public string BaseUrl { get; set; }
         public string SharedSecret { get; set; }
 
@@ -32,8 +32,8 @@ namespace DailyReportWeb.Models
                 {
                     BaseUrl = baseUrl,
                     SharedSecret = sharedSecret,
-                    Id = projectInfo.Id,
-                    Name = projectInfo.Name
+                    ProjectId = projectInfo.ProjectId,
+                    ProjectName = projectInfo.ProjectName
                 })
                 .ToList();
         }

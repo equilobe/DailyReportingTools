@@ -32,7 +32,8 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                return db.ReportSettings.SingleOrDefault(qr => qr.Id == id && qr.BaseUrl == User.GetBaseUrl());
+                var baseUrl = User.GetBaseUrl();
+                return db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
             }
         }
 
@@ -52,14 +53,21 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                db.ReportSettings.Add(new ReportSettings {
+                db.ReportSettings.Add(new ReportSettings
+                {
                     BaseUrl = policySummary.BaseUrl,
                     SharedSecret = policySummary.SharedSecret,
-                    ProjectId = policySummary.Id,
-                    ReportTime = policySummary.Time,
-                    PolicyXml = JiraReporter.Serialization.XmlSerialize(policySummary)
+                    ProjectId = policySummary.ProjectId,
+                    ReportTime = policySummary.ReportTime,
+                    PolicyXml = JiraReporter.Serialization.XmlSerialize(new Policy
+                    {
+                        BaseUrl = policySummary.BaseUrl,
+                        SharedSecret = policySummary.SharedSecret,
+                        ProjectId = policySummary.ProjectId,
+                        ReportTime = policySummary.ReportTime,
+                    })
                 });
-                
+
                 db.SaveChanges();
             }
         }
