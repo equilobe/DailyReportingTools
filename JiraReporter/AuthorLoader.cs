@@ -14,14 +14,14 @@ namespace JiraReporter
     class AuthorLoader
     {
         SprintTasks _sprintIssues;
-        SourceControlLogReporter.Model.Policy _policy;
+        Policy _policy;
         List<Commit> _commits;
-        SourceControlLogReporter.Options _options;
+        SourceControlLogReporter.JiraOptions _options;
         List<PullRequest> _pullRequests;
         Sprint _sprint;
         Author _currentAuthor;
 
-        public AuthorLoader(SourceControlLogReporter.Options options, SourceControlLogReporter.Model.Policy policy, Sprint sprint, SprintTasks sprintIssues, List<Commit> commits, List<PullRequest> pullRequests)
+        public AuthorLoader(SourceControlLogReporter.JiraOptions options, Policy policy, Sprint sprint, SprintTasks sprintIssues, List<Commit> commits, List<PullRequest> pullRequests)
         {
             this._sprintIssues = sprintIssues;
             this._commits = commits;
@@ -48,7 +48,7 @@ namespace JiraReporter
             return authors;
         }
 
-        public Author CreateAuthorByKey(string key, SourceControlLogReporter.Model.Policy policy)
+        public Author CreateAuthorByKey(string key, Policy policy)
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
@@ -62,11 +62,11 @@ namespace JiraReporter
 
         private bool UserIsNotIgnored(JiraUser u)
         {
-            var userOptions = _policy.UserOptions.Find(user => user.JiraUserKey == u.key);
-            if (userOptions == null)
+            var userJiraOptions = _policy.UserJiraOptions.Find(user => user.JiraUserKey == u.key);
+            if (userJiraOptions == null)
                 return true;
 
-            return !userOptions.Ignored;
+            return !userJiraOptions.Ignored;
         }
 
 
@@ -143,7 +143,7 @@ namespace JiraReporter
 
         private List<Commit> GetCommits()
         {
-            if (_policy.SourceControlOptions == null)
+            if (_policy.SourceControlJiraOptions == null)
                 return new List<Commit>();
 
             if (!_policy.Users.ContainsKey(_currentAuthor.Username))
@@ -160,8 +160,8 @@ namespace JiraReporter
                 return;
 
             foreach (var commit in _commits)
-                if (commit.Entry.Link == null && _policy.SourceControlOptions.CommitUrl != null)
-                    commit.Entry.Link = _policy.SourceControlOptions.CommitUrl + commit.Entry.Revision;
+                if (commit.Entry.Link == null && _policy.SourceControlJiraOptions.CommitUrl != null)
+                    commit.Entry.Link = _policy.SourceControlJiraOptions.CommitUrl + commit.Entry.Revision;
         }
 
         private void AddCommitIssuesNotInTimesheet(List<Issue> tasks)
@@ -302,7 +302,7 @@ namespace JiraReporter
 
         private void SetOverrideEmail()
         {
-            var author = _policy.UserOptions.Find(u => _currentAuthor.Username == u.JiraUserKey && u.EmailOverride != null);
+            var author = _policy.UserJiraOptions.Find(u => _currentAuthor.Username == u.JiraUserKey && u.EmailOverride != null);
             if (author != null)
                 _currentAuthor.EmailAdress = author.EmailOverride;
         }

@@ -9,7 +9,7 @@ namespace JiraReporter
 {
     class IndividualReportInfoService
     {
-        public void SetIndividualDraftInfo(List<Author> authors, SourceControlLogReporter.Model.Policy policy)
+        public void SetIndividualDraftInfo(List<Author> authors, Policy policy)
         {
             if (!policy.GeneratedProperties.IsIndividualDraft)
                 return;
@@ -26,7 +26,7 @@ namespace JiraReporter
             policy.GeneratedProperties.IndividualDrafts = individualDrafts;
         }
 
-        private SourceControlLogReporter.Model.IndividualDraftInfo GenerateIndividualDraftInfo(Author author, SourceControlLogReporter.Model.Policy policy)
+        private SourceControlLogReporter.Model.IndividualDraftInfo GenerateIndividualDraftInfo(Author author, Policy policy)
         {
             var individualDraft = new SourceControlLogReporter.Model.IndividualDraftInfo
             {
@@ -40,7 +40,7 @@ namespace JiraReporter
             return individualDraft;
         }
 
-        private void SetIndividualUrls(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, SourceControlLogReporter.Model.Policy policy)
+        private void SetIndividualUrls(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, Policy policy)
         {
             individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, policy.IndividualDraftConfirmationUrl);
             individualDraft.ResendDraftUrl = GetUrl(individualDraft, policy.ResendIndividualDraft);
@@ -55,7 +55,7 @@ namespace JiraReporter
             return new Uri(baseUrl + "&" + url);
         }
 
-        public SourceControlLogReporter.Model.IndividualDraftInfo GetIndividualDraftInfo(string key, SourceControlLogReporter.Model.Policy policy)
+        public SourceControlLogReporter.Model.IndividualDraftInfo GetIndividualDraftInfo(string key, Policy policy)
         {
             var draft = policy.GeneratedProperties.IndividualDrafts.Single(d => d.UserKey == key);
             SetIndividualUrls(draft, policy);

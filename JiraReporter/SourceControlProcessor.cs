@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
 using System;
@@ -11,13 +12,13 @@ namespace JiraReporter
 {
     class SourceControlProcessor
     {
-        public static readonly Dictionary<SourceControlType, Func<Policy, Options, ReportBase>> Processors = new Dictionary<SourceControlType, Func<Policy, Options, ReportBase>>()
+        public static readonly Dictionary<SourceControlType, Func<Policy, JiraOptions, ReportBase>> Processors = new Dictionary<SourceControlType, Func<Policy, JiraOptions, ReportBase>>()
         {
             {SourceControlType.GitHub, ReportBase.Create<GitHubReport> },
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
 
-        public static SourceControlLogReporter.Model.Log GetSourceControlLog(Policy policy, Options options)
+        public static SourceControlLogReporter.Model.Log GetSourceControlLog(Policy policy, JiraOptions options)
         {
             var processors = SourceControlProcessor.Processors[policy.SourceControlOptions.Type](policy, options);
             var log = processors.CreateLog();

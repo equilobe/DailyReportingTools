@@ -9,19 +9,19 @@ namespace JiraReporter.Model
     public class IndividualReport : Report
     {
         public Author Author { get; set; }
-        public SourceControlLogReporter.Model.Policy Policy;
-        public SourceControlLogReporter.Options Options;
+        public Policy Policy;
+        public SourceControlLogReporter.JiraOptions JiraOptions;
         public Summary Summary { get; set; }
 
-        public IndividualReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options) : base(policy, options)
+        public IndividualReport(Policy policy, SourceControlLogReporter.JiraOptions options) : base(policy, options)
         {
             Policy = policy;
-            Options = options;
+            JiraOptions = options;
         }
 
         public override string GetReportTitle()
         {
-            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
+            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(JiraOptions.FromDate, JiraOptions.ToDate);
 
             return "DRAFT | " + Author.Name + " | " + Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
         }

@@ -9,12 +9,12 @@ namespace JiraReporter
 {
     class IssueProcessor
     {
-        SourceControlLogReporter.Model.Policy _policy;
+        Policy _policy;
         List<PullRequest> _pullRequests;
         Issue _currentIssue;
         JiraIssue _currentJiraIssue;
 
-        public IssueProcessor(SourceControlLogReporter.Model.Policy policy, List<PullRequest> pullRequests)
+        public IssueProcessor(Policy policy, List<PullRequest> pullRequests)
         {
             this._policy = policy;
             this._pullRequests = pullRequests;

@@ -9,10 +9,10 @@ namespace JiraReporter.Model
 {
     public class IndividualReportProcessor : BaseReportProcessor
     {
-        SourceControlLogReporter.Model.Policy Policy { get; set; }
+        Policy Policy { get; set; }
         SourceControlLogReporter.Options Options { get; set; }
 
-        public IndividualReportProcessor(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options) : base(policy, options)
+        public IndividualReportProcessor(Policy policy, SourceControlLogReporter.Options options) : base(policy, options)
         {
             Policy = policy;
             Options = options;
@@ -25,7 +25,7 @@ namespace JiraReporter.Model
             SendReport(report);
         }
 
-        private void SaveReport(SourceControlLogReporter.Model.Policy policy, IndividualReport individualReport)
+        private void SaveReport(Policy policy, IndividualReport individualReport)
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
             var reportPath = GetReportPath(individualReport);

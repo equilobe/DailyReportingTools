@@ -1,4 +1,5 @@
-﻿using SourceControlLogReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace System
 {
     public static class PolicyExtensions
     {
-        public static bool CanSendFullDraft(this Policy policy, string draftKey="")
+        public static bool CanSendFullDraft(this JiraPolicy policy, string draftKey="")
         {
             if (policy.IsForcedByLead(draftKey) || policy.GeneratedProperties.WasForcedByLead)
                 return true;
@@ -27,7 +28,7 @@ namespace System
             return true;
         }
 
-        public static bool IsForcedByLead(this Policy policy, string draftKey)
+        public static bool IsForcedByLead(this JiraPolicy policy, string draftKey)
         {
             if (policy.GeneratedProperties.IndividualDrafts == null)
                 return false;
@@ -40,7 +41,7 @@ namespace System
             return true;
         }
 
-        public static bool CheckIndividualDraftConfirmation(this Policy policy, string key)
+        public static bool CheckIndividualDraftConfirmation(this JiraPolicy policy, string key)
         {
             var draft = policy.GeneratedProperties.IndividualDrafts.Find(dr => dr.UserKey == key);
 

@@ -83,6 +83,7 @@
     <Compile Include="JiraModels\Sprint.cs" />
     <Compile Include="JiraModels\SprintReport.cs" />
     <Compile Include="JiraModels\Views.cs" />
+    <Compile Include="JiraOptions.cs" />
     <Compile Include="JiraService.cs" />
     <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
@@ -97,7 +98,7 @@
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
-    <Compile Include="PolicyService.cs" />
+    <Compile Include="JiraPolicyService.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailJira.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />

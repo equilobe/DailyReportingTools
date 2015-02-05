@@ -1,4 +1,5 @@
-﻿using SourceControlLogReporter;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace JiraReporter.Model
         public int SprintWorkingDaysLeft { get; set; }
         public int SprintWorkedDays { get; set; }
 
-        public WorkingDaysInfo(Sprint sprint, Policy policy, Options options)
+        public WorkingDaysInfo(Sprint sprint, Policy policy, JiraOptions options)
         {
             var now = DateTime.Now.ToOriginalTimeZone();
             ReportWorkingDays = Summary.GetWorkingDays(options.FromDate, options.ToDate.AddDays(-1), policy.MonthlyOptions);

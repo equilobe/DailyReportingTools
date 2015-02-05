@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
 using System;
@@ -10,7 +11,7 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public List<Issue> GetCompletedTasks(Policy policy, Options options)
+        public List<Issue> GetCompletedTasks(Policy policy, JiraOptions options)
         {
             var completedTasks = new List<Issue>();
             var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace JiraReporter.Model
 {
     public class Report
     {
-        public SourceControlLogReporter.Model.Policy Policy;
-        public SourceControlLogReporter.Options Options;
+        public JiraPolicy Policy;
+        public JiraOptions Options;
 
-        public Report(SourceControlLogReporter.Model.Policy p, SourceControlLogReporter.Options o)
+        public Report(Policy p, JiraOptions o)
         {
             Policy = p;
             Options = o;

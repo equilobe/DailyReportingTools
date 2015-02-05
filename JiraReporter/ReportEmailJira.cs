@@ -10,6 +10,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using JiraReporter.Model;
 using System.Net.Mime;
+using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace JiraReporter
 {
@@ -17,12 +18,14 @@ namespace JiraReporter
     {
         public List<Author> Authors { get; set; }
         public Author Author { get; set; }
+        public JiraPolicy Policy { get; set; }
+        public JiraOptions Options { get; set; }
 
-        public ReportEmailJira(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        public ReportEmailJira(JiraPolicy policy, JiraOptions options)
             : base(policy, options)
         {
-            this.policy = policy;
-            this.options = options;
+            Policy = policy;
+            Options = options;
         }
         public void AddAttachementImage(Image image, string id, MailMessage mailMessage)
         {
@@ -82,6 +85,27 @@ namespace JiraReporter
             subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
 
             return subject;
+        }
+
+        override void UpdatePolicy()
+        {
+            var policyService = new JiraPolicyService(policy);
+            if (policy.GeneratedProperties.IsFinalDraft)
+            {
+                policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+                policy.GeneratedProperties.LastDraftSentDate = options.ToDate;
+                if (policy.IsForcedByLead(options.TriggerKey))
+                    policy.GeneratedProperties.WasForcedByLead = true;
+            }
+
+            if (policy.GeneratedProperties.IsFinalReport)
+            {
+                policy.GeneratedProperties.LastReportSentDate = options.ToDate;
+                policyService.ResetPolicyToDefault();
+                policy.GeneratedProperties.WasResetToDefaultToday = false;
+            }
+
+            policyService.SaveToFile(options.PolicyPath);
         }
     }
 }

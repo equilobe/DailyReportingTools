@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +24,7 @@ namespace JiraReporter.Model
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }
 
-        public void SetSprintTasks(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
+        public void SetSprintTasks(Policy policy, JiraOptions options, List<PullRequest> pullRequests)
         {
             var tasksService = new TasksService();
             var issues = RestApiRequests.GetSprintTasks(policy);
@@ -35,7 +37,7 @@ namespace JiraReporter.Model
             SetSprintTasksErrors(policy);
         }
 
-        private void SetSprintTasksErrors(SourceControlLogReporter.Model.Policy policy)
+        private void SetSprintTasksErrors(Policy policy)
         {
             int completedErrors = 0;
             TasksService.SetErrors(UnassignedTasks, policy);

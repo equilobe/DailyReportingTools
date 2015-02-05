@@ -1,4 +1,6 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
+using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ namespace JiraReporter
 {
     class ReportGenerator
     {
-        public static Report GenerateReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        public static Report GenerateReport(Policy policy, Options options)
         {
             var timesheetService = new TimesheetService();
             var pullRequests = new List<PullRequest>();
@@ -24,7 +26,7 @@ namespace JiraReporter
 
             return GetReport(policy, options, pullRequests, commits);
         }
-        private static Report GetReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits)
+        private static Report GetReport(Policy policy, Options options, List<PullRequest> pullRequests, List<Commit> commits)
         {
             var sprintTasks = GetSprintReport(policy, options, pullRequests);
             var sprint = GenerateSprint(policy, options);
@@ -44,7 +46,7 @@ namespace JiraReporter
             return report;
         }
 
-        private static List<Author> GetReportAuthors(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits, SprintTasks sprintTasks, Sprint sprint)
+        private static List<Author> GetReportAuthors(Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests, List<Commit> commits, SprintTasks sprintTasks, Sprint sprint)
         {
             var authors = new List<Author>();
             var authorLoader = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests);
@@ -77,14 +79,14 @@ namespace JiraReporter
             return individualReport;
         }
 
-        private static SprintTasks GetSprintReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
+        private static SprintTasks GetSprintReport(Policy policy, SourceControlLogReporter.Options options, List<PullRequest> pullRequests)
         {
             var report = new SprintTasks();
             report.SetSprintTasks(policy, options, pullRequests);
             return report;
         }
 
-        public static Sprint GenerateSprint(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        public static Sprint GenerateSprint(Policy policy, SourceControlLogReporter.Options options)
         {
             var jira = new JiraService(policy, options);
             return jira.GetLatestSprint();

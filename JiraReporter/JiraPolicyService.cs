@@ -1,5 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportOptions;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,18 +11,16 @@ using System.Xml.Serialization;
 
 namespace JiraReporter
 {
-    class PolicyService
+    class JiraPolicyService
     {
-        Policy Policy { get; set; }
-        Options Options { get; set; }
+        JiraPolicy Policy { get; set; }
 
-        public PolicyService(Policy policy, Options options)
+        public JiraPolicyService(JiraPolicy policy)
         {
             Policy = policy;
-            Options = options;
         }
 
-        public void SetPolicy()
+        public void SetPolicy(Options options)
         {
             SetUrls();
             Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
@@ -32,8 +30,7 @@ namespace JiraReporter
             Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
             SetMonthlyNonWorkingDays();
 
-
-            SetDefaultProperties();
+            SetDefaultProperties(options);
 
         }
 
@@ -153,16 +150,16 @@ namespace JiraReporter
 
 
 
-        public void SetDefaultProperties()
+        public void SetDefaultProperties(Options options)
         {
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();
             ResetToDefault();
-            SetDraftMode();
+            SetDraftMode(options);
         }
 
-        private void ResetToDefault()
+        public void ResetToDefault()
         {
             if (Policy.GeneratedProperties.LastDraftSentDate.Date == DateTime.Today || Policy.GeneratedProperties.LastDraftSentDate == new DateTime() || Policy.GeneratedProperties.WasResetToDefaultToday)
                 return;
@@ -171,17 +168,17 @@ namespace JiraReporter
             Policy.GeneratedProperties.WasResetToDefaultToday = true;
         }
 
-        private void SetDraftMode()
+        private void SetDraftMode(Options options)
         {
             if (Policy.AdvancedOptions.NoDraft || Policy.GeneratedProperties.IsFinalDraftConfirmed)
                 SetFinalReportMode();
             else
-                SetFinalAndIndividualDrafts();
+                SetFinalAndIndividualDrafts(options);
         }
 
-        private void SetFinalAndIndividualDrafts()
+        private void SetFinalAndIndividualDrafts(Options options)
         {
-            if (this.CanSendFullDraft(Options.TriggerKey))
+            if (this.CanSendFullDraft(options.TriggerKey))
             {
                 Policy.GeneratedProperties.IsFinalDraft = true;
                 Policy.GeneratedProperties.IsIndividualDraft = false;

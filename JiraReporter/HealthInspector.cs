@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace JiraReporter
 {
     public class HealthInspector
     {
-        SourceControlLogReporter.Model.Policy Policy { get; set; }
+        Policy Policy { get; set; }
 
-        public HealthInspector(SourceControlLogReporter.Model.Policy policy)
+        public HealthInspector(Policy policy)
         {
             Policy = policy;
         }

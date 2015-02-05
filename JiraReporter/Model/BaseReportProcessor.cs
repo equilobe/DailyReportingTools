@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace JiraReporter.Model
 {
     public class BaseReportProcessor
     {
-        SourceControlLogReporter.Model.Policy Policy { get; set; }
+        JiraPolicy Policy { get; set; }
         SourceControlLogReporter.Options Options { get; set; }
 
-        public BaseReportProcessor(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        public BaseReportProcessor(JiraPolicy policy, SourceControlLogReporter.Options options)
         {
             Policy = policy;
             Options = options;
@@ -26,7 +27,7 @@ namespace JiraReporter.Model
             SendReport(report);
         }
 
-        protected virtual void SaveReport(SourceControlLogReporter.Model.Policy policy, Report report)
+        protected virtual void SaveReport(JiraPolicy policy, Report report)
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
             var reportPath = GetReportPath(report);
@@ -41,7 +42,7 @@ namespace JiraReporter.Model
             return reportPath;
         }
 
-        protected void SaveReportToFile<T>(T report, string reportPath, SourceControlLogReporter.Model.Policy policy, string viewPath)
+        protected void SaveReportToFile<T>(T report, string reportPath, JiraPolicy policy, string viewPath)
         {
             var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
             SourceControlLogReporter.Reporter.WriteReport(policy, repCont, reportPath);

@@ -12,7 +12,7 @@ namespace JiraReporter
         public static List<int> GetNonWorkingDays(Month month)
         {
             var nonWorkingDays = new List<int>();
-            var daysString = month.NonWorkingDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var daysString = month.NonWorkingDays.Split(new char[] { ' ', ',', ';' }, StringSplitJiraOptions.RemoveEmptyEntries);
             foreach (var number in daysString)
                 nonWorkingDays.Add(Int32.Parse(number));
             return nonWorkingDays;

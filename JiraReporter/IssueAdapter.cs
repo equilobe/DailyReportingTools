@@ -147,7 +147,7 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetIssueErrors(Issue issue, SourceControlLogReporter.Model.Policy policy)
+        public static void SetIssueErrors(Issue issue, Policy policy)
         {
             issue.Errors = new List<Error>();
             if (issue.IsSubtask == false && issue.Label != policy.AdvancedOptions.PermanentTaskLabel)

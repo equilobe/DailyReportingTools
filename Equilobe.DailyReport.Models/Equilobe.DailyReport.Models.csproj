@@ -46,10 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportPolicy\AdvancedOptions.cs" />
     <Compile Include="ReportPolicy\GeneratedProperties.cs" />
+    <Compile Include="ReportPolicy\JiraGeneratedProperties.cs" />
     <Compile Include="ReportPolicy\IndividualDraftInfo.cs" />
+    <Compile Include="ReportPolicy\JiraPolicy.cs" />
     <Compile Include="ReportPolicy\Month.cs" />
     <Compile Include="ReportPolicy\Policy.cs" />
     <Compile Include="ReportPolicy\SourceControlOptions.cs" />
@@ -59,9 +62,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ReportOptions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,4 +1,5 @@
-﻿using SourceControlLogReporter;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -314,7 +315,7 @@ namespace JiraReporter.Model
         }
 
 
-        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, Options options, Sprint sprint)
+        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, JiraOptions options, Sprint sprint)
         {
             Policy = policy;
             AuthorsInvolved = authors.Count;
@@ -372,7 +373,7 @@ namespace JiraReporter.Model
             OpenTasksCount = sprintTasks.OpenTasks.Count;
         }
 
-        private void SetDates(Options options)
+        private void SetDates(JiraOptions options)
         {
             FromDate = options.FromDate;
             ToDate = options.ToDate;
@@ -386,7 +387,7 @@ namespace JiraReporter.Model
 
         private void SetAllocatedTimePerDay()
         {
-            if (Policy.OverrideThisMonth == true && Policy.CurrentOverride.AllocatedHoursPerDay > 0)
+            if (Policy.IsThisMonthOverriden == true && Policy.CurrentOverride.AllocatedHoursPerDay > 0)
                 AllocatedHoursPerDay = Policy.CurrentOverride.AllocatedHoursPerDay;
             else
                 AllocatedHoursPerDay = Policy.AllocatedHoursPerDay;
@@ -394,7 +395,7 @@ namespace JiraReporter.Model
 
         private void SetAllocatedTimePerMonth()
         {
-            if (Policy.OverrideThisMonth == true && Policy.CurrentOverride.AllocatedHoursPerMonth > 0)
+            if (Policy.IsThisMonthOverriden == true && Policy.CurrentOverride.AllocatedHoursPerMonth > 0)
                 AllocatedHoursPerMonth = Policy.CurrentOverride.AllocatedHoursPerMonth;
             else
                 AllocatedHoursPerMonth = Policy.AllocatedHoursPerMonth;

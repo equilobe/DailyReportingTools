@@ -20,10 +20,11 @@ using Octokit.Internal;
 using System.Globalization;
 using SourceControlLogReporter;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Enums;
 
 namespace SourceControlLogReporter
 {
-    public enum SourceControlType { GitHub, SVN };
+
     class Program
     {
         
@@ -58,14 +59,16 @@ namespace SourceControlLogReporter
         private static void ExecuteReporter(string[] args)
         {
             Options options = GetCommandLineOptions(args);
-            Policy p = Policy.LoadFromFile(options.PolicyPath);
-            options.LoadDates(p);
+            Policy policy = PolicyService.LoadFromFile(options.PolicyPath);
+            var policyService = new PolicyService(policy);
+            policyService.SetPolicy();
+            options.LoadDates(policy);
 
-            var processor = Processors[p.SourceControlOptions.Type](p, options);
+            var processor = Processors[policy.SourceControlOptions.Type](policy, options);
             var report = processor.GenerateReport();
-            Reporter.WriteReport(p, report, processor.PathToLog);
+            Reporter.WriteReport(policy, report, processor.PathToLog);
 
-            var emailer = new ReportEmailer(p, options);
+            var emailer = new ReportEmailer(policy, options);
             emailer.TrySendEmails();
         }
 
