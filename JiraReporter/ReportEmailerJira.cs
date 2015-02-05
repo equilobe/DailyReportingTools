@@ -104,7 +104,7 @@ namespace JiraReporter
                 Policy.GeneratedProperties.WasResetToDefaultToday = false;
             }
 
-            policyService.SaveToFile(Options.PolicyPath);
+            PolicyService.SaveToFile(Options.PolicyPath, Policy);
         }
     }
 }

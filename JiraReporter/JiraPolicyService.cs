@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace JiraReporter
 {
-    class JiraPolicyService
+    public class JiraPolicyService
     {
         JiraPolicy Policy { get; set; }
 
@@ -139,12 +139,12 @@ namespace JiraReporter
             }
         }
 
-        public static void SaveToFile(string filePath)
+        public static void SaveToFile(string filePath, JiraPolicy policy)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Create))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(JiraPolicy));
-                ser.Serialize(fs, Policy);
+                ser.Serialize(fs, policy);
             }
         }
 
@@ -247,7 +247,7 @@ namespace JiraReporter
         public static void SetPolicyFinalReport(JiraPolicy policy, string policyPath)
         {
             policy.GeneratedProperties.IsFinalDraftConfirmed = true;
-            SaveToFile(policyPath);
+            SaveToFile(policyPath, policy);
         }
 
         public static string GetPolicyPath(string key)
@@ -270,7 +270,7 @@ namespace JiraReporter
                 var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
                 var draft = draftsInfo.Find(d => d.UserKey == key);
                 draft.Confirmed = true;
-                SaveToFile(policyPath);
+                SaveToFile(policyPath, policy);
 
                 return true;
             }

@@ -10,6 +10,8 @@ using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -39,14 +41,14 @@ namespace DailyReportWeb.Controllers.Api
         //}
 
         // PUT: api/Policy/5
-        public void Put(string id, [FromBody]Policy updatedPolicy)
+        public void Put(string id, [FromBody]JiraPolicy updatedPolicy)
         {
             // TODO: save the updated policy
         }
 
         public void Put([FromBody]PolicySummary policySummary)
         {
-            var policy = new Policy
+            var policy = new JiraPolicy
             {
                 BaseUrl = policySummary.BaseUrl,
                 SharedSecret = policySummary.SharedSecret,
@@ -54,7 +56,7 @@ namespace DailyReportWeb.Controllers.Api
                 ReportTime = policySummary.Time
             };
 
-            policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
+            JiraPolicyService.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt", policy);
         }
 
         // Policies are not deleted directly!

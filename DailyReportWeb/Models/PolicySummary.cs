@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using RestSharp;
 using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace DailyReportWeb.Models
 
         private static List<ProjectInfo> GetProjectsInfo(string baseUrl, string sharedSecret)
         {
-            var policy = new Policy
+            var policy = new JiraPolicy
             {
                 BaseUrl = baseUrl,
                 SharedSecret = sharedSecret

@@ -47,12 +47,12 @@ namespace SourceControlLogReporter
             }
         }
 
-        public void SaveToFile(string filePath)
+        public static void SaveToFile(string filePath, Policy policy)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Create))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Policy));
-                ser.Serialize(fs, Policy);
+                ser.Serialize(fs, policy);
             }
         }
     }
