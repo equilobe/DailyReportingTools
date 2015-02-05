@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace JiraReporter
 {
     class IndividualReportInfoService
     {
-        public void SetIndividualDraftInfo(List<Author> authors, Policy policy)
+        public void SetIndividualDraftInfo(List<Author> authors, JiraPolicy policy)
         {
             if (!policy.GeneratedProperties.IsIndividualDraft)
                 return;
 
-            var individualDrafts = new List<SourceControlLogReporter.Model.IndividualDraftInfo>();
+            var individualDrafts = new List<IndividualDraftInfo>();
 
             foreach (var author in authors)
             {
@@ -26,9 +27,9 @@ namespace JiraReporter
             policy.GeneratedProperties.IndividualDrafts = individualDrafts;
         }
 
-        private SourceControlLogReporter.Model.IndividualDraftInfo GenerateIndividualDraftInfo(Author author, Policy policy)
+        private IndividualDraftInfo GenerateIndividualDraftInfo(Author author, JiraPolicy policy)
         {
-            var individualDraft = new SourceControlLogReporter.Model.IndividualDraftInfo
+            var individualDraft = new IndividualDraftInfo
             {
                 Name = author.Name,
                 Username = author.Username,
@@ -40,22 +41,22 @@ namespace JiraReporter
             return individualDraft;
         }
 
-        private void SetIndividualUrls(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, Policy policy)
+        private void SetIndividualUrls(IndividualDraftInfo individualDraft, JiraPolicy policy)
         {
             individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, policy.IndividualDraftConfirmationUrl);
-            individualDraft.ResendDraftUrl = GetUrl(individualDraft, policy.ResendIndividualDraft);
+            individualDraft.ResendDraftUrl = GetUrl(individualDraft, policy.ResendIndividualDraftUrl);
             if (individualDraft.IsLead)
                 individualDraft.ForceDraftUrl = GetUrl(individualDraft, policy.ResendDraftUrl);
         }
 
-        private static Uri GetUrl(SourceControlLogReporter.Model.IndividualDraftInfo individualDraft, Uri baseUrl)
+        private static Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
         {
             var url = string.Format("draftKey={0}", individualDraft.UserKey);
 
             return new Uri(baseUrl + "&" + url);
         }
 
-        public SourceControlLogReporter.Model.IndividualDraftInfo GetIndividualDraftInfo(string key, Policy policy)
+        public IndividualDraftInfo GetIndividualDraftInfo(string key, JiraPolicy policy)
         {
             var draft = policy.GeneratedProperties.IndividualDrafts.Single(d => d.UserKey == key);
             SetIndividualUrls(draft, policy);

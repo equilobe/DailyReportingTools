@@ -9,10 +9,11 @@ using SourceControlLogReporter.Model;
 using System.Web;
 using Atlassian.Connect;
 using RestSharp;
+using Equilobe.DailyReport.Models.Storage;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    [Authorize]
+ //   [Authorize]
     public class PolicyController : ApiController
     {
         // GET: api/Policy
@@ -26,9 +27,9 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // GET: api/Policy/5
-        public Policy Get(string id)
+        public ReportSettings Get(long id)
         {
-            return new Policy();
+            return new ReportSettings();
         }
 
         // Policies are not created directly!

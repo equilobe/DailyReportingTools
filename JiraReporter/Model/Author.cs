@@ -1,4 +1,5 @@
-﻿using SourceControlLogReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -186,7 +187,7 @@ namespace JiraReporter.Model
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
         public Image Image { get; set; }
-        public SourceControlLogReporter.Model.IndividualDraftInfo IndividualDraftInfo { get; set; }
+        public IndividualDraftInfo IndividualDraftInfo { get; set; }
         public bool IsProjectLead { get; set; }
 
         public Author()

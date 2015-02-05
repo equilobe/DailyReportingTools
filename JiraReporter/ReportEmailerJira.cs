@@ -21,8 +21,7 @@ namespace JiraReporter
         public JiraPolicy Policy { get; set; }
         public JiraOptions Options { get; set; }
 
-        public ReportEmailerJira(JiraPolicy policy, JiraOptions options)
-            : base(policy, options)
+        public ReportEmailerJira(JiraPolicy policy, JiraOptions options):base(policy, options)
         {
             Policy = policy;
             Options = options;
@@ -66,7 +65,7 @@ namespace JiraReporter
 
         private void AddMailAttachments(MailMessage message)
         {
-            if (policy.GeneratedProperties.IsIndividualDraft)
+            if (Policy.GeneratedProperties.IsIndividualDraft)
                 AddAttachementImage(Author.Image, Author.Username, message);
             else
                 foreach (var author in Authors)
@@ -77,35 +76,35 @@ namespace JiraReporter
         {
             string subject = string.Empty;
 
-            if (policy.GeneratedProperties.IsFinalDraft || policy.GeneratedProperties.IsIndividualDraft)
+            if (Policy.GeneratedProperties.IsFinalDraft || Policy.GeneratedProperties.IsIndividualDraft)
                 subject += "DRAFT | ";
-            if (policy.GeneratedProperties.IsIndividualDraft)
+            if (Policy.GeneratedProperties.IsIndividualDraft)
                 subject += Author.Name + " | ";
             subject += policy.AdvancedOptions.ReportTitle + " | ";
-            subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+            subject += ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
 
             return subject;
         }
 
-        override void UpdatePolicy()
+        protected override void UpdatePolicy()
         {
-            var policyService = new JiraPolicyService(policy);
-            if (policy.GeneratedProperties.IsFinalDraft)
+            var policyService = new JiraPolicyService(Policy);
+            if (Policy.GeneratedProperties.IsFinalDraft)
             {
-                policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-                policy.GeneratedProperties.LastDraftSentDate = options.ToDate;
-                if (policy.IsForcedByLead(options.TriggerKey))
-                    policy.GeneratedProperties.WasForcedByLead = true;
+                Policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+                Policy.GeneratedProperties.LastDraftSentDate = Options.ToDate;
+                if (Policy.IsForcedByLead(Options.TriggerKey))
+                    Policy.GeneratedProperties.WasForcedByLead = true;
             }
 
-            if (policy.GeneratedProperties.IsFinalReport)
+            if (Policy.GeneratedProperties.IsFinalReport)
             {
-                policy.GeneratedProperties.LastReportSentDate = options.ToDate;
+                Policy.GeneratedProperties.LastReportSentDate = Options.ToDate;
                 policyService.ResetPolicyToDefault();
-                policy.GeneratedProperties.WasResetToDefaultToday = false;
+                Policy.GeneratedProperties.WasResetToDefaultToday = false;
             }
 
-            policyService.SaveToFile(options.PolicyPath);
+            policyService.SaveToFile(Options.PolicyPath);
         }
     }
 }

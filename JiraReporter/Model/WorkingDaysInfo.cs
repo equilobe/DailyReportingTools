@@ -19,7 +19,7 @@ namespace JiraReporter.Model
         public int SprintWorkingDaysLeft { get; set; }
         public int SprintWorkedDays { get; set; }
 
-        public WorkingDaysInfo(Sprint sprint, Policy policy, JiraOptions options)
+        public WorkingDaysInfo(Sprint sprint, JiraPolicy policy, JiraOptions options)
         {
             var now = DateTime.Now.ToOriginalTimeZone();
             ReportWorkingDays = Summary.GetWorkingDays(options.FromDate, options.ToDate.AddDays(-1), policy.MonthlyOptions);

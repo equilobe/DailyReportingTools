@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using Octokit;
 using Octokit.Internal;
 using RazorEngine;
 using SourceControlLogReporter;

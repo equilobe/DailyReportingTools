@@ -35,7 +35,7 @@
         closedParentheses = "";
         comma = ",";
     }
-    var message = commit.Entry.Message.Split(delim, StringSplitJiraOptions.None);
+    var message = commit.Entry.Message.Split(delim, StringSplitOptions.None);
     if (message.Length - 1 > 0)
     {
         foreach (string line in message.Skip(1))

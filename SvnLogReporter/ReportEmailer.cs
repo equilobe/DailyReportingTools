@@ -25,7 +25,6 @@ namespace SourceControlLogReporter
             this.options = o;
         }
 
-
         private void SendEmails()
         {
             if (options.NoEmail)
@@ -77,7 +76,10 @@ namespace SourceControlLogReporter
             UpdatePolicy();
         }
 
-        protected abstract void UpdatePolicy();
+        protected virtual void UpdatePolicy()
+        {
+            return;
+        }
 
         public virtual MailMessage GetMessage(string reportPath)
         {

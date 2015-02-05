@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using Equilobe.DailyReport.Models.ReportOptions;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using RazorEngine;
@@ -35,7 +34,7 @@ namespace JiraReporter
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
-        private static bool RunReport(Policy policy, JiraOptions options)
+        private static bool RunReport(JiraPolicy policy, JiraOptions options)
         {
             var today = DateTime.Now.ToOriginalTimeZone().Date;
 
@@ -54,14 +53,14 @@ namespace JiraReporter
             return true;
         }
 
-        private static bool CheckDayFromOverrides(Policy policy)
+        private static bool CheckDayFromOverrides(JiraPolicy policy)
         {
             if (policy.CurrentOverride != null && policy.CurrentOverride.NonWorkingDays != null)
                 return policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
             return false;
         }
 
-        private static void RunReportTool(Policy policy, SourceControlLogReporter.Options options)
+        private static void RunReportTool(JiraPolicy policy, JiraOptions options)
         {
             SetTemplateGlobal();
 
@@ -70,7 +69,7 @@ namespace JiraReporter
             ProcessAndSendReport(policy, options, report);
         }
 
-        private static void ProcessAndSendReport(Policy policy, Options options, Report report)
+        private static void ProcessAndSendReport(JiraPolicy policy, JiraOptions options, Report report)
         {
             if (policy.GeneratedProperties.IsIndividualDraft)
             {
@@ -94,22 +93,22 @@ namespace JiraReporter
             Razor.SetTemplateBase(typeof(SourceControlLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
 
-        private static Options GetCommandLineOptions(string[] args)
+        private static JiraOptions GetCommandLineOptions(string[] args)
         {
-            Options options = new JiraOptions();
+            JiraOptions options = new JiraOptions();
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
         }
 
-        private static void LoadReportDates(Policy policy, JiraOptions options)
+        private static void LoadReportDates(JiraPolicy policy, JiraOptions options)
         {
             var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             options.LoadDates(policy);
         }
 
-        private static void SetProjectInfo(Policy policy, JiraModels.Project project)
+        private static void SetProjectInfo(JiraPolicy policy, JiraModels.Project project)
         {
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;

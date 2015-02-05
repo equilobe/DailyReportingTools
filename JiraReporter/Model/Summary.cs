@@ -12,7 +12,7 @@ namespace JiraReporter.Model
     public enum Health { Bad, Weak, Good, None };
     public class Summary
     {
-        public Policy Policy { get; set; }
+        public JiraPolicy Policy { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public string ReportDate
@@ -315,7 +315,7 @@ namespace JiraReporter.Model
         }
 
 
-        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, Policy policy, JiraOptions options, Sprint sprint)
+        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, JiraPolicy policy, JiraOptions options, Sprint sprint)
         {
             Policy = policy;
             AuthorsInvolved = authors.Count;
@@ -356,7 +356,7 @@ namespace JiraReporter.Model
             SetErrors(sprintTasks);
         }
 
-        public static int GetSprintDaysWorked(Sprint sprint, Policy policy)
+        public static int GetSprintDaysWorked(Sprint sprint, JiraPolicy policy)
         {
             var now = DateTime.Now.ToOriginalTimeZone();
             if (now <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
@@ -494,7 +494,7 @@ namespace JiraReporter.Model
             int days = 0;
             while (dateIterator <= endDate)
             {
-                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday && Month.SearchDateInOverrides(currentOverrides, dateIterator) == false)
+                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday && MonthlyOptionsHelpers.SearchDateInOverrides(currentOverrides, dateIterator) == false)
                     days++;
                 dateIterator = dateIterator.AddDays(1);
             }

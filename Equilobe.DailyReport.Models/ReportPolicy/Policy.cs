@@ -23,6 +23,8 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
 
         public GeneratedProperties GeneratedProperties { get; set; }
 
+        public AdvancedOptions AdvancedOptions { get; set; }
+
         [XmlIgnore]
         public List<string> EmailCollection { get; set; }
     }

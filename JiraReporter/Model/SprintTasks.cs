@@ -24,7 +24,7 @@ namespace JiraReporter.Model
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }
 
-        public void SetSprintTasks(Policy policy, JiraOptions options, List<PullRequest> pullRequests)
+        public void SetSprintTasks(JiraPolicy policy, JiraOptions options, List<PullRequest> pullRequests)
         {
             var tasksService = new TasksService();
             var issues = RestApiRequests.GetSprintTasks(policy);
@@ -37,7 +37,7 @@ namespace JiraReporter.Model
             SetSprintTasksErrors(policy);
         }
 
-        private void SetSprintTasksErrors(Policy policy)
+        private void SetSprintTasksErrors(JiraPolicy policy)
         {
             int completedErrors = 0;
             TasksService.SetErrors(UnassignedTasks, policy);

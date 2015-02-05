@@ -3,9 +3,9 @@
 }
 @foreach (var commit in Model)
 {
-    if (commit.Entry.Message.Split(delim, StringSplitJiraOptions.None).Length - 1 > 0)
+    if (commit.Entry.Message.Split(delim, StringSplitOptions.None).Length - 1 > 0)
     {
-        foreach (string line in commit.Entry.Message.Split(delim, StringSplitJiraOptions.None).Skip(1))
+        foreach (string line in commit.Entry.Message.Split(delim, StringSplitOptions.None).Skip(1))
         {
             <div style="color:#909090">
                 @line

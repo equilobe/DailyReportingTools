@@ -20,7 +20,7 @@ namespace JiraReporter
             Policy = policy;
         }
 
-        public void SetPolicy(Options options)
+        public void SetPolicy(JiraOptions options)
         {
             SetUrls();
             Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
@@ -114,43 +114,43 @@ namespace JiraReporter
             return Policy.UserOptions.ToDictionary(d => d.JiraUserKey, d => d.SourceControlUsernames);
         }
 
-        public List<string> GetDraftAddedEmails()
+        public static List<string> GetDraftAddedEmails(JiraPolicy policy)
         {
-            return Policy.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return policy.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
-        public List<string> GetFinalAddedEmails()
+        public static List<string> GetFinalAddedEmails(JiraPolicy policy)
         {
-            return Policy.Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return policy.Emails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
-        public void SetIndividualEmail(string emailAdress)
+        public static void SetIndividualEmail(string emailAdress, JiraPolicy policy)
         {
-            Policy.EmailCollection = new List<string>();
-            Policy.EmailCollection.Add(emailAdress);
+            policy.EmailCollection = new List<string>();
+            policy.EmailCollection.Add(emailAdress);
         }
 
-        public static Policy LoadFromFile(string filePath)
+        public static JiraPolicy LoadFromFile(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
-                XmlSerializer ser = new XmlSerializer(typeof(Policy));
-                return (Policy)ser.Deserialize(fs);
+                XmlSerializer ser = new XmlSerializer(typeof(JiraPolicy));
+                return (JiraPolicy)ser.Deserialize(fs);
             }
         }
 
-        public void SaveToFile(string filePath)
+        public static void SaveToFile(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.Create))
             {
-                XmlSerializer ser = new XmlSerializer(typeof(Policy));
+                XmlSerializer ser = new XmlSerializer(typeof(JiraPolicy));
                 ser.Serialize(fs, Policy);
             }
         }
 
 
 
-        public void SetDefaultProperties(Options options)
+        public void SetDefaultProperties(JiraOptions options)
         {
             SetReportTitle();
             SetRootPath();
@@ -168,7 +168,7 @@ namespace JiraReporter
             Policy.GeneratedProperties.WasResetToDefaultToday = true;
         }
 
-        private void SetDraftMode(Options options)
+        private void SetDraftMode(JiraOptions options)
         {
             if (Policy.AdvancedOptions.NoDraft || Policy.GeneratedProperties.IsFinalDraftConfirmed)
                 SetFinalReportMode();
@@ -176,9 +176,9 @@ namespace JiraReporter
                 SetFinalAndIndividualDrafts(options);
         }
 
-        private void SetFinalAndIndividualDrafts(Options options)
+        private void SetFinalAndIndividualDrafts(JiraOptions options)
         {
-            if (this.CanSendFullDraft(options.TriggerKey))
+            if (Policy.CanSendFullDraft(options.TriggerKey))
             {
                 Policy.GeneratedProperties.IsFinalDraft = true;
                 Policy.GeneratedProperties.IsIndividualDraft = false;
@@ -243,5 +243,42 @@ namespace JiraReporter
                     };
             }
         }
+
+        public static void SetPolicyFinalReport(JiraPolicy policy, string policyPath)
+        {
+            policy.GeneratedProperties.IsFinalDraftConfirmed = true;
+            SaveToFile(policyPath);
+        }
+
+        public static string GetPolicyPath(string key)
+        {
+            var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
+            var policyPath = basePath + @"\Policies\" + key + ".xml";
+            return policyPath;
+        }
+
+        public static JiraPolicy LoadPolicy(string id)
+        {
+            var policyPath = GetPolicyPath(id);
+            return LoadFromFile(policyPath);
+        }
+
+        public static bool SetIndividualDraftConfirmation(JiraPolicy policy, string key, string policyPath)
+        {
+            try
+            {
+                var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
+                var draft = draftsInfo.Find(d => d.UserKey == key);
+                draft.Confirmed = true;
+                SaveToFile(policyPath);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }

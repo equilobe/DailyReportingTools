@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
@@ -18,7 +19,7 @@ namespace JiraReporter
             {SourceControlType.SVN, ReportBase.Create<SvnReport>}
         };
 
-        public static SourceControlLogReporter.Model.Log GetSourceControlLog(Policy policy, JiraOptions options)
+        public static Log GetSourceControlLog(JiraPolicy policy, JiraOptions options)
         {
             var processors = SourceControlProcessor.Processors[policy.SourceControlOptions.Type](policy, options);
             var log = processors.CreateLog();

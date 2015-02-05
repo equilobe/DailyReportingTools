@@ -12,10 +12,10 @@ namespace JiraReporter
 {
     class JiraService
     {
-        public Policy Policy { get; set; }
+        public JiraPolicy Policy { get; set; }
         public JiraOptions JiraOptions { get; set; }
 
-        public JiraService(Policy policy, JiraOptions options)
+        public JiraService(JiraPolicy policy, JiraOptions options)
         {
             Policy = policy;
             JiraOptions = options;

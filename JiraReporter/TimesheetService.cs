@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using RestSharp;
 using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
@@ -21,7 +22,7 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, Policy policy, List<PullRequest> pullRequests)
+        public void SetTimesheetIssues(Timesheet timesheet, JiraPolicy policy, List<PullRequest> pullRequests)
         {
             if (timesheet == null)
                 return;

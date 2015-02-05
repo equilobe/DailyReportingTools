@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -147,7 +148,7 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetIssueErrors(Issue issue, Policy policy)
+        public static void SetIssueErrors(Issue issue, JiraPolicy policy)
         {
             issue.Errors = new List<Error>();
             if (issue.IsSubtask == false && issue.Label != policy.AdvancedOptions.PermanentTaskLabel)

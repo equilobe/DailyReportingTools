@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace JiraReporter
 {
     class IssueProcessor
     {
-        Policy _policy;
+        JiraPolicy _policy;
         List<PullRequest> _pullRequests;
         Issue _currentIssue;
         JiraIssue _currentJiraIssue;
 
-        public IssueProcessor(Policy policy, List<PullRequest> pullRequests)
+        public IssueProcessor(JiraPolicy policy, List<PullRequest> pullRequests)
         {
             this._policy = policy;
             this._pullRequests = pullRequests;

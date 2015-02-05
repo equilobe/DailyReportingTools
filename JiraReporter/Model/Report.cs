@@ -13,7 +13,7 @@ namespace JiraReporter.Model
         public JiraPolicy Policy;
         public JiraOptions Options;
 
-        public Report(Policy p, JiraOptions o)
+        public Report(JiraPolicy p, JiraOptions o)
         {
             Policy = p;
             Options = o;

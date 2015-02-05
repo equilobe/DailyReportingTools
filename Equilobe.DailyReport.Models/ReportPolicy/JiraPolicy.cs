@@ -29,12 +29,6 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
         public string SharedSecret { get; set; }
 
         public int ProjectId { get; set; }
-  //      public string ReportTime { get; set; }
-
-   //     [XmlIgnore]
-    //    public DateTime ReportTimeDateFormat { get; set; }
-
-       // public string Emails { get; set; }
         public string DraftEmails { get; set; }
 
 
@@ -43,7 +37,7 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
         [DefaultValue(0)]
         public int AllocatedHoursPerDay { get; set; }
 
-        public AdvancedOptions AdvancedOptions { get; set; }
+        public JiraAdvancedOptions AdvancedOptions { get; set; }
 
         public List<Month> MonthlyOptions { get; set; }
 
@@ -59,8 +53,5 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
 
         [XmlIgnore]
         public IDictionary<string, List<string>> Users { get; set; }
-
-   //     [XmlIgnore]
-  //      public List<string> EmailCollection { get; set; }
     }
 }

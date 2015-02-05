@@ -10,9 +10,9 @@ namespace JiraReporter
 {
     public class HealthInspector
     {
-        Policy Policy { get; set; }
+        JiraPolicy Policy { get; set; }
 
-        public HealthInspector(Policy policy)
+        public HealthInspector(JiraPolicy policy)
         {
             Policy = policy;
         }

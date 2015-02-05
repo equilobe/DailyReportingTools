@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,10 +10,11 @@ namespace JiraReporter.Model
 {
     public class IndividualReportProcessor : BaseReportProcessor
     {
-        Policy Policy { get; set; }
-        SourceControlLogReporter.Options Options { get; set; }
+        JiraPolicy Policy { get; set; }
+        JiraOptions Options { get; set; }
 
-        public IndividualReportProcessor(Policy policy, SourceControlLogReporter.Options options) : base(policy, options)
+        public IndividualReportProcessor(JiraPolicy policy, JiraOptions options)
+            : base(policy, options)
         {
             Policy = policy;
             Options = options;
@@ -21,11 +23,11 @@ namespace JiraReporter.Model
         public void ProcessReport(IndividualReport report)
         {
             SaveReport(Policy, report);
-            Policy.SetIndividualEmail(report.Author.EmailAdress);
+            JiraPolicyService.SetIndividualEmail(report.Author.EmailAdress, Policy);
             SendReport(report);
         }
 
-        private void SaveReport(Policy policy, IndividualReport individualReport)
+        private void SaveReport(JiraPolicy policy, IndividualReport individualReport)
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
             var reportPath = GetReportPath(individualReport);

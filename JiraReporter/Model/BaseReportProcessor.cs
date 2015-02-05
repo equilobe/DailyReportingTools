@@ -11,9 +11,9 @@ namespace JiraReporter.Model
     public class BaseReportProcessor
     {
         JiraPolicy Policy { get; set; }
-        SourceControlLogReporter.Options Options { get; set; }
+        JiraOptions Options { get; set; }
 
-        public BaseReportProcessor(JiraPolicy policy, SourceControlLogReporter.Options options)
+        public BaseReportProcessor(JiraPolicy policy, JiraOptions options)
         {
             Policy = policy;
             Options = options;
@@ -70,20 +70,20 @@ namespace JiraReporter.Model
 
         private void SetFinalReportEmailCollection(List<Author> authors)
         {
-                if (Policy.AdvancedOptions.SendFinalToOthers)
-                    Policy.EmailCollection = Policy.GetFinalAddedEmails();
-                if (Policy.AdvancedOptions.SendFinalToAllUsers)
-                    AddUsersEmailAdresses(authors);
+            if (Policy.AdvancedOptions.SendFinalToOthers)
+                Policy.EmailCollection = JiraPolicyService.GetFinalAddedEmails(Policy);
+            if (Policy.AdvancedOptions.SendFinalToAllUsers)
+                AddUsersEmailAdresses(authors);
         }
 
         private void SetDraftEmailCollection(List<Author> authors)
         {
-                if (Policy.AdvancedOptions.SendDraftToOthers)
-                    Policy.EmailCollection = Policy.GetDraftAddedEmails();
-                if (!Policy.AdvancedOptions.SendDraftToAllUsers && Policy.AdvancedOptions.SendDraftToProjectManager)
-                    Policy.EmailCollection.Add(authors.Find(a => a.IsProjectLead).EmailAdress);
-                else
-                    AddUsersEmailAdresses(authors);
+            if (Policy.AdvancedOptions.SendDraftToOthers)
+                Policy.EmailCollection = JiraPolicyService.GetDraftAddedEmails(Policy);
+            if (!Policy.AdvancedOptions.SendDraftToAllUsers && Policy.AdvancedOptions.SendDraftToProjectManager)
+                Policy.EmailCollection.Add(authors.Find(a => a.IsProjectLead).EmailAdress);
+            else
+                AddUsersEmailAdresses(authors);
         }
 
         private void AddUsersEmailAdresses(List<Author> authors)

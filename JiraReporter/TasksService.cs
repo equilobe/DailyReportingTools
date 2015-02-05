@@ -11,7 +11,7 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public List<Issue> GetCompletedTasks(Policy policy, JiraOptions options)
+        public List<Issue> GetCompletedTasks(JiraPolicy policy, JiraOptions options)
         {
             var completedTasks = new List<Issue>();
             var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());
@@ -28,12 +28,12 @@ namespace JiraReporter
             return completedTasks;
         }
 
-        public JiraIssues GetUnfinishedTasks(Policy policy)
+        public JiraIssues GetUnfinishedTasks(JiraPolicy policy)
         {
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<PullRequest> pullRequests, Policy policy)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<PullRequest> pullRequests, JiraPolicy policy)
         {
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
@@ -56,7 +56,7 @@ namespace JiraReporter
             }
         }
 
-        private static Issue GetCompleteIssue(List<PullRequest> pullRequests, Policy policy, JiraIssue jiraIssue)
+        private static Issue GetCompleteIssue(List<PullRequest> pullRequests, JiraPolicy policy, JiraIssue jiraIssue)
         {
             var issue = new Issue(jiraIssue);
             var issueProcessor = new IssueProcessor(policy, pullRequests);
@@ -139,7 +139,7 @@ namespace JiraReporter
             return parent;
         }
 
-        public static void SetErrors(List<Issue> tasks, Policy policy)
+        public static void SetErrors(List<Issue> tasks, JiraPolicy policy)
         {
             if (tasks != null && tasks.Count > 0)
                 foreach (var task in tasks)
