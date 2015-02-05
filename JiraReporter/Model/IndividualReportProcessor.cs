@@ -42,7 +42,7 @@ namespace JiraReporter.Model
 
         private void SendReport(IndividualReport report)
         {
-            var emailer = new ReportEmailJira(report.Policy, report.Options);
+            var emailer = new ReportEmailerJira(report.Policy, report.Options);
             emailer.Author = report.Author;
 
             emailer.TrySendEmails();

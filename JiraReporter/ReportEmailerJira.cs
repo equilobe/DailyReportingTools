@@ -14,14 +14,14 @@ using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace JiraReporter
 {
-    public class ReportEmailJira : ReportEmailer
+    public class ReportEmailerJira : ReportEmailer
     {
         public List<Author> Authors { get; set; }
         public Author Author { get; set; }
         public JiraPolicy Policy { get; set; }
         public JiraOptions Options { get; set; }
 
-        public ReportEmailJira(JiraPolicy policy, JiraOptions options)
+        public ReportEmailerJira(JiraPolicy policy, JiraOptions options)
             : base(policy, options)
         {
             Policy = policy;

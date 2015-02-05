@@ -50,7 +50,7 @@ namespace JiraReporter.Model
 
         protected virtual void SendReport(Report report)
         {
-            var emailer = new ReportEmailJira(report.Policy, report.Options);
+            var emailer = new ReportEmailerJira(report.Policy, report.Options);
             emailer.Authors = report.Authors;
 
             emailer.TrySendEmails();
