@@ -53,20 +53,19 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                db.ReportSettings.Add(new ReportSettings
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
+
+                if (reportSettings == null)
                 {
-                    BaseUrl = policySummary.BaseUrl,
-                    SharedSecret = policySummary.SharedSecret,
-                    ProjectId = policySummary.ProjectId,
-                    ReportTime = policySummary.ReportTime,
-                    PolicyXml = JiraReporter.Serialization.XmlSerialize(new Policy
-                    {
-                        BaseUrl = policySummary.BaseUrl,
-                        SharedSecret = policySummary.SharedSecret,
-                        ProjectId = policySummary.ProjectId,
-                        ReportTime = policySummary.ReportTime,
-                    })
-                });
+                    reportSettings = new ReportSettings();
+                    db.ReportSettings.Add(reportSettings);
+
+                    reportSettings.BaseUrl = policySummary.BaseUrl;
+                    reportSettings.SharedSecret = policySummary.SharedSecret;
+                    reportSettings.ProjectId = policySummary.ProjectId;
+                }
+
+                reportSettings.ReportTime = policySummary.ReportTime;
 
                 db.SaveChanges();
             }

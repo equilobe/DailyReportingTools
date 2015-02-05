@@ -17,12 +17,6 @@ namespace DailyReportWeb.Controllers
     {
         public ActionResult Index()
         {
-
-            using (var db = new ReportsDb())
-            {
-                db.ReportSettings.Add(new ReportSettings { BaseUrl = "nice" });
-                db.SaveChanges();
-            }
             return View();
         }
 

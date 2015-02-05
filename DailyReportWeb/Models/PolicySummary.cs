@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Equilobe.DailyReport.DAL;
+using RestSharp;
 using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -33,9 +34,18 @@ namespace DailyReportWeb.Models
                     BaseUrl = baseUrl,
                     SharedSecret = sharedSecret,
                     ProjectId = projectInfo.ProjectId,
-                    ProjectName = projectInfo.ProjectName
+                    ProjectName = projectInfo.ProjectName,
+                    ReportTime = GetReportTime(baseUrl, projectInfo.ProjectId)
                 })
                 .ToList();
+        }
+
+        private static string GetReportTime(string baseUrl, long projectId)
+        {
+            return new ReportsDb().ReportSettings
+                .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
+                .Select(qr => qr.ReportTime)
+                .FirstOrDefault();
         }
 
         private static List<ProjectInfo> GetProjectsInfo(string baseUrl, string sharedSecret)
