@@ -133,9 +133,9 @@ namespace JiraReporter
         private void CalculateTimeSpent()
         {
             _currentAuthor.TimeSpent = _currentAuthor.CurrentTimesheet.GetTimesheetSecondsWorked();
-            _currentAuthor.TimeSpentCurrentMonthSeconds = _currentAuthor.MonthTimesheet.GetTimesheetSecondsWorked();
+            _currentAuthor.MonthSecondsWorked = _currentAuthor.MonthTimesheet.GetTimesheetSecondsWorked();
             if (_currentAuthor.SprintTimesheet != null)
-                _currentAuthor.TimeSpentCurrentSprintSeconds = _currentAuthor.SprintTimesheet.GetTimesheetSecondsWorked();
+                _currentAuthor.SprintSecondsWorked = _currentAuthor.SprintTimesheet.GetTimesheetSecondsWorked();
         }
 
         private void SetCommits()
@@ -209,10 +209,7 @@ namespace JiraReporter
             TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
             if (_currentAuthor.InProgressTasks != null)
-            {
                 _currentAuthor.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.InProgressTasks);
-                _currentAuthor.InProgressTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(_currentAuthor.InProgressTasksTimeLeftSeconds);
-            }
             _currentAuthor.InProgressTasksParents = TasksService.GetParentTasks(_currentAuthor.InProgressTasks, _currentAuthor);
             _currentAuthor.InProgressTasksParents = _currentAuthor.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
@@ -273,7 +270,7 @@ namespace JiraReporter
             if (_currentAuthor.OpenTasks != null)
             {
                 _currentAuthor.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.OpenTasks);
-                _currentAuthor.OpenTasksTimeLeft = TimeFormatting.SetTimeFormat8Hour(_currentAuthor.OpenTasksTimeLeftSeconds);
+                _currentAuthor.OpenTasksTimeLeftString = TimeFormatting.SetTimeFormat8Hour(_currentAuthor.OpenTasksTimeLeftSeconds);
             }
             _currentAuthor.OpenTasksParents = TasksService.GetParentTasks(_currentAuthor.OpenTasks, _currentAuthor);
             _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
