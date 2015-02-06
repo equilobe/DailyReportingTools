@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public class Report
+    public class JiraReport
     {
         public JiraPolicy Policy;
         public JiraOptions Options;
 
-        public Report(JiraPolicy p, JiraOptions o)
+        public JiraReport(JiraPolicy p, JiraOptions o)
         {
             Policy = p;
             Options = o;

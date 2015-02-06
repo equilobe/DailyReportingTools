@@ -75,7 +75,7 @@ namespace JiraReporter.Model
         public List<fixversion> fixVersions { get; set; }
         public string resolutiondate { get; set; }
         public int timespent { get; set; }
-        public JiraAuthor reporter { get; set; }
+        public JiraAuthorSummary reporter { get; set; }
         public int aggregatetimeoriginalestimate { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
@@ -89,7 +89,7 @@ namespace JiraReporter.Model
         public Status status { get; set; }
         public List<string> labels { get; set; }
         public long workratio { get; set; }
-        public JiraAuthor assignee { get; set; }
+        public JiraAuthorSummary assignee { get; set; }
         public List<object> attachment { get; set; }
         public int aggregatetimeestimate { get; set; }
         public JiraProject project { get; set; }
@@ -217,8 +217,8 @@ namespace JiraReporter.Model
     public class Worklog
     {
         public string self { get; set; }
-        public JiraAuthor author { get; set; }
-        public JiraAuthor updateAuthor { get; set; }
+        public JiraAuthorSummary author { get; set; }
+        public JiraAuthorSummary updateAuthor { get; set; }
         public string comment { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
@@ -251,7 +251,7 @@ namespace JiraReporter.Model
         public int percent { get; set; }
     }
 
-    public class JiraAuthor
+    public class JiraAuthorSummary
     {
         public string self { get; set; }
         public string name { get; set; }
@@ -264,9 +264,9 @@ namespace JiraReporter.Model
     {
         public string self { get; set; }
         public string id { get; set; }
-        public JiraAuthor author { get; set; }
+        public JiraAuthorSummary author { get; set; }
         public string body { get; set; }
-        public JiraAuthor updateAuthor { get; set; }
+        public JiraAuthorSummary updateAuthor { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }

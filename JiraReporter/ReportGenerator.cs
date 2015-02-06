@@ -11,7 +11,7 @@ namespace JiraReporter
 {
     class ReportGenerator
     {
-        public static Report GenerateReport(JiraPolicy policy, JiraOptions options)
+        public static JiraReport GenerateReport(JiraPolicy policy, JiraOptions options)
         {
             var timesheetService = new TimesheetService();
             var pullRequests = new List<JiraPullRequest>();
@@ -26,14 +26,14 @@ namespace JiraReporter
 
             return GetReport(policy, options, pullRequests, commits);
         }
-        private static Report GetReport(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests, List<JiraCommit> commits)
+        private static JiraReport GetReport(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests, List<JiraCommit> commits)
         {
             var sprintTasks = GetSprintReport(policy, options, pullRequests);
             var sprint = GenerateSprint(policy, options);
 
             var authors = GetReportAuthors(policy, options, pullRequests, commits, sprintTasks, sprint);
 
-            var report = new Report(policy, options)
+            var report = new JiraReport(policy, options)
             {
                 Authors = authors,
                 SprintTasks = sprintTasks,
@@ -63,7 +63,7 @@ namespace JiraReporter
             return authors;
         }
 
-        public static IndividualReport GetIndividualReport(Report report, JiraAuthor author)
+        public static IndividualReport GetIndividualReport(JiraReport report, JiraAuthor author)
         {
             var individualReport = new IndividualReport(report.Policy, report.Options)
             {

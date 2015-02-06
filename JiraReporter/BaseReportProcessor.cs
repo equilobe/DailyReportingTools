@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.Model
+namespace JiraReporter
 {
     public class BaseReportProcessor
     {
@@ -20,7 +21,7 @@ namespace JiraReporter.Model
             Options = options;
         }
 
-        public virtual void ProcessReport(Report report)
+        public virtual void ProcessReport(JiraReport report)
         {
             SaveReport(Policy, report);
             //      Policy.SetEmailCollection();
@@ -28,14 +29,14 @@ namespace JiraReporter.Model
             SendReport(report);
         }
 
-        protected virtual void SaveReport(JiraPolicy policy, Report report)
+        protected virtual void SaveReport(JiraPolicy policy, JiraReport report)
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
             var reportPath = GetReportPath(report);
             SaveReportToFile(report, reportPath, policy, viewPath);
         }
 
-        protected virtual string GetReportPath(Report report)
+        protected virtual string GetReportPath(JiraReport report)
         {
             string reportPath = report.Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
@@ -49,7 +50,7 @@ namespace JiraReporter.Model
             WriteReport(policy, repCont, reportPath);
         }
 
-        protected virtual void SendReport(Report report)
+        protected virtual void SendReport(JiraReport report)
         {
             var emailer = new ReportEmailerJira(report.Policy, report.Options);
             emailer.Authors = report.Authors;

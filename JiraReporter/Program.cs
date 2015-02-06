@@ -70,7 +70,7 @@ namespace JiraReporter
             ProcessAndSendReport(policy, options, report);
         }
 
-        private static void ProcessAndSendReport(JiraPolicy policy, JiraOptions options, Report report)
+        private static void ProcessAndSendReport(JiraPolicy policy, JiraOptions options, JiraReport report)
         {
             if (policy.GeneratedProperties.IsIndividualDraft)
             {

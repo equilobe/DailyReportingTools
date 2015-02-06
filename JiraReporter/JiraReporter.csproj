@@ -87,7 +87,8 @@
     <Compile Include="JiraService.cs" />
     <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
-    <Compile Include="Model\BaseReportProcessor.cs" />
+    <Compile Include="BaseReportProcessor.cs" />
+    <Compile Include="Model\JiraAuthor.cs" />
     <Compile Include="Model\JiraCommit.cs" />
     <Compile Include="Model\JiraDayLog.cs" />
     <Compile Include="Model\Error.cs" />
@@ -108,10 +109,9 @@
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="JiraModels\JiraUser.cs" />
-    <Compile Include="Model\JiraAuthor.cs" />
     <Compile Include="Model\Entries.cs" />
     <Compile Include="Model\Issue.cs" />
-    <Compile Include="Model\Report.cs" />
+    <Compile Include="Model\JiraReport.cs" />
     <Compile Include="Model\Timesheet.cs" />
     <Compile Include="Model\WorkLog.cs" />
     <Compile Include="Program.cs" />

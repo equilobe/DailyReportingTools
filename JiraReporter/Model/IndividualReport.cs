@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public class IndividualReport : Report
+    public class IndividualReport : JiraReport
     {
         public JiraAuthor Author { get; set; }
         public JiraPolicy Policy;
