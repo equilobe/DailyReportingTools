@@ -74,16 +74,6 @@
     <Compile Include="IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
-    <Compile Include="JiraModels\Avatar.cs" />
-    <Compile Include="JiraModels\Filter.cs" />
-    <Compile Include="JiraModels\Project.cs" />
-    <Compile Include="JiraModels\RapidView.cs" />
-    <Compile Include="JiraModels\Sprints.cs" />
-    <Compile Include="JiraModels\SprintsData.cs" />
-    <Compile Include="JiraModels\View.cs" />
-    <Compile Include="JiraModels\Sprint.cs" />
-    <Compile Include="JiraModels\SprintReport.cs" />
-    <Compile Include="JiraModels\Views.cs" />
     <Compile Include="JiraOptions.cs" />
     <Compile Include="JiraReportHelpers.cs" />
     <Compile Include="JiraService.cs" />
@@ -110,7 +100,6 @@
     <Compile Include="SourceControl\SvnReportSourceControl.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
-    <Compile Include="JiraModels\JiraUser.cs" />
     <Compile Include="Model\Entries.cs" />
     <Compile Include="Model\Issue.cs" />
     <Compile Include="Model\JiraReport.cs" />

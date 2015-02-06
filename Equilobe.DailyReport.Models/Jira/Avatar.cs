@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.JiraModels
+namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
     public class Avatar

@@ -1,5 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
-using JiraReporter.JiraModels;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using RestSharp;
 using System;
@@ -54,11 +54,11 @@ namespace JiraReporter
                 throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
         }
 
-        public static JiraModels.Project GetProject(JiraPolicy policy)
+        public static Project GetProject(JiraPolicy policy)
         {
             var request = new RestRequest(JiraApiUrls.Project(policy.ProjectId.ToString()), Method.GET);
 
-            return ResolveRequest<JiraModels.Project>(policy, request);
+            return ResolveRequest<Project>(policy, request);
         }
 
         public static Timesheet GetTimesheetForUser(JiraPolicy policy, DateTime startDate, DateTime endDate, string targetUser)

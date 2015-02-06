@@ -5,19 +5,20 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter
+namespace Equilobe.DailyReport.Models.Jira
 {
-    public class Filter
+    [DataContract]
+    public class View
     {
         [DataMember]
         public int id { get; set; }
         [DataMember]
         public string name { get; set; }
         [DataMember]
-        public string query { get; set; }
-        [DataMember]
         public bool canEdit { get; set; }
         [DataMember]
-        public bool isOrderedByRank { get; set; }
+        public bool sprintSupportEnabled { get; set; }
+        [DataMember]
+        public Filter filter { get; set; }
     }
 }

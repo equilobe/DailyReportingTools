@@ -5,10 +5,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.JiraModels
+namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
-    class Sprints
+    public class Sprints
     {
         [DataMember]
         public List<Sprint> sprints { get; set; }

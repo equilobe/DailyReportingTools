@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SourceControlLogReporter;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace JiraReporter
 {
@@ -109,7 +110,7 @@ namespace JiraReporter
             options.LoadDates(policy);
         }
 
-        private static void SetProjectInfo(JiraPolicy policy, JiraModels.Project project)
+        private static void SetProjectInfo(JiraPolicy policy, Project project)
         {
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;

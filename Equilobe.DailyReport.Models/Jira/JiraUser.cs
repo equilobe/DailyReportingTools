@@ -1,5 +1,4 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,9 +7,8 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.IO;
-using JiraReporter.JiraModels;
 
-namespace JiraReporter.Model
+namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
     public class JiraUser
