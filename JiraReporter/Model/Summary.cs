@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
