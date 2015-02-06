@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public class DayLog
+    public class JiraDayLog
     {
         public DateTime Date { get; set; }
         public int TimeSpent { get; set; }
@@ -17,7 +17,7 @@ namespace JiraReporter.Model
 
         public List<JiraCommit> UnsyncedCommits { get; set; }
 
-        public DayLog(Author author, DateTime date, JiraOptions options)
+        public JiraDayLog(Author author, DateTime date, JiraOptions options)
         {
             this.Commits = AuthorHelpers.GetDayLogCommits(author, date);
             this.Date = date;

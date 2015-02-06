@@ -226,9 +226,9 @@ namespace JiraReporter
 
         private void SetAuthorDayLogs()
         {
-            _currentAuthor.DayLogs = new List<DayLog>();
+            _currentAuthor.DayLogs = new List<JiraDayLog>();
             foreach (var day in _options.ReportDates)
-                _currentAuthor.DayLogs.Add(new DayLog(_currentAuthor, day, _options));
+                _currentAuthor.DayLogs.Add(new JiraDayLog(_currentAuthor, day, _options));
             _currentAuthor.DayLogs = _currentAuthor.DayLogs.OrderBy(d => d.Date).ToList();
             _currentAuthor.DayLogs.RemoveAll(d => d.Commits.Count == 0 && d.Issues == null);
         }

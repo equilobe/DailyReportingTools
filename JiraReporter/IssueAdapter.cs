@@ -70,7 +70,7 @@ namespace JiraReporter
 
 
 
-        public static void AdjustIssueCommits(DayLog dayLog)
+        public static void AdjustIssueCommits(JiraDayLog dayLog)
         {
             if (dayLog.Issues != null)
                 foreach (var issue in dayLog.Issues)

@@ -183,7 +183,7 @@ namespace JiraReporter.Model
             }
         }
         public List<JiraCommit> Commits { get; set; }
-        public List<DayLog> DayLogs { get; set; }
+        public List<JiraDayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
         public Image Image { get; set; }
