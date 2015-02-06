@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DayLogLoader.cs" />
     <Compile Include="JiraApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="AuthorLoader.cs" />
