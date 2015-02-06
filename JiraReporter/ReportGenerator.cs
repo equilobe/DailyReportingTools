@@ -82,9 +82,8 @@ namespace JiraReporter
 
         private static SprintTasks GetSprintReport(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests)
         {
-            var report = new SprintTasks();
-            report.SetSprintTasks(policy, options, pullRequests);
-            return report;
+            var tasksService = new TasksService();
+            return tasksService.GetSprintTasks(policy, options, pullRequests);
         }
 
         public static Sprint GenerateSprint(JiraPolicy policy, JiraOptions options)

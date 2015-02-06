@@ -10,6 +10,34 @@ namespace JiraReporter
 {
     class TasksService
     {
+        public SprintTasks GetSprintTasks(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests)
+        {
+            var sprintTasks = new SprintTasks();
+            var issues = RestApiRequests.GetSprintTasks(policy);
+            var unfinishedTasks = GetUnfinishedTasks(policy);
+            SetUnfinishedTasks(unfinishedTasks, sprintTasks, pullRequests, policy);
+
+            var completedTasks = GetCompletedTasks(policy, options);
+            SetCompletedTasks(GroupCompletedTasks(completedTasks), sprintTasks);
+            SortTasks(sprintTasks);
+            SetSprintTasksErrors(policy, sprintTasks);
+
+            return sprintTasks;
+        }
+
+        private void SetSprintTasksErrors(JiraPolicy policy, SprintTasks sprintTasks)
+        {
+            int completedErrors = 0;
+            TasksService.SetErrors(sprintTasks.UnassignedTasks, policy);
+            foreach (var list in sprintTasks.CompletedTasks)
+            {
+                TasksService.SetErrors(list.Value, policy);
+                completedErrors += TasksService.GetErrorsCount(list.Value);
+            }
+            sprintTasks.CompletedTasksErrorCount = completedErrors;
+            sprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(sprintTasks.UnassignedTasks);
+        } 
+
         public List<Issue> GetCompletedTasks(JiraPolicy policy, JiraOptions options)
         {
             var completedTasks = new List<Issue>();
