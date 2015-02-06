@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 
-namespace SourceControlLogReporter.Model
+namespace Equilobe.DailyReport.Models
 {
     public class LogEntry
     {

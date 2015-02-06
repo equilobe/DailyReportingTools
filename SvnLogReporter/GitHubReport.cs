@@ -1,9 +1,9 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using Octokit;
 using Octokit.Internal;
 using RazorEngine;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,7 +55,7 @@ namespace SourceControlLogReporter
                  });                
             }
 
-            log.RemoveWrongEntries(Options.FromDate);
+            LogService.RemoveWrongEntries(Options.FromDate, log);
             return log;
         }
 

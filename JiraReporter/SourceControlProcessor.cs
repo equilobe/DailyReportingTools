@@ -1,9 +1,9 @@
-﻿using Equilobe.DailyReport.Models.Enums;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using JiraReporter.SourceControl;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

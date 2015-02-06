@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
-using SourceControlLogReporter.Model;
 using System.Globalization;
 using Equilobe.DailyReport.Models.ReportPolicy;
 

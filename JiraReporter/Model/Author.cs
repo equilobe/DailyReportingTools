@@ -1,5 +1,4 @@
 ﻿using Equilobe.DailyReport.Models.ReportPolicy;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

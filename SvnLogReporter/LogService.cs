@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,26 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace SourceControlLogReporter.Model
+namespace SourceControlLogReporter
 {
-    [XmlRoot("log")]
-    public class Log
+   public static class LogService
     {
-        [XmlElement("logentry")]
-        public List<LogEntry> Entries { get; set; }
-
-        [XmlIgnore]
-        public List<Octokit.PullRequest> PullRequests { get; set; }
-
-        public void RemoveWrongEntries(DateTime fromDate)
+        public static void RemoveWrongEntries(DateTime fromDate, Log log)
         {
-            if (!Entries.Any())
+            if (!log.Entries.Any())
                 return;
 
-            if (Entries.First().Date < fromDate)
-                Entries.Remove(Entries.First());
+            if (log.Entries.First().Date < fromDate)
+                log.Entries.Remove(log.Entries.First());
 
-            Entries = Entries
+            log.Entries = log.Entries
                          .Where(e => e.Author != null)
                          .Where(e => e.Date != default(DateTime))
                          .ToList();
@@ -36,7 +30,7 @@ namespace SourceControlLogReporter.Model
             XmlSerializer xs = new XmlSerializer(typeof(Log));
             using (var fs = File.OpenRead(filePath))
             {
-                var log = (Log)xs.Deserialize(fs);               
+                var log = (Log)xs.Deserialize(fs);
                 return log;
             }
         }

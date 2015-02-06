@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace JiraReporter.Model
 {
     public class JiraCommit
     {
-        public SourceControlLogReporter.Model.LogEntry Entry { get; set; }
+        public LogEntry Entry { get; set; }
         public bool TaskSynced { get; set; }
     }
 }

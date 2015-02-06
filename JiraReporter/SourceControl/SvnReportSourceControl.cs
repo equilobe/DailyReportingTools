@@ -1,6 +1,6 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,8 +31,8 @@ namespace JiraReporter.SourceControl
         public override Log CreateLog()
         {
             ExecuteSvnCommand();
-            var log = Log.LoadLog(PathToLog);
-            log.RemoveWrongEntries(Options.FromDate);
+            var log = LogService.LoadLog(PathToLog);
+            LogService.RemoveWrongEntries(Options.FromDate, log);
             SetCommitsLink(log.Entries);
             return log;
         }

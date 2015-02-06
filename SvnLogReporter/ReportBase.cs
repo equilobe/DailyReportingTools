@@ -1,7 +1,7 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using RazorEngine;
 using RazorEngine.Templating;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

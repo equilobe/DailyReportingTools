@@ -1,8 +1,8 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using Octokit;
 using Octokit.Internal;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,7 +117,7 @@ namespace JiraReporter.SourceControl
                  });
             }
 
-            log.RemoveWrongEntries(Options.FromDate);
+            LogService.RemoveWrongEntries(Options.FromDate, log);
             return log;
         }
     }

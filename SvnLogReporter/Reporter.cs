@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using SourceControlLogReporter.Model;
 using RazorEngine;
 using System.Diagnostics;
 using System.Net;

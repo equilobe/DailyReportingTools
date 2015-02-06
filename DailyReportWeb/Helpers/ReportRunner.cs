@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.Win32.TaskScheduler;
-using SourceControlLogReporter.Model;
 using System.Configuration;
 using SourceControlLogReporter;
 

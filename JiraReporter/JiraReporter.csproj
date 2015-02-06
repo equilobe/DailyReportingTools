@@ -89,7 +89,7 @@
     <Compile Include="MathHelpers.cs" />
     <Compile Include="Model\BaseReportProcessor.cs" />
     <Compile Include="Model\JiraCommit.cs" />
-    <Compile Include="Model\DayLog.cs" />
+    <Compile Include="Model\JiraDayLog.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\IndividualReport.cs" />
     <Compile Include="Model\IndividualReportProcessor.cs" />

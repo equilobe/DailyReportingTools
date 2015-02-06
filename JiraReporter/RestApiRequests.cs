@@ -2,7 +2,6 @@
 using JiraReporter.JiraModels;
 using JiraReporter.Model;
 using RestSharp;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
