@@ -10,22 +10,12 @@ namespace JiraReporter.Model
     public class IndividualReport : JiraReport
     {
         public JiraAuthor Author { get; set; }
-        public JiraPolicy Policy;
-        public JiraOptions JiraOptions;
-        public Summary Summary { get; set; }
 
         public IndividualReport(JiraPolicy policy, JiraOptions options)
             : base(policy, options)
         {
             Policy = policy;
-            JiraOptions = options;
-        }
-
-        public override string GetReportTitle()
-        {
-            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(JiraOptions.FromDate, JiraOptions.ToDate);
-
-            return "DRAFT | " + Author.Name + " | " + Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
+            Options = options;
         }
     }
 }

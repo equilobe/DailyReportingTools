@@ -84,6 +84,7 @@
     <Compile Include="JiraModels\SprintReport.cs" />
     <Compile Include="JiraModels\Views.cs" />
     <Compile Include="JiraOptions.cs" />
+    <Compile Include="JiraReportHelpers.cs" />
     <Compile Include="JiraService.cs" />
     <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="Model\JiraDayLog.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\IndividualReport.cs" />
-    <Compile Include="Model\IndividualReportProcessor.cs" />
+    <Compile Include="IndividualReportProcessor.cs" />
     <Compile Include="Model\JiraIssue.cs" />
     <Compile Include="Model\JiraPullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />

@@ -49,19 +49,7 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public int OriginalEstimateSecondsTotal { get; set; }
         [XmlIgnore]
-        public bool ExceededOriginalEstimate
-        {
-            get
-            {
-                if (TimeSpentTotal > OriginalEstimateSecondsTotal && Label == null)
-                {
-                    var percentage = MathHelpers.GetPercentage((TimeSpentTotal - OriginalEstimateSecondsTotal), OriginalEstimateSecondsTotal);
-                    if (percentage >= 25)
-                        return true;
-                }
-                return false;
-            }
-        }
+        public bool ExceededOriginalEstimate { get; set; }
         [XmlIgnore]
         public string Type { get; set; }
         [XmlIgnore]

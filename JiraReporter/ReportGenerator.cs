@@ -41,7 +41,7 @@ namespace JiraReporter
                 Date = options.FromDate,
                 Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, sprint)
             };
-            report.Title = report.GetReportTitle();
+            report.Title = JiraReportHelpers.GetReportTitle(options, policy);
 
             return report;
         }
@@ -74,7 +74,7 @@ namespace JiraReporter
                 Author = author,
                 Authors = report.Authors
             };
-            individualReport.Title = individualReport.GetReportTitle();
+            individualReport.Title = JiraReportHelpers.GetReportTitle(report.Options, report.Policy, author.Name);
 
             return individualReport;
         }

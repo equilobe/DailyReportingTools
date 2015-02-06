@@ -65,6 +65,7 @@ namespace JiraReporter
             SetStatusType();
             SetDisplayStatus();
             SetHasWorkLoggedByAssignee();
+            SetIssueExceededEstimate();
         }
 
         private void SetSubtasks()
@@ -208,6 +209,16 @@ namespace JiraReporter
                 if (_currentIssue.Assignee != null)
                     if (_currentIssue.ExistsInTimesheet == true)
                         _currentIssue.HasWorkLoggedByAssignee = _currentIssue.Entries.Exists(e => e.AuthorFullName == _currentIssue.Assignee);
+        }
+
+        private void SetIssueExceededEstimate()
+        {
+            if (_currentIssue.TimeSpentTotal <= _currentIssue.OriginalEstimateSecondsTotal || _currentIssue.Label == null)
+                return;
+
+            var percentage = MathHelpers.GetPercentage((_currentIssue.TimeSpentTotal - _currentIssue.OriginalEstimateSecondsTotal), _currentIssue.OriginalEstimateSecondsTotal);
+            if (percentage >= 25)
+                _currentIssue.ExceededOriginalEstimate = true;
         }
     }
 }
