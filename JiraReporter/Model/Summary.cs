@@ -116,8 +116,8 @@ namespace JiraReporter.Model
         public int AuthorsInvolved { get; set; }
         public List<Author> Authors { get; set; }
         public int CommitsCount { get; set; }
-        public List<PullRequest> PullRequests { get; set; }
-        public List<PullRequest> UnrelatedPullRequests { get; set; }
+        public List<JiraPullRequest> PullRequests { get; set; }
+        public List<JiraPullRequest> UnrelatedPullRequests { get; set; }
         public Sprint Sprint { get; set; }
 
         public double AverageTimeWorked { get; set; }
@@ -315,7 +315,7 @@ namespace JiraReporter.Model
         }
 
 
-        public Summary(List<Author> authors, SprintTasks sprintTasks, List<PullRequest> pullRequests, JiraPolicy policy, JiraOptions options, Sprint sprint)
+        public Summary(List<Author> authors, SprintTasks sprintTasks, List<JiraPullRequest> pullRequests, JiraPolicy policy, JiraOptions options, Sprint sprint)
         {
             Policy = policy;
             AuthorsInvolved = authors.Count;

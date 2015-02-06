@@ -65,7 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiUrls.cs" />
+    <Compile Include="JiraApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="AuthorLoader.cs" />
     <Compile Include="Deserialization.cs" />
@@ -88,13 +88,13 @@
     <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="Model\BaseReportProcessor.cs" />
-    <Compile Include="Model\Commit.cs" />
+    <Compile Include="Model\JiraCommit.cs" />
     <Compile Include="Model\DayLog.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\IndividualReport.cs" />
     <Compile Include="Model\IndividualReportProcessor.cs" />
     <Compile Include="Model\JiraIssue.cs" />
-    <Compile Include="Model\PullRequest.cs" />
+    <Compile Include="Model\JiraPullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
@@ -102,6 +102,9 @@
     <Compile Include="JiraPolicyExtensions.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailerJira.cs" />
+    <Compile Include="SourceControl\GitHubReportSourceControl.cs" />
+    <Compile Include="SourceControl\ReportBaseSourceControl.cs" />
+    <Compile Include="SourceControl\SvnReportSourceControl.cs" />
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="JiraModels\JiraUser.cs" />

@@ -21,7 +21,7 @@ namespace JiraReporter
         public JiraPolicy Policy { get; set; }
         public JiraOptions Options { get; set; }
 
-        public ReportEmailerJira(JiraPolicy policy, JiraOptions options):base(policy, options)
+        public ReportEmailerJira(JiraPolicy policy, JiraOptions options)
         {
             Policy = policy;
             Options = options;
@@ -104,7 +104,7 @@ namespace JiraReporter
                 Policy.GeneratedProperties.WasResetToDefaultToday = false;
             }
 
-            PolicyService.SaveToFile(Options.PolicyPath, Policy);
+            JiraPolicyService.SaveToFile(Options.PolicyPath, Policy);
         }
     }
 }

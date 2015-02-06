@@ -182,7 +182,7 @@ namespace JiraReporter.Model
                 return RemainingEstimateSeconds.SetTimeFormat8Hour();
             }
         }
-        public List<Commit> Commits { get; set; }
+        public List<JiraCommit> Commits { get; set; }
         public List<DayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }

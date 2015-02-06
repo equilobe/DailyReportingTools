@@ -16,13 +16,13 @@ namespace JiraReporter
     {
         SprintTasks _sprintIssues;
         JiraPolicy _policy;
-        List<Commit> _commits;
+        List<JiraCommit> _commits;
         JiraOptions _options;
-        List<PullRequest> _pullRequests;
+        List<JiraPullRequest> _pullRequests;
         Sprint _sprint;
         Author _currentAuthor;
 
-        public AuthorLoader(JiraOptions options, JiraPolicy policy, Sprint sprint, SprintTasks sprintIssues, List<Commit> commits, List<PullRequest> pullRequests)
+        public AuthorLoader(JiraOptions options, JiraPolicy policy, Sprint sprint, SprintTasks sprintIssues, List<JiraCommit> commits, List<JiraPullRequest> pullRequests)
         {
             this._sprintIssues = sprintIssues;
             this._commits = commits;
@@ -142,13 +142,13 @@ namespace JiraReporter
             _currentAuthor.Commits = GetCommits();
         }
 
-        private List<Commit> GetCommits()
+        private List<JiraCommit> GetCommits()
         {
             if (_policy.SourceControlOptions == null)
-                return new List<Commit>();
+                return new List<JiraCommit>();
 
             if (!_policy.Users.ContainsKey(_currentAuthor.Username))
-                return new List<Commit>();
+                return new List<JiraCommit>();
 
             return _policy.Users[_currentAuthor.Username]
                     .SelectMany(sourceControlUser => _commits.FindAll(commit => commit.Entry.Author == sourceControlUser))

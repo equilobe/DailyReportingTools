@@ -9,8 +9,10 @@ using System.Xml.Serialization;
 namespace Equilobe.DailyReport.Models.ReportPolicy
 {
 
-    public class JiraAdvancedOptions : AdvancedOptions
+    public class JiraAdvancedOptions 
     {
+        public string ReportTitle { get; set; }
+
         [XmlAttribute]
         [DefaultValue(false)]
         public bool NoDraft { get; set; }
@@ -55,6 +57,8 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
             ReopenedStatus = "Reopened";
             SendDraftToProjectManager = true;
             SendFinalToAllUsers = true;
+            NoIndividualDraft = false;
+            NoDraft = false;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    public class ApiUrls
+    public class JiraApiUrls
     {
         public static string Project(string id)
         {

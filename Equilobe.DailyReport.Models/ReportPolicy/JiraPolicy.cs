@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace Equilobe.DailyReport.Models.ReportPolicy
 {
-    public class JiraPolicy : Policy
+    public class JiraPolicy
     {
         [XmlIgnore]
         public Uri DraftConfirmationUrl { get; set; }
@@ -30,12 +30,21 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
 
         public int ProjectId { get; set; }
         public string DraftEmails { get; set; }
+        public string Emails { get; set; }
+        public string ReportTime { get; set; }
+        [XmlIgnore]
+        public DateTime ReportTimeDateFormat { get; set; }
+
+        [XmlIgnore]
+        public List<string> EmailCollection { get; set; }
 
 
         [DefaultValue(0)]
         public int AllocatedHoursPerMonth { get; set; }
         [DefaultValue(0)]
         public int AllocatedHoursPerDay { get; set; }
+
+        public SourceControlOptions SourceControlOptions { get; set; }
 
         public JiraAdvancedOptions AdvancedOptions { get; set; }
 

@@ -14,8 +14,8 @@ namespace JiraReporter
         public static Report GenerateReport(JiraPolicy policy, JiraOptions options)
         {
             var timesheetService = new TimesheetService();
-            var pullRequests = new List<PullRequest>();
-            var commits = new List<Commit>();
+            var pullRequests = new List<JiraPullRequest>();
+            var commits = new List<JiraCommit>();
 
             if (policy.SourceControlOptions != null)
             {
@@ -26,7 +26,7 @@ namespace JiraReporter
 
             return GetReport(policy, options, pullRequests, commits);
         }
-        private static Report GetReport(JiraPolicy policy, JiraOptions options, List<PullRequest> pullRequests, List<Commit> commits)
+        private static Report GetReport(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests, List<JiraCommit> commits)
         {
             var sprintTasks = GetSprintReport(policy, options, pullRequests);
             var sprint = GenerateSprint(policy, options);
@@ -46,7 +46,7 @@ namespace JiraReporter
             return report;
         }
 
-        private static List<Author> GetReportAuthors(JiraPolicy policy, JiraOptions options, List<PullRequest> pullRequests, List<Commit> commits, SprintTasks sprintTasks, Sprint sprint)
+        private static List<Author> GetReportAuthors(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests, List<JiraCommit> commits, SprintTasks sprintTasks, Sprint sprint)
         {
             var authors = new List<Author>();
             var authorLoader = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests);
@@ -79,7 +79,7 @@ namespace JiraReporter
             return individualReport;
         }
 
-        private static SprintTasks GetSprintReport(JiraPolicy policy, JiraOptions options, List<PullRequest> pullRequests)
+        private static SprintTasks GetSprintReport(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests)
         {
             var report = new SprintTasks();
             report.SetSprintTasks(policy, options, pullRequests);

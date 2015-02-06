@@ -12,10 +12,10 @@ namespace JiraReporter.Model
         public int TimeSpent { get; set; }
         public string TimeLogged { get; set; }
         public List<Issue> Issues { get; set; }
-        public List<Commit> Commits { get; set; }
+        public List<JiraCommit> Commits { get; set; }
         public string Title { get; set; }
 
-        public List<Commit> UnsyncedCommits { get; set; }
+        public List<JiraCommit> UnsyncedCommits { get; set; }
 
         public DayLog(Author author, DateTime date, JiraOptions options)
         {
@@ -41,7 +41,7 @@ namespace JiraReporter.Model
             
             if(Issues != null)
                   Issues = TasksService.GetParentTasks(Issues,author);
-            this.UnsyncedCommits = new List<Commit>(Commits.FindAll(c => c.TaskSynced == false));
+            this.UnsyncedCommits = new List<JiraCommit>(Commits.FindAll(c => c.TaskSynced == false));
             this.TimeLogged = TimeFormatting.SetTimeFormat(this.TimeSpent);
         }      
     }

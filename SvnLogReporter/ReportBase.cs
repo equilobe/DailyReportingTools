@@ -36,6 +36,11 @@ namespace SourceControlLogReporter
            Options = o;
         }
 
+        public ReportBase()
+        {
+
+        }
+
         public static T Create<T>(Policy p, Options o) where T : ReportBase
         {
             return Activator.CreateInstance(typeof(T), p, o) as T;

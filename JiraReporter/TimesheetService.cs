@@ -22,7 +22,7 @@ namespace JiraReporter
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, JiraPolicy policy, List<PullRequest> pullRequests)
+        public void SetTimesheetIssues(Timesheet timesheet, JiraPolicy policy, List<JiraPullRequest> pullRequests)
         {
             if (timesheet == null)
                 return;

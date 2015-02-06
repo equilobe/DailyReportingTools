@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public class PullRequest
+    public class JiraCommit
     {
-        public Octokit.PullRequest GithubPullRequest { get; set; }
+        public SourceControlLogReporter.Model.LogEntry Entry { get; set; }
         public bool TaskSynced { get; set; }
     }
 }

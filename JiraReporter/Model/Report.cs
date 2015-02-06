@@ -23,8 +23,8 @@ namespace JiraReporter.Model
         public DateTime Date { get; set; }
         public Summary Summary { get; set; }
         public SprintTasks SprintTasks { get; set; }
-        public List<PullRequest> PullRequests { get; set; }
-        public List<PullRequest> UnrelatedPullRequests
+        public List<JiraPullRequest> PullRequests { get; set; }
+        public List<JiraPullRequest> UnrelatedPullRequests
         {
             get
             {

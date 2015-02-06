@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
+using JiraReporter.SourceControl;
 using SourceControlLogReporter;
 using SourceControlLogReporter.Model;
 using System;
@@ -13,10 +14,10 @@ namespace JiraReporter
 {
     class SourceControlProcessor
     {
-        public static readonly Dictionary<SourceControlType, Func<Policy, JiraOptions, ReportBase>> Processors = new Dictionary<SourceControlType, Func<Policy, JiraOptions, ReportBase>>()
+        public static readonly Dictionary<SourceControlType, Func<JiraPolicy, JiraOptions, ReportBase>> Processors = new Dictionary<SourceControlType, Func<JiraPolicy, JiraOptions, ReportBase>>()
         {
-            {SourceControlType.GitHub, ReportBase.Create<GitHubReport> },
-            {SourceControlType.SVN, ReportBase.Create<SvnReport>}
+            {SourceControlType.GitHub, ReportBaseSourceControl.Create<GitHubReportSourceControl>},
+            {SourceControlType.SVN, ReportBaseSourceControl.Create<SvnReportSourceControl>}
         };
 
         public static Log GetSourceControlLog(JiraPolicy policy, JiraOptions options)
@@ -26,24 +27,24 @@ namespace JiraReporter
             return log;
         }
 
-        public static List<PullRequest> GetPullRequests(Log log)
+        public static List<JiraPullRequest> GetPullRequests(Log log)
         {
-            var pullRequests = new List<PullRequest>();
+            var pullRequests = new List<JiraPullRequest>();
             if(log.PullRequests!=null)
                 if(log.PullRequests.Count>0)
                     foreach (var pullRequest in log.PullRequests)
-                        pullRequests.Add(new PullRequest { GithubPullRequest = pullRequest });
+                        pullRequests.Add(new JiraPullRequest { GithubPullRequest = pullRequest });
             return pullRequests;
         }
 
-        public static List<Commit> GetCommits(Log log)
+        public static List<JiraCommit> GetCommits(Log log)
         {
-            var commits = new List<Commit>();
+            var commits = new List<JiraCommit>();
             if(log.Entries!=null)
                 if(log.Entries.Count>0)
                     foreach (var entry in log.Entries)
                     {
-                        commits.Add(new Commit { Entry = entry });
+                        commits.Add(new JiraCommit { Entry = entry });
                         commits.Last().Entry.Message = EditMessage(commits.Last().Entry.Message);
                     }
             return commits;

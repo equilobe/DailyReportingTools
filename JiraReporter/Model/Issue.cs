@@ -91,9 +91,9 @@ namespace JiraReporter.Model
         [XmlIgnore]
         public DateTime Created { get; set; }
         [XmlIgnore]
-        public List<Commit> Commits { get; set; }
+        public List<JiraCommit> Commits { get; set; }
         [XmlIgnore]
-        public List<PullRequest> PullRequests { get; set; }
+        public List<JiraPullRequest> PullRequests { get; set; }
         [XmlIgnore]
         public string PolicyReopenedStatus { get; set; }
         [XmlIgnore]

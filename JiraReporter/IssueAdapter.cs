@@ -81,9 +81,9 @@ namespace JiraReporter
                 }
         }
 
-        public static void AdjustIssueCommits(Issue issue, List<Commit> commits)
+        public static void AdjustIssueCommits(Issue issue, List<JiraCommit> commits)
         {
-            issue.Commits = new List<Commit>();
+            issue.Commits = new List<JiraCommit>();
             issue.Commits = commits.FindAll(commit => ContainsKey(commit.Entry.Message, issue.Key) == true);
             EditIssueCommits(issue);
         }
@@ -101,7 +101,7 @@ namespace JiraReporter
 
         public static void RemoveWrongCommits(Issue issue, DateTime date)
         {
-            var commits = new List<Commit>(issue.Commits);
+            var commits = new List<JiraCommit>(issue.Commits);
             commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone() < date || c.Entry.Date.ToOriginalTimeZone() >= date.AddDays(1));
             issue.Commits = commits;
         }

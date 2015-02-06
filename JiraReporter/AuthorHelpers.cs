@@ -34,9 +34,9 @@ namespace JiraReporter
         }
 
 
-        public static List<Commit> GetDayLogCommits(Author author, DateTime date)
+        public static List<JiraCommit> GetDayLogCommits(Author author, DateTime date)
         {
-            var commits = new List<Commit>();
+            var commits = new List<JiraCommit>();
             if (author.Commits != null)
                 commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone() >= date && c.Entry.Date.ToOriginalTimeZone() < date.AddDays(1));
             return commits;

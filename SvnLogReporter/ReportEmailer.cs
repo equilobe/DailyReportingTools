@@ -25,6 +25,11 @@ namespace SourceControlLogReporter
             this.options = o;
         }
 
+        public ReportEmailer()
+        {
+
+        }
+
         private void SendEmails()
         {
             if (options.NoEmail)

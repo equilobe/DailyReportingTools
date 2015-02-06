@@ -47,7 +47,7 @@ namespace DailyReportWeb.Models
                 SharedSecret = sharedSecret
             };
 
-            var request = new RestRequest(JiraReporter.ApiUrls.Projects(), Method.GET);
+            var request = new RestRequest(JiraReporter.JiraApiUrls.Projects(), Method.GET);
 
             return JiraReporter.RestApiRequests.ResolveRequest<List<ProjectInfo>>(policy, request);
         }

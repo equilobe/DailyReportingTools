@@ -22,10 +22,11 @@ namespace JiraReporter
         {
             JiraOptions options = GetCommandLineOptions(args);
             JiraPolicy policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
-            var policyService = new JiraPolicyService(policy);
-            policyService.SetPolicy(options);
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
+            var policyService = new JiraPolicyService(policy);
+            policyService.SetPolicy(options);
+
             LoadReportDates(policy, options);
 
             if (RunReport(policy, options))

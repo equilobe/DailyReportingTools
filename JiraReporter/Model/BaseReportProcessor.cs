@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,7 +46,7 @@ namespace JiraReporter.Model
         protected void SaveReportToFile<T>(T report, string reportPath, JiraPolicy policy, string viewPath)
         {
             var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
-            SourceControlLogReporter.Reporter.WriteReport(policy, repCont, reportPath);
+            WriteReport(policy, repCont, reportPath);
         }
 
         protected virtual void SendReport(Report report)
@@ -91,6 +92,29 @@ namespace JiraReporter.Model
             foreach (var author in authors)
                 if (author.EmailAdress != null)
                     Policy.EmailCollection.Add(author.EmailAdress);
+        }
+
+        private static void WriteReport(JiraPolicy policy, string report, string path)
+        {
+            Validation.EnsureDirectoryExists(policy.GeneratedProperties.LogArchivePath);
+
+            var archivedFilePath = Path.Combine(policy.GeneratedProperties.LogArchivePath, Path.GetFileName(path));
+
+            if (File.Exists(path))
+            {
+                File.Copy(path, archivedFilePath, true);
+                File.Delete(path);
+            }
+            else
+            {
+                File.WriteAllText(archivedFilePath, report);
+            }
+
+            Validation.EnsureDirectoryExists(policy.GeneratedProperties.UnsentReportsPath);
+
+            var reportPath = Path.Combine(policy.GeneratedProperties.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
+
+            File.WriteAllText(reportPath, report);
         }
     }
 }

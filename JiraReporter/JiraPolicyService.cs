@@ -22,16 +22,15 @@ namespace JiraReporter
 
         public void SetPolicy(JiraOptions options)
         {
+            SetDefaultProperties(options);
+
             SetUrls();
-            Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
             Policy.CurrentOverride = GetCurrentOverride();
             Policy.IsThisMonthOverriden = IsThisMonthOverriden();
             Policy.Users = GetUsersDictionary();
             Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
+            Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
             SetMonthlyNonWorkingDays();
-
-            SetDefaultProperties(options);
-
         }
 
         private void SetMonthlyNonWorkingDays()
@@ -152,6 +151,7 @@ namespace JiraReporter
 
         public void SetDefaultProperties(JiraOptions options)
         {
+            Policy.AdvancedOptions = new JiraAdvancedOptions();
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();

@@ -86,8 +86,5 @@ namespace SourceControlLogReporter
             parser.ParseArguments(args, options);
             return options;
         }
-
-
-        
     }
 }

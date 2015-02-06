@@ -11,11 +11,11 @@ namespace JiraReporter
     class IssueProcessor
     {
         JiraPolicy _policy;
-        List<PullRequest> _pullRequests;
+        List<JiraPullRequest> _pullRequests;
         Issue _currentIssue;
         JiraIssue _currentJiraIssue;
 
-        public IssueProcessor(JiraPolicy policy, List<PullRequest> pullRequests)
+        public IssueProcessor(JiraPolicy policy, List<JiraPullRequest> pullRequests)
         {
             this._policy = policy;
             this._pullRequests = pullRequests;
@@ -166,7 +166,7 @@ namespace JiraReporter
         {
             if (_pullRequests != null)
             {
-                _currentIssue.PullRequests = new List<PullRequest>();
+                _currentIssue.PullRequests = new List<JiraPullRequest>();
                 _currentIssue.PullRequests = _pullRequests.FindAll(pr => IssueAdapter.ContainsKey(pr.GithubPullRequest.Title, _currentIssue.Key) == true);
                 EditIssuePullRequests(_currentIssue);
             }
