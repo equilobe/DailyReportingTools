@@ -10,7 +10,7 @@ namespace JiraReporter
 {
     class IndividualReportInfoService
     {
-        public void SetIndividualDraftInfo(List<Author> authors, JiraPolicy policy)
+        public void SetIndividualDraftInfo(List<JiraAuthor> authors, JiraPolicy policy)
         {
             if (!policy.GeneratedProperties.IsIndividualDraft)
                 return;
@@ -27,7 +27,7 @@ namespace JiraReporter
             policy.GeneratedProperties.IndividualDrafts = individualDrafts;
         }
 
-        private IndividualDraftInfo GenerateIndividualDraftInfo(Author author, JiraPolicy policy)
+        private IndividualDraftInfo GenerateIndividualDraftInfo(JiraAuthor author, JiraPolicy policy)
         {
             var individualDraft = new IndividualDraftInfo
             {

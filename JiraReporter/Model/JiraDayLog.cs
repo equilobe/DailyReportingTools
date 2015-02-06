@@ -17,7 +17,7 @@ namespace JiraReporter.Model
 
         public List<JiraCommit> UnsyncedCommits { get; set; }
 
-        public JiraDayLog(Author author, DateTime date, JiraOptions options)
+        public JiraDayLog(JiraAuthor author, DateTime date, JiraOptions options)
         {
             this.Commits = AuthorHelpers.GetDayLogCommits(author, date);
             this.Date = date;

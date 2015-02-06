@@ -97,7 +97,7 @@ namespace JiraReporter
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.Author author)
+        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.JiraAuthor author)
         {
             List<Issue> parentTasks = new List<Issue>(tasks);
             foreach (var task in tasks)
@@ -129,7 +129,7 @@ namespace JiraReporter
             return parentTasks;
         }
 
-        private static Issue CreateParent(Issue task, JiraReporter.Model.Author author)
+        private static Issue CreateParent(Issue task, JiraReporter.Model.JiraAuthor author)
         {
             var parent = new Issue(task.Parent);
             foreach (var subtask in parent.SubtasksIssues)

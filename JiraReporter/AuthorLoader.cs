@@ -20,7 +20,7 @@ namespace JiraReporter
         JiraOptions _options;
         List<JiraPullRequest> _pullRequests;
         Sprint _sprint;
-        Author _currentAuthor;
+        JiraAuthor _currentAuthor;
 
         public AuthorLoader(JiraOptions options, JiraPolicy policy, Sprint sprint, SprintTasks sprintIssues, List<JiraCommit> commits, List<JiraPullRequest> pullRequests)
         {
@@ -32,11 +32,11 @@ namespace JiraReporter
             this._sprint = sprint;
         }
 
-        public List<Author> GetAuthors()
+        public List<JiraAuthor> GetAuthors()
         {
             var authors = RestApiRequests.GetUsers(_policy)
                             .Where(UserIsNotIgnored)
-                            .Select(u => new Author(u))
+                            .Select(u => new JiraAuthor(u))
                             .ToList();
 
             SetProjectLead(authors);
@@ -49,12 +49,12 @@ namespace JiraReporter
             return authors;
         }
 
-        public Author CreateAuthorByKey(string key, JiraPolicy policy)
+        public JiraAuthor CreateAuthorByKey(string key, JiraPolicy policy)
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
             var user = RestApiRequests.GetUser(draft.Username, policy);
-            var author = new Author(user);
+            var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);
             author.IndividualDraftInfo = draft;
 
@@ -72,7 +72,7 @@ namespace JiraReporter
 
 
 
-        public void SetAuthorAdvancedProperties(Author a)
+        public void SetAuthorAdvancedProperties(JiraAuthor a)
         {
             this._currentAuthor = a;
             SetTimesheets();
@@ -217,7 +217,7 @@ namespace JiraReporter
         }
 
 
-        private bool AuthorIsEmpty(Author author)
+        private bool AuthorIsEmpty(JiraAuthor author)
         {
             if (author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.DayLogs.Count == 0)
                 return true;
@@ -308,7 +308,7 @@ namespace JiraReporter
                 _currentAuthor.EmailAdress = author.EmailOverride;
         }
 
-        private void SetProjectLead(List<Author> authors)
+        private void SetProjectLead(List<JiraAuthor> authors)
         {
             var lead = authors.Find(a => a.Username == _policy.GeneratedProperties.ProjectManager);
             if (lead == null)
@@ -320,10 +320,10 @@ namespace JiraReporter
                 lead.IsProjectLead = true;
         }
 
-        private Author GetProjectLead(string username)
+        private JiraAuthor GetProjectLead(string username)
         {
             var lead = RestApiRequests.GetUser(username, _policy);
-            var projectManager = new Author(lead);
+            var projectManager = new JiraAuthor(lead);
             projectManager.IsProjectLead = true;
 
             return projectManager;

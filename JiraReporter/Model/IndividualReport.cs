@@ -9,7 +9,7 @@ namespace JiraReporter.Model
 {
     public class IndividualReport : Report
     {
-        public Author Author { get; set; }
+        public JiraAuthor Author { get; set; }
         public JiraPolicy Policy;
         public JiraOptions JiraOptions;
         public Summary Summary { get; set; }

@@ -16,12 +16,12 @@ namespace JiraReporter
             ChartMaxBarWidth = chartMaxBarWidth;
         }
 
-        public void SetWorkSummaryChartWidths(List<Author> authors, int workSummaryMax)
+        public void SetWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax)
         {
             SetAuthorsWorkSummaryChartWidths(authors, workSummaryMax);
         }
 
-        private void SetAuthorsWorkSummaryChartWidths(List<Author> authors, int workSummaryMax)
+        private void SetAuthorsWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax)
         {
             foreach (var author in authors)
                 AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, workSummaryMax);

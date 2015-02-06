@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JiraReporter.Model
 {
-    public class Author
+    public class JiraAuthor
     {
         public string Name { get; set; }
         public string Username { get; set; }
@@ -189,12 +189,12 @@ namespace JiraReporter.Model
         public IndividualDraftInfo IndividualDraftInfo { get; set; }
         public bool IsProjectLead { get; set; }
 
-        public Author()
+        public JiraAuthor()
         {
 
         }
 
-        public Author(JiraUser user)
+        public JiraAuthor(JiraUser user)
         {
             Name = user.displayName;
             EmailAdress = user.emailAddress;

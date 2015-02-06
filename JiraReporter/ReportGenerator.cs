@@ -46,9 +46,9 @@ namespace JiraReporter
             return report;
         }
 
-        private static List<Author> GetReportAuthors(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests, List<JiraCommit> commits, SprintTasks sprintTasks, Sprint sprint)
+        private static List<JiraAuthor> GetReportAuthors(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests, List<JiraCommit> commits, SprintTasks sprintTasks, Sprint sprint)
         {
-            var authors = new List<Author>();
+            var authors = new List<JiraAuthor>();
             var authorLoader = new AuthorLoader(options, policy, sprint, sprintTasks, commits, pullRequests);
             if (options.DraftKey != null)
             {
@@ -63,7 +63,7 @@ namespace JiraReporter
             return authors;
         }
 
-        public static IndividualReport GetIndividualReport(Report report, Author author)
+        public static IndividualReport GetIndividualReport(Report report, JiraAuthor author)
         {
             var individualReport = new IndividualReport(report.Policy, report.Options)
             {

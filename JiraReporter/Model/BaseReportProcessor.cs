@@ -57,7 +57,7 @@ namespace JiraReporter.Model
             emailer.TrySendEmails();
         }
 
-        protected void SetEmailCollection(List<Author> authors)
+        protected void SetEmailCollection(List<JiraAuthor> authors)
         {
             Policy.EmailCollection = new List<string>();
 
@@ -69,7 +69,7 @@ namespace JiraReporter.Model
             Policy.EmailCollection = Policy.EmailCollection.Distinct().ToList();
         }
 
-        private void SetFinalReportEmailCollection(List<Author> authors)
+        private void SetFinalReportEmailCollection(List<JiraAuthor> authors)
         {
             if (Policy.AdvancedOptions.SendFinalToOthers)
                 Policy.EmailCollection = JiraPolicyService.GetFinalAddedEmails(Policy);
@@ -77,7 +77,7 @@ namespace JiraReporter.Model
                 AddUsersEmailAdresses(authors);
         }
 
-        private void SetDraftEmailCollection(List<Author> authors)
+        private void SetDraftEmailCollection(List<JiraAuthor> authors)
         {
             if (Policy.AdvancedOptions.SendDraftToOthers)
                 Policy.EmailCollection = JiraPolicyService.GetDraftAddedEmails(Policy);
@@ -87,7 +87,7 @@ namespace JiraReporter.Model
                 AddUsersEmailAdresses(authors);
         }
 
-        private void AddUsersEmailAdresses(List<Author> authors)
+        private void AddUsersEmailAdresses(List<JiraAuthor> authors)
         {
             foreach (var author in authors)
                 if (author.EmailAdress != null)

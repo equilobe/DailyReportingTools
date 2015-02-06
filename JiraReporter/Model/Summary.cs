@@ -113,7 +113,7 @@ namespace JiraReporter.Model
         }
 
         public int AuthorsInvolved { get; set; }
-        public List<Author> Authors { get; set; }
+        public List<JiraAuthor> Authors { get; set; }
         public int CommitsCount { get; set; }
         public List<JiraPullRequest> PullRequests { get; set; }
         public List<JiraPullRequest> UnrelatedPullRequests { get; set; }
@@ -282,8 +282,8 @@ namespace JiraReporter.Model
         public List<Error> CompletedWithNoWorkErrors { get; set; }
         public List<Error> UnassignedErrors { get; set; }
         public List<Error> ConfirmationErrors { get; set; }
-        public List<Author> AuthorsNotConfirmed { get; set; }
-        public List<Author> AuthorsWithErrors { get; set; }
+        public List<JiraAuthor> AuthorsNotConfirmed { get; set; }
+        public List<JiraAuthor> AuthorsWithErrors { get; set; }
 
         public WorkingDaysInfo WorkingDays { get; set; }
 
@@ -314,7 +314,7 @@ namespace JiraReporter.Model
         }
 
 
-        public Summary(List<Author> authors, SprintTasks sprintTasks, List<JiraPullRequest> pullRequests, JiraPolicy policy, JiraOptions options, Sprint sprint)
+        public Summary(List<JiraAuthor> authors, SprintTasks sprintTasks, List<JiraPullRequest> pullRequests, JiraPolicy policy, JiraOptions options, Sprint sprint)
         {
             Policy = policy;
             AuthorsInvolved = authors.Count;
@@ -586,7 +586,7 @@ namespace JiraReporter.Model
 
         private void SetAuthorsWithErrors()
         {
-            AuthorsWithErrors = new List<Author>();
+            AuthorsWithErrors = new List<JiraAuthor>();
             AuthorsWithErrors = Authors.FindAll(a => a.Errors != null && a.Errors.Count > 0).ToList();
         }
 
@@ -595,7 +595,7 @@ namespace JiraReporter.Model
             if (!Policy.GeneratedProperties.IsFinalDraft || Policy.AdvancedOptions.NoIndividualDraft)
                 return;
 
-            AuthorsNotConfirmed = new List<Author>();
+            AuthorsNotConfirmed = new List<JiraAuthor>();
             ConfirmationErrors = new List<Error>();
             var notConfirmed = Policy.GeneratedProperties.IndividualDrafts.Where(d => !d.Confirmed).ToList();
             foreach (var author in Authors)

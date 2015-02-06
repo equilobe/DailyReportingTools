@@ -19,7 +19,7 @@ namespace JiraReporter.Model
             Options = o;
         }
         public string Title { get; set; }
-        public List<Author> Authors { get; set; }
+        public List<JiraAuthor> Authors { get; set; }
         public DateTime Date { get; set; }
         public Summary Summary { get; set; }
         public SprintTasks SprintTasks { get; set; }

@@ -108,7 +108,7 @@
     <Compile Include="SummaryCharts\StatusChartWidths.cs" />
     <Compile Include="Model\Summary.cs" />
     <Compile Include="JiraModels\JiraUser.cs" />
-    <Compile Include="Model\Author.cs" />
+    <Compile Include="Model\JiraAuthor.cs" />
     <Compile Include="Model\Entries.cs" />
     <Compile Include="Model\Issue.cs" />
     <Compile Include="Model\Report.cs" />

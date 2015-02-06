@@ -16,8 +16,8 @@ namespace JiraReporter
 {
     public class ReportEmailerJira : ReportEmailer
     {
-        public List<Author> Authors { get; set; }
-        public Author Author { get; set; }
+        public List<JiraAuthor> Authors { get; set; }
+        public JiraAuthor Author { get; set; }
         public JiraPolicy Policy { get; set; }
         public JiraOptions Options { get; set; }
 

@@ -14,7 +14,7 @@ namespace JiraReporter
             return timesheet.Worklog.Issues.Sum(i => i.Entries.Sum(t => t.TimeSpent));
         }
 
-        public static int GetTimesheetSecondsWorkedAuthor(this Timesheet timesheet, Author author)
+        public static int GetTimesheetSecondsWorkedAuthor(this Timesheet timesheet, JiraAuthor author)
         {
             int seconds = 0;
             foreach (var issue in timesheet.Worklog.Issues)
