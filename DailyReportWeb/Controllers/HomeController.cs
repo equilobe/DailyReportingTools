@@ -17,12 +17,6 @@ namespace DailyReportWeb.Controllers
     {
         public ActionResult Index()
         {
-
-            using (var db = new ReportsDb())
-            {
-                db.ReportSettings.Add(new ReportSettings { BaseUrl = "nice" });
-                db.SaveChanges();
-            }
             return View();
         }
 
@@ -99,25 +93,6 @@ namespace DailyReportWeb.Controllers
             SecretKeyPersister.SaveSecretKey(Request);
 
             return Content(String.Empty);
-        }
-
-        static class SecretKeyPersister
-        {
-            public static void SaveSecretKey(HttpRequestBase request)
-            {
-                using (var dbContext = new InstancesContext())
-                {
-                    var bodyText = new System.IO.StreamReader(request.InputStream).ReadToEnd();
-
-                    var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
-
-                    var baseUrl = instanceData.BaseUrl;
-                    var sharedSecret = instanceData.SharedSecret;
-
-                    dbContext.InstalledInstances.Add(instanceData);
-                    dbContext.SaveChanges();
-                }
-            }
         }
     }
 }

@@ -9,6 +9,8 @@ using SourceControlLogReporter.Model;
 using System.Web;
 using Atlassian.Connect;
 using RestSharp;
+using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Storage;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -26,9 +28,13 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // GET: api/Policy/5
-        public Policy Get(string id)
+        public ReportSettings Get(long id)
         {
-            return new Policy();
+            using (var db = new ReportsDb())
+            {
+                var baseUrl = User.GetBaseUrl();
+                return db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+            }
         }
 
         // Policies are not created directly!
@@ -45,15 +51,24 @@ namespace DailyReportWeb.Controllers.Api
 
         public void Put([FromBody]PolicySummary policySummary)
         {
-            var policy = new Policy
+            using (var db = new ReportsDb())
             {
-                BaseUrl = policySummary.BaseUrl,
-                SharedSecret = policySummary.SharedSecret,
-                ProjectId = Int32.Parse(policySummary.Id),
-                ReportTime = policySummary.Time
-            };
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
 
-            policy.SaveToFile(@"C:\Workspace\DailyReportTool\JiraReporter\Policies\testing.txt");
+                if (reportSettings == null)
+                {
+                    reportSettings = new ReportSettings();
+                    db.ReportSettings.Add(reportSettings);
+
+                    reportSettings.BaseUrl = policySummary.BaseUrl;
+                    reportSettings.SharedSecret = policySummary.SharedSecret;
+                    reportSettings.ProjectId = policySummary.ProjectId;
+                }
+
+                reportSettings.ReportTime = policySummary.ReportTime;
+
+                db.SaveChanges();
+            }
         }
 
         // Policies are not deleted directly!

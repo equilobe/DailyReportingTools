@@ -9,6 +9,18 @@ using System.Xml.Serialization;
 
 namespace JiraReporter
 {
+    public class Serialization
+    {
+        public static string XmlSerialize(object obj)
+        {
+            var writer = new StringWriter();
+            var serializer = new XmlSerializer(obj.GetType());
+            serializer.Serialize(writer, obj);
+
+            return writer.ToString();
+        }
+    }
+
     class Deserialization
     {
         public static T XmlDeserialize <T>(string xmlString)

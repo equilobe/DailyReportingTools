@@ -70,7 +70,7 @@ namespace SourceControlLogReporter.Model
         public string Password { get; set; }
         public string SharedSecret { get; set; }
 
-        public int ProjectId { get; set; }
+        public long ProjectId { get; set; }
         public string ReportTime { get; set; }
 
         [XmlIgnore]

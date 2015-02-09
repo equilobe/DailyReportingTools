@@ -31,10 +31,9 @@ namespace DailyReportWeb.Controllers
         }
 
         [Authorize]
-        public ActionResult Details()
+        public ActionResult Details(long id)
         {
-            var baseUrl = User.GetBaseUrl();
-            return View((object)baseUrl);
+            return View((object)id);
         }
     }
 }
