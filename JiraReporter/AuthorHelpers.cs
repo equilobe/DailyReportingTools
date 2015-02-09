@@ -54,31 +54,31 @@ namespace JiraReporter
         public static void SetAuthorAverageWorkPerDay(JiraAuthor author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             if (monthWorkedDays == 0)
-                author.AverageWorkedMonth = 0;
+                author.Timing.AverageWorkedMonth = 0;
             else
-                author.AverageWorkedMonth = author.MonthSecondsWorked / monthWorkedDays;
+                author.Timing.AverageWorkedMonth = author.Timing.MonthSecondsWorked / monthWorkedDays;
             if (sprintWorkedDays == 0)
-                author.SprintWorkedPerDay = 0;
+                author.Timing.AverageWorkedSprint = 0;
             else
-                author.SprintWorkedPerDay = author.SprintSecondsWorked / sprintWorkedDays;
+                author.Timing.AverageWorkedSprint = author.Timing.SprintSecondsWorked / sprintWorkedDays;
             if (reportWorkingDays == 0)
-                author.AverageWorked = 0;
+                author.Timing.AverageWorked = 0;
             else
-                author.AverageWorked = author.TimeSpent / reportWorkingDays;
+                author.Timing.AverageWorked = author.Timing.TotalTimeSeconds / reportWorkingDays;
         }
 
         public static double GetAuthorMaxAverage(JiraAuthor author)
         {
-            var max = Math.Max(author.AverageWorked, author.SprintWorkedPerDay);
-            max = Math.Max(max, author.AverageWorkedMonth);
+            var max = Math.Max(author.Timing.AverageWorked, author.Timing.AverageWorkedSprint);
+            max = Math.Max(max, author.Timing.AverageWorkedMonth);
             return max;
         }
 
         public static void SetAuthorWorkSummaryWidths(JiraAuthor author, int maxWidth, int maxValue)
         {
-            author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
-            author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.AverageWorkedMonth / 3600));
-            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.AverageWorked / 3600));
+            author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedSprint / 3600));
+            author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedMonth / 3600));
+            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.Timing.AverageWorked / 3600));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,15 @@ namespace JiraReporter
                 dateIterator = dateIterator.AddDays(1);
             }
             return days;
+        }
+
+        public static int GetSprintDaysWorked(Sprint sprint, JiraPolicy policy)
+        {
+            var now = DateTime.Now.ToOriginalTimeZone();
+            if (now <= sprint.EndDate.AddDays(-1).ToOriginalTimeZone())
+                return SummaryHelpers.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), now.AddDays(-1).Date, policy.MonthlyOptions);
+
+            return SummaryHelpers.GetWorkingDays(sprint.StartDate.ToOriginalTimeZone(), sprint.EndDate.ToOriginalTimeZone().AddDays(-1), policy.MonthlyOptions);
         }
     }
 }

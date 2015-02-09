@@ -39,13 +39,6 @@ namespace JiraReporter.Model
                 return MonthEstimatedPixelWidth.ToString() + "px";
             }
         }
-        public bool HasSprint
-        {
-            get
-            {
-                return SprintHoursWorked != 0 || SprintTasksTimeLeftSeconds != 0;
-            }
-        }
 
         public List<Error> Errors { get; set; }
         public List<Error> CompletedWithEstimateErrors { get; set; }

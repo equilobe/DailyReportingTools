@@ -71,6 +71,30 @@ namespace JiraReporter.Model
         }
 
         public int InProgressTasksTimeLeftSeconds { get; set; }
+        public string InProgressTasksTimeLeftString
+        {
+            get
+            {
+                return InProgressTasksTimeLeftSeconds.SetTimeFormat8Hour();
+            }
+        }
         public int OpenTasksTimeLeftSeconds { get; set; }
+        public string OpenTasksTimeLeftString
+        {
+            get
+            {
+                return OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
+            }
+        }
+
+        public int TotalRemainingSeconds { get; set; }
+        public double TotalRemainingHours { get; set; }
+        public string TotalRemainingString
+        {
+            get
+            {
+                return TotalRemainingSeconds.SetTimeFormat8Hour();
+            }
+        }
     }
 }

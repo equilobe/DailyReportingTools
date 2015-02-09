@@ -89,6 +89,8 @@
     <Compile Include="Model\JiraIssue.cs" />
     <Compile Include="Model\JiraPullRequest.cs" />
     <Compile Include="Model\SprintTasks.cs" />
+    <Compile Include="Model\Timing.cs" />
+    <Compile Include="Model\TimingDetailed.cs" />
     <Compile Include="Model\WorkingDaysInfo.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
     <Compile Include="JiraPolicyService.cs" />
@@ -111,6 +113,8 @@
     <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
     <Compile Include="SummaryCharts\WidthHelpers.cs" />
+    <Compile Include="SummaryHelpers.cs" />
+    <Compile Include="SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />

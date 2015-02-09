@@ -22,17 +22,17 @@ namespace JiraReporter.Model
         public WorkingDaysInfo(Sprint sprint, JiraPolicy policy, JiraOptions options)
         {
             var now = DateTime.Now.ToOriginalTimeZone();
-            ReportWorkingDays = Summary.GetWorkingDays(options.FromDate, options.ToDate.AddDays(-1), policy.MonthlyOptions);
-            MonthWorkingDays = Summary.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), policy.MonthlyOptions);
-            MonthWorkingDaysLeft = Summary.GetWorkingDays(now, now.EndOfMonth(), policy.MonthlyOptions);
-            MonthWorkedDays = Summary.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), policy.MonthlyOptions);
+            ReportWorkingDays = SummaryHelpers.GetWorkingDays(options.FromDate, options.ToDate.AddDays(-1), policy.MonthlyOptions);
+            MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), policy.MonthlyOptions);
+            MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), policy.MonthlyOptions);
+            MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), policy.MonthlyOptions);
             if (sprint != null)
             {
                 var sprintEndDate = sprint.EndDate.ToOriginalTimeZone();
                 var sprintStartDate = sprint.StartDate.ToOriginalTimeZone();
-                SprintWorkingDaysLeft = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, policy.MonthlyOptions);
-                SprintWorkingDays = Summary.GetWorkingDays(sprintStartDate, sprintEndDate, policy.MonthlyOptions);
-                SprintWorkedDays = Summary.GetSprintDaysWorked(sprint, policy);
+                SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, policy.MonthlyOptions);
+                SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, policy.MonthlyOptions);
+                SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(sprint, policy);
             }
         }
     }

@@ -68,15 +68,6 @@ namespace JiraReporter.Model
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
 
-        public int RemainingEstimateSeconds { get; set; }
-        public double RemainingEstimateHours { get; set; }
-        public string RemainingEstimateHoursString
-        {
-            get
-            {
-                return RemainingEstimateSeconds.SetTimeFormat8Hour();
-            }
-        }
         public List<JiraCommit> Commits { get; set; }
         public List<JiraDayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }

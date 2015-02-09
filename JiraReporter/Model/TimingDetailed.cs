@@ -35,22 +35,6 @@ namespace JiraReporter.Model
             }
         }
 
-        public int SprintTasksTimeLeftSeconds { get; set; }
-        public double SprintTasksTimeLeftHours
-        {
-            get
-            {
-                return SprintTasksTimeLeftSeconds / 3600;
-            }
-        }
-        public string SprintTasksTimeLeftHoursString
-        {
-            get
-            {
-                return TimeFormatting.SetTimeFormat8Hour(SprintTasksTimeLeftSeconds);
-            }
-        }
-
         public double SprintTasksTimeLeftPerDay { get; set; }
         public string SprintTasksTimeLeftPerDayWithDecimals
         {
@@ -97,17 +81,6 @@ namespace JiraReporter.Model
             }
         }
 
-        public double RemainingMonthHours { get; set; }
-        public double RemainingMonthAverage { get; set; }
-        public string RemainingMonthHoursAverageString
-        {
-            get
-            {
-                var remainingHours = RemainingMonthAverage / 3600;
-                return remainingHours.RoundDoubleOneDecimal();
-            }
-        }
-
         public double MonthAverageEstimated { get; set; }
         public string MonthAverageEstimatedWithDecimals
         {
@@ -118,5 +91,15 @@ namespace JiraReporter.Model
             }
         }
 
+        public double RemainingMonthHours { get; set; }
+        public double RemainingMonthAverage { get; set; }
+        public string RemainingMonthHoursAverageString
+        {
+            get
+            {
+                var remainingHours = RemainingMonthAverage / 3600;
+                return remainingHours.RoundDoubleOneDecimal();
+            }
+        }
     }
 }

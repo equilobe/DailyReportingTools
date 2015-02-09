@@ -40,7 +40,7 @@ namespace JiraReporter
                 SprintTasks = sprintTasks,
                 PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = new Summary(authors, sprintTasks, pullRequests, policy, options, sprint)
+                Summary = LoadSummary(policy, options, authors, sprintTasks, sprint, pullRequests)
             };
             report.Title = JiraReportHelpers.GetReportTitle(options, policy);
 
@@ -90,6 +90,12 @@ namespace JiraReporter
         {
             var jira = new JiraService(policy, options);
             return jira.GetLatestSprint();
+        }
+
+        public static Summary LoadSummary(JiraPolicy policy, JiraOptions options, List<JiraAuthor> authors, SprintTasks sprintTasks, Sprint sprint, List<JiraPullRequest> pullRequests)
+        {
+            var summaryLoader = new SummaryLoader(policy, options, authors, sprintTasks, sprint, pullRequests);
+            return summaryLoader.LoadSummary();
         }
     }
 }

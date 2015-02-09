@@ -138,32 +138,32 @@ else
             <tr>
                 <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black">Sprint</td>
                 <td style="padding:0px; padding-bottom:5px;">
-                    @if (Model.AverageTimeWorked > 0)
+                    @if (Model.Timing.AverageWorked > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#5CB85C; width: @Model.SprintWidths.DayWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.AverageTimeWorkedWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.AverageWorkedString</div>
                         </div>
                     }
                     @if (Model.Policy.AllocatedHoursPerMonth > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#999; width: @Model.SprintWidths.EstimatedWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.SprintAverageEstimateWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.SprintAverageEstimateWithDecimals</div>
                         </div>
                     }
-                    @if (Model.SprintWorkedPerDay > 0)
+                    @if (Model.Timing.AverageWorkedSprint > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#FF6600; width: @Model.SprintWidths.DoneWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.SprintWorkedPerDayWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.AverageWorkedSprintString</div>
                         </div>
                     }
-                    @if (Model.SprintTasksTimeLeftPerDay > 0)
+                    @if (Model.Timing.SprintTasksTimeLeftPerDay > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#337AB7; width: @Model.SprintWidths.RemainingWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.SprintTasksTimeLeftPerDayWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.SprintTasksTimeLeftPerDayWithDecimals</div>
                         </div>
                     }
                 </td>
@@ -179,21 +179,21 @@ else
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#999; width: @Model.MonthWidths.EstimatedWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.MonthAverageEstimatedWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.MonthAverageEstimatedWithDecimals</div>
                         </div>
                     }
-                    @if (Model.MonthWorkedPerDay > 0)
+                    @if (Model.Timing.AverageWorkedMonth > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#FF6600; width: @Model.MonthWidths.DoneWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.MonthWorkedPerDayWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.AverageWorkedMonthString</div>
                         </div>
                     }
                     @if (Model.Policy.AllocatedHoursPerMonth > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#337AB7; width: @Model.MonthWidths.RemainingWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.RemainingMonthHoursAverageWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.RemainingMonthHoursAverageString</div>
                         </div>
                     }
                 </td>
@@ -225,15 +225,15 @@ else
                     <td style="padding:0px; padding-bottom:5px">
                         <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.TimeLoggedPerDayAverageHours</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.Timing.AverageWorkedString</div>
                         </div>
                         <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#337AB7; width:@author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.SprintWorkedPerDayHours</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.Timing.AverageWorkedSprintString</div>
                         </div>
                         <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.MonthWorkedPerDayHours</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.AverageWorkedMonthString</div>
                         </div>
                     </td>
                 </tr>
@@ -263,9 +263,9 @@ else
                 <b style="color:black; font-size:14px;">TOTAL</b>
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                @if (Model.InProgressTasksTimeLeftSeconds > 0)
+                @if (Model.Timing.InProgressTasksTimeLeftSeconds > 0)
                 {
-                    <b style="color:black; font-size:14px;">@Model.InProgressTasksTimeLeft</b>
+                    <b style="color:black; font-size:14px;">@Model.Timing.InProgressTasksTimeLeftString</b>
                 }
                 else
                 {
@@ -273,9 +273,9 @@ else
                 }
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                @if (Model.OpenTasksTimeLeftSeconds > 0)
+                @if (Model.Timing.OpenTasksTimeLeftSeconds > 0)
                 {
-                    <b style="color:black; font-size:14px;">@Model.OpenTasksTimeLeft</b>
+                    <b style="color:black; font-size:14px;">@Model.Timing.OpenTasksTimeLeftString</b>
                 }
                 else
                 {
@@ -283,9 +283,9 @@ else
                 }
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                @if (Model.SprintTasksTimeLeftSeconds > 0)
+                @if (Model.Timing.TotalRemainingSeconds > 0)
                 {
-                    <b style="color:black; font-size:14px;">@Model.SprintTasksTimeLeftHoursString</b>
+                    <b style="color:black; font-size:14px;">@Model.Timing.TotalRemainingString</b>
                 }
                 else
                 {
@@ -302,9 +302,9 @@ else
                         <span style="color:black; font-size:14px;">@author.ShortName</span>
                     </td>
                     <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                        @if (author.InProgressTasksTimeLeftSeconds > 0)
+                        @if (author.Timing.InProgressTasksTimeLeftSeconds > 0)
                         {
-                            <span style="color:black; font-size:14px;">@author.InProgressTasksTimeLeft</span>
+                            <span style="color:black; font-size:14px;">@author.Timing.InProgressTasksTimeLeftString</span>
                         }
                         else
                         {
@@ -312,9 +312,9 @@ else
                         }
                     </td>
                     <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                        @if (author.OpenTasksTimeLeftSeconds > 0)
+                        @if (author.Timing.OpenTasksTimeLeftSeconds > 0)
                         {
-                            <span style="color:black; font-size:14px;">@author.OpenTasksTimeLeft</span>
+                            <span style="color:black; font-size:14px;">@author.Timing.OpenTasksTimeLeftString</span>
                         }
                         else
                         {
@@ -322,9 +322,9 @@ else
                         }
                     </td>
                     <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                        @if (author.RemainingEstimateSeconds > 0)
+                        @if (author.Timing.TotalRemainingSeconds > 0)
                         {
-                            <span style="color:black; font-size:14px;">@author.RemainingEstimateHoursString</span>
+                            <span style="color:black; font-size:14px;">@author.Timing.TotalRemainingString</span>
                         }
                         else
                         {
@@ -339,9 +339,9 @@ else
                 <span style="color:black; font-size:14px;">Unassigned</span>
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                @if (Model.InProgressUnassignedTasksSecondsLeft > 0)
+                @if (Model.Timing.InProgressUnassignedTasksSecondsLeft > 0)
                 {
-                    <span style="color:black; font-size:14px;">@Model.InProgressUnassignedTasksTimeLeft</span>
+                    <span style="color:black; font-size:14px;">@Model.Timing.InProgressUnassignedTasksTimeLeftString</span>
                 }
                 else
                 {
@@ -349,9 +349,9 @@ else
                 }
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                @if (Model.OpenUnassignedTasksSecondsLeft > 0)
+                @if (Model.Timing.OpenUnassignedTasksSecondsLeft > 0)
                 {
-                    <span style="color:black; font-size:14px;">@Model.OpenUnassignedTasksTimeLeft</span>
+                    <span style="color:black; font-size:14px;">@Model.Timing.OpenUnassignedTasksTimeLeftString</span>
                 }
                 else
                 {
@@ -359,9 +359,9 @@ else
                 }
             </td>
             <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                @if (Model.UnassignedTasksSecondsLeft > 0)
+                @if (Model.Timing.UnassignedTasksSecondsLeft > 0)
                 {
-                    <span style="color:black; font-size:14px;">@Model.UnassignedTasksTimeLeft</span>
+                    <span style="color:black; font-size:14px;">@Model.Timing.UnassignedTasksTimeLeftString</span>
                 }
                 else
                 {
