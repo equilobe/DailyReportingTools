@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using SourceControlLogReporter;
 using System;
@@ -125,7 +126,7 @@ namespace JiraReporter
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.JiraAuthor author)
+        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraAuthor author)
         {
             List<Issue> parentTasks = new List<Issue>(tasks);
             foreach (var task in tasks)
@@ -157,7 +158,7 @@ namespace JiraReporter
             return parentTasks;
         }
 
-        private static Issue CreateParent(Issue task, JiraReporter.Model.JiraAuthor author)
+        private static Issue CreateParent(Issue task, JiraAuthor author)
         {
             var parent = new Issue(task.Parent);
             foreach (var subtask in parent.SubtasksIssues)

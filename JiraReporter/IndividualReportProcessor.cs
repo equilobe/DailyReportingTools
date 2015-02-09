@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +45,7 @@ namespace JiraReporter.Model
 
         private void SendReport(IndividualReport report)
         {
-            var emailer = new ReportEmailerJira(report.Policy, report.Options);
+            var emailer = new ReportEmailerJira(report.Policy, Options);
             emailer.Author = report.Author;
 
             emailer.TrySendEmails();

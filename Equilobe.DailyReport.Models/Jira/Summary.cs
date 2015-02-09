@@ -1,16 +1,14 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportPolicy;
-using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.Model
+namespace Equilobe.DailyReport.Models.Jira
 {
-    public enum Health { Bad, Weak, Good, None };
     public class Summary
     {
         public JiraPolicy Policy { get; set; }

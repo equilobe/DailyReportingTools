@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JiraReporter.Model;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace JiraReporter
 {
@@ -65,6 +66,8 @@ namespace JiraReporter
                 author.Timing.AverageWorked = 0;
             else
                 author.Timing.AverageWorked = author.Timing.TotalTimeSeconds / reportWorkingDays;
+
+            TimeFormatting.SetAverageWorkStringFormat(author.Timing);
         }
 
         public static double GetAuthorMaxAverage(JiraAuthor author)

@@ -82,22 +82,24 @@ namespace JiraReporter
             OrderIssues();
             CalculateTimeSpent();
             SetCommits();
-            CleanName();
+            SetName();
 
             AddCommitIssuesNotInTimesheet();
 
             SetUncompletedTasks();
             SetAuthorDayLogs();
-            SetAuthorErrors();
-            SetAuthorInitials();
+            SetAuthorErrors();           
             SetRemainingEstimate();
             SetImage();
             SetOverrideEmail();
         }
 
-        private void CleanName()
+        private void SetName()
         {
             _currentAuthor.Name = AuthorHelpers.GetCleanName(_currentAuthor.Name);
+            _currentAuthor.ShortName = AuthorHelpers.GetShortName(_currentAuthor.Name);
+            _currentAuthor.FirstName = AuthorHelpers.GetFirstName(_currentAuthor.Name);
+            SetAuthorInitials();
         }
 
         private void SetTimesheets()
@@ -134,6 +136,8 @@ namespace JiraReporter
         {
             _currentAuthor.Timing = new Timing();
             _currentAuthor.Timing.TotalTimeSeconds = _currentAuthor.CurrentTimesheet.GetTimesheetSecondsWorked();
+            _currentAuthor.Timing.TotalTimeString = _currentAuthor.Timing.TotalTimeSeconds.SetTimeFormat8Hour();
+            _currentAuthor.Timing.TimeLogged = _currentAuthor.Timing.TotalTimeSeconds.SetTimeFormat();
             _currentAuthor.Timing.MonthSecondsWorked = _currentAuthor.MonthTimesheet.GetTimesheetSecondsWorked();
             if (_currentAuthor.SprintTimesheet != null)
                 _currentAuthor.Timing.SprintSecondsWorked = _currentAuthor.SprintTimesheet.GetTimesheetSecondsWorked();
@@ -210,7 +214,10 @@ namespace JiraReporter
             TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
             if (_currentAuthor.InProgressTasks != null)
+            {
                 _currentAuthor.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.InProgressTasks);
+                _currentAuthor.Timing.InProgressTasksTimeLeftString = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds.SetTimeFormat8Hour();
+            }
             _currentAuthor.InProgressTasksParents = TasksService.GetParentTasks(_currentAuthor.InProgressTasks, _currentAuthor);
             _currentAuthor.InProgressTasksParents = _currentAuthor.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
@@ -269,7 +276,10 @@ namespace JiraReporter
             TasksService.SetErrors(_currentAuthor.OpenTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
             if (_currentAuthor.OpenTasks != null)
+            {
                 _currentAuthor.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.OpenTasks);
+                _currentAuthor.Timing.OpenTasksTimeLeftString = _currentAuthor.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
+            }
             _currentAuthor.OpenTasksParents = TasksService.GetParentTasks(_currentAuthor.OpenTasks, _currentAuthor);
             _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
@@ -295,6 +305,7 @@ namespace JiraReporter
         {
             _currentAuthor.Timing.TotalRemainingSeconds = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds + _currentAuthor.Timing.OpenTasksTimeLeftSeconds;
             _currentAuthor.Timing.TotalRemainingHours = _currentAuthor.Timing.TotalRemainingSeconds / 3600;
+            _currentAuthor.Timing.TotalRemainingString = _currentAuthor.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
         }
 
         private void SetOverrideEmail()

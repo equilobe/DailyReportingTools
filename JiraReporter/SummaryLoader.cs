@@ -48,7 +48,7 @@ namespace JiraReporter
             _summary.Sprint = _sprint;
             _summary.UnrelatedPullRequests = _pullRequests.FindAll(p => p.TaskSynced == false);
             _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
-            _summary.WorkingDays = new WorkingDaysInfo(_sprint, _policy, _options);
+            _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
 
             SetDates(_options);
@@ -56,7 +56,8 @@ namespace JiraReporter
             SetAllocatedTime();
 
             SetTimeWorked();
-            SetMonthEstimatedValue(_summary.WorkingDays.MonthWorkingDays);
+            SetMonthEstimatedValue();
+            SetSpringEstimatedValue();
             SetAverageTimeWorkedPerDay(_summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.ReportWorkingDays);
             SetSummaryTasksTimeLeft(_sprintTasks);
             _summary.Timing.TotalRemainingSeconds = GetSprintTimeLeftSeconds();
@@ -65,9 +66,7 @@ namespace JiraReporter
 
             GetTasksCount(_sprintTasks);
 
-            _summary.Timing.OpenUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
-            _summary.Timing.InProgressUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
-            _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
+            SetUnassignedTimming();
 
             SetHourRates(_summary.WorkingDays.MonthWorkingDaysLeft, _summary.WorkingDays.SprintWorkingDaysLeft);
 
@@ -80,6 +79,16 @@ namespace JiraReporter
             SetWidths();
 
             SetErrors(_sprintTasks);
+        }
+
+        private void SetUnassignedTimming()
+        {
+            _summary.Timing.OpenUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
+            _summary.Timing.OpenUnassignedTasksTimeLeftString = _summary.Timing.OpenUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
+            _summary.Timing.InProgressUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
+            _summary.Timing.InProgressUnassignedTasksTimeLeftString = _summary.Timing.InProgressUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
+            _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
+            _summary.Timing.UnassignedTasksTimeLeftString = _summary.Timing.UnassignedTasksSecondsLeft.SetTimeFormat8Hour();
         }
 
         private void SetReportDate()
@@ -148,6 +157,8 @@ namespace JiraReporter
                 _summary.Timing.AverageWorkedSprint = (_summary.Timing.SprintHoursWorked * 3600) / sprintWorkedDays;
             if (reportWorkingDays > 0)
                 _summary.Timing.AverageWorked = (double)_summary.Timing.TotalTimeSeconds / reportWorkingDays;
+
+            TimeFormatting.SetAverageWorkStringFormat(_summary.Timing);
         }
 
         private void SetAverageRemainingTimePerDay(int monthRemainingDays, int sprintRemainingDays)
@@ -158,17 +169,26 @@ namespace JiraReporter
                 _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / monthRemainingDays;
 
             if (sprintRemainingDays == 0)
-                _summary.Timing.SprintTasksTimeLeftPerDay = 0;
+                _summary.Timing.RemainingSprintAverage = 0;
             else
-                _summary.Timing.SprintTasksTimeLeftPerDay = _summary.Timing.TotalRemainingSeconds / sprintRemainingDays;
+                _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / sprintRemainingDays;
+
+            TimeFormatting.SetaAverageRemainingStringFormat(_summary.Timing);
         }
 
-        private void SetMonthEstimatedValue(int monthWorkingDays)
+        private void SetMonthEstimatedValue()
         {
-            int hours = 0;
-            if (monthWorkingDays > 0)
-                hours = _policy.AllocatedHoursPerMonth / monthWorkingDays;
+            double hours = 0;
+            if (_summary.WorkingDays.MonthWorkingDays > 0)
+                hours = _policy.AllocatedHoursPerMonth / _summary.WorkingDays.MonthWorkingDays;
             _summary.Timing.MonthAverageEstimated = hours * 3600;
+            _summary.Timing.MonthAverageEstimatedString = hours.RoundDoubleOneDecimal();
+        }
+
+        private void SetSpringEstimatedValue()
+        {
+            _summary.Timing.SprintAverageEstimate = _summary.Timing.AllocatedHoursPerDay * 3600;
+            _summary.Timing.SprintAverageEstimateString = _summary.Timing.AllocatedHoursPerDay.RoundDoubleOneDecimal();
         }
 
         private int GetTimesheetTotalEstimate(Timesheet timesheet)
@@ -206,8 +226,10 @@ namespace JiraReporter
         private void SetHourRates(int monthWorkingDaysLeft, int sprintWorkingDaysLeft)
         {
             _summary.Timing.HourRateToCompleteMonth = _summary.Timing.RemainingMonthHours / monthWorkingDaysLeft;
+            _summary.Timing.HourRateToCompleteMonthString = ((int)_summary.Timing.HourRateToCompleteMonth * 3600).SetTimeFormat8Hour();
             if (sprintWorkingDaysLeft > 0)
                 _summary.Timing.HourRateToCompleteSprint = (double)_summary.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
+            _summary.Timing.HourRateToCompleteSprintString = ((int)_summary.Timing.HourRateToCompleteSprint * 3600).SetTimeFormat8Hour();
         }
 
         private int GetSprintTimeLeftSeconds()
@@ -371,7 +393,7 @@ namespace JiraReporter
             max.Add(_summary.Timing.AverageWorkedSprint);
             max.Add(_summary.Timing.AverageWorked);
             max.Add(_summary.Timing.SprintAverageEstimate);
-            max.Add(_summary.Timing.SprintTasksTimeLeftPerDay);
+            max.Add(_summary.Timing.RemainingSprintAverage);
             var maxHours = max.Max() / 3600;
             return maxHours;
         }
@@ -409,7 +431,7 @@ namespace JiraReporter
             _summary.SprintWidths.DaySeconds = _summary.Timing.AverageWorked;
             _summary.SprintWidths.EstimatedSeconds = _summary.Timing.SprintAverageEstimate;
             _summary.SprintWidths.DoneSeconds = _summary.Timing.AverageWorkedSprint;
-            _summary.SprintWidths.RemainingSeconds = _summary.Timing.SprintTasksTimeLeftPerDay;
+            _summary.SprintWidths.RemainingSeconds = _summary.Timing.RemainingSprintAverage;
         }
 
         private void GetStatusMonthValues()
@@ -418,6 +440,25 @@ namespace JiraReporter
             _summary.MonthWidths.EstimatedSeconds = _summary.Timing.MonthAverageEstimated;
             _summary.MonthWidths.DoneSeconds = _summary.Timing.AverageWorkedMonth;
             _summary.MonthWidths.RemainingSeconds = _summary.Timing.RemainingMonthAverage;
+        }
+
+        private WorkingDaysInfo LoadWorkingDaysInfo()
+        {
+            var workingDaysInfo = new WorkingDaysInfo();
+            var now = DateTime.Now.ToOriginalTimeZone();
+            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions);
+            if (_sprint != null)
+            {
+                var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone();
+                var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone();
+                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_sprint, _policy);
+            }
+            return workingDaysInfo;
         }
 
     }

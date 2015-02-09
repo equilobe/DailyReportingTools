@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using System;
@@ -37,12 +38,12 @@ namespace JiraReporter
         public static void SetTimeFormat(Issue issue)
         {
             if (issue.TimeSpent > 0)
-                issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpent);
+                issue.TimeLogged = issue.TimeSpent.SetTimeFormat();
             else
-                issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpentOnTask);
-            issue.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(issue.TotalRemainingSeconds);
-            issue.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpentTotal);
-            issue.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(issue.RemainingEstimateSeconds);
+                issue.TimeLogged = issue.TimeSpentOnTask.SetTimeFormat();
+            issue.TotalRemaining = issue.TotalRemainingSeconds.SetTimeFormat8Hour();
+            issue.TimeLoggedTotal = issue.TimeSpentTotal.SetTimeFormat8Hour();
+            issue.RemainingEstimate = issue.RemainingEstimateSeconds.SetTimeFormat8Hour();
         }
 
 

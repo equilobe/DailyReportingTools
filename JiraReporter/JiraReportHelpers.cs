@@ -9,10 +9,10 @@ namespace JiraReporter
 {
     public static class JiraReportHelpers
     {
-        public static string GetReportTitle(JiraOptions options, JiraPolicy policy, string author = "")
+        public static string GetReportTitle(DateTime fromDate, DateTime toDate, JiraPolicy policy, string author = "")
         {
             var title = string.Empty;
-            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
+            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(fromDate, toDate);
             if (policy.GeneratedProperties.IsFinalDraft || policy.GeneratedProperties.IsIndividualDraft)
                 title += "DRAFT | ";
             if (!string.IsNullOrEmpty(author))

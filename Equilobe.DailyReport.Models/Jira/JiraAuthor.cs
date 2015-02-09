@@ -7,26 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.Model
+namespace Equilobe.DailyReport.Models.Jira
 {
     public class JiraAuthor
     {
         public string Name { get; set; }
         public string Username { get; set; }
-        public string ShortName
-        {
-            get
-            {
-                return AuthorHelpers.GetShortName(Name);
-            }
-        }
-        public string FirstName
-        {
-            get
-            {
-                return AuthorHelpers.GetFirstName(Name);
-            }
-        }
+        public string ShortName { get; set; }
+        public string FirstName { get; set; }
         public string Initials { get; set; }
         public string EmailAdress { get; set; }
         public Timing Timing { get; set; }

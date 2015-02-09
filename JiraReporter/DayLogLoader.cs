@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Jira;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace JiraReporter
             if (dayLog.Issues != null)
                 dayLog.Issues = TasksService.GetParentTasks(dayLog.Issues, author);
             dayLog.UnsyncedCommits = new List<JiraCommit>(dayLog.Commits.FindAll(c => c.TaskSynced == false));
-            dayLog.TimeLogged = TimeFormatting.SetTimeFormat(dayLog.TimeSpent);
+            dayLog.TimeLogged = dayLog.TimeSpent.SetTimeFormat();
 
             return dayLog;
         }

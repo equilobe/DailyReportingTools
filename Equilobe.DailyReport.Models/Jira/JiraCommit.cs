@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.Model
+namespace Equilobe.DailyReport.Models.Jira
 {
     public class JiraCommit
     {

@@ -11,6 +11,7 @@ using System.Drawing.Imaging;
 using JiraReporter.Model;
 using System.Net.Mime;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace JiraReporter
 {
@@ -59,7 +60,7 @@ namespace JiraReporter
 
         private void AddMailRecipients(MailMessage message)
         {
-            foreach (string addr in policy.EmailCollection)
+            foreach (string addr in Policy.EmailCollection)
                 message.To.Add(addr);
         }
 
@@ -80,10 +81,20 @@ namespace JiraReporter
                 subject += "DRAFT | ";
             if (Policy.GeneratedProperties.IsIndividualDraft)
                 subject += Author.Name + " | ";
-            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += Policy.AdvancedOptions.ReportTitle + " | ";
             subject += ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
 
             return subject;
+        }
+
+        protected override void SendEmails()
+        {
+            Validation.EnsureDirectoryExists(Policy.GeneratedProperties.UnsentReportsPath);
+
+            foreach (var file in Directory.GetFiles(Policy.GeneratedProperties.UnsentReportsPath))
+            {
+                TryEmailReport(file);
+            }
         }
 
         protected override void UpdatePolicy()

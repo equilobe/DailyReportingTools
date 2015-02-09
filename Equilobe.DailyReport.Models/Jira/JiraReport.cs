@@ -6,21 +6,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.Model
+namespace Equilobe.DailyReport.Models.Jira
 {
     public class JiraReport
     {
         public JiraPolicy Policy;
-        public JiraOptions Options;
+      //  public JiraOptions Options;
 
-        public JiraReport(JiraPolicy p, JiraOptions o)
+        public JiraReport(JiraPolicy p)
         {
             Policy = p;
-            Options = o;
         }
         public string Title { get; set; }
         public List<JiraAuthor> Authors { get; set; }
         public DateTime Date { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
         public Summary Summary { get; set; }
         public SprintTasks SprintTasks { get; set; }
         public List<JiraPullRequest> PullRequests { get; set; }

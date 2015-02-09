@@ -34,15 +34,17 @@ namespace JiraReporter
 
             var authors = GetReportAuthors(policy, options, pullRequests, commits, sprintTasks, sprint);
 
-            var report = new JiraReport(policy, options)
+            var report = new JiraReport(policy)
             {
                 Authors = authors,
                 SprintTasks = sprintTasks,
                 PullRequests = pullRequests,
                 Date = options.FromDate,
-                Summary = LoadSummary(policy, options, authors, sprintTasks, sprint, pullRequests)
+                Summary = LoadSummary(policy, options, authors, sprintTasks, sprint, pullRequests),
+                FromDate = options.FromDate,
+                ToDate = options.ToDate
             };
-            report.Title = JiraReportHelpers.GetReportTitle(options, policy);
+            report.Title = JiraReportHelpers.GetReportTitle(report.FromDate, report.ToDate, policy);
 
             return report;
         }
@@ -66,16 +68,18 @@ namespace JiraReporter
 
         public static IndividualReport GetIndividualReport(JiraReport report, JiraAuthor author)
         {
-            var individualReport = new IndividualReport(report.Policy, report.Options)
+            var individualReport = new IndividualReport(report.Policy)
             {
                 Summary = report.Summary,
                 PullRequests = report.PullRequests,
                 Date = report.Date,
                 SprintTasks = report.SprintTasks,
                 Author = author,
-                Authors = report.Authors
+                Authors = report.Authors,
+                FromDate = report.FromDate,
+                ToDate = report.ToDate
             };
-            individualReport.Title = JiraReportHelpers.GetReportTitle(report.Options, report.Policy, author.Name);
+            individualReport.Title = JiraReportHelpers.GetReportTitle(report.FromDate, report.ToDate, report.Policy, author.Name);
 
             return individualReport;
         }

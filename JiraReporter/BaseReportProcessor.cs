@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using SourceControlLogReporter;
 using System;
@@ -24,8 +25,9 @@ namespace JiraReporter
         public virtual void ProcessReport(JiraReport report)
         {
             SaveReport(Policy, report);
-            //      Policy.SetEmailCollection();
-            SetEmailCollection(report.Authors);
+        //    SetEmailCollection(report.Authors);
+            Policy.EmailCollection = new List<string>();
+            Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
             SendReport(report);
         }
 
@@ -52,7 +54,7 @@ namespace JiraReporter
 
         protected virtual void SendReport(JiraReport report)
         {
-            var emailer = new ReportEmailerJira(report.Policy, report.Options);
+            var emailer = new ReportEmailerJira(report.Policy, Options);
             emailer.Authors = report.Authors;
 
             emailer.TrySendEmails();

@@ -149,7 +149,7 @@ else
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#999; width: @Model.SprintWidths.EstimatedWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.SprintAverageEstimateWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.SprintAverageEstimateString</div>
                         </div>
                     }
                     @if (Model.Timing.AverageWorkedSprint > 0)
@@ -159,11 +159,11 @@ else
                             <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.AverageWorkedSprintString</div>
                         </div>
                     }
-                    @if (Model.Timing.SprintTasksTimeLeftPerDay > 0)
+                    @if (Model.Timing.RemainingSprintAverage > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#337AB7; width: @Model.SprintWidths.RemainingWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.SprintTasksTimeLeftPerDayWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.RemainingSprintAverageString</div>
                         </div>
                     }
                 </td>
@@ -179,7 +179,7 @@ else
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#999; width: @Model.MonthWidths.EstimatedWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.MonthAverageEstimatedWithDecimals</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.MonthAverageEstimatedString</div>
                         </div>
                     }
                     @if (Model.Timing.AverageWorkedMonth > 0)
@@ -193,7 +193,7 @@ else
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#337AB7; width: @Model.MonthWidths.RemainingWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.RemainingMonthHoursAverageString</div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.RemainingMonthAverageString</div>
                         </div>
                     }
                 </td>

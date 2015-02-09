@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace Equilobe.DailyReport.Models.ReportPolicy
 {
-    public class JiraGeneratedProperties : GeneratedProperties
+    public class JiraGeneratedProperties
     {
         public DateTime LastReportSentDate { get; set; }
         public DateTime LastDraftSentDate { get; set; }

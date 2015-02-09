@@ -80,18 +80,7 @@
     <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="BaseReportProcessor.cs" />
-    <Compile Include="Model\JiraAuthor.cs" />
-    <Compile Include="Model\JiraCommit.cs" />
-    <Compile Include="Model\JiraDayLog.cs" />
-    <Compile Include="Model\Error.cs" />
-    <Compile Include="Model\IndividualReport.cs" />
     <Compile Include="IndividualReportProcessor.cs" />
-    <Compile Include="Model\JiraIssue.cs" />
-    <Compile Include="Model\JiraPullRequest.cs" />
-    <Compile Include="Model\SprintTasks.cs" />
-    <Compile Include="Model\Timing.cs" />
-    <Compile Include="Model\TimingDetailed.cs" />
-    <Compile Include="Model\WorkingDaysInfo.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
     <Compile Include="JiraPolicyService.cs" />
     <Compile Include="JiraPolicyExtensions.cs" />
@@ -100,19 +89,13 @@
     <Compile Include="SourceControl\GitHubReportSourceControl.cs" />
     <Compile Include="SourceControl\ReportBaseSourceControl.cs" />
     <Compile Include="SourceControl\SvnReportSourceControl.cs" />
-    <Compile Include="SummaryCharts\StatusChartWidths.cs" />
-    <Compile Include="Model\Summary.cs" />
-    <Compile Include="Model\Entries.cs" />
-    <Compile Include="Model\Issue.cs" />
-    <Compile Include="Model\JiraReport.cs" />
-    <Compile Include="Model\Timesheet.cs" />
-    <Compile Include="Model\WorkLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportGenerator.cs" />
     <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
-    <Compile Include="SummaryCharts\WidthHelpers.cs" />
+    <Compile Include="TimeFormattingExtensions.cs" />
+    <Compile Include="WidthHelpers.cs" />
     <Compile Include="SummaryHelpers.cs" />
     <Compile Include="SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
@@ -198,6 +181,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Model\" />
     <Folder Include="Policies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

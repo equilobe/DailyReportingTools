@@ -29,7 +29,7 @@ namespace SourceControlLogReporter
 
         }
 
-        private void SendEmails()
+        protected virtual void SendEmails()
         {
             if (options.NoEmail)
                 return;

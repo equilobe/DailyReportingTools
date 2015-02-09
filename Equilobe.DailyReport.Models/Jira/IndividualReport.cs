@@ -5,17 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter.Model
+namespace Equilobe.DailyReport.Models.Jira
 {
     public class IndividualReport : JiraReport
     {
         public JiraAuthor Author { get; set; }
 
-        public IndividualReport(JiraPolicy policy, JiraOptions options)
-            : base(policy, options)
+        public IndividualReport(JiraPolicy policy)
+            : base(policy)
         {
             Policy = policy;
-            Options = options;
         }
     }
 }
