@@ -61,7 +61,6 @@ namespace JiraReporter.Services
             SetSpringEstimatedValue();
             SetAverageTimeWorkedPerDay(_summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.ReportWorkingDays);
             SetSummaryTasksTimeLeft(_sprintTasks);
-            _summary.Timing.TotalRemainingSeconds = GetSprintTimeLeftSeconds();
             SetRemainingMonthlyHours();
             SetAverageRemainingTimePerDay(_summary.WorkingDays.MonthWorkingDays, _summary.WorkingDays.SprintWorkingDaysLeft);
 
@@ -216,6 +215,12 @@ namespace JiraReporter.Services
                 _summary.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.InProgressTasks);
             if (tasks.OpenTasks != null)
                 _summary.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.OpenTasks);
+
+            _summary.Timing.InProgressTasksTimeLeftString = _summary.Timing.InProgressTasksTimeLeftSeconds.SetTimeFormat8Hour();
+            _summary.Timing.OpenTasksTimeLeftString = _summary.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
+
+            _summary.Timing.TotalRemainingSeconds = _summary.Timing.OpenTasksTimeLeftSeconds + _summary.Timing.InProgressTasksTimeLeftSeconds;
+            _summary.Timing.TotalRemainingString = _summary.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
         }
 
         private void SetRemainingMonthlyHours()
@@ -231,11 +236,6 @@ namespace JiraReporter.Services
             if (sprintWorkingDaysLeft > 0)
                 _summary.Timing.HourRateToCompleteSprint = (double)_summary.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
             _summary.Timing.HourRateToCompleteSprintString = ((int)_summary.Timing.HourRateToCompleteSprint * 3600).SetTimeFormat8Hour();
-        }
-
-        private int GetSprintTimeLeftSeconds()
-        {
-            return _summary.Timing.OpenTasksTimeLeftSeconds + _summary.Timing.InProgressTasksTimeLeftSeconds;
         }
 
         private void SetHealthColors()
