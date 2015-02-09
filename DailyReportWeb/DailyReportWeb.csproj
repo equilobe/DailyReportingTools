@@ -161,9 +161,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ReportRunner.cs" />
-    <Compile Include="Models\PolicySummary.cs" />
-    <Compile Include="Models\WebPrincipal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\PolicySummaryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\js\policyEditorApp.js" />

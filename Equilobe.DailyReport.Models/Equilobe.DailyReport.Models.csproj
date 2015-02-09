@@ -93,6 +93,7 @@
     <Compile Include="ReportPolicy\JiraPolicy.cs" />
     <Compile Include="ReportPolicy\Month.cs" />
     <Compile Include="ReportPolicy\Policy.cs" />
+    <Compile Include="ReportPolicy\PolicySummary.cs" />
     <Compile Include="ReportPolicy\SourceControlOptions.cs" />
     <Compile Include="ReportPolicy\User.cs" />
     <Compile Include="SourceControl\Author.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="SourceControl\LogEntry.cs" />
     <Compile Include="SourceControl\Report.cs" />
     <Compile Include="Storage\ReportSettings.cs" />
+    <Compile Include="Web\WebPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

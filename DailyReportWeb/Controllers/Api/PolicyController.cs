@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using DailyReportWeb.Models;
 using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter;
+using DailyReportWeb.Services;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -24,7 +24,7 @@ namespace DailyReportWeb.Controllers.Api
 
             var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
-            return PolicySummary.GetPoliciesSummary(baseUrl, sharedSecret);
+            return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
         }
 
         // GET: api/Policy/5

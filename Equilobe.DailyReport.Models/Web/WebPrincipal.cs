@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Web;
 
-namespace DailyReportWeb.Models
+namespace Equilobe.DailyReport.Models.Web
 {
     public class WebPrincipal : IPrincipal
     {
