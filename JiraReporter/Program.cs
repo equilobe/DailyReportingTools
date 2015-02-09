@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SourceControlLogReporter;
 using Equilobe.DailyReport.Models.Jira;
+using JiraReporter.Services;
 
 namespace JiraReporter
 {

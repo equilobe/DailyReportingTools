@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using DailyReportWeb.Helpers;
 using System.Configuration;
 using JiraReporter;
+using JiraReporter.Services;
 
 namespace DailyReportWeb.Controllers
 {

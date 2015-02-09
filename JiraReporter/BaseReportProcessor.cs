@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
+using JiraReporter.Services;
 using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;

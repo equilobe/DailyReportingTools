@@ -65,13 +65,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DayLogLoader.cs" />
+    <Compile Include="Services\DayLogLoader.cs" />
     <Compile Include="JiraApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
-    <Compile Include="AuthorLoader.cs" />
+    <Compile Include="Services\AuthorLoader.cs" />
     <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
-    <Compile Include="IndividualReportInfoService.cs" />
+    <Compile Include="Services\IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraOptions.cs" />
@@ -82,7 +82,7 @@
     <Compile Include="BaseReportProcessor.cs" />
     <Compile Include="IndividualReportProcessor.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
-    <Compile Include="JiraPolicyService.cs" />
+    <Compile Include="Services\JiraPolicyService.cs" />
     <Compile Include="JiraPolicyExtensions.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailerJira.cs" />
@@ -97,11 +97,11 @@
     <Compile Include="TimeFormattingExtensions.cs" />
     <Compile Include="WidthHelpers.cs" />
     <Compile Include="SummaryHelpers.cs" />
-    <Compile Include="SummaryLoader.cs" />
+    <Compile Include="Services\SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />
-    <Compile Include="TimesheetService.cs" />
+    <Compile Include="Services\TimesheetService.cs" />
     <Compile Include="WebDownloads.cs" />
   </ItemGroup>
   <ItemGroup>

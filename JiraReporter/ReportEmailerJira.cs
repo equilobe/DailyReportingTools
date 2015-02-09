@@ -12,6 +12,7 @@ using JiraReporter.Model;
 using System.Net.Mime;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using Equilobe.DailyReport.Models.Jira;
+using JiraReporter.Services;
 
 namespace JiraReporter
 {

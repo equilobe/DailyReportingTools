@@ -2,13 +2,14 @@
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
+using JiraReporter.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter
+namespace JiraReporter.Services
 {
     class SummaryLoader
     {

@@ -11,6 +11,7 @@ using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter;
 using DailyReportWeb.Services;
+using JiraReporter.Services;
 
 namespace DailyReportWeb.Controllers.Api
 {
