@@ -33,7 +33,7 @@ namespace DailyReportWeb.Controllers.Api
             using (var db = new ReportsDb())
             {
                 var baseUrl = User.GetBaseUrl();
-                return db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                return db.ReportSettings.Single(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
             }
         }
 
@@ -53,22 +53,28 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
+                var reportSettings = db.ReportSettings.Single(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
 
                 if (reportSettings == null)
                 {
-                    reportSettings = new ReportSettings();
+                    reportSettings = CreateFromPolicySummary(policySummary);
                     db.ReportSettings.Add(reportSettings);
-
-                    reportSettings.BaseUrl = policySummary.BaseUrl;
-                    reportSettings.SharedSecret = policySummary.SharedSecret;
-                    reportSettings.ProjectId = policySummary.ProjectId;
                 }
 
                 reportSettings.ReportTime = policySummary.ReportTime;
 
                 db.SaveChanges();
             }
+        }
+
+        public static ReportSettings CreateFromPolicySummary(PolicySummary policySummary)
+        {
+            return new ReportSettings
+            {
+                BaseUrl = policySummary.BaseUrl,
+                SharedSecret = policySummary.SharedSecret,
+                ProjectId = policySummary.ProjectId
+            };
         }
 
         // Policies are not deleted directly!
