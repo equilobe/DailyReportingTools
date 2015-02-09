@@ -21,7 +21,7 @@
     <div id="jumbo" class="jumbotron">
         <div class="container">
             <h1>
-                {{reportPolicy.policy.name}} - Report Details
+                {{policy.projectName}} - Report Details
             </h1>
             <p class="help-block">
                 Use this page to configure all options for the daily report.
@@ -32,303 +32,319 @@
                         <label>
                             Send at:
                         </label>
-                        <input type="text" class="form-control" placeholder="08:00">
+                        <div ng-form="reportTimeForm">
+                            <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" />
+                            <span class="form-notification" ng-show="reportTimeForm.reportTime.$error.pattern"><b>Enter valid time</b> (23:59)</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
-    <div class="container">
-        <h1>Advanced options</h1>
-        <h3>Recipients</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>
-                        Send draft to:
-                    </label>
-                    <input type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com">
-                    <p class="help-block">Leave blank to send to everyone in the team.</p>
+    <form name="advancedOptionsForm">
+        <div class="container">
+            <h1>
+                Advanced options
+            </h1>
+            <h3>
+                Recipients
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>
+                            Send draft to:
+                        </label>
+                        <div ng-form="emailDraftForm">
+                            <input name="emailDraft" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emailDraft" ng-pattern=@Html.Raw(@"/^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/") />
+                            <span class="form-notification" ng-show="emailDraftForm.emailDraft.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
+                        </div>
+                        <p class="help-block">Leave blank to send to everyone in the team.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>
-                        Send final report to:
-                    </label>
-                    <input type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com">
-                    <p class="help-block">Leave blank to send to everyone in the team.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="container container-alternate">
-        <h3>
-            Planning
-        </h3>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>
-                        Expected daily team work rate (hours/day):
-                    </label>
-                    <input type="text" class="form-control" placeholder="24">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>
-                        Monthly hour limit:
-                    </label>
-                    <input type="text" class="form-control" placeholder="400">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>
+                            Send final report to:
+                        </label>
+                        <div ng-form="emailFinalForm">
+                            <input name="emailFinal" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emailFinal" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
+                            <span class="form-notification" ng-show="emailFinalForm.emailFinal.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
+                        </div>
+                        <p class="help-block">Leave blank to send to everyone in the team.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container">
-        <h3>
-            Source control
-        </h3>
-        <div class="form-group">
-            <div>
-                <label>
-                    Type:
+        <div class="container container-alternate">
+            <h3>
+                Planning
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Expected daily team work rate (hours/day):
+                        </label>
+                        <div ng-form="hoursDayPlanningForm">
+                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="24" ng-model="policy.hoursDayPlanning" ng-pattern="/^(1?[0-9]|2[0-4])$/" />
+                            <span class="form-notification" ng-show="hoursDayPlanningForm.hoursDayPlanning.$error.pattern"><b>Enter valid hours</b> (0 - 24)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Monthly hour limit:
+                        </label>
+                        <div ng-form="hoursMonthPlanningForm">
+                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="400" ng-model="policy.hoursMonthPlanning" ng-pattern="/^([0-9]|[1-9][0-9]|[1-3][0-9][0-9]|400)$/" />
+                            <span class="form-notification" ng-show="hoursMonthPlanningForm.hoursMonthPlanning.$error.pattern"><b>Enter valid hours</b> (0 - 400)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h3>
+                Source control
+            </h3>
+            <div class="form-group">
+                <div>
+                    <label>
+                        Type:
+                    </label>
+                </div>
+                <label class="radio-inline">
+                    <input type="radio" name="SourceControlType" value="" checked />
+                    None
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="SourceControlType" value="SVN" />
+                    SVN
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="SourceControlType" value="GitHub" />
+                    GitHub
                 </label>
             </div>
-            <label class="radio-inline">
-                <input type="radio" name="SourceControlType" value="" checked />
-                None
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="SourceControlType" value="SVN" />
-                SVN
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="SourceControlType" value="GitHub" />
-                GitHub
-            </label>
         </div>
-    </div>
-
-    <div class="container container-alternate">
-        <h3>
-            User options
-        </h3>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Select user:</label>
-                    <select class="form-control">
-                        <option>Dan Badea</option>
-                        <option>Catalin Criveteanu</option>
-                    </select>
+        <div class="container container-alternate">
+            <h3>
+                User options
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select user:</label>
+                        <select class="form-control">
+                            <option>Dan Badea</option>
+                            <option>Catalin Criveteanu</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4>Dan Badea</h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>
-                                Source control account:
-                            </label>
-                            <div class="input-group">
-                                <select class="form-control">
-                                    <option>--none--</option>
-                                    <option selected="selected">dan</option>
-                                    <option>catalin</option>
-                                    <option>sebi</option>
-                                </select>
-                                <span class="input-group-btn">
-                                    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
-                                </span>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Dan Badea</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Source control account:
+                                </label>
+                                <div class="input-group">
+                                    <select class="form-control">
+                                        <option>--none--</option>
+                                        <option selected="selected">dan</option>
+                                        <option>catalin</option>
+                                        <option>sebi</option>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Email override:</label>
+                                <div ng-form="emailOverrideForm">
+                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="policy.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") />
+                                    <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input type="checkbox" />
+                                    Exclude from report
+                                </label>
+                                <p class="help-block">An excluded user wown't show up in the report and won't receive the report.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Email override:</label>
-                            <input class="form-control" type="text" placeholder="dan.badea@equilobe.com" />
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h3>
+                Monthly options
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Select month:</label>
+                        <select class="form-control">
+                            <option>January</option>
+                            <option>Feruary</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>January</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Expected daily team work rate (hours/day):
+                                </label>
+                                <div ng-form="hoursDayMonthlyForm">
+                                    <input name="hoursDayMonthly" type="text" class="form-control" placeholder="24" ng-model="policy.hoursDayMonthly" ng-pattern="/^(1?[0-9]|2[0-4])$/" />
+                                    <span class="form-notification" ng-show="hoursDayMonthlyForm.hoursDayMonthly.$error.pattern"><b>Enter valid hours</b> (0 - 24)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Monthly hour limit:
+                                </label>
+                                <div ng-form="hoursMonthMonthlyForm">
+                                    <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="400" ng-model="policy.hoursMonthMonthly" ng-pattern="/^([0-9]|[1-9][0-9]|[1-3][0-9][0-9]|400)$/" />
+                                    <span class="form-notification" ng-show="hoursMonthMonthlyForm.hoursMonthMonthly.$error.pattern"><b>Enter valid hours</b> (0 - 400)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Free days:
+                                </label>
+                                <div ng-form="freeDaysMonthlyForm">
+                                    <input name="freeDaysMonthly" type="text" class="form-control" placeholder="1 16 31" ng-model="policy.freeDaysMonthly" ng-pattern="/^([1-9]|(1|2)[0-9]|3[0,1])?(\s([1-9]|(1|2)[0-9]|3[0,1]))*$/" />
+                                    <span class="form-notification" ng-show="freeDaysMonthlyForm.freeDaysMonthly.$error.pattern"><b>Enter valid days</b> (1 16 31)</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="checkbox">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h3>
+                Advanced
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="checkbox">
+                            <input type="checkbox">
+                            Do not send a draft report to each user
+                        </label>
+                        <label class="checkbox">
+                            <input type="checkbox">
+                            Do not send a draft report
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Report title:
+                        </label>
+                        <input type="text" class="form-control" placeholder="Daily Report" />
+                        <p class="help-block">
+                            If left blank the default will be used: Daily Report.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Weekend days:
+                        </label>
+                        <div>
+                            <label class="checkbox-inline">
                                 <input type="checkbox" />
-                                Exclude from report
+                                Monday
                             </label>
-                            <p class="help-block">An excluded user wown't show up in the report and won't receive the report.</p>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" />
+                                Tuesday
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" />
+                                Wednesday
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" />
+                                Thursday
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" />
+                                Friday
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" checked />
+                                Saturday
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" checked />
+                                Sunday
+                            </label>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-
-    </div>
-
-    <div class="container">
-        <h3>
-            Monthly options
-        </h3>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Select month:</label>
-                    <select class="form-control">
-                        <option>January</option>
-                        <option>Feruary</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4>January</h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>
-                                Expected daily team work rate (hours/day):
-                            </label>
-                            <input type="text" class="form-control" placeholder="24" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>
-                                Monthly hour limit:
-                            </label>
-                            <input type="text" class="form-control" placeholder="400" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>
-                                Free days:
-                            </label>
-                            <input type="text" class="form-control" placeholder="1 12 23" />
-                        </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Label used for permanent tasks:
+                        </label>
+                        <input type="text" class="form-control" placeholder="permanent" />
+                        <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <h3>
-            Advanced
-        </h3>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="checkbox">
-                        <input type="checkbox">
-                        Do not send a draft report to each user
-                    </label>
-                    <label class="checkbox">
-                        <input type="checkbox">
-                        Do not send a draft report
-                    </label>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>
-                        Report title:
-                    </label>
-                    <input type="text" class="form-control" placeholder="Alyssa Daily Report" />
-                    <p class="help-block">
-                        If left blank the default will be used: Alyssa Daily Report.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>
-                        Weekend days:
-                    </label>
-                    <div>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" />
-                            Monday
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Reopened tasks status:
                         </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" />
-                            Tuesday
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" />
-                            Wednesday
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" />
-                            Thursday
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" />
-                            Friday
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" checked />
-                            Saturday
-                        </label>
-                        <label class="checkbox-inline">
-                            <input type="checkbox" checked />
-                            Sunday
-                        </label>
+                        <input type="text" class="form-control" placeholder="Reopened" />
+                        <p class="help-block">
+                            If left blank the default will be used: Reopened.
+                        </p>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>
-                        Label used for permanent tasks:
-                    </label>
-                    <input type="text" class="form-control" placeholder="permanent" />
-                    <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
+                <div class="col-md-4">
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>
-                        Reopened tasks status:
-                    </label>
-                    <input type="text" class="form-control" placeholder="Reopened" />
-                    <p class="help-block">
-                        If left blank the default will be used: Reopened.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-
-            </div>
         </div>
-
-    </div>
-    <div class="container">
-        <button class="btn btn-success">Save advanced options</button>
-    </div>
+        <div class="container">
+            <h3>
+                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updateReport(this.policy)">Save advanced options</button>
+            </h3>
+        </div>
+    </form>
 
     @Html.Partial("_HowItWorks")
 

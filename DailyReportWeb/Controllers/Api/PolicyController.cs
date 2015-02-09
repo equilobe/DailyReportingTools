@@ -44,7 +44,7 @@ namespace DailyReportWeb.Controllers.Api
         //}
 
         // PUT: api/Policy/5
-        public void Put(string id, [FromBody]Policy updatedPolicy)
+        public void Put(long id, [FromBody]Policy updatedPolicy)
         {
             // TODO: save the updated policy
         }
