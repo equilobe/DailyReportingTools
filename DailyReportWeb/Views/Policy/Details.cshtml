@@ -18,30 +18,30 @@
 </head>
 
 <body ng-controller="policyEditPage">
-    <div id="jumbo" class="jumbotron">
-        <div class="container">
-            <h1>
-                {{policy.projectName}} - Report Details
-            </h1>
-            <p class="help-block">
-                Use this page to configure all options for the daily report.
-            </p>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Send at:
-                        </label>
-                        <div ng-form="reportTimeForm">
-                            <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" />
-                            <span class="form-notification" ng-show="reportTimeForm.reportTime.$error.pattern"><b>Enter valid time</b> (23:59)</span>
+    <form name="advancedOptionsForm">
+        <div id="jumbo" class="jumbotron">
+            <div class="container">
+                <h1>
+                    {{report.policy.generatedProperties.projectName}} - Report Details
+                </h1>
+                <p class="help-block">
+                    Use this page to configure all options for the daily report.
+                </p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Send at:
+                            </label>
+                            <div ng-form="reportTimeForm">
+                                <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="report.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" />
+                                <span class="form-notification" ng-show="reportTimeForm.reportTime.$error.pattern"><b>Enter valid time</b> (23:59)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <form name="advancedOptionsForm">
         <div class="container">
             <h1>
                 Advanced options

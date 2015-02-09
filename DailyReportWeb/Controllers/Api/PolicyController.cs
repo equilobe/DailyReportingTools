@@ -33,7 +33,29 @@ namespace DailyReportWeb.Controllers.Api
             using (var db = new ReportsDb())
             {
                 var baseUrl = User.GetBaseUrl();
-                return db.ReportSettings.Single(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+
+                var policy = new Policy
+                {
+                    BaseUrl = baseUrl,
+                    SharedSecret = sharedSecret,
+                    ProjectId = id
+                };
+
+                var projectInfo = JiraReporter.RestApiRequests.GetProject(policy);
+                policy.GeneratedProperties = new GeneratedProperties
+                {
+                    ProjectName = projectInfo.Name,
+                    ProjectKey = projectInfo.Key
+                };
+
+                var projectUsers = JiraReporter.RestApiRequests.GetUsers(policy);
+                //policy.Users = projectUsers;
+
+                var reportSettings = db.ReportSettings.Single(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                //reportSettings.Policy = policy;
+
+                return reportSettings;
             }
         }
 
@@ -43,17 +65,11 @@ namespace DailyReportWeb.Controllers.Api
         //{
         //}
 
-        // PUT: api/Policy/5
-        public void Put(long id, [FromBody]Policy updatedPolicy)
-        {
-            // TODO: save the updated policy
-        }
-
         public void Put([FromBody]PolicySummary policySummary)
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.Single(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
 
                 if (reportSettings == null)
                 {
@@ -67,7 +83,19 @@ namespace DailyReportWeb.Controllers.Api
             }
         }
 
-        public static ReportSettings CreateFromPolicySummary(PolicySummary policySummary)
+        // PUT: api/Policy/5
+        public void Put(long id, [FromBody]Policy updatedPolicy)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId && qr.BaseUrl == updatedPolicy.BaseUrl);
+                //reportSettings.Policy = updatedPolicy;
+
+                db.SaveChanges();
+            }
+        }
+
+        private static ReportSettings CreateFromPolicySummary(PolicySummary policySummary)
         {
             return new ReportSettings
             {
