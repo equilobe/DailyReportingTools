@@ -22,7 +22,7 @@
         <div id="jumbo" class="jumbotron">
             <div class="container">
                 <h1>
-                    {{report.policy.generatedProperties.projectName}} - Report Details
+                    {{report.policy.generatedProperties.projectName}}
                 </h1>
                 <p class="help-block">
                     Use this page to configure all options for the daily report.
@@ -109,24 +109,117 @@
             <h3>
                 Source control
             </h3>
-            <div class="form-group">
-                <div>
-                    <label>
-                        Type:
-                    </label>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Type:
+                        </label>
+                        <div class="form-group">
+                            <label class="radio-inline">
+                                <input type="radio" value="none" ng-model="sourceControlType" />
+                                None
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" value="SVN" ng-model="sourceControlType" />
+                                SVN
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" value="GitHub" ng-model="sourceControlType" />
+                                GitHub
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <label class="radio-inline">
-                    <input type="radio" name="SourceControlType" value="" checked />
-                    None
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="SourceControlType" value="SVN" />
-                    SVN
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="SourceControlType" value="GitHub" />
-                    GitHub
-                </label>
+            </div>
+            <div class="panel panel-default" ng-show="sourceControlType == 'SVN'">
+                <div class="panel-heading">
+                    <h4>SVN</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    Repository Url:
+                                </label>
+                                <div ng-form="svnRepoUrlForm">
+                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repoUrl" ng-pattern=@Html.Raw(@"/^(\b(https?|ftp|file)://)?[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/") />
+                                    <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Username:
+                                </label>
+                                <div>
+                                    <input type="text" name="svnUsername" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.username" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Password:
+                                </label>
+                                <div>
+                                    <input type="text" name="svnPassword" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.password" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" ng-show="sourceControlType == 'GitHub'">
+                <div class="panel-heading">
+                    <h4>GitHub</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Repository Owner:
+                                </label>
+                                <div>
+                                    <input type="text" name="gitRepoOwner" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repoOwner" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Repository Name:
+                                </label>
+                                <div>
+                                    <input type="text" name="gitRepoName" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repoName" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Username:
+                                </label>
+                                <div>
+                                    <input type="text" name="gitUsername" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.username" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Password:
+                                </label>
+                                <div>
+                                    <input type="text" name="gitPassword" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.password" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container container-alternate">
@@ -254,18 +347,6 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label class="checkbox">
-                            <input type="checkbox">
-                            Do not send a draft report to each user
-                        </label>
-                        <label class="checkbox">
-                            <input type="checkbox">
-                            Do not send a draft report
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
                         <label>
                             Report title:
                         </label>
@@ -273,54 +354,6 @@
                         <p class="help-block">
                             If left blank the default will be used: Daily Report.
                         </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Weekend days:
-                        </label>
-                        <div>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" />
-                                Monday
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" />
-                                Tuesday
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" />
-                                Wednesday
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" />
-                                Thursday
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" />
-                                Friday
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" checked />
-                                Saturday
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" checked />
-                                Sunday
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Label used for permanent tasks:
-                        </label>
-                        <input type="text" class="form-control" placeholder="permanent" ng-model="report.policy.advancedOptions.permanentTaskLabel" />
-                        <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -335,6 +368,120 @@
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Label used for permanent tasks:
+                        </label>
+                        <input type="text" class="form-control" placeholder="permanent" ng-model="report.policy.advancedOptions.permanentTaskLabel" />
+                        <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Draft options:
+                        </label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.noDraft" />
+                                Do not send a draft report
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.noIndividualDraft" />
+                                Do not send a draft report to each user
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.sendDraftToAllUsers">
+                                Send final draft to all users
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.sendDraftToProjectManager" />
+                                Send final draft to project manager
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.sendDraftToOthers" />
+                                Send final draft to others
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Report options:
+                        </label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.sendFinalToAllUsers" />
+                                Send report to all users
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="report.policy.advancedOptions.sendFinalToOthers" />
+                                Send report to others
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Weekend days:
+                        </label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" />
+                                Monday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" />
+                                Tuesday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" />
+                                Wednesday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" />
+                                Thursday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" />
+                                Friday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" checked />
+                                Saturday
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" checked />
+                                Sunday
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
