@@ -4,8 +4,8 @@
             $scope.policyList = list;
         });
 
-        $scope.updateReportTime = function (policySelected) {
-            $http.put("/api/policy", policySelected
+        $scope.updateReportTime = function (policy) {
+            $http.put("/api/policy", policy
     		).success(function () {
     		    console.log("success");
     		}).error(function () {
@@ -18,8 +18,8 @@
             $scope.report = report;
         });
 
-        $scope.updateReport = function (policySelected) {
-            $http.put("/api/policy/" + policySelected.projectId, policySelected
+        $scope.updateReport = function (report) {
+            $http.put("/api/policy/" + report.projectId, report
     		).success(function () {
     		    console.log("success");
     		}).error(function () {

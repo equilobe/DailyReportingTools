@@ -52,7 +52,17 @@ namespace DailyReportWeb.Controllers.Api
                 var projectUsers = JiraReporter.RestApiRequests.GetUsers(policy);
                 //policy.Users = projectUsers;
 
-                var reportSettings = db.ReportSettings.Single(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                if (reportSettings == null)
+                {
+                    reportSettings = new ReportSettings
+                    {
+                        BaseUrl = baseUrl,
+                        SharedSecret = sharedSecret,
+                        ProjectId = id
+                    };
+                    db.ReportSettings.Add(reportSettings);
+                }
                 //reportSettings.Policy = policy;
 
                 return reportSettings;

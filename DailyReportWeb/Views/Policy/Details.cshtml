@@ -56,7 +56,7 @@
                             Send draft to:
                         </label>
                         <div ng-form="emailDraftForm">
-                            <input name="emailDraft" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emailDraft" ng-pattern=@Html.Raw(@"/^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/") />
+                            <input name="emailDraft" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="report.policy.draftEmails" ng-pattern=@Html.Raw(@"/^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/") />
                             <span class="form-notification" ng-show="emailDraftForm.emailDraft.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                         </div>
                         <p class="help-block">Leave blank to send to everyone in the team.</p>
@@ -68,7 +68,7 @@
                             Send final report to:
                         </label>
                         <div ng-form="emailFinalForm">
-                            <input name="emailFinal" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emailFinal" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
+                            <input name="emailFinal" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="report.policy.emails" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
                             <span class="form-notification" ng-show="emailFinalForm.emailFinal.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                         </div>
                         <p class="help-block">Leave blank to send to everyone in the team.</p>
@@ -87,7 +87,7 @@
                             Expected daily team work rate (hours/day):
                         </label>
                         <div ng-form="hoursDayPlanningForm">
-                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="24" ng-model="policy.hoursDayPlanning" ng-pattern="/^(1?[0-9]|2[0-4])$/" />
+                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="24" ng-model="report.policy.allocatedHoursPerDay" ng-pattern="/^(1?[0-9]|2[0-4])$/" />
                             <span class="form-notification" ng-show="hoursDayPlanningForm.hoursDayPlanning.$error.pattern"><b>Enter valid hours</b> (0 - 24)</span>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                             Monthly hour limit:
                         </label>
                         <div ng-form="hoursMonthPlanningForm">
-                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="400" ng-model="policy.hoursMonthPlanning" ng-pattern="/^([0-9]|[1-9][0-9]|[1-3][0-9][0-9]|400)$/" />
+                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="400" ng-model="report.policy.allocatedHoursPerMonth" ng-pattern="/^([0-9]|[1-9][0-9]|[1-3][0-9][0-9]|400)$/" />
                             <span class="form-notification" ng-show="hoursMonthPlanningForm.hoursMonthPlanning.$error.pattern"><b>Enter valid hours</b> (0 - 400)</span>
                         </div>
                     </div>
@@ -138,8 +138,7 @@
                     <div class="form-group">
                         <label>Select user:</label>
                         <select class="form-control">
-                            <option>Dan Badea</option>
-                            <option>Catalin Criveteanu</option>
+                            <option ng-repeat="user in report.policy.userOptions">{{user.jiraUserKey}}</option>
                         </select>
                     </div>
                 </div>
@@ -172,7 +171,7 @@
                             <div class="form-group">
                                 <label>Email override:</label>
                                 <div ng-form="emailOverrideForm">
-                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="policy.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") />
+                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="report.policy.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") />
                                     <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                                 </div>
                             </div>
@@ -183,7 +182,7 @@
                                     <input type="checkbox" />
                                     Exclude from report
                                 </label>
-                                <p class="help-block">An excluded user wown't show up in the report and won't receive the report.</p>
+                                <p class="help-block">An excluded user won't show up in the report and won't receive the report.</p>
                             </div>
                         </div>
                     </div>
@@ -217,7 +216,7 @@
                                     Expected daily team work rate (hours/day):
                                 </label>
                                 <div ng-form="hoursDayMonthlyForm">
-                                    <input name="hoursDayMonthly" type="text" class="form-control" placeholder="24" ng-model="policy.hoursDayMonthly" ng-pattern="/^(1?[0-9]|2[0-4])$/" />
+                                    <input name="hoursDayMonthly" type="text" class="form-control" placeholder="24" ng-model="month.allocatedHoursPerDay" ng-pattern="/^(1?[0-9]|2[0-4])$/" />
                                     <span class="form-notification" ng-show="hoursDayMonthlyForm.hoursDayMonthly.$error.pattern"><b>Enter valid hours</b> (0 - 24)</span>
                                 </div>
                             </div>
@@ -228,7 +227,7 @@
                                     Monthly hour limit:
                                 </label>
                                 <div ng-form="hoursMonthMonthlyForm">
-                                    <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="400" ng-model="policy.hoursMonthMonthly" ng-pattern="/^([0-9]|[1-9][0-9]|[1-3][0-9][0-9]|400)$/" />
+                                    <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="400" ng-model="month.allocatedHoursPerMonth" ng-pattern="/^([0-9]|[1-9][0-9]|[1-3][0-9][0-9]|400)$/" />
                                     <span class="form-notification" ng-show="hoursMonthMonthlyForm.hoursMonthMonthly.$error.pattern"><b>Enter valid hours</b> (0 - 400)</span>
                                 </div>
                             </div>
@@ -239,7 +238,7 @@
                                     Free days:
                                 </label>
                                 <div ng-form="freeDaysMonthlyForm">
-                                    <input name="freeDaysMonthly" type="text" class="form-control" placeholder="1 16 31" ng-model="policy.freeDaysMonthly" ng-pattern="/^([1-9]|(1|2)[0-9]|3[0,1])?(\s([1-9]|(1|2)[0-9]|3[0,1]))*$/" />
+                                    <input name="freeDaysMonthly" type="text" class="form-control" placeholder="1 16 31" ng-model="month.nonWorkingDays" ng-pattern="/^([1-9]|(1|2)[0-9]|3[0,1])?(\s([1-9]|(1|2)[0-9]|3[0,1]))*$/" />
                                     <span class="form-notification" ng-show="freeDaysMonthlyForm.freeDaysMonthly.$error.pattern"><b>Enter valid days</b> (1 16 31)</span>
                                 </div>
                             </div>
@@ -270,7 +269,7 @@
                         <label>
                             Report title:
                         </label>
-                        <input type="text" class="form-control" placeholder="Daily Report" />
+                        <input type="text" class="form-control" placeholder="Daily Report" ng-model="report.policy.advancedOptions.reportTitle" />
                         <p class="help-block">
                             If left blank the default will be used: Daily Report.
                         </p>
@@ -320,7 +319,7 @@
                         <label>
                             Label used for permanent tasks:
                         </label>
-                        <input type="text" class="form-control" placeholder="permanent" />
+                        <input type="text" class="form-control" placeholder="permanent" ng-model="report.policy.advancedOptions.permanentTaskLabel" />
                         <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
                     </div>
                 </div>
@@ -329,7 +328,7 @@
                         <label>
                             Reopened tasks status:
                         </label>
-                        <input type="text" class="form-control" placeholder="Reopened" />
+                        <input type="text" class="form-control" placeholder="Reopened" ng-model="report.policy.advancedOptions.reopenedStatus" />
                         <p class="help-block">
                             If left blank the default will be used: Reopened.
                         </p>
@@ -341,7 +340,7 @@
         </div>
         <div class="container">
             <h3>
-                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updateReport(this.policy)">Save advanced options</button>
+                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updateReport(this.report)">Save advanced options</button>
             </h3>
         </div>
     </form>
