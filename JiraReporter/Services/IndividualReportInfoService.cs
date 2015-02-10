@@ -44,10 +44,10 @@ namespace JiraReporter.Services
 
         private void SetIndividualUrls(IndividualDraftInfo individualDraft, JiraPolicy policy)
         {
-            individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, policy.IndividualDraftConfirmationUrl);
-            individualDraft.ResendDraftUrl = GetUrl(individualDraft, policy.ResendIndividualDraftUrl);
+            individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, policy.GeneratedProperties.IndividualDraftConfirmationUrl);
+            individualDraft.ResendDraftUrl = GetUrl(individualDraft, policy.GeneratedProperties.ResendIndividualDraftUrl);
             if (individualDraft.IsLead)
-                individualDraft.ForceDraftUrl = GetUrl(individualDraft, policy.ResendDraftUrl);
+                individualDraft.ForceDraftUrl = GetUrl(individualDraft, policy.GeneratedProperties.ResendDraftUrl);
         }
 
         private static Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)

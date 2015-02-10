@@ -212,7 +212,7 @@
                     </tr>
                     <tr>
                         <td width="100px" height="40px">
-                            @Partial("Views/confirmationButton.cshtml", Model.Policy.DraftConfirmationUrl)
+                            @Partial("Views/confirmationButton.cshtml", Model.Policy.GeneratedProperties.DraftConfirmationUrl)
                         </td>
                     </tr>
                     <tr>
@@ -247,7 +247,7 @@
                    </tr>
                    <tr>
                        <td width="100px" height="40px">
-                           @Partial("Views/resendDraftButton.cshtml", Model.Policy.ResendDraftUrl)
+                           @Partial("Views/resendDraftButton.cshtml", Model.Policy.GeneratedProperties.ResendDraftUrl)
                        </td>
                    </tr>                   
                     <tr>

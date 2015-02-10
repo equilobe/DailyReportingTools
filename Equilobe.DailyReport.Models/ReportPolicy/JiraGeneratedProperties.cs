@@ -28,6 +28,18 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
         public bool WasForcedByLead { get; set; }
 
         [XmlIgnore]
+        public Uri DraftConfirmationUrl { get; set; }
+
+        [XmlIgnore]
+        public Uri ResendDraftUrl { get; set; }
+
+        [XmlIgnore]
+        public Uri IndividualDraftConfirmationUrl { get; set; }
+
+        [XmlIgnore]
+        public Uri ResendIndividualDraftUrl { get; set; }
+
+        [XmlIgnore]
         public string ProjectManager { get; set; }
 
         public string RootPath { get; set; }

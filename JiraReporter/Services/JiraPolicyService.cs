@@ -42,10 +42,10 @@ namespace JiraReporter.Services
 
         private void SetUrls()
         {
-            Policy.DraftConfirmationUrl = GetDraftConfirmationUrl();
-            Policy.ResendDraftUrl = GetResendDraftUrl();
-            Policy.IndividualDraftConfirmationUrl = GetIndividualDraftConfirmationUrl();
-            Policy.ResendIndividualDraftUrl = GetResendIndividualDraftUrl();
+            Policy.GeneratedProperties.DraftConfirmationUrl = GetDraftConfirmationUrl();
+            Policy.GeneratedProperties.ResendDraftUrl = GetResendDraftUrl();
+            Policy.GeneratedProperties.IndividualDraftConfirmationUrl = GetIndividualDraftConfirmationUrl();
+            Policy.GeneratedProperties.ResendIndividualDraftUrl = GetResendIndividualDraftUrl();
         }
 
         private Uri GetDraftConfirmationUrl()

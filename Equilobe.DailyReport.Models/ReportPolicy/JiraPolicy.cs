@@ -10,18 +10,6 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
 {
     public class JiraPolicy
     {
-        [XmlIgnore]
-        public Uri DraftConfirmationUrl { get; set; }
-
-        [XmlIgnore]
-        public Uri ResendDraftUrl { get; set; }
-
-        [XmlIgnore]
-        public Uri IndividualDraftConfirmationUrl { get; set; }
-
-        [XmlIgnore]
-        public Uri ResendIndividualDraftUrl { get; set; }
-
         //Base Properties
         public string BaseUrl { get; set; }
         public string Username { get; set; }
