@@ -47,7 +47,7 @@ div.disabled {
 
 .daily-report {
     background-color: white;
-    border: 1px solid orange;
+    border: 1px solid;
     display: inline-block;
 }
 
@@ -59,6 +59,14 @@ div.disabled {
 .daily-report-big {
     width: 100px;
     height: 120px;
+}
+
+.alert-warning .daily-report {
+    border-color: #c09853;
+}
+
+.alert-info .daily-report {
+    border-color: #3a87ad;
 }
 
 .alert-success .daily-report {
@@ -73,20 +81,33 @@ div.disabled {
     background-color: #eee;
 }
 
-td[ng-form=reportForm] {
+[ng-form] {
     position: relative;
 }
 
-.reportTime-notification {
+.form-notification {
     position: absolute;
-    top: 15px;
-    right: 15px;
     color: rgba(185, 74, 72, 0.8);
     background-color: rgb(255, 255, 255);
 }
 
+td > .form-notification {
+    top: 15px;
+    right: 20px;
+}
+
+div > .form-notification {
+    top: 7px;
+    right: 12px;
+    font-size: 14px;
+}
+
+#jumbo div > .form-notification {
+    top: 2px;
+}
+
 @media only screen and (max-width : 520px) {
-    .reportTime-notification {
+    .form-notification {
         position: static;
         float: right;
         font-size: 90%;
