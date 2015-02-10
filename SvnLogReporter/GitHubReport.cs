@@ -1,8 +1,9 @@
-﻿using Octokit;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using Octokit;
 using Octokit.Internal;
 using RazorEngine;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +21,11 @@ namespace SourceControlLogReporter
 
         }
 
+        public GitHubReport()
+        {
+
+        }
+
         public override Log CreateLog()
         {
             var pullRequests = GetPullRequests(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName).ToList();
@@ -27,7 +33,7 @@ namespace SourceControlLogReporter
             return LoadLog(commits, pullRequests);
         }
 
-        protected Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequests)
+        protected virtual Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequests)
         {
             var log = new Log();
             if (pullRequests != null)
@@ -49,11 +55,11 @@ namespace SourceControlLogReporter
                  });                
             }
 
-            log.RemoveWrongEntries(Options.FromDate);
+            LogService.RemoveWrongEntries(Options.FromDate, log);
             return log;
         }
 
-        private void SetPullRequestsAuthors(List<PullRequest> pullRequests)
+        public void SetPullRequestsAuthors(List<PullRequest> pullRequests)
         {
             if (pullRequests != null)
                 if (pullRequests.Count > 0)
@@ -66,7 +72,7 @@ namespace SourceControlLogReporter
             report.PullRequests = log.PullRequests;
         }
      
-        protected IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)
+        protected virtual IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
@@ -74,7 +80,7 @@ namespace SourceControlLogReporter
             return connectionAll.GetAll<GitHubCommit>(ApiUrls.RepositoryCommitsBranchDate(owner, name, sinceDate, untilDate, branch)).Result;
         }
 
-        protected IReadOnlyList<Branch> GetBranches(string owner, string name)
+        protected virtual IReadOnlyList<Branch> GetBranches(string owner, string name)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
@@ -82,7 +88,7 @@ namespace SourceControlLogReporter
             return connectionAll.GetAll<Branch>(ApiUrls.RepoBranches(owner, name)).Result;
         }
 
-        public IReadOnlyList<PullRequest> GetPullRequests(string owner, string name)
+        public virtual IReadOnlyList<PullRequest> GetPullRequests(string owner, string name)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
@@ -90,7 +96,7 @@ namespace SourceControlLogReporter
             return connectionAll.GetAll<PullRequest>(ApiUrls.PullRequests(owner,name)).Result;
         }
 
-        protected List<GitHubCommit> ConcatCommits(string owner, string name, string sinceDate, string untilDate)
+        protected virtual List<GitHubCommit> ConcatCommits(string owner, string name, string sinceDate, string untilDate)
         {
             var branches = GetBranches(owner, name);
             var commits = new List<GitHubCommit>();
@@ -106,7 +112,7 @@ namespace SourceControlLogReporter
             return commits;
         }
 
-        public IReadOnlyList<Octokit.User> GetAllContributors(string owner, string name)
+        public virtual IReadOnlyList<Octokit.User> GetAllContributors(string owner, string name)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
@@ -114,7 +120,7 @@ namespace SourceControlLogReporter
             return connectionAll.GetAll<Octokit.User>(ApiUrls.RepositoryContributors(owner, name)).Result;
         }
 
-        public Octokit.User GetUserInfo(string username)
+        public virtual Octokit.User GetUserInfo(string username)
         {
             Ensure.ArgumentNotNullOrEmptyString(username, "username");
             ApiConnection connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(Policy.SourceControlOptions.Username, Policy.SourceControlOptions.Password))));
@@ -143,7 +149,8 @@ namespace SourceControlLogReporter
                 if (HasAuthor(commit) && !HasName(commit))
                     commit.Commit.Author.Name = GetUserInfo(commit.Author.Login).Name;
         }
-        protected List<GitHubCommit> GetReportCommits()
+
+        protected virtual List<GitHubCommit> GetReportCommits()
         {
             string fromDate = Options.DateToISO(Options.FromDate.ToGithubTime());
             string toDate = Options.DateToISO(Options.ToDate.ToGithubTime());

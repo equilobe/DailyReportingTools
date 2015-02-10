@@ -1,4 +1,6 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +11,12 @@ namespace JiraReporter
 {
     class IssueProcessor
     {
-        SourceControlLogReporter.Model.Policy _policy;
-        List<PullRequest> _pullRequests;
+        JiraPolicy _policy;
+        List<JiraPullRequest> _pullRequests;
         Issue _currentIssue;
         JiraIssue _currentJiraIssue;
 
-        public IssueProcessor(SourceControlLogReporter.Model.Policy policy, List<PullRequest> pullRequests)
+        public IssueProcessor(JiraPolicy policy, List<JiraPullRequest> pullRequests)
         {
             this._policy = policy;
             this._pullRequests = pullRequests;
@@ -64,6 +66,7 @@ namespace JiraReporter
             SetStatusType();
             SetDisplayStatus();
             SetHasWorkLoggedByAssignee();
+            SetIssueExceededEstimate();
         }
 
         private void SetSubtasks()
@@ -165,7 +168,7 @@ namespace JiraReporter
         {
             if (_pullRequests != null)
             {
-                _currentIssue.PullRequests = new List<PullRequest>();
+                _currentIssue.PullRequests = new List<JiraPullRequest>();
                 _currentIssue.PullRequests = _pullRequests.FindAll(pr => IssueAdapter.ContainsKey(pr.GithubPullRequest.Title, _currentIssue.Key) == true);
                 EditIssuePullRequests(_currentIssue);
             }
@@ -207,6 +210,16 @@ namespace JiraReporter
                 if (_currentIssue.Assignee != null)
                     if (_currentIssue.ExistsInTimesheet == true)
                         _currentIssue.HasWorkLoggedByAssignee = _currentIssue.Entries.Exists(e => e.AuthorFullName == _currentIssue.Assignee);
+        }
+
+        private void SetIssueExceededEstimate()
+        {
+            if (_currentIssue.TimeSpentTotal <= _currentIssue.OriginalEstimateSecondsTotal || _currentIssue.Label == null)
+                return;
+
+            var percentage = MathHelpers.GetPercentage((_currentIssue.TimeSpentTotal - _currentIssue.OriginalEstimateSecondsTotal), _currentIssue.OriginalEstimateSecondsTotal);
+            if (percentage >= 25)
+                _currentIssue.ExceededOriginalEstimate = true;
         }
     }
 }

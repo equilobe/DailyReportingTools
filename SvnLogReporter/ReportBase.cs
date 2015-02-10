@@ -1,6 +1,7 @@
-﻿using RazorEngine;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using RazorEngine;
 using RazorEngine.Templating;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +34,11 @@ namespace SourceControlLogReporter
         {
            Policy = p;
            Options = o;
+        }
+
+        public ReportBase()
+        {
+
         }
 
         public static T Create<T>(Policy p, Options o) where T : ReportBase

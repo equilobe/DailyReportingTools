@@ -1,4 +1,5 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Jira;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,10 @@ namespace JiraReporter
     {
         public static int GetTimesheetSecondsWorked(this Timesheet timesheet)
         {
-            return timesheet.Worklog.Issues.Sum(i => i.Entries.Sum(t => t.TimeSpent));
+            return timesheet.Worklog.Issues.Where(issue=>issue!=null).Sum(i => i.Entries.Sum(t => t.TimeSpent));
         }
 
-        public static int GetTimesheetSecondsWorkedAuthor(this Timesheet timesheet, Author author)
+        public static int GetTimesheetSecondsWorkedAuthor(this Timesheet timesheet, JiraAuthor author)
         {
             int seconds = 0;
             foreach (var issue in timesheet.Worklog.Issues)

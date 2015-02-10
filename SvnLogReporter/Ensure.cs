@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SourceControlLogReporter
 {
-    internal static class Ensure
+    public class Ensure
     {
 
         public static void ArgumentNotNull([ValidatedNotNull]object value, string name)

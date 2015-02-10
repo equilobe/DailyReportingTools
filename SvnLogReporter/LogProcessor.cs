@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SourceControlLogReporter.Model;
 using System.Xml.Serialization;
 using System.IO;
 using RazorEngine;
 using System.Security;
+using Equilobe.DailyReport.Models;
 
 
 namespace SourceControlLogReporter

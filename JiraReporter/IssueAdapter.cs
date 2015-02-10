@@ -1,4 +1,7 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,12 +38,12 @@ namespace JiraReporter
         public static void SetTimeFormat(Issue issue)
         {
             if (issue.TimeSpent > 0)
-                issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpent);
+                issue.TimeLogged = issue.TimeSpent.SetTimeFormat();
             else
-                issue.TimeLogged = TimeFormatting.SetTimeFormat(issue.TimeSpentOnTask);
-            issue.TotalRemaining = TimeFormatting.SetTimeFormat8Hour(issue.TotalRemainingSeconds);
-            issue.TimeLoggedTotal = TimeFormatting.SetTimeFormat8Hour(issue.TimeSpentTotal);
-            issue.RemainingEstimate = TimeFormatting.SetTimeFormat8Hour(issue.RemainingEstimateSeconds);
+                issue.TimeLogged = issue.TimeSpentOnTask.SetTimeFormat();
+            issue.TotalRemaining = issue.TotalRemainingSeconds.SetTimeFormat8Hour();
+            issue.TimeLoggedTotal = issue.TimeSpentTotal.SetTimeFormat8Hour();
+            issue.RemainingEstimate = issue.RemainingEstimateSeconds.SetTimeFormat8Hour();
         }
 
 
@@ -69,7 +72,7 @@ namespace JiraReporter
 
 
 
-        public static void AdjustIssueCommits(DayLog dayLog)
+        public static void AdjustIssueCommits(JiraDayLog dayLog)
         {
             if (dayLog.Issues != null)
                 foreach (var issue in dayLog.Issues)
@@ -80,9 +83,9 @@ namespace JiraReporter
                 }
         }
 
-        public static void AdjustIssueCommits(Issue issue, List<Commit> commits)
+        public static void AdjustIssueCommits(Issue issue, List<JiraCommit> commits)
         {
-            issue.Commits = new List<Commit>();
+            issue.Commits = new List<JiraCommit>();
             issue.Commits = commits.FindAll(commit => ContainsKey(commit.Entry.Message, issue.Key) == true);
             EditIssueCommits(issue);
         }
@@ -100,7 +103,7 @@ namespace JiraReporter
 
         public static void RemoveWrongCommits(Issue issue, DateTime date)
         {
-            var commits = new List<Commit>(issue.Commits);
+            var commits = new List<JiraCommit>(issue.Commits);
             commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone() < date || c.Entry.Date.ToOriginalTimeZone() >= date.AddDays(1));
             issue.Commits = commits;
         }
@@ -147,7 +150,7 @@ namespace JiraReporter
             return false;
         }
 
-        public static void SetIssueErrors(Issue issue, SourceControlLogReporter.Model.Policy policy)
+        public static void SetIssueErrors(Issue issue, JiraPolicy policy)
         {
             issue.Errors = new List<Error>();
             if (issue.IsSubtask == false && issue.Label != policy.AdvancedOptions.PermanentTaskLabel)

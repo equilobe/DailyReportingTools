@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;
@@ -11,6 +12,9 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using SourceControlLogReporter;
+using Equilobe.DailyReport.Models.Jira;
+using JiraReporter.Services;
 
 namespace JiraReporter
 {
@@ -18,20 +22,22 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
-            SourceControlLogReporter.Options options = GetCommandLineOptions(args);
-            SourceControlLogReporter.Model.Policy policy = SourceControlLogReporter.Model.Policy.LoadFromFile(options.PolicyPath);
+            JiraOptions options = GetCommandLineOptions(args);
+            JiraPolicy policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
-            policy.SetDefaultProperties(options);
+            var policyService = new JiraPolicyService(policy);
+            policyService.SetPolicy(options);
+
             LoadReportDates(policy, options);
 
             if (RunReport(policy, options))
-                RunReportTool(args, policy, options);
+                RunReportTool(policy, options);
             else
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
-        private static bool RunReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        private static bool RunReport(JiraPolicy policy, JiraOptions options)
         {
             var today = DateTime.Now.ToOriginalTimeZone().Date;
 
@@ -50,14 +56,14 @@ namespace JiraReporter
             return true;
         }
 
-        private static bool CheckDayFromOverrides(SourceControlLogReporter.Model.Policy policy)
+        private static bool CheckDayFromOverrides(JiraPolicy policy)
         {
             if (policy.CurrentOverride != null && policy.CurrentOverride.NonWorkingDays != null)
                 return policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
             return false;
         }
 
-        private static void RunReportTool(string[] args, SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        private static void RunReportTool(JiraPolicy policy, JiraOptions options)
         {
             SetTemplateGlobal();
 
@@ -66,7 +72,7 @@ namespace JiraReporter
             ProcessAndSendReport(policy, options, report);
         }
 
-        private static void ProcessAndSendReport(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options, Report report)
+        private static void ProcessAndSendReport(JiraPolicy policy, JiraOptions options, JiraReport report)
         {
             if (policy.GeneratedProperties.IsIndividualDraft)
             {
@@ -90,22 +96,22 @@ namespace JiraReporter
             Razor.SetTemplateBase(typeof(SourceControlLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
 
-        private static SourceControlLogReporter.Options GetCommandLineOptions(string[] args)
+        private static JiraOptions GetCommandLineOptions(string[] args)
         {
-            SourceControlLogReporter.Options options = new SourceControlLogReporter.Options();
+            JiraOptions options = new JiraOptions();
             ICommandLineParser parser = new CommandLineParser();
             parser.ParseArguments(args, options);
             return options;
         }
 
-        private static void LoadReportDates(SourceControlLogReporter.Model.Policy policy, SourceControlLogReporter.Options options)
+        private static void LoadReportDates(JiraPolicy policy, JiraOptions options)
         {
             var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
             DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             options.LoadDates(policy);
         }
 
-        private static void SetProjectInfo(SourceControlLogReporter.Model.Policy policy, JiraModels.Project project)
+        private static void SetProjectInfo(JiraPolicy policy, Project project)
         {
             policy.GeneratedProperties.ProjectName = project.Name;
             policy.GeneratedProperties.ProjectKey = project.Key;

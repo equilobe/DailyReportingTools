@@ -1,6 +1,7 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,35 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public List<Issue> GetCompletedTasks(Policy policy, Options options)
+        public SprintTasks GetSprintTasks(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests)
+        {
+            var sprintTasks = new SprintTasks();
+            var issues = RestApiRequests.GetSprintTasks(policy);
+            var unfinishedTasks = GetUnfinishedTasks(policy);
+            SetUnfinishedTasks(unfinishedTasks, sprintTasks, pullRequests, policy);
+
+            var completedTasks = GetCompletedTasks(policy, options);
+            SetCompletedTasks(GroupCompletedTasks(completedTasks), sprintTasks);
+            SortTasks(sprintTasks);
+            SetSprintTasksErrors(policy, sprintTasks);
+
+            return sprintTasks;
+        }
+
+        private void SetSprintTasksErrors(JiraPolicy policy, SprintTasks sprintTasks)
+        {
+            int completedErrors = 0;
+            TasksService.SetErrors(sprintTasks.UnassignedTasks, policy);
+            foreach (var list in sprintTasks.CompletedTasks)
+            {
+                TasksService.SetErrors(list.Value, policy);
+                completedErrors += TasksService.GetErrorsCount(list.Value);
+            }
+            sprintTasks.CompletedTasksErrorCount = completedErrors;
+            sprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(sprintTasks.UnassignedTasks);
+        } 
+
+        public List<Issue> GetCompletedTasks(JiraPolicy policy, JiraOptions options)
         {
             var completedTasks = new List<Issue>();
             var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());
@@ -27,12 +56,12 @@ namespace JiraReporter
             return completedTasks;
         }
 
-        public JiraIssues GetUnfinishedTasks(Policy policy)
+        public JiraIssues GetUnfinishedTasks(JiraPolicy policy)
         {
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<PullRequest> pullRequests, Policy policy)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<JiraPullRequest> pullRequests, JiraPolicy policy)
         {
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
@@ -55,7 +84,7 @@ namespace JiraReporter
             }
         }
 
-        private static Issue GetCompleteIssue(List<PullRequest> pullRequests, Policy policy, JiraIssue jiraIssue)
+        private static Issue GetCompleteIssue(List<JiraPullRequest> pullRequests, JiraPolicy policy, JiraIssue jiraIssue)
         {
             var issue = new Issue(jiraIssue);
             var issueProcessor = new IssueProcessor(policy, pullRequests);
@@ -97,7 +126,7 @@ namespace JiraReporter
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraReporter.Model.Author author)
+        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraAuthor author)
         {
             List<Issue> parentTasks = new List<Issue>(tasks);
             foreach (var task in tasks)
@@ -129,7 +158,7 @@ namespace JiraReporter
             return parentTasks;
         }
 
-        private static Issue CreateParent(Issue task, JiraReporter.Model.Author author)
+        private static Issue CreateParent(Issue task, JiraAuthor author)
         {
             var parent = new Issue(task.Parent);
             foreach (var subtask in parent.SubtasksIssues)
@@ -138,7 +167,7 @@ namespace JiraReporter
             return parent;
         }
 
-        public static void SetErrors(List<Issue> tasks, Policy policy)
+        public static void SetErrors(List<Issue> tasks, JiraPolicy policy)
         {
             if (tasks != null && tasks.Count > 0)
                 foreach (var task in tasks)

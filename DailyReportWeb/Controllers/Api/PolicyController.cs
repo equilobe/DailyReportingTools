@@ -4,17 +4,18 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using DailyReportWeb.Models;
-using SourceControlLogReporter.Model;
 using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using Equilobe.DailyReport.Models.Storage;
+using JiraReporter;
+using DailyReportWeb.Services;
+using JiraReporter.Services;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    [Authorize]
     public class PolicyController : ApiController
     {
         // GET: api/Policy
@@ -24,7 +25,7 @@ namespace DailyReportWeb.Controllers.Api
 
             var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
-            return PolicySummary.GetPoliciesSummary(baseUrl, sharedSecret);
+            return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
         }
 
         // GET: api/Policy/5
@@ -34,7 +35,7 @@ namespace DailyReportWeb.Controllers.Api
             {
                 var baseUrl = User.GetBaseUrl();
                 return db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
-            }
+        }
         }
 
         // Policies are not created directly!
@@ -44,7 +45,7 @@ namespace DailyReportWeb.Controllers.Api
         //}
 
         // PUT: api/Policy/5
-        public void Put(string id, [FromBody]Policy updatedPolicy)
+        public void Put(string id, [FromBody]JiraPolicy updatedPolicy)
         {
             // TODO: save the updated policy
         }
@@ -63,7 +64,7 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings.BaseUrl = policySummary.BaseUrl;
                     reportSettings.SharedSecret = policySummary.SharedSecret;
                     reportSettings.ProjectId = policySummary.ProjectId;
-                }
+        }
 
                 reportSettings.ReportTime = policySummary.ReportTime;
 
