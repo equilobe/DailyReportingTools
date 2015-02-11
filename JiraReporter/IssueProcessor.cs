@@ -19,7 +19,7 @@ namespace JiraReporter
             }
         }
         List<JiraPullRequest> _pullRequests;
-        Issue _currentIssue;
+        CompleteIssue _currentIssue;
         JiraIssue _currentJiraIssue;
         JiraReport _context;
 
@@ -29,7 +29,7 @@ namespace JiraReporter
             this._pullRequests = context.PullRequests;
         }
 
-        public void SetIssues(List<Issue> issues)
+        public void SetIssues(List<CompleteIssue> issues)
         {
             foreach (var issue in issues)
             {
@@ -39,7 +39,7 @@ namespace JiraReporter
             }
         }
 
-        public void SetIssue(Issue issue, JiraIssue jiraIssue)
+        public void SetIssue(CompleteIssue issue, JiraIssue jiraIssue)
         {
             SetGenericIssue(issue, jiraIssue);
             if (issue.IsSubtask)
@@ -51,7 +51,7 @@ namespace JiraReporter
                 SetSubtasks(issue);
         }
 
-        private void SetGenericIssue(Issue issue, JiraIssue jiraIssue)
+        private void SetGenericIssue(CompleteIssue issue, JiraIssue jiraIssue)
         {
             this._currentIssue = issue;
             this._currentJiraIssue = jiraIssue;
@@ -155,19 +155,19 @@ namespace JiraReporter
 
         private void SetParent(JiraIssue jiraIssue)
         {
-            _currentIssue.Parent = new Issue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
+            _currentIssue.Parent = new CompleteIssue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
             var parent = RestApiRequests.GetIssue(_currentIssue.Parent.Key, _policy);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
-        private void SetSubtasks(Issue issue)
+        private void SetSubtasks(CompleteIssue issue)
         {
             var jiraIssue = new JiraIssue();
-            issue.SubtasksIssues = new List<Issue>();
+            issue.SubtasksIssues = new List<CompleteIssue>();
             foreach (var task in issue.Subtasks)
             {
                 jiraIssue = RestApiRequests.GetIssue(task.key, _policy);
-                issue.SubtasksIssues.Add(new Issue(jiraIssue));
+                issue.SubtasksIssues.Add(new CompleteIssue(jiraIssue));
                 SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
             }
         }
@@ -189,7 +189,7 @@ namespace JiraReporter
             }
         }
 
-        private void EditIssuePullRequests(Issue issue)
+        private void EditIssuePullRequests(CompleteIssue issue)
         {
             if (issue.PullRequests != null)
                 foreach (var pullRequest in issue.PullRequests)

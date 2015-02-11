@@ -9,11 +9,11 @@ namespace Equilobe.DailyReport.Models.Jira
 {
     public class SprintTasks
     {
-        public Dictionary<string, List<Issue>> CompletedTasks { get; set; }
-        public List<Issue> InProgressTasks { get; set; }
-        public List<Issue> OpenTasks { get; set; }
-        public List<Issue> UnassignedTasks { get; set; }
-        public List<Issue> UncompletedTasks
+        public Dictionary<string, List<CompleteIssue>> CompletedTasks { get; set; }
+        public List<CompleteIssue> InProgressTasks { get; set; }
+        public List<CompleteIssue> OpenTasks { get; set; }
+        public List<CompleteIssue> UnassignedTasks { get; set; }
+        public List<CompleteIssue> UncompletedTasks
         {
             get
             {

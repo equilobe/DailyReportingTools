@@ -23,10 +23,10 @@ namespace JiraReporter.Services
             if (author.Issues != null)
                 if (author.Issues.Count > 0)
                 {
-                    dayLog.Issues = new List<Issue>();
+                    dayLog.Issues = new List<CompleteIssue>();
                     foreach (var issue in author.Issues)
                     {
-                        dayLog.Issues.Add(new Issue(issue));
+                        dayLog.Issues.Add(new CompleteIssue(issue));
                         IssueAdapter.RemoveWrongEntries(dayLog.Issues.Last(), date, context.OffsetFromUtc);
                         IssueAdapter.TimeSpentFromEntries(dayLog.Issues.Last());
                         IssueAdapter.SetTimeFormat(dayLog.Issues.Last());

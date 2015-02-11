@@ -27,7 +27,7 @@ namespace JiraReporter.Services
             if (timesheet == null)
                 return;
 
-            var issues = new List<Issue>(timesheet.Worklog.Issues);
+            var issues = new List<CompleteIssue>(timesheet.Worklog.Issues);
             var issueProcessor = new IssueProcessor(context);
             issueProcessor.SetIssues(issues);
         }

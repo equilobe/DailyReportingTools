@@ -62,7 +62,7 @@
     <Compile Include="Jira\IContext.cs" />
     <Compile Include="Jira\IIndividualReport.cs" />
     <Compile Include="Jira\IJiraReport.cs" />
-    <Compile Include="Jira\Issue.cs" />
+    <Compile Include="Jira\CompleteIssue.cs" />
     <Compile Include="Jira\JiraAuthor.cs" />
     <Compile Include="Jira\JiraCommit.cs" />
     <Compile Include="Jira\JiraDayLog.cs" />

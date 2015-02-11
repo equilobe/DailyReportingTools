@@ -47,11 +47,11 @@ namespace Equilobe.DailyReport.Models.Jira
         public Timesheet MonthTimesheet { get; set; }
         public Timesheet SprintTimesheet { get; set; }
 
-        public List<Issue> Issues { get; set; }
-        public List<Issue> InProgressTasks { get; set; }
-        public List<Issue> OpenTasks { get; set; }
-        public List<Issue> InProgressTasksParents { get; set; }
-        public List<Issue> OpenTasksParents { get; set; }
+        public List<CompleteIssue> Issues { get; set; }
+        public List<CompleteIssue> InProgressTasks { get; set; }
+        public List<CompleteIssue> OpenTasks { get; set; }
+        public List<CompleteIssue> InProgressTasksParents { get; set; }
+        public List<CompleteIssue> OpenTasksParents { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }

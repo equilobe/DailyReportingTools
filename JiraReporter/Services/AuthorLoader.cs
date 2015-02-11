@@ -167,22 +167,22 @@ namespace JiraReporter.Services
                     commit.Entry.Link = _policy.SourceControlOptions.CommitUrl + commit.Entry.Revision;
         }
 
-        private void AddCommitIssuesNotInTimesheet(List<Issue> tasks)
+        private void AddCommitIssuesNotInTimesheet(List<CompleteIssue> tasks)
         {
             foreach (var task in tasks)
             {
                 if ((_currentAuthor.Issues != null && _currentAuthor.Issues.Exists(i => i.Key == task.Key) == false) || _currentAuthor.Issues == null)
                 {
-                    var issue = new Issue(task);
+                    var issue = new CompleteIssue(task);
                     issue.Commits = null;
                     IssueAdapter.AdjustIssueCommits(issue, _currentAuthor.Commits);
                     if (issue.Commits.Count > 0)
                     {
                         if (_currentAuthor.Issues == null)
-                            _currentAuthor.Issues = new List<Issue>();
+                            _currentAuthor.Issues = new List<CompleteIssue>();
                         issue.ExistsInTimesheet = true;
                         IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name);
-                        _currentAuthor.Issues.Add(new Issue(issue));
+                        _currentAuthor.Issues.Add(new CompleteIssue(issue));
                     }
                 }
             }
@@ -205,7 +205,7 @@ namespace JiraReporter.Services
 
         private void SetAuthorInProgressTasks()
         {
-            _currentAuthor.InProgressTasks = new List<Issue>();
+            _currentAuthor.InProgressTasks = new List<CompleteIssue>();
             _currentAuthor.InProgressTasks = GetAuthorTasks(_sprintIssues.InProgressTasks);
             TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
@@ -267,7 +267,7 @@ namespace JiraReporter.Services
 
         private void SetAuthorOpenTasks()
         {
-            _currentAuthor.OpenTasks = new List<Issue>();
+            _currentAuthor.OpenTasks = new List<CompleteIssue>();
             _currentAuthor.OpenTasks = GetAuthorTasks(_sprintIssues.OpenTasks);
             TasksService.SetErrors(_currentAuthor.OpenTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
@@ -280,9 +280,9 @@ namespace JiraReporter.Services
             _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        private List<Issue> GetAuthorTasks(List<Issue> tasks)
+        private List<CompleteIssue> GetAuthorTasks(List<CompleteIssue> tasks)
         {
-            var unfinishedTasks = new List<Issue>();
+            var unfinishedTasks = new List<CompleteIssue>();
             foreach (var task in tasks)
                 if (task.Assignee == _currentAuthor.Name)
                 {

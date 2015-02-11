@@ -8,114 +8,63 @@ using System.Xml.Serialization;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
-    [Serializable]
-    public class Issue
+    public class CompleteIssue
     {
-        [XmlElement("key")]
         public string Key { get; set; }
 
-        [XmlIgnore]
         public Uri Link { get; set; }
-        [XmlIgnore]
         public string TimeLogged { get; set; }
-        [XmlIgnore]
         public string TimeLoggedTotal { get; set; }
-        [XmlIgnore]
         public int TimeSpent { get; set; }
-        [XmlIgnore]
         public int TimeSpentTotal { get; set; }
-        [XmlIgnore]
         public int TimeSpentOnTask { get; set; }
-        [XmlIgnore]
         public string Resolution { get; set; }
-        [XmlIgnore]
         public string Status { get; set; }
-        [XmlIgnore]
         public string Assignee { get; set; }
-        [XmlIgnore]
         public string LoggedAuthor { get; set; }
-        [XmlIgnore]
         public Priority Priority { get; set; }
-        [XmlIgnore]
         public int RemainingEstimateSeconds { get; set; }
-        [XmlIgnore]
         public string RemainingEstimate { get; set; }
-        [XmlIgnore]
         public int TotalRemainingSeconds { get; set; }
-        [XmlIgnore]
         public string TotalRemaining { get; set; }
-        [XmlIgnore]
         public int OriginalEstimateSeconds { get; set; }
-        [XmlIgnore]
         public int OriginalEstimateSecondsTotal { get; set; }
-        [XmlIgnore]
         public bool ExceededOriginalEstimate { get; set; }
-        [XmlIgnore]
         public string Type { get; set; }
-        [XmlIgnore]
         public bool IsSubtask { get; set; }
-        [XmlIgnore]
-        public Issue Parent { get; set; }
-        [XmlIgnore]
+        public CompleteIssue Parent { get; set; }
         public string Label { get; set; }
-        [XmlIgnore]
         public string StringResolutionDate { get; set; }
-        [XmlIgnore]
         public DateTime ResolutionDate { get; set; }
-        [XmlIgnore]
         public StatusCategory StatusCategory { get; set; }
-        [XmlIgnore]
         public string Updated { get; set; }
-        [XmlIgnore]
         public DateTime UpdatedDate { get; set; }
-        [XmlIgnore]
         public List<Subtask> Subtasks { get; set; }
-        [XmlIgnore]
-        public List<Issue> SubtasksIssues { get; set; }
-        [XmlIgnore]
-        public List<Issue> AssigneeSubtasks { get; set; }
-        [XmlIgnore]
+        public List<CompleteIssue> SubtasksIssues { get; set; }
+        public List<CompleteIssue> AssigneeSubtasks { get; set; }
         public bool ExistsInTimesheet { get; set; }
-        [XmlIgnore]
         public DateTime Created { get; set; }
-        [XmlIgnore]
         public List<JiraCommit> Commits { get; set; }
-        [XmlIgnore]
         public List<JiraPullRequest> PullRequests { get; set; }
-        [XmlIgnore]
         public string PolicyReopenedStatus { get; set; }
-        [XmlIgnore]
         public int ErrorsCount { get; set; }
-        [XmlIgnore]
         public List<Error> Errors { get; set; }
-        [XmlIgnore]
         public string StatusType { get; set; }
-        [XmlIgnore]
         public bool DisplayStatus { get; set; }
-        [XmlIgnore]
         public bool IsNew { get; set; }
-
-        [XmlIgnore]
         public string CompletedTimeAgo { get; set; }
-        [XmlIgnore]
         public bool HasSubtasksInProgress { get; set; }
-        [XmlIgnore]
         public bool HasAssignedSubtasksInProgress { get; set; }
-        [XmlIgnore]
         public bool HasWorkLoggedByAssignee { get; set; }
-
-        [XmlElement("summary")]
         public string Summary { get; set; }
-
-        [XmlElement("entries", Type = typeof(Entries))]
         public List<Entries> Entries { get; set; }
 
-        public Issue()
+        public CompleteIssue()
         {
 
         }
 
-        public Issue(Issue issue)
+        public CompleteIssue(CompleteIssue issue)
         {
             if (issue.Assignee != null)
                 this.Assignee = issue.Assignee;
@@ -162,7 +111,7 @@ namespace Equilobe.DailyReport.Models.Jira
             if (issue.AssigneeSubtasks != null)
                 this.AssigneeSubtasks = issue.AssigneeSubtasks;
             else
-                AssigneeSubtasks = new List<Issue>();
+                AssigneeSubtasks = new List<CompleteIssue>();
             this.Commits = issue.Commits;
             this.PullRequests = issue.PullRequests;
             this.LoggedAuthor = issue.LoggedAuthor;
@@ -177,7 +126,7 @@ namespace Equilobe.DailyReport.Models.Jira
             this.DisplayStatus = issue.DisplayStatus;
         }
 
-        public Issue(JiraIssue jiraIssue)
+        public CompleteIssue(JiraIssue jiraIssue)
         {
             Summary = jiraIssue.fields.summary;
             Key = jiraIssue.key;

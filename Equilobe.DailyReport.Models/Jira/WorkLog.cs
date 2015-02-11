@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Jira
     [Serializable]
     public class WorkLog
     {
-        [XmlElement("item", Type = typeof(Issue))]
-        public List<Issue> Issues { get; set; }
+        [XmlElement("item", Type = typeof(CompleteIssue))]
+        public List<CompleteIssue> Issues { get; set; }
     }
 }
