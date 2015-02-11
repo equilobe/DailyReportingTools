@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class ReportSettings
+    public class ReportSettings : IJiraRequestContext
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -70,6 +70,7 @@
     <Compile Include="Jira\JiraOptions.cs" />
     <Compile Include="Jira\JiraPullRequest.cs" />
     <Compile Include="Jira\JiraReport.cs" />
+    <Compile Include="Jira\IJiraRequestContext.cs" />
     <Compile Include="Jira\JiraUser.cs" />
     <Compile Include="Jira\Project.cs" />
     <Compile Include="Jira\RapidView.cs" />
@@ -99,6 +100,8 @@
     <Compile Include="ReportPolicy\PolicySummary.cs" />
     <Compile Include="ReportPolicy\SourceControlOptions.cs" />
     <Compile Include="ReportPolicy\User.cs" />
+    <Compile Include="Services\IJiraService.cs" />
+    <Compile Include="Services\IService.cs" />
     <Compile Include="SourceControl\Author.cs" />
     <Compile Include="SourceControl\DayLog.cs" />
     <Compile Include="SourceControl\Log.cs" />
