@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
-    public class JiraReport
+    public class JiraReport : IIndividualReport
     {
         public JiraPolicy Policy { get; private set; }
         public JiraOptions Options { get; private set; }

@@ -59,6 +59,9 @@
     <Compile Include="Jira\Entries.cs" />
     <Compile Include="Jira\Error.cs" />
     <Compile Include="Jira\Filter.cs" />
+    <Compile Include="Jira\IContext.cs" />
+    <Compile Include="Jira\IIndividualReport.cs" />
+    <Compile Include="Jira\IJiraReport.cs" />
     <Compile Include="Jira\Issue.cs" />
     <Compile Include="Jira\JiraAuthor.cs" />
     <Compile Include="Jira\JiraCommit.cs" />
