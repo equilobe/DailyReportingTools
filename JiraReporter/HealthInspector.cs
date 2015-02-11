@@ -1,4 +1,6 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,9 @@ namespace JiraReporter
 {
     public class HealthInspector
     {
-        SourceControlLogReporter.Model.Policy Policy { get; set; }
+        JiraPolicy Policy { get; set; }
 
-        public HealthInspector(SourceControlLogReporter.Model.Policy policy)
+        public HealthInspector(JiraPolicy policy)
         {
             Policy = policy;
         }
@@ -94,9 +96,9 @@ namespace JiraReporter
             if (allocatedHours == 0)
                 return Health.None;
 
-            var workedDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.MonthlyOptions);
+            var workedDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.MonthlyOptions);
             var workedPerDay = totalTimeWorked / workedDays;
-            var monthWorkingDays = Summary.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.MonthlyOptions);
+            var monthWorkingDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.MonthlyOptions);
             var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
             return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }

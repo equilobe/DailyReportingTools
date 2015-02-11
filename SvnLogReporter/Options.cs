@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
-using SourceControlLogReporter.Model;
 using System.Globalization;
+using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace SourceControlLogReporter
 {
@@ -20,15 +20,20 @@ namespace SourceControlLogReporter
         public string StringFromDate { get; set; }
         [Option(null, "noemail", Required = false, HelpText = "Don't email report")]
         public bool NoEmail { get; set; }
-        [Option(null, "draftKey", Required = false)]
-        public string DraftKey { get; set; }
-        [Option(null, "triggerKey", Required = false)]
-        public string TriggerKey { get; set; }
 
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
+        public Policy Policy { get; set; }
 
         public List<DateTime> ReportDates { get; set; }
+
+        public DateTime ReportDate
+        {
+            get
+            {
+                return ToDate.ToLocalTime().Hour < 12 ? FromDate.ToLocalTime() : ToDate.ToLocalTime();
+            }
+        }
 
         public bool HasToDate
         {
@@ -43,14 +48,6 @@ namespace SourceControlLogReporter
             get
             {
                 return StringFromDate != null;
-            }
-        }
-
-        public DateTime ReportDate
-        {
-            get
-            {
-                return ToDate.ToLocalTime().Hour < 12 ? FromDate.ToLocalTime() : ToDate.ToLocalTime();
             }
         }
 
@@ -83,20 +80,17 @@ namespace SourceControlLogReporter
         }
 
 
-        public void LoadDates(Policy p)
+        public void LoadDates(Policy policy)
         {
-            this.Policy = p;
+            Policy = policy;
+
             if (HasToDate)
                 ToDate = GetDate(StringToDate).Date;
 
             if (HasFromDate)
                 FromDate = GetDate(StringFromDate).Date;
 
-            // SetWeekendDates();
-
             SetDefaultDates();
-
-            // SwitchToUniversalTime();
 
             if (ToDate < FromDate)
                 throw new ArgumentException("ToDate < FromDate");
@@ -106,17 +100,13 @@ namespace SourceControlLogReporter
             ReportDates = GetDates();
         }
 
-        private void SwitchToUniversalTime()
-        {
-            ToDate = ToDate.ToUniversalTime();
-            FromDate = FromDate.ToUniversalTime();
-        }
 
         private void SetDefaultDates()
         {
             if (!HasToDate && !HasFromDate)
             {
-                SetDates();
+                FromDate = DateTime.Today.AddDays(-1);
+                ToDate = DateTime.Today;
             }
             else if (!HasToDate)
             {
@@ -129,30 +119,7 @@ namespace SourceControlLogReporter
             }
         }
 
-        private void SetDates()
-        {
-            if (Policy.GeneratedProperties.LastReportSentDate == new DateTime())
-                {
-                    FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date;
-                    ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-                }
-            else
-                SetDatesFromLastSentReport();
-        }
-
-        //private void SetWeekendDates()
-        //{
-        //    FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-3).Date;
-        //    ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-        //}
-
-        private void SetDatesFromLastSentReport()
-        {
-            FromDate = Policy.GeneratedProperties.LastReportSentDate.Date;
-            ToDate = DateTime.Now.ToOriginalTimeZone().Date;
-        }
-
-        private DateTime GetDate(string dateString)
+        protected DateTime GetDate(string dateString)
         {
             DateTime date;
             if (DateTime.TryParse(dateString, out date))
@@ -160,15 +127,5 @@ namespace SourceControlLogReporter
 
             throw new ArgumentException("Date is not in the correct format");
         }
-
-        public bool IsWeekend()
-        {
-            var today = DateTime.Now.ToOriginalTimeZone().DayOfWeek;
-            if (Policy.AdvancedOptions.WeekendDaysList.Exists(d => d == today))
-                return true;
-            return false;
-        }
-
-        Policy Policy { get; set; }
     }
 }

@@ -4,17 +4,18 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using DailyReportWeb.Models;
-using SourceControlLogReporter.Model;
 using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using Equilobe.DailyReport.Models.Storage;
+using JiraReporter;
+using DailyReportWeb.Services;
+using JiraReporter.Services;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    [Authorize]
     public class PolicyController : ApiController
     {
         // GET: api/Policy
@@ -24,7 +25,7 @@ namespace DailyReportWeb.Controllers.Api
 
             var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
-            return PolicySummary.GetPoliciesSummary(baseUrl, sharedSecret);
+            return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
         }
 
         // GET: api/Policy/5
@@ -66,7 +67,7 @@ namespace DailyReportWeb.Controllers.Api
                 //reportSettings.Policy = policy;
 
                 return reportSettings;
-            }
+        }
         }
 
         // Policies are not created directly!
@@ -85,7 +86,7 @@ namespace DailyReportWeb.Controllers.Api
                 {
                     reportSettings = CreateFromPolicySummary(policySummary);
                     db.ReportSettings.Add(reportSettings);
-                }
+        }
 
                 reportSettings.ReportTime = policySummary.ReportTime;
 

@@ -5,7 +5,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using System.Web.Security;
-using DailyReportWeb.Models;
+using Equilobe.DailyReport.Models.Web;
 
 namespace DailyReportWeb
 {

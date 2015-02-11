@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JiraReporter.Model;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace JiraReporter
 {
@@ -34,9 +35,9 @@ namespace JiraReporter
         }
 
 
-        public static List<Commit> GetDayLogCommits(Author author, DateTime date)
+        public static List<JiraCommit> GetDayLogCommits(JiraAuthor author, DateTime date)
         {
-            var commits = new List<Commit>();
+            var commits = new List<JiraCommit>();
             if (author.Commits != null)
                 commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone() >= date && c.Entry.Date.ToOriginalTimeZone() < date.AddDays(1));
             return commits;
@@ -51,34 +52,36 @@ namespace JiraReporter
             return authors;
         }
 
-        public static void SetAuthorAverageWorkPerDay(Author author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
+        public static void SetAuthorAverageWorkPerDay(JiraAuthor author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             if (monthWorkedDays == 0)
-                author.MonthWorkedPerDay = 0;
+                author.Timing.AverageWorkedMonth = 0;
             else
-                author.MonthWorkedPerDay = author.TimeSpentCurrentMonthSeconds / monthWorkedDays;
+                author.Timing.AverageWorkedMonth = author.Timing.MonthSecondsWorked / monthWorkedDays;
             if (sprintWorkedDays == 0)
-                author.SprintWorkedPerDay = 0;
+                author.Timing.AverageWorkedSprint = 0;
             else
-                author.SprintWorkedPerDay = author.TimeSpentCurrentSprintSeconds / sprintWorkedDays;
+                author.Timing.AverageWorkedSprint = author.Timing.SprintSecondsWorked / sprintWorkedDays;
             if (reportWorkingDays == 0)
-                author.TimeLoggedPerDayAverage = 0;
+                author.Timing.AverageWorked = 0;
             else
-                author.TimeLoggedPerDayAverage = author.TimeSpent / reportWorkingDays;
+                author.Timing.AverageWorked = author.Timing.TotalTimeSeconds / reportWorkingDays;
+
+            TimeFormatting.SetAverageWorkStringFormat(author.Timing);
         }
 
-        public static double GetAuthorMaxAverage(Author author)
+        public static double GetAuthorMaxAverage(JiraAuthor author)
         {
-            var max = Math.Max(author.TimeLoggedPerDayAverage, author.SprintWorkedPerDay);
-            max = Math.Max(max, author.MonthWorkedPerDay);
+            var max = Math.Max(author.Timing.AverageWorked, author.Timing.AverageWorkedSprint);
+            max = Math.Max(max, author.Timing.AverageWorkedMonth);
             return max;
         }
 
-        public static void SetAuthorWorkSummaryWidths(Author author, int maxWidth, int maxValue)
+        public static void SetAuthorWorkSummaryWidths(JiraAuthor author, int maxWidth, int maxValue)
         {
-            author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.SprintWorkedPerDay / 3600));
-            author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.MonthWorkedPerDay / 3600));
-            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.TimeLoggedPerDayAverage / 3600));
+            author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedSprint / 3600));
+            author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedMonth / 3600));
+            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.Timing.AverageWorked / 3600));
         }
     }
 }

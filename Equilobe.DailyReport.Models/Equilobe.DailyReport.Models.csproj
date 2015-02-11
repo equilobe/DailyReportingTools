@@ -36,9 +36,17 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Octokit">
+      <HintPath>..\libs\Octokit.dll</HintPath>
+    </Reference>
+    <Reference Include="Octokit.Reactive">
+      <HintPath>..\libs\Octokit.Reactive.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,12 +54,60 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Jira\Avatar.cs" />
+    <Compile Include="Jira\Entries.cs" />
+    <Compile Include="Jira\Error.cs" />
+    <Compile Include="Jira\Filter.cs" />
+    <Compile Include="Jira\IndividualReport.cs" />
+    <Compile Include="Jira\Issue.cs" />
+    <Compile Include="Jira\JiraAuthor.cs" />
+    <Compile Include="Jira\JiraCommit.cs" />
+    <Compile Include="Jira\JiraDayLog.cs" />
+    <Compile Include="Jira\JiraIssue.cs" />
+    <Compile Include="Jira\JiraPullRequest.cs" />
+    <Compile Include="Jira\JiraReport.cs" />
+    <Compile Include="Jira\JiraUser.cs" />
+    <Compile Include="Jira\Project.cs" />
+    <Compile Include="Jira\RapidView.cs" />
+    <Compile Include="Jira\Sprint.cs" />
+    <Compile Include="Jira\SprintReport.cs" />
+    <Compile Include="Jira\Sprints.cs" />
+    <Compile Include="Jira\SprintsData.cs" />
+    <Compile Include="Jira\SprintTasks.cs" />
+    <Compile Include="Jira\StatusChartWidths.cs" />
+    <Compile Include="Jira\Summary.cs" />
+    <Compile Include="Jira\Timesheet.cs" />
+    <Compile Include="Jira\Timing.cs" />
+    <Compile Include="Jira\TimingDetailed.cs" />
+    <Compile Include="Jira\View.cs" />
+    <Compile Include="Jira\Views.cs" />
+    <Compile Include="Jira\WorkingDaysInfo.cs" />
+    <Compile Include="Jira\WorkLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportPolicy\AdvancedOptions.cs" />
+    <Compile Include="ReportPolicy\JiraAdvancedOptions.cs" />
+    <Compile Include="ReportPolicy\GeneratedProperties.cs" />
+    <Compile Include="ReportPolicy\JiraGeneratedProperties.cs" />
+    <Compile Include="ReportPolicy\IndividualDraftInfo.cs" />
+    <Compile Include="ReportPolicy\JiraPolicy.cs" />
+    <Compile Include="ReportPolicy\Month.cs" />
+    <Compile Include="ReportPolicy\Policy.cs" />
+    <Compile Include="ReportPolicy\PolicySummary.cs" />
+    <Compile Include="ReportPolicy\SourceControlOptions.cs" />
+    <Compile Include="ReportPolicy\User.cs" />
+    <Compile Include="SourceControl\Author.cs" />
+    <Compile Include="SourceControl\DayLog.cs" />
+    <Compile Include="SourceControl\Log.cs" />
+    <Compile Include="SourceControl\LogEntry.cs" />
+    <Compile Include="SourceControl\Report.cs" />
     <Compile Include="Storage\ReportSettings.cs" />
+    <Compile Include="Web\WebPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

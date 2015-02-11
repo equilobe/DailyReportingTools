@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using SourceControlLogReporter.Model;
 using RazorEngine;
 using System.Diagnostics;
 using System.Net;
@@ -12,6 +11,7 @@ using System.Net.Mail;
 using System.Configuration;
 using RazorEngine.Templating;
 using Octokit;
+using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace SourceControlLogReporter
 {

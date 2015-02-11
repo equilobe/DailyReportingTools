@@ -1,6 +1,7 @@
-﻿using RestSharp;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
+using RestSharp;
 using SourceControlLogReporter;
-using SourceControlLogReporter.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,13 @@ namespace JiraReporter
 {
     class JiraService
     {
-        public Policy Policy { get; set; }
-        public Options Options { get; set; }
+        public JiraPolicy Policy { get; set; }
+        public JiraOptions JiraOptions { get; set; }
 
-        public JiraService(Policy policy, Options options)
+        public JiraService(JiraPolicy policy, JiraOptions options)
         {
             Policy = policy;
-            Options = options;
+            JiraOptions = options;
         }
 
         public List<View> GetRapidViewsFromProject()
@@ -57,7 +58,7 @@ namespace JiraReporter
 
         public Sprint GetSprintFromReportDates(Sprint sprint)
         {
-            if (sprint.EndDate < Options.FromDate)
+            if (sprint.EndDate < JiraOptions.FromDate)
                 return null;
 
             return sprint;

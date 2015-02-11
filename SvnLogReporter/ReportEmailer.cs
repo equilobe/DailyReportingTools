@@ -9,7 +9,7 @@ using System.Threading;
 using System.Net.Mail;
 using System.Globalization;
 using System.Diagnostics;
-using SourceControlLogReporter.Model;
+using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace SourceControlLogReporter
 {
@@ -24,8 +24,12 @@ namespace SourceControlLogReporter
             this.options = o;
         }
 
+        public ReportEmailer()
+        {
 
-        private void SendEmails()
+        }
+
+        protected virtual void SendEmails()
         {
             if (options.NoEmail)
                 return;
@@ -76,24 +80,9 @@ namespace SourceControlLogReporter
             UpdatePolicy();
         }
 
-        protected void UpdatePolicy()
+        protected virtual void UpdatePolicy()
         {
-            if (policy.GeneratedProperties.IsFinalDraft)
-            {
-                policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-                policy.GeneratedProperties.LastDraftSentDate = options.ToDate;
-                if (policy.IsForcedByLead(options.TriggerKey))
-                    policy.GeneratedProperties.WasForcedByLead = true;
-            }
-
-            if (policy.GeneratedProperties.IsFinalReport)
-            {
-                policy.GeneratedProperties.LastReportSentDate = options.ToDate;
-                policy.ResetPolicyToDefault();
-                policy.GeneratedProperties.WasResetToDefaultToday = false;
-            }
-
-            policy.SaveToFile(options.PolicyPath);
+            return;
         }
 
         public virtual MailMessage GetMessage(string reportPath)
