@@ -86,7 +86,9 @@ namespace JiraReporter
         {
             var request = new RestRequest(JiraApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);
 
-            return ResolveRequest<List<JiraUser>>(policy, request);
+            return ResolveRequest<List<JiraUser>>(policy, request)
+                .Where(user => user.key.IndexOf("addon_") == -1)
+                .ToList();
         }
 
         public static RapidView GetRapidView(string id, JiraPolicy policy)
