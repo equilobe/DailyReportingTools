@@ -13,54 +13,44 @@ namespace JiraReporter
 {
     class ReportGenerator
     {
-        public static JiraReport GenerateReport(JiraPolicy policy, JiraOptions options)
+        public static JiraReport GenerateReport(JiraReport report)
         {
             var timesheetService = new TimesheetService();
-            var pullRequests = new List<JiraPullRequest>();
-            var commits = new List<JiraCommit>();
+            report.PullRequests = new List<JiraPullRequest>();
+            report.Commits = new List<JiraCommit>();
 
-            if (policy.SourceControlOptions != null)
+            if (report.Policy.SourceControlOptions != null)
             {
-                var log = SourceControlProcessor.GetSourceControlLog(policy, options);
-                pullRequests = SourceControlProcessor.GetPullRequests(log);
-                commits = SourceControlProcessor.GetCommits(log);
+                var log = SourceControlProcessor.GetSourceControlLog(report.Policy, report.Options);
+                report.PullRequests = SourceControlProcessor.GetPullRequests(log);
+                report.Commits = SourceControlProcessor.GetCommits(log);
             }
 
-            return GetReport(policy, options, pullRequests, commits);
+            return CompleteReport(report);
         }
-        private static JiraReport GetReport(JiraReport context, List<JiraPullRequest> pullRequests, List<JiraCommit> commits)
-        {            
-            var sprint = GenerateSprint(context);
+        private static JiraReport CompleteReport(JiraReport context)
+        {
+            context.Sprint = GenerateSprint(context);
 
-            var sprintTasks = GetSprintReport(context, pullRequests);
+            SetSprintReport(context);
 
-            var authors = GetReportAuthors(context, pullRequests, commits, sprintTasks, sprint);
-            
-            var summary = LoadSummary(context, authors, sprintTasks, sprint, pullRequests);
-            
-            var report = new JiraReport(policy)
-            {
-                Authors = authors,
-                SprintTasks = sprintTasks,
-                PullRequests = pullRequests,
-                Date = options.FromDate,
-                Summary = summary,
-                FromDate = options.FromDate,
-                ToDate = options.ToDate
-            };
-            report.Title = JiraReportHelpers.GetReportTitle(report.FromDate, report.ToDate, policy);
+            context.Authors = GetReportAuthors(context);
 
-            return report;
+            context.Summary = LoadSummary(context);
+
+            context.Title = JiraReportHelpers.GetReportTitle(context);
+
+            return context;
         }
 
-        private static List<JiraAuthor> GetReportAuthors(JiraReport context, List<JiraPullRequest> pullRequests, List<JiraCommit> commits, SprintTasks sprintTasks, Sprint sprint)
+        private static List<JiraAuthor> GetReportAuthors(JiraReport context)
         {
             var authors = new List<JiraAuthor>();
-            var authorLoader = new AuthorLoader(context, sprint, sprintTasks, commits, pullRequests);
-            if (options.DraftKey != null)
+            var authorLoader = new AuthorLoader(context);
+            if (context.Options.DraftKey != null)
             {
-                var author = authorLoader.CreateAuthorByKey(options.DraftKey, policy);
-                if (policy.GeneratedProperties.ProjectManager == author.Username)
+                var author = authorLoader.CreateAuthorByKey(context.Options.DraftKey, context.Policy);
+                if (context.Policy.GeneratedProperties.ProjectManager == author.Username)
                     author.IsProjectLead = true;
                 authors.Add(author);
             }
@@ -71,10 +61,10 @@ namespace JiraReporter
         }
 
 
-        private static SprintTasks GetSprintReport(JiraReport report)
+        private static void SetSprintReport(JiraReport report)
         {
             var tasksService = new TasksService();
-            return tasksService.GetSprintTasks(report);
+            tasksService.SetSprintTasks(report);
         }
 
         public static Sprint GenerateSprint(JiraReport report)
@@ -83,9 +73,9 @@ namespace JiraReporter
             return jira.GetLatestSprint();
         }
 
-        public static Summary LoadSummary(JiraPolicy policy, JiraOptions options, List<JiraAuthor> authors, SprintTasks sprintTasks, Sprint sprint, List<JiraPullRequest> pullRequests)
+        public static Summary LoadSummary(JiraReport report)
         {
-            var summaryLoader = new SummaryLoader(policy, options, authors, sprintTasks, sprint, pullRequests);
+            var summaryLoader = new SummaryLoader(report);
             return summaryLoader.LoadSummary();
         }
     }

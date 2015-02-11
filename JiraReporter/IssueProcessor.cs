@@ -23,10 +23,10 @@ namespace JiraReporter
         JiraIssue _currentJiraIssue;
         JiraReport _context;
 
-        public IssueProcessor(JiraReport context, List<JiraPullRequest> pullRequests)
+        public IssueProcessor(JiraReport context)
         {
             this._context = context;
-            this._pullRequests = pullRequests;
+            this._pullRequests = context.PullRequests;
         }
 
         public void SetIssues(List<Issue> issues)

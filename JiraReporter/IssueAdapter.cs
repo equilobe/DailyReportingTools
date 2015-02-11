@@ -14,12 +14,12 @@ namespace JiraReporter
 {
     class IssueAdapter
     {
-        public static void RemoveWrongEntries(Issue issue, DateTime date)
+        public static void RemoveWrongEntries(Issue issue, DateTime date, TimeSpan offsetFromUtc)
         {
             if (issue.Entries != null)
             {
                 var newEntries = new List<Entries>(issue.Entries);
-                newEntries.RemoveAll(e => e.StartDate.ToOriginalTimeZone() < date || e.StartDate.ToOriginalTimeZone() >= date.AddDays(1));
+                newEntries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(offsetFromUtc) < date || e.StartDate.ToOriginalTimeZone(offsetFromUtc) >= date.AddDays(1));
                 issue.Entries = newEntries;
             }
         }
@@ -72,14 +72,14 @@ namespace JiraReporter
 
 
 
-        public static void AdjustIssueCommits(JiraDayLog dayLog)
+        public static void AdjustIssueCommits(JiraDayLog dayLog, TimeSpan offsetFromUtc)
         {
             if (dayLog.Issues != null)
                 foreach (var issue in dayLog.Issues)
                 {
                     AdjustIssueCommits(issue, dayLog.Commits);
                     if (issue.Commits.Count > 0)
-                        RemoveWrongCommits(issue, dayLog.Date);
+                        RemoveWrongCommits(issue, dayLog.Date, offsetFromUtc);
                 }
         }
 
@@ -101,10 +101,10 @@ namespace JiraReporter
             return msg.Contains(keyLower);
         }
 
-        public static void RemoveWrongCommits(Issue issue, DateTime date)
+        public static void RemoveWrongCommits(Issue issue, DateTime date, TimeSpan offsetFromUtc)
         {
             var commits = new List<JiraCommit>(issue.Commits);
-            commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone() < date || c.Entry.Date.ToOriginalTimeZone() >= date.AddDays(1));
+            commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) < date || c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) >= date.AddDays(1));
             issue.Commits = commits;
         }
 

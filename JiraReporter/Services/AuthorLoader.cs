@@ -16,22 +16,17 @@ namespace JiraReporter.Services
 {
     class AuthorLoader
     {
-        SprintTasks _sprintIssues;
+        SprintTasks _sprintIssues {get {return _context.SprintTasks;}}
         JiraPolicy _policy { get { return _context.Policy; } }
-        List<JiraCommit> _commits;
+        List<JiraCommit> _commits { get { return _context.Commits; } }
         JiraOptions _options { get { return _context.Options; } }
-        List<JiraPullRequest> _pullRequests;
-        Sprint _sprint;
+        Sprint _sprint { get { return _context.Sprint; } }
         JiraAuthor _currentAuthor;
         JiraReport _context;
 
-        public AuthorLoader(JiraReport context, Sprint sprint, SprintTasks sprintIssues, List<JiraCommit> commits, List<JiraPullRequest> pullRequests)
+        public AuthorLoader(JiraReport context)
         {
             this._context = context;
-            this._sprintIssues = sprintIssues;
-            this._commits = commits;
-            this._pullRequests = pullRequests;
-            this._sprint = sprint;
         }
 
         public List<JiraAuthor> GetAuthors()
@@ -107,17 +102,17 @@ namespace JiraReporter.Services
         {
             _currentAuthor.CurrentTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
             if (_sprint != null)
-                _currentAuthor.SprintTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _sprint.StartDate.ToOriginalTimeZone(), _sprint.EndDate.ToOriginalTimeZone(), _currentAuthor.Username);
-            _currentAuthor.MonthTimesheet = RestApiRequests.GetTimesheetForUser(_policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), _currentAuthor.Username);
+                _currentAuthor.SprintTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc), _sprint.EndDate.ToOriginalTimeZone(_context.OffsetFromUtc), _currentAuthor.Username);
+            _currentAuthor.MonthTimesheet = RestApiRequests.GetTimesheetForUser(_policy, DateTime.Now.ToOriginalTimeZone(_context.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(_context.OffsetFromUtc).AddDays(-1), _currentAuthor.Username);
         }
 
 
         private void LoadTimesheetIssueDetails()
         {
             var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _context, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _context, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _context, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _context);
+            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _context);
+            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _context);
         }
 
         private void SetIssues()

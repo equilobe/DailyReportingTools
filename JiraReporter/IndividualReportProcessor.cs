@@ -17,25 +17,25 @@ namespace JiraReporter.Model
         {
         }
 
-        public override void ProcessReport(JiraReport report)
+        public override void ProcessReport()
         {
-            SaveReport(report);
-            JiraPolicyService.SetIndividualEmail(report.Author.EmailAdress, Policy);
+            SaveReport();
+            JiraPolicyService.SetIndividualEmail(Report.Author.EmailAdress, Policy);
             SendReport();
         }
 
-        protected override void SaveReport(JiraReport individualReport)
+        protected override void SaveReport()
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
-            var reportPath = GetReportPath(individualReport);
-            SaveReportToFile(individualReport, reportPath, viewPath);
+            var reportPath = GetReportPath();
+            SaveReportToFile(reportPath, viewPath);
         }
 
-        protected override string GetReportPath(JiraReport report)
+        protected override string GetReportPath()
         {
-            string reportPath = report.Policy.GeneratedProperties.ReportsPath;
+            string reportPath = Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
-            reportPath = Path.Combine(reportPath, report.Author.Name + "_" + report.Date.ToString("yyyy-MM-dd") + ".html");
+            reportPath = Path.Combine(reportPath, Report.Author.Name + "_" + Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }
     }

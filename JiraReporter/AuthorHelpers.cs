@@ -35,11 +35,11 @@ namespace JiraReporter
         }
 
 
-        public static List<JiraCommit> GetDayLogCommits(JiraAuthor author, DateTime date)
+        public static List<JiraCommit> GetDayLogCommits(JiraAuthor author, DateTime date, TimeSpan offsetFromUtc)
         {
             var commits = new List<JiraCommit>();
             if (author.Commits != null)
-                commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone() >= date && c.Entry.Date.ToOriginalTimeZone() < date.AddDays(1));
+                commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) >= date && c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) < date.AddDays(1));
             return commits;
         }
 

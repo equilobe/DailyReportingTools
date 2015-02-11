@@ -16,7 +16,7 @@ namespace JiraReporter.Services
             var options = context.Options;
             var dayLog = new JiraDayLog();
 
-            dayLog.Commits = AuthorHelpers.GetDayLogCommits(author, date);
+            dayLog.Commits = AuthorHelpers.GetDayLogCommits(author, date, context.OffsetFromUtc);
             dayLog.Date = date;
             dayLog.Title = TimeFormatting.GetStringDay(date, context.ReportDate);
 
@@ -27,13 +27,13 @@ namespace JiraReporter.Services
                     foreach (var issue in author.Issues)
                     {
                         dayLog.Issues.Add(new Issue(issue));
-                        IssueAdapter.RemoveWrongEntries(dayLog.Issues.Last(), date);
+                        IssueAdapter.RemoveWrongEntries(dayLog.Issues.Last(), date, context.OffsetFromUtc);
                         IssueAdapter.TimeSpentFromEntries(dayLog.Issues.Last());
                         IssueAdapter.SetTimeFormat(dayLog.Issues.Last());
                         dayLog.TimeSpent += dayLog.Issues.Last().TimeSpent;
                     }
                 }
-            IssueAdapter.AdjustIssueCommits(dayLog);
+            IssueAdapter.AdjustIssueCommits(dayLog, context.OffsetFromUtc);
             IssueAdapter.RemoveWrongIssues(dayLog.Issues);
 
             if (dayLog.Issues != null)

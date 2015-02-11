@@ -24,7 +24,7 @@ namespace JiraReporter
             Report = report;
         }
 
-        public virtual void ProcessReport(JiraReport report)
+        public virtual void ProcessReport()
         {
             SaveReport();
         //    SetEmailCollection(report.Authors);
@@ -37,7 +37,7 @@ namespace JiraReporter
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
             var reportPath = GetReportPath();
-            SaveReportToFile(Report, reportPath, viewPath);
+            SaveReportToFile(reportPath, viewPath);
         }
 
         protected virtual string GetReportPath()
@@ -48,16 +48,15 @@ namespace JiraReporter
             return reportPath;
         }
 
-        protected void SaveReportToFile(JiraReport report, string reportPath, string viewPath)
+        protected void SaveReportToFile(string reportPath, string viewPath)
         {
-            var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
-            WriteReport(report.Policy, repCont, reportPath);
+            var repCont = SourceControlLogReporter.ReportBase.ProcessReport(Report, viewPath);
+            WriteReport(Policy, repCont, reportPath);
         }
 
         protected virtual void SendReport()
         {
-            var emailer = new ReportEmailerJira(Policy, Options);
-            emailer.Authors = Report.Authors;
+            var emailer = new ReportEmailerJira(Report);
 
             emailer.TrySendEmails();
         }

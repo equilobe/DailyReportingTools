@@ -18,15 +18,15 @@ namespace JiraReporter
 {
     public class ReportEmailerJira : ReportEmailer
     {
-        public List<JiraAuthor> Authors { get; set; }
-        public JiraAuthor Author { get; set; }
-        public JiraPolicy Policy { get; set; }
-        public JiraOptions Options { get; set; }
+        public List<JiraAuthor> Authors { get { return Report.Authors; } }
+        public JiraAuthor Author { get { return Report.Author; } }
+        public JiraPolicy Policy { get { return Report.Policy; } }
+        public JiraOptions Options { get { return Report.Options; } }
+        public JiraReport Report { get; set; }
 
-        public ReportEmailerJira(JiraPolicy policy, JiraOptions options)
+        public ReportEmailerJira(JiraReport report)
         {
-            Policy = policy;
-            Options = options;
+            Report = report;
         }
         public void AddAttachementImage(Image image, string id, MailMessage mailMessage)
         {
@@ -100,7 +100,7 @@ namespace JiraReporter
 
         protected override void UpdatePolicy()
         {
-            var policyService = new JiraPolicyService(Policy);
+            var policyService = new JiraPolicyService(Report);
             if (Policy.GeneratedProperties.IsFinalDraft)
             {
                 Policy.GeneratedProperties.IsFinalDraftConfirmed = false;

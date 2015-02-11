@@ -22,13 +22,13 @@ namespace JiraReporter.Services
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, JiraReport context, List<JiraPullRequest> pullRequests)
+        public void SetTimesheetIssues(Timesheet timesheet, JiraReport context)
         {
             if (timesheet == null)
                 return;
 
             var issues = new List<Issue>(timesheet.Worklog.Issues);
-            var issueProcessor = new IssueProcessor(context, pullRequests);
+            var issueProcessor = new IssueProcessor(context);
             issueProcessor.SetIssues(issues);
         }
 

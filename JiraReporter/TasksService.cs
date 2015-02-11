@@ -11,32 +11,30 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public SprintTasks GetSprintTasks(JiraReport context, List<JiraPullRequest> pullRequests)
+        public void SetSprintTasks(JiraReport context)
         {
-            var sprintTasks = new SprintTasks();
+            context.SprintTasks = new SprintTasks();
             var issues = RestApiRequests.GetSprintTasks(context.Policy);
             var unfinishedTasks = GetUnfinishedTasks(context.Policy);
-            SetUnfinishedTasks(unfinishedTasks, sprintTasks, pullRequests, context);
+            SetUnfinishedTasks(unfinishedTasks, context);
 
             var completedTasks = GetCompletedTasks(context);
-            SetCompletedTasks(GroupCompletedTasks(completedTasks), sprintTasks);
-            SortTasks(sprintTasks);
-            SetSprintTasksErrors(context.Policy, sprintTasks);
-
-            return sprintTasks;
+            SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.SprintTasks);
+            SortTasks(context.SprintTasks);
+            SetSprintTasksErrors(context);
         }
 
-        private void SetSprintTasksErrors(JiraPolicy policy, SprintTasks sprintTasks)
+        private void SetSprintTasksErrors(JiraReport report)
         {
             int completedErrors = 0;
-            TasksService.SetErrors(sprintTasks.UnassignedTasks, policy);
-            foreach (var list in sprintTasks.CompletedTasks)
+            TasksService.SetErrors(report.SprintTasks.UnassignedTasks, report.Policy);
+            foreach (var list in report.SprintTasks.CompletedTasks)
             {
-                TasksService.SetErrors(list.Value, policy);
+                TasksService.SetErrors(list.Value, report.Policy);
                 completedErrors += TasksService.GetErrorsCount(list.Value);
             }
-            sprintTasks.CompletedTasksErrorCount = completedErrors;
-            sprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(sprintTasks.UnassignedTasks);
+            report.SprintTasks.CompletedTasksErrorCount = completedErrors;
+            report.SprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(report.SprintTasks.UnassignedTasks);
         } 
 
         public List<Issue> GetCompletedTasks(JiraReport context)
@@ -47,7 +45,7 @@ namespace JiraReporter
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
                 {
-                    var issue = GetCompleteIssue(null, context, jiraIssue);
+                    var issue = GetCompleteIssue(context, jiraIssue);
 
                     completedTasks.Add(issue);
                 }
@@ -61,15 +59,16 @@ namespace JiraReporter
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<JiraPullRequest> pullRequests, JiraReport context)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
         {
+            var tasks = context.SprintTasks;
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
             tasks.UnassignedTasks = new List<Issue>();
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
-                var issue = GetCompleteIssue(pullRequests, context, jiraIssue);
+                var issue = GetCompleteIssue(context, jiraIssue);
 
                 if (issue.StatusCategory.name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
@@ -84,21 +83,21 @@ namespace JiraReporter
             }
         }
 
-        private static Issue GetCompleteIssue(List<JiraPullRequest> pullRequests, JiraReport context, JiraIssue jiraIssue)
+        private static Issue GetCompleteIssue(JiraReport context, JiraIssue jiraIssue)
         {
             var issue = new Issue(jiraIssue);
-            var issueProcessor = new IssueProcessor(context, pullRequests);
+            var issueProcessor = new IssueProcessor(context);
 
             issueProcessor.SetIssue(issue, jiraIssue);
-            IssueAdapter.SetIssueErrors(issue, policy);
+            IssueAdapter.SetIssueErrors(issue, context.Policy);
             return issue;
         }
 
-        public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)
+        public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks, JiraReport context)
         {
             var tasks = from task in completedTasks
                         group task by task.CompletedTimeAgo into newGroup
-                        orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone())
+                        orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone(context.OffsetFromUtc))
                         select newGroup;
             tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
             return tasks;

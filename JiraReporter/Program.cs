@@ -31,13 +31,13 @@ namespace JiraReporter
 
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
-            var policyService = new JiraPolicyService(policy);
-            policyService.SetPolicy(options);
+            var policyService = new JiraPolicyService(report);
+            policyService.SetPolicy();
 
             LoadReportDates(report);
 
             if (RunReport(report))
-                RunReportTool(policy, options);
+                RunReportTool(report);
             else
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
@@ -92,8 +92,8 @@ namespace JiraReporter
             }
             else
             {
-                var reportProcessor = new BaseReportProcessor(policy, options);
-                reportProcessor.ProcessReport(report);
+                var reportProcessor = new BaseReportProcessor(report);
+                reportProcessor.ProcessReport();
             }
         }
 
