@@ -12,13 +12,13 @@ namespace JiraReporter
 {
     class JiraService
     {
-        public JiraPolicy Policy { get; set; }
-        public JiraOptions JiraOptions { get; set; }
+        JiraPolicy Policy { get { return Report.Policy; } }
+        JiraOptions JiraOptions { get { return Report.Options; } }
+        JiraReport Report { get; set; }
 
-        public JiraService(JiraPolicy policy, JiraOptions options)
+        public JiraService(JiraReport report)
         {
-            Policy = policy;
-            JiraOptions = options;
+            Report = report;
         }
 
         public List<View> GetRapidViewsFromProject()

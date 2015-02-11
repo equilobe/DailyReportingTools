@@ -11,14 +11,21 @@ namespace JiraReporter
 {
     class IssueProcessor
     {
-        JiraPolicy _policy;
+        JiraPolicy _policy
+        {
+            get
+            {
+                return _context.Policy;
+            }
+        }
         List<JiraPullRequest> _pullRequests;
         Issue _currentIssue;
         JiraIssue _currentJiraIssue;
+        JiraReport _context;
 
-        public IssueProcessor(JiraPolicy policy, List<JiraPullRequest> pullRequests)
+        public IssueProcessor(JiraReport context, List<JiraPullRequest> pullRequests)
         {
-            this._policy = policy;
+            this._context = context;
             this._pullRequests = pullRequests;
         }
 
@@ -126,7 +133,7 @@ namespace JiraReporter
                 _currentIssue.Resolution = _currentJiraIssue.fields.resolution.name;
                 _currentIssue.StringResolutionDate = _currentJiraIssue.fields.resolutiondate;
                 _currentIssue.ResolutionDate = Convert.ToDateTime(_currentIssue.StringResolutionDate);
-                _currentIssue.CompletedTimeAgo = TimeFormatting.GetStringDay(_currentIssue.ResolutionDate.ToOriginalTimeZone());
+                _currentIssue.CompletedTimeAgo = TimeFormatting.GetStringDay(_currentIssue.ResolutionDate.ToOriginalTimeZone(_context.OffsetFromUtc), _context.ReportDate);
             }
         }
 

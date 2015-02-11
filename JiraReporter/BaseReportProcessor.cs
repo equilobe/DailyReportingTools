@@ -14,36 +14,37 @@ namespace JiraReporter
 {
     public class BaseReportProcessor
     {
-        JiraPolicy Policy { get; set; }
-        JiraOptions Options { get; set; }
+        protected JiraPolicy Policy { get { return Report.Policy; } }
+        protected JiraOptions Options { get { return Report.Options; } }
+        protected JiraReport Report { get; set; }
 
-        public BaseReportProcessor(JiraPolicy policy, JiraOptions options)
+
+        public BaseReportProcessor(JiraReport report)
         {
-            Policy = policy;
-            Options = options;
+            Report = report;
         }
 
         public virtual void ProcessReport(JiraReport report)
         {
-            SaveReport(Policy, report);
+            SaveReport();
         //    SetEmailCollection(report.Authors);
             Policy.EmailCollection = new List<string>();
             Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
-            SendReport(report);
+            SendReport();
         }
 
-        protected virtual void SaveReport(JiraPolicy policy, JiraReport report)
+        protected virtual void SaveReport()
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
-            var reportPath = GetReportPath(report);
-            SaveReportToFile(report, reportPath, policy, viewPath);
+            var reportPath = GetReportPath();
+            SaveReportToFile(Report, reportPath, Policy, viewPath);
         }
 
-        protected virtual string GetReportPath(JiraReport report)
+        protected virtual string GetReportPath()
         {
-            string reportPath = report.Policy.GeneratedProperties.ReportsPath;
+            string reportPath = Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
-            reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
+            reportPath = Path.Combine(reportPath, Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }
 
@@ -53,10 +54,10 @@ namespace JiraReporter
             WriteReport(policy, repCont, reportPath);
         }
 
-        protected virtual void SendReport(JiraReport report)
+        protected virtual void SendReport()
         {
-            var emailer = new ReportEmailerJira(report.Policy, Options);
-            emailer.Authors = report.Authors;
+            var emailer = new ReportEmailerJira(Policy, Options);
+            emailer.Authors = Report.Authors;
 
             emailer.TrySendEmails();
         }

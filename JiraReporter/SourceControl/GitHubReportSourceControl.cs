@@ -8,18 +8,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace JiraReporter.SourceControl
 {
     class GitHubReportSourceControl : GitHubReport
     {
-        JiraPolicy Policy { get; set; }
-        JiraOptions Options { get; set; }
+        JiraPolicy Policy { get { return Context.Policy; } }
+        JiraOptions Options { get { return Context.Options; } }
+        JiraReport Context { get; set; }
 
-        public GitHubReportSourceControl(JiraPolicy policy, JiraOptions options)
+        public GitHubReportSourceControl(JiraReport context)
         {
-            Policy = policy;
-            Options = options;
+            Context = context;
         }
 
         public GitHubReportSourceControl()
@@ -44,14 +45,9 @@ namespace JiraReporter.SourceControl
 
         protected override List<GitHubCommit> GetReportCommits()
         {
-            string fromDate = JiraOptions.DateToISO(Options.FromDate.ToGithubTime());
-            string toDate = JiraOptions.DateToISO(Options.ToDate.ToGithubTime());
-            var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
-            commits = RemoveDuplicateCommits(commits);
-
-            AddName(commits);
-
-            return commits;
+            string fromDate = JiraOptions.DateToISO(Options.FromDate.ToOriginalTimeZone(Context.OffsetFromUtc.Negate()));
+            string toDate = JiraOptions.DateToISO(Options.ToDate.ToOriginalTimeZone(Context.OffsetFromUtc.Negate()));
+            return GetReportCommits(fromDate, toDate);
         }
 
         protected override IReadOnlyList<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate, string branch)

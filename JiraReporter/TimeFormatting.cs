@@ -11,14 +11,14 @@ namespace JiraReporter
 {
     public static class TimeFormatting
     {
-        public static string GetStringDay(DateTime date)
+        public static string GetStringDay(DateTime date, DateTime reportDate)
         {
             var day = string.Empty;
-            if(date.Date == DateTime.Now.ToOriginalTimeZone().Date)
+            if(date.Date == reportDate.Date)
             {
                 day = "Today";
             } 
-            else if(date.Date == DateTime.Now.ToOriginalTimeZone().Date.AddDays(-1))
+            else if(date.Date == reportDate.Date.AddDays(-1))
             {
                 day = "Yesterday";
             }

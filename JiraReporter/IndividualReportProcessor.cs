@@ -12,31 +12,26 @@ namespace JiraReporter.Model
 {
     public class IndividualReportProcessor : BaseReportProcessor
     {
-        JiraPolicy Policy { get; set; }
-        JiraOptions Options { get; set; }
-
-        public IndividualReportProcessor(JiraPolicy policy, JiraOptions options)
-            : base(policy, options)
+        public IndividualReportProcessor(JiraReport report)
+            : base(report)
         {
-            Policy = policy;
-            Options = options;
         }
 
-        public void ProcessReport(IndividualReport report)
+        public void ProcessReport(JiraReport report)
         {
             SaveReport(Policy, report);
             JiraPolicyService.SetIndividualEmail(report.Author.EmailAdress, Policy);
             SendReport(report);
         }
 
-        private void SaveReport(JiraPolicy policy, IndividualReport individualReport)
+        private void SaveReport(JiraReport individualReport)
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
             var reportPath = GetReportPath(individualReport);
-            SaveReportToFile(individualReport, reportPath, policy, viewPath);
+            SaveReportToFile(individualReport, reportPath, viewPath);
         }
 
-        private string GetReportPath(IndividualReport report)
+        private string GetReportPath(JiraReport report)
         {
             string reportPath = report.Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
@@ -44,7 +39,7 @@ namespace JiraReporter.Model
             return reportPath;
         }
 
-        private void SendReport(IndividualReport report)
+        private void SendReport(JiraReport report)
         {
             var emailer = new ReportEmailerJira(report.Policy, Options);
             emailer.Author = report.Author;

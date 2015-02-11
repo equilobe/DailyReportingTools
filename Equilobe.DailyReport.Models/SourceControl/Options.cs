@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 using System.Globalization;
-using Equilobe.DailyReport.Models.ReportPolicy;
 
-namespace SourceControlLogReporter
+namespace Equilobe.DailyReport.Models.SourceControl
 {
     public class Options
     {
@@ -23,7 +22,6 @@ namespace SourceControlLogReporter
 
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
-        public Policy Policy { get; set; }
 
         public List<DateTime> ReportDates { get; set; }
 
@@ -80,10 +78,9 @@ namespace SourceControlLogReporter
         }
 
 
-        public void LoadDates(Policy policy)
+        public void LoadDates()
         {
-            Policy = policy;
-
+            
             if (HasToDate)
                 ToDate = GetDate(StringToDate).Date;
 
@@ -119,7 +116,7 @@ namespace SourceControlLogReporter
             }
         }
 
-        protected DateTime GetDate(string dateString)
+        public DateTime GetDate(string dateString)
         {
             DateTime date;
             if (DateTime.TryParse(dateString, out date))

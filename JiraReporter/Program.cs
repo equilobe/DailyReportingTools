@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;
@@ -15,6 +14,8 @@ using System.Xml.Serialization;
 using SourceControlLogReporter;
 using Equilobe.DailyReport.Models.Jira;
 using JiraReporter.Services;
+using JiraReporter.Helpers;
+using CommandLine;
 
 namespace JiraReporter
 {
@@ -22,35 +23,39 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
-            JiraOptions options = GetCommandLineOptions(args);
-            JiraPolicy policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
+            var options = new JiraOptions();                
+            new CommandLineParser().ParseArguments(args, options);
+            var policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
+
+            var report = new JiraReport(policy, options);
+
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
             var policyService = new JiraPolicyService(policy);
             policyService.SetPolicy(options);
 
-            LoadReportDates(policy, options);
+            LoadReportDates(report);
 
-            if (RunReport(policy, options))
+            if (RunReport(report))
                 RunReportTool(policy, options);
             else
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
-        private static bool RunReport(JiraPolicy policy, JiraOptions options)
+        private static bool RunReport(JiraReport context)
         {
-            var today = DateTime.Now.ToOriginalTimeZone().Date;
+            var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
 
-            if (policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
+            if (context.Policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
                 return false;
 
-            if (options.IsWeekend() == true)
+            if (DatesHelper.IsWeekend(context) == true)
                 return false;
 
-            if (CheckDayFromOverrides(policy) == true)
+            if (CheckDayFromOverrides(context.Policy) == true)
                 return false;
 
-            if (options.TriggerKey != null && !policy.IsForcedByLead(options.TriggerKey))
+            if (context.Options.TriggerKey != null && !context.Policy.IsForcedByLead(context.Options.TriggerKey))
                 return false;
 
             return true;
@@ -78,9 +83,10 @@ namespace JiraReporter
             {
                 foreach (var author in report.Authors)
                 {
-                    var individualReport = ReportGenerator.GetIndividualReport(report, author);
-                    var reportProcessor = new IndividualReportProcessor(policy, options);
-                    reportProcessor.ProcessReport(individualReport);
+                    report.Author = author;
+                    report.Title = JiraReportHelpers.GetReportTitle(report.FromDate, report.ToDate, report.Policy, author.Name);
+                    var reportProcessor = new IndividualReportProcessor(report);
+                    reportProcessor.ProcessReport();
                 }
         //        policy.SaveToFile(options.PolicyPath);
             }
@@ -96,19 +102,13 @@ namespace JiraReporter
             Razor.SetTemplateBase(typeof(SourceControlLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
 
-        private static JiraOptions GetCommandLineOptions(string[] args)
-        {
-            JiraOptions options = new JiraOptions();
-            ICommandLineParser parser = new CommandLineParser();
-            parser.ParseArguments(args, options);
-            return options;
-        }
 
-        private static void LoadReportDates(JiraPolicy policy, JiraOptions options)
+
+        private static void LoadReportDates(JiraReport context)
         {
-            var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
-            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
-            options.LoadDates(policy);
+            var timesheetSample = RestApiRequests.GetTimesheet(context.Policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+            context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
+            new DatesHelper(context).LoadDates();
         }
 
         private static void SetProjectInfo(JiraPolicy policy, Project project)

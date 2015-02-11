@@ -50,5 +50,22 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
 
         [XmlIgnore]
         public IDictionary<string, List<string>> Users { get; set; }
+
+
+        private static TimeSpan? _offsetFromUtc;
+        [XmlIgnore]
+        private static TimeSpan OffsetFromUtc
+        {
+            get
+            {
+                if (!_offsetFromUtc.HasValue)
+                    throw new ApplicationException("You must first initialize the Offset");
+                return _offsetFromUtc.Value;
+            }
+            set
+            {
+                _offsetFromUtc = value;
+            }
+        }
     }
 }

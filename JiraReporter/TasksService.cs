@@ -11,17 +11,17 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public SprintTasks GetSprintTasks(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests)
+        public SprintTasks GetSprintTasks(JiraReport context, List<JiraPullRequest> pullRequests)
         {
             var sprintTasks = new SprintTasks();
-            var issues = RestApiRequests.GetSprintTasks(policy);
-            var unfinishedTasks = GetUnfinishedTasks(policy);
-            SetUnfinishedTasks(unfinishedTasks, sprintTasks, pullRequests, policy);
+            var issues = RestApiRequests.GetSprintTasks(context.Policy);
+            var unfinishedTasks = GetUnfinishedTasks(context.Policy);
+            SetUnfinishedTasks(unfinishedTasks, sprintTasks, pullRequests, context);
 
-            var completedTasks = GetCompletedTasks(policy, options);
+            var completedTasks = GetCompletedTasks(context);
             SetCompletedTasks(GroupCompletedTasks(completedTasks), sprintTasks);
             SortTasks(sprintTasks);
-            SetSprintTasksErrors(policy, sprintTasks);
+            SetSprintTasksErrors(context.Policy, sprintTasks);
 
             return sprintTasks;
         }
@@ -39,15 +39,15 @@ namespace JiraReporter
             sprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(sprintTasks.UnassignedTasks);
         } 
 
-        public List<Issue> GetCompletedTasks(JiraPolicy policy, JiraOptions options)
+        public List<Issue> GetCompletedTasks(JiraReport context)
         {
             var completedTasks = new List<Issue>();
-            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());
+            var issues = RestApiRequests.GetCompletedIssues(context.Policy, context.ReportDate.AddDays(-6), context.ReportDate);
             foreach (var jiraIssue in issues.issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
                 {
-                    var issue = GetCompleteIssue(null, policy, jiraIssue);
+                    var issue = GetCompleteIssue(null, context, jiraIssue);
 
                     completedTasks.Add(issue);
                 }
@@ -61,7 +61,7 @@ namespace JiraReporter
             return RestApiRequests.GetSprintTasks(policy);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<JiraPullRequest> pullRequests, JiraPolicy policy)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<JiraPullRequest> pullRequests, JiraReport context)
         {
             tasks.InProgressTasks = new List<Issue>();
             tasks.OpenTasks = new List<Issue>();
@@ -69,7 +69,7 @@ namespace JiraReporter
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
-                var issue = GetCompleteIssue(pullRequests, policy, jiraIssue);
+                var issue = GetCompleteIssue(pullRequests, context, jiraIssue);
 
                 if (issue.StatusCategory.name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
@@ -84,10 +84,10 @@ namespace JiraReporter
             }
         }
 
-        private static Issue GetCompleteIssue(List<JiraPullRequest> pullRequests, JiraPolicy policy, JiraIssue jiraIssue)
+        private static Issue GetCompleteIssue(List<JiraPullRequest> pullRequests, JiraReport context, JiraIssue jiraIssue)
         {
             var issue = new Issue(jiraIssue);
-            var issueProcessor = new IssueProcessor(policy, pullRequests);
+            var issueProcessor = new IssueProcessor(context, pullRequests);
 
             issueProcessor.SetIssue(issue, jiraIssue);
             IssueAdapter.SetIssueErrors(issue, policy);

@@ -65,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\JiraOffsetHelper.cs" />
+    <Compile Include="Helpers\DatesHelper.cs" />
     <Compile Include="Services\DayLogLoader.cs" />
     <Compile Include="JiraApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
@@ -74,7 +76,6 @@
     <Compile Include="Services\IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
-    <Compile Include="JiraOptions.cs" />
     <Compile Include="JiraReportHelpers.cs" />
     <Compile Include="JiraService.cs" />
     <Compile Include="JwtAuthenticator.cs" />
@@ -174,6 +175,10 @@
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
       <Name>Equilobe.DailyReport.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">
+      <Project>{7a42dd16-07e8-46a6-9083-47f342b644e5}</Project>
+      <Name>Equilobe.DailyReport.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\SvnLogReporter\SourceControlLogReporter.csproj">
       <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>

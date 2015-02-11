@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Globalization;
 using System.Diagnostics;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.SourceControl;
 
 namespace SourceControlLogReporter
 {

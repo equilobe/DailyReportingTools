@@ -5,18 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.ReportPolicy;
 
 namespace JiraReporter.Services
 {
     class DayLogLoader
     {
-        public static JiraDayLog CreateDayLog(JiraAuthor author, DateTime date, JiraOptions options)
+        public static JiraDayLog CreateDayLog(JiraAuthor author, DateTime date, JiraReport context)
         {
+            var options = context.Options;
             var dayLog = new JiraDayLog();
 
             dayLog.Commits = AuthorHelpers.GetDayLogCommits(author, date);
             dayLog.Date = date;
-            dayLog.Title = TimeFormatting.GetStringDay(date);
+            dayLog.Title = TimeFormatting.GetStringDay(date, context.ReportDate);
 
             if (author.Issues != null)
                 if (author.Issues.Count > 0)

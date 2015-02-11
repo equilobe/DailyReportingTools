@@ -17,19 +17,19 @@ namespace JiraReporter.Services
     class AuthorLoader
     {
         SprintTasks _sprintIssues;
-        JiraPolicy _policy;
+        JiraPolicy _policy { get { return _context.Policy; } }
         List<JiraCommit> _commits;
-        JiraOptions _options;
+        JiraOptions _options { get { return _context.Options; } }
         List<JiraPullRequest> _pullRequests;
         Sprint _sprint;
         JiraAuthor _currentAuthor;
+        JiraReport _context;
 
-        public AuthorLoader(JiraOptions options, JiraPolicy policy, Sprint sprint, SprintTasks sprintIssues, List<JiraCommit> commits, List<JiraPullRequest> pullRequests)
+        public AuthorLoader(JiraReport context, Sprint sprint, SprintTasks sprintIssues, List<JiraCommit> commits, List<JiraPullRequest> pullRequests)
         {
+            this._context = context;
             this._sprintIssues = sprintIssues;
             this._commits = commits;
-            this._policy = policy;
-            this._options = options;
             this._pullRequests = pullRequests;
             this._sprint = sprint;
         }
@@ -115,9 +115,9 @@ namespace JiraReporter.Services
         private void LoadTimesheetIssueDetails()
         {
             var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _policy, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _policy, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _policy, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _context, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _context, _pullRequests);
+            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _context, _pullRequests);
         }
 
         private void SetIssues()
@@ -235,7 +235,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.DayLogs = new List<JiraDayLog>();
             foreach (var day in _options.ReportDates)
-                _currentAuthor.DayLogs.Add(DayLogLoader.CreateDayLog(_currentAuthor, day, _options));
+                _currentAuthor.DayLogs.Add(DayLogLoader.CreateDayLog(_currentAuthor, day, _context));
             _currentAuthor.DayLogs = _currentAuthor.DayLogs.OrderBy(d => d.Date).ToList();
             _currentAuthor.DayLogs.RemoveAll(d => d.Commits.Count == 0 && d.Issues == null);
         }
