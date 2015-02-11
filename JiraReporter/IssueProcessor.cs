@@ -74,6 +74,14 @@ namespace JiraReporter
             SetDisplayStatus();
             SetHasWorkLoggedByAssignee();
             SetIssueExceededEstimate();
+            SetIsNewProperty();
+        }
+
+        private void SetIsNewProperty()
+        {
+            if (_currentIssue.Created < DateTime.Now.ToOriginalTimeZone(_context.OffsetFromUtc).AddDays(-1))
+                return;
+            _currentIssue.IsNew = true;
         }
 
         private void SetSubtasks()

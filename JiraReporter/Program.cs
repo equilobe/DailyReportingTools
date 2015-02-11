@@ -31,10 +31,9 @@ namespace JiraReporter
 
             var project = RestApiRequests.GetProject(policy);
             SetProjectInfo(policy, project);
-            var policyService = new JiraPolicyService(report);
-            policyService.SetPolicy();
-
             LoadReportDates(report);
+            var policyService = new JiraPolicyService(report);
+            policyService.SetPolicy();        
 
             if (RunReport(report))
                 RunReportTool(report);
@@ -88,7 +87,6 @@ namespace JiraReporter
                     var reportProcessor = new IndividualReportProcessor(report);
                     reportProcessor.ProcessReport();
                 }
-        //        policy.SaveToFile(options.PolicyPath);
             }
             else
             {

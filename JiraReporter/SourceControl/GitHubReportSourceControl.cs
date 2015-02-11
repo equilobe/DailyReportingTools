@@ -91,6 +91,14 @@ namespace JiraReporter.SourceControl
             return connection.Get<Octokit.User>(ApiUrls.User(username)).Result;
         }
 
+        protected override List<GitHubCommit> GetReportCommits(string fromDate, string toDate)
+        {
+            var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
+            commits = RemoveDuplicateCommits(commits);
+            AddName(commits);
+            return commits;
+        } 
+
         protected override Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequests)
         {
             var log = new Log();

@@ -12,14 +12,15 @@ namespace JiraReporter.SourceControl
 {
     public abstract class ReportBaseSourceControl
     {
-        protected JiraPolicy Policy { get; private set; }
-        protected JiraOptions Options { get; private set; }
+        //protected JiraPolicy Policy { get; private set; }
+        //protected JiraOptions Options { get; private set; }
+        protected JiraReport Report { get; set; }
 
         public string PathToLog
         {
             get
             {
-                return GetLogFilePath(Policy.GeneratedProperties.LogPath, Options.ReportDate);
+                return GetLogFilePath(Report.Policy.GeneratedProperties.LogPath, Report.Options.ReportDate);
             }
         }
 
@@ -28,15 +29,14 @@ namespace JiraReporter.SourceControl
             return Path.Combine(logPath, reportDate.ToString("yyyy-MM-dd") + ".xml");
         }
 
-        public ReportBaseSourceControl(JiraPolicy policy, JiraOptions options)
+        public ReportBaseSourceControl(JiraReport report)
         {
-            Policy = policy;
-            Options = options;
+            Report = report;
         }
 
-        public static T Create<T>(JiraPolicy p, JiraOptions o) where T : ReportBase
+        public static T Create<T>(JiraReport report) where T : ReportBase
         {
-            return Activator.CreateInstance(typeof(T), p, o) as T;
+            return Activator.CreateInstance(typeof(T), report) as T;
         }
     }
 }

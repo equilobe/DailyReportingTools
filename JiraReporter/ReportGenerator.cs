@@ -21,7 +21,7 @@ namespace JiraReporter
 
             if (report.Policy.SourceControlOptions != null)
             {
-                var log = SourceControlProcessor.GetSourceControlLog(report.Policy, report.Options);
+                var log = SourceControlProcessor.GetSourceControlLog(report);
                 report.PullRequests = SourceControlProcessor.GetPullRequests(log);
                 report.Commits = SourceControlProcessor.GetCommits(log);
             }
