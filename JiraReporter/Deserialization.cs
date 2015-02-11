@@ -21,7 +21,7 @@ namespace JiraReporter
         }
     }
 
-    class Deserialization
+    public class Deserialization
     {
         public static T XmlDeserialize <T>(string xmlString)
         {

@@ -59,7 +59,13 @@ namespace DailyReportWeb.Controllers.Api
             using (var db = new ReportsDb())
             {
                 var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedReportSettings.ProjectId && qr.BaseUrl == updatedReportSettings.BaseUrl);
-                reportSettings = updatedReportSettings;
+                if (reportSettings == null)
+                {
+                    reportSettings = new ReportSettings();
+                    db.ReportSettings.Add(reportSettings);
+                }
+                updatedReportSettings.CopyProperties(reportSettings);
+                reportSettings.PolicyXml = Serialization.XmlSerialize(updatedReportSettings.Policy);
 
                 db.SaveChanges();
             }
@@ -91,10 +97,17 @@ namespace DailyReportWeb.Controllers.Api
         {
             var jiraPolicy = GetReportPolicyFromJira(id, baseUrl, sharedSecret);
             var reportSettings = GetReportPolicyFromDb(id, baseUrl, sharedSecret);
-
-            //reportSettings.Policy = jiraPolicy;
+            reportSettings.Policy = reportSettings.PolicyXml == null ? jiraPolicy : SyncPolicyToJira(jiraPolicy, reportSettings.PolicyXml);
 
             return reportSettings;
+        }
+
+        private JiraPolicy SyncPolicyToJira(JiraPolicy policy, string policyXml)
+        {
+            Deserialization.XmlDeserialize<JiraPolicy>(policyXml)
+                .CopyProperties(policy);
+
+            return policy;
         }
 
         private static ReportSettings GetReportPolicyFromDb(long id, string baseUrl, string sharedSecret)

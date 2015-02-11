@@ -163,6 +163,7 @@
     <Compile Include="Helpers\ReportRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\PolicySummaryService.cs" />
+    <Compile Include="Services\Reflection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\js\policyEditorApp.js" />

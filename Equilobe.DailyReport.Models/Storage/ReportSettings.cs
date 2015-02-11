@@ -27,7 +27,7 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public string PolicyXml { get; set; }
 
-        // NO DB
-        //public JiraPolicy Policy { get; set; }
+        [NotMapped]
+        public JiraPolicy Policy { get; set; }
     }
 }

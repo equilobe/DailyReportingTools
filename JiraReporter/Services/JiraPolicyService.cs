@@ -153,7 +153,6 @@ namespace JiraReporter.Services
         {
             Policy.AdvancedOptions = new JiraAdvancedOptions();
             SetReportTitle();
-            SetRootPath();
             SetPermanentTaskLabel();
             ResetToDefault();
             SetDraftMode(options);
@@ -195,12 +194,6 @@ namespace JiraReporter.Services
             Policy.GeneratedProperties.IsFinalDraft = false;
             Policy.GeneratedProperties.IsIndividualDraft = false;
             Policy.GeneratedProperties.IsFinalReport = true;
-        }
-
-        private void SetRootPath()
-        {
-            if (Policy.GeneratedProperties.RootPath == null)
-                Policy.GeneratedProperties.RootPath = Path.GetFullPath(Policy.GeneratedProperties.ProjectName);
         }
 
         private void SetReportTitle()
