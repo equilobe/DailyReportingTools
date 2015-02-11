@@ -92,6 +92,8 @@ namespace Equilobe.DailyReport.Models.Jira
         public string StatusType { get; set; }
         [XmlIgnore]
         public bool DisplayStatus { get; set; }
+        [XmlIgnore]
+        public bool IsNew { get; set; }
 
         [XmlIgnore]
         public string CompletedTimeAgo { get; set; }

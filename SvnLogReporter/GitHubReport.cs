@@ -158,7 +158,7 @@ namespace SourceControlLogReporter
             return GetReportCommits(fromDate, toDate);
         }
 
-        protected List<GitHubCommit> GetReportCommits(string fromDate, string toDate)
+        protected virtual List<GitHubCommit> GetReportCommits(string fromDate, string toDate)
         {
             var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
             commits = RemoveDuplicateCommits(commits);

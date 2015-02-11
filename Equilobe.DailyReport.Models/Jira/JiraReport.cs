@@ -89,6 +89,30 @@ namespace Equilobe.DailyReport.Models.Jira
             set { _summary = value; }
         }
 
+        private Sprint _sprint;
+        public Sprint Sprint
+        {
+            get
+            {
+                if (_sprint == null)
+                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
+                return _sprint;
+            }
+            set { _sprint = value; }
+        }
+
+        private List<JiraCommit> _commits;
+        public List<JiraCommit> Commits
+        {
+            get
+            {
+                if (_commits == null)
+                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!"); return _commits;
+            }
+            set { _commits = value; }
+        }
+
+
         private SprintTasks _sprintTasks;
         public SprintTasks SprintTasks
         {
@@ -106,7 +130,7 @@ namespace Equilobe.DailyReport.Models.Jira
         {
             get
             {
-                if(_pullRequests == null)
+                if (_pullRequests == null)
                     throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
                 return _pullRequests;
             }
