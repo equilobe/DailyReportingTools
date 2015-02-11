@@ -17,14 +17,5 @@ namespace Equilobe.DailyReport.Models.Jira
         public string TriggerKey { get; set; }
 
         public JiraPolicy Policy { get; set; }
-
-        public List<DateTime> ReportDates { get; set; }
-
-        public static string DateToISO(DateTime date)
-        {
-            return date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", DateTimeFormatInfo.InvariantInfo);
-        }
-
-
     }
 }

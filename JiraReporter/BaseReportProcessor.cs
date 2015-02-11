@@ -37,7 +37,7 @@ namespace JiraReporter
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
             var reportPath = GetReportPath();
-            SaveReportToFile(Report, reportPath, Policy, viewPath);
+            SaveReportToFile(Report, reportPath, viewPath);
         }
 
         protected virtual string GetReportPath()
@@ -48,10 +48,10 @@ namespace JiraReporter
             return reportPath;
         }
 
-        protected void SaveReportToFile<T>(T report, string reportPath, JiraPolicy policy, string viewPath)
+        protected void SaveReportToFile(JiraReport report, string reportPath, string viewPath)
         {
             var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
-            WriteReport(policy, repCont, reportPath);
+            WriteReport(report.Policy, repCont, reportPath);
         }
 
         protected virtual void SendReport()

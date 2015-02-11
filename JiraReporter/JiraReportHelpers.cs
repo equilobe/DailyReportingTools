@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,15 @@ namespace JiraReporter
 {
     public static class JiraReportHelpers
     {
-        public static string GetReportTitle(DateTime fromDate, DateTime toDate, JiraPolicy policy, string author = "")
+        public static string GetReportTitle(JiraReport report)
         {
             var title = string.Empty;
-            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(fromDate, toDate);
-            if (policy.GeneratedProperties.IsFinalDraft || policy.GeneratedProperties.IsIndividualDraft)
+            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(report.Options.FromDate, report.Options.ToDate);
+            if (report.Policy.GeneratedProperties.IsFinalDraft || report.Policy.GeneratedProperties.IsIndividualDraft)
                 title += "DRAFT | ";
-            if (!string.IsNullOrEmpty(author))
-                title += author + " | ";
-            title += policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
+            if (report.Policy.GeneratedProperties.IsIndividualDraft)
+                title += report.Author.Name + " | ";
+            title += report.Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
 
             return title;
         }

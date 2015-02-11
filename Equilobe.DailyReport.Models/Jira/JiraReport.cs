@@ -73,16 +73,47 @@ namespace Equilobe.DailyReport.Models.Jira
             set { _authors = value; }
         }
 
-
-
         public DateTime Date { get { return Options.FromDate; } }
         public DateTime FromDate { get { return Options.FromDate; } }
         public DateTime ToDate { get { return Options.ToDate; } }
-        
-        public Summary Summary { get; set; }
-        public SprintTasks SprintTasks { get; set; }
-        public List<JiraPullRequest> PullRequests { get; set; }
-        
+
+        private Summary _summary;
+        public Summary Summary
+        {
+            get
+            {
+                if (_summary == null)
+                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
+                return _summary;
+            }
+            set { _summary = value; }
+        }
+
+        private SprintTasks _sprintTasks;
+        public SprintTasks SprintTasks
+        {
+            get
+            {
+                if (_sprintTasks == null)
+                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
+                return _sprintTasks;
+            }
+            set { _sprintTasks = value; }
+        }
+
+        private List<JiraPullRequest> _pullRequests;
+        public List<JiraPullRequest> PullRequests
+        {
+            get
+            {
+                if(_pullRequests == null)
+                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
+                return _pullRequests;
+            }
+            set { _pullRequests = value; }
+        }
+
+
         public List<JiraPullRequest> UnrelatedPullRequests
         {
             get
@@ -91,15 +122,12 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public bool IsIndividualReport { get; set; }
-
-
         private JiraAuthor _author;
         public JiraAuthor Author
         {
             get
             {
-                if (!IsIndividualReport)
+                if (!Policy.GeneratedProperties.IsIndividualDraft)
                     throw new InvalidOperationException("This is not an individual report!");
 
                 return _author;

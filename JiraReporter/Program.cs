@@ -49,10 +49,10 @@ namespace JiraReporter
             if (context.Policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
                 return false;
 
-            if (DatesHelper.IsWeekend(context) == true)
+            if (DatesHelper.IsWeekend(context))
                 return false;
 
-            if (CheckDayFromOverrides(context.Policy) == true)
+            if (CheckDayFromOverrides(context))
                 return false;
 
             if (context.Options.TriggerKey != null && !context.Policy.IsForcedByLead(context.Options.TriggerKey))
@@ -61,30 +61,30 @@ namespace JiraReporter
             return true;
         }
 
-        private static bool CheckDayFromOverrides(JiraPolicy policy)
+        private static bool CheckDayFromOverrides(JiraReport context)
         {
-            if (policy.CurrentOverride != null && policy.CurrentOverride.NonWorkingDays != null)
-                return policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
+            if (context.Policy.CurrentOverride != null && context.Policy.CurrentOverride.NonWorkingDays != null)
+                return context.Policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Day);
             return false;
         }
 
-        private static void RunReportTool(JiraPolicy policy, JiraOptions options)
+        private static void RunReportTool(JiraReport context)
         {
             SetTemplateGlobal();
 
-            var report = ReportGenerator.GenerateReport(policy, options);
+            var report = ReportGenerator.GenerateReport(context);
 
-            ProcessAndSendReport(policy, options, report);
+            ProcessAndSendReport(report);
         }
 
-        private static void ProcessAndSendReport(JiraPolicy policy, JiraOptions options, JiraReport report)
+        private static void ProcessAndSendReport(JiraReport report)
         {
-            if (policy.GeneratedProperties.IsIndividualDraft)
+            if (report.Policy.GeneratedProperties.IsIndividualDraft)
             {
                 foreach (var author in report.Authors)
                 {
                     report.Author = author;
-                    report.Title = JiraReportHelpers.GetReportTitle(report.FromDate, report.ToDate, report.Policy, author.Name);
+                    report.Title = JiraReportHelpers.GetReportTitle(report);
                     var reportProcessor = new IndividualReportProcessor(report);
                     reportProcessor.ProcessReport();
                 }

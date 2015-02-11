@@ -59,8 +59,8 @@ namespace JiraReporter.Helpers
         {
             if (Policy.GeneratedProperties.LastReportSentDate == new DateTime())
             {
-                Options.FromDate = DateTime.Now.ToOriginalTimeZone().AddDays(-1).Date;
-                Options.ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+                Options.FromDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).AddDays(-1).Date;
+                Options.ToDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date;
             }
             else
                 SetDatesFromLastSentReport();
@@ -69,7 +69,7 @@ namespace JiraReporter.Helpers
         private void SetDatesFromLastSentReport()
         {
             Options.FromDate = Policy.GeneratedProperties.LastReportSentDate.Date;
-            Options.ToDate = DateTime.Now.ToOriginalTimeZone().Date;
+            Options.ToDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date;
         }
 
         public static bool IsWeekend(JiraReport context)
