@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.ReportPolicy;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,6 +28,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public string PolicyXml { get; set; }
 
         // NO DB
-        //public Policy Policy { get; set; }
+        //public JiraPolicy Policy { get; set; }
     }
 }

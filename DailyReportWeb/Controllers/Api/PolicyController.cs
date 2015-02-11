@@ -16,13 +16,13 @@ using JiraReporter.Services;
 
 namespace DailyReportWeb.Controllers.Api
 {
+    [Authorize]
     public class PolicyController : ApiController
     {
         // GET: api/Policy
         public IEnumerable<PolicySummary> Get()
         {
             var baseUrl = User.GetBaseUrl();
-
             var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
             return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
@@ -31,43 +31,38 @@ namespace DailyReportWeb.Controllers.Api
         // GET: api/Policy/5
         public ReportSettings Get(long id)
         {
+            var baseUrl = User.GetBaseUrl();
+            var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+
+            return SyncReportSettingsToJira(id, baseUrl, sharedSecret);
+        }
+
+        public void Put([FromBody]PolicySummary policySummary)
+        {
             using (var db = new ReportsDb())
             {
-                var baseUrl = User.GetBaseUrl();
-                var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
-
-                var policy = new Policy
-                {
-                    BaseUrl = baseUrl,
-                    SharedSecret = sharedSecret,
-                    ProjectId = id
-                };
-
-                var projectInfo = JiraReporter.RestApiRequests.GetProject(policy);
-                policy.GeneratedProperties = new GeneratedProperties
-                {
-                    ProjectName = projectInfo.Name,
-                    ProjectKey = projectInfo.Key
-                };
-
-                var projectUsers = JiraReporter.RestApiRequests.GetUsers(policy);
-                //policy.Users = projectUsers;
-
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
                 if (reportSettings == null)
                 {
-                    reportSettings = new ReportSettings
-                    {
-                        BaseUrl = baseUrl,
-                        SharedSecret = sharedSecret,
-                        ProjectId = id
-                    };
+                    reportSettings = CreateFromPolicySummary(policySummary);
                     db.ReportSettings.Add(reportSettings);
                 }
-                //reportSettings.Policy = policy;
+                reportSettings.ReportTime = policySummary.ReportTime;
 
-                return reportSettings;
+                db.SaveChanges();
+            }
         }
+
+        // PUT: api/Policy/5
+        public void Put(long id, [FromBody]ReportSettings updatedReportSettings)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedReportSettings.ProjectId && qr.BaseUrl == updatedReportSettings.BaseUrl);
+                reportSettings = updatedReportSettings;
+
+                db.SaveChanges();
+            }
         }
 
         // Policies are not created directly!
@@ -76,35 +71,11 @@ namespace DailyReportWeb.Controllers.Api
         //{
         //}
 
-        public void Put([FromBody]PolicySummary policySummary)
-        {
-            using (var db = new ReportsDb())
-            {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
-
-                if (reportSettings == null)
-                {
-                    reportSettings = CreateFromPolicySummary(policySummary);
-                    db.ReportSettings.Add(reportSettings);
-        }
-
-                reportSettings.ReportTime = policySummary.ReportTime;
-
-                db.SaveChanges();
-            }
-        }
-
-        // PUT: api/Policy/5
-        public void Put(long id, [FromBody]Policy updatedPolicy)
-        {
-            using (var db = new ReportsDb())
-            {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId && qr.BaseUrl == updatedPolicy.BaseUrl);
-                //reportSettings.Policy = updatedPolicy;
-
-                db.SaveChanges();
-            }
-        }
+        // Policies are not deleted directly!
+        // DELETE: api/Policy/5
+        //public void Delete(int id)
+        //{
+        //}
 
         private static ReportSettings CreateFromPolicySummary(PolicySummary policySummary)
         {
@@ -116,10 +87,60 @@ namespace DailyReportWeb.Controllers.Api
             };
         }
 
-        // Policies are not deleted directly!
-        // DELETE: api/Policy/5
-        //public void Delete(int id)
-        //{
-        //}
+        private ReportSettings SyncReportSettingsToJira(long id, string baseUrl, string sharedSecret)
+        {
+            var jiraPolicy = GetReportPolicyFromJira(id, baseUrl, sharedSecret);
+            var reportSettings = GetReportPolicyFromDb(id, baseUrl, sharedSecret);
+
+            //reportSettings.Policy = jiraPolicy;
+
+            return reportSettings;
+        }
+
+        private static ReportSettings GetReportPolicyFromDb(long id, string baseUrl, string sharedSecret)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == id && qr.BaseUrl == baseUrl);
+                if (reportSettings == null)
+                {
+                    reportSettings = new ReportSettings
+                    {
+                        BaseUrl = baseUrl,
+                        SharedSecret = sharedSecret,
+                        ProjectId = id
+                    };
+                }
+
+                return reportSettings;
+            }
+        }
+
+        private static JiraPolicy GetReportPolicyFromJira(long id, string baseUrl, string sharedSecret)
+        {
+            var policy = new JiraPolicy
+            {
+                BaseUrl = baseUrl,
+                SharedSecret = sharedSecret,
+                ProjectId = id
+            };
+
+            var project = RestApiRequests.GetProject(policy);
+            policy.GeneratedProperties = new JiraGeneratedProperties
+            {
+                ProjectName = project.Name,
+                ProjectKey = project.Key
+            };
+
+            policy.UserOptions = RestApiRequests.GetUsers(policy)
+                .Select(user => new User
+                {
+                    JiraDisplayName = user.displayName,
+                    JiraUserKey = user.key
+                })
+                .ToList();
+
+            return policy;
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace JiraReporter.SourceControl
                 var command = GetCommandString();
                 Cmd.ExecuteSingleCommand(command);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return;
             }
