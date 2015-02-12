@@ -1,6 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using JiraReporter.Model;

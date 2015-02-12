@@ -16,7 +16,7 @@ using Octokit;
 using Octokit.Internal;
 using System.Globalization;
 using SourceControlLogReporter;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.SourceControl;
 using CommandLine;

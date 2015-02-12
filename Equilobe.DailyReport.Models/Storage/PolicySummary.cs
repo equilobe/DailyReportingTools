@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
 
-namespace Equilobe.DailyReport.Models.ReportPolicy
+namespace Equilobe.DailyReport.Models.Storage
 {
     public class PolicySummary
     {

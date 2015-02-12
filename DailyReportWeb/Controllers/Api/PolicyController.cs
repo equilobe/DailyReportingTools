@@ -8,7 +8,7 @@ using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.DAL;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Storage;
 using JiraReporter;
 using DailyReportWeb.Services;

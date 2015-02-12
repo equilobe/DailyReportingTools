@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Jira;
 namespace Equilobe.DailyReport.Models.ReportFrame
 {

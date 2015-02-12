@@ -1,5 +1,4 @@
-﻿using Equilobe.DailyReport.Models.Report;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.ReportPolicy
+namespace Equilobe.DailyReport.Models.Storage
 {
     public class AdvancedOptions
     {

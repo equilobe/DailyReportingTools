@@ -1,4 +1,4 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;

@@ -1,5 +1,5 @@
 ﻿using Equilobe.DailyReport.Models;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Octokit;
 using Octokit.Internal;
 using SourceControlLogReporter;

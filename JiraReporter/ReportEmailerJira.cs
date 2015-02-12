@@ -10,7 +10,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using JiraReporter.Model;
 using System.Net.Mime;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 

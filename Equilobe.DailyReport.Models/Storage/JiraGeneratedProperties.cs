@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.ReportPolicy
+namespace Equilobe.DailyReport.Models.Storage
 {
     public class JiraGeneratedProperties
     {

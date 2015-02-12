@@ -1,4 +1,4 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.DAL;
 using RestSharp;
 using System;
