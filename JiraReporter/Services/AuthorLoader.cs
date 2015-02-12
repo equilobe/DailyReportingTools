@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using RestSharp;
 using Equilobe.DailyReport.Models.ReportPolicy;
-using Equilobe.DailyReport.Models.Report;
+using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;

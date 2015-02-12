@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using Equilobe.DailyReport.Models.Report;
+using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace JiraReporter.Services
 {

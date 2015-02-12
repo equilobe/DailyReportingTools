@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Equilobe.DailyReport.Models.Report;
+using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace JiraReporter.SourceControl
 {

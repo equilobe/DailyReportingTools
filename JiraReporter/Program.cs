@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SourceControlLogReporter;
-using Equilobe.DailyReport.Models.Report;
+using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 using JiraReporter.Helpers;
 using CommandLine;

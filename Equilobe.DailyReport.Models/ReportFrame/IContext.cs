@@ -1,7 +1,7 @@
 ﻿using System;
 using Equilobe.DailyReport.Models.ReportPolicy;
 
-namespace Equilobe.DailyReport.Models.Report
+namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public interface IContext
     {

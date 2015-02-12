@@ -1,6 +1,6 @@
 ﻿using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Enums;
-using Equilobe.DailyReport.Models.Report;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using JiraReporter.SourceControl;

@@ -1,4 +1,4 @@
-﻿using Equilobe.DailyReport.Models.Report;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using System;
 using System.Collections.Generic;

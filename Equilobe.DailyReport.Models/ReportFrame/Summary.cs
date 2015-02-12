@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.Report
+namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class Summary
     {
