@@ -60,7 +60,7 @@ namespace SourceControlLogReporter
         public string GetCommandString()
         {
             return string.Format("svn log {0} --xml --username \"{1}\" --password \"{2}\" -r{{{3:yyyy-MM-ddTHH:mmZ}}}:{{{4:yyyy-MM-ddTHH:mmZ}}} > \"{5}\"",
-                            Policy.SourceControlOptions.RepoUrl,
+                            Policy.SourceControlOptions.Repo,
                             Policy.SourceControlOptions.Username,
                             Policy.SourceControlOptions.Password,
                             Options.FromDate,

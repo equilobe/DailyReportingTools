@@ -132,7 +132,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" ng-show="sourceControlType == 'SVN'">
+            <div class="panel panel-default" ng-if="sourceControlType == 'SVN'">
                 <div class="panel-heading">
                     <h4>SVN</h4>
                 </div>
@@ -144,7 +144,7 @@
                                     Repository Url:
                                 </label>
                                 <div ng-form="svnRepoUrlForm">
-                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repoUrl" ng-pattern=@Html.Raw(@"/^(\b(https?|ftp|file)://)?[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/") />
+                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repo" ng-pattern=@Html.Raw(@"/^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$/") />
                                     <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                                 </div>
                             </div>
@@ -172,7 +172,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" ng-show="sourceControlType == 'GitHub'">
+            <div class="panel panel-default" ng-if="sourceControlType == 'GitHub'">
                 <div class="panel-heading">
                     <h4>GitHub</h4>
                 </div>
@@ -194,7 +194,7 @@
                                     Repository Name:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitRepoName" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repoName" />
+                                    <input type="text" name="gitRepoName" class="form-control" placeholder="" ng-model="report.policy.sourceControlOptions.repo" />
                                 </div>
                             </div>
                         </div>

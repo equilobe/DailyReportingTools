@@ -11,8 +11,7 @@ namespace Equilobe.DailyReport.Models.ReportPolicy
     {
         public SourceControlType Type { get; set; }
         public string RepoOwner { get; set; }
-        public string RepoUrl { get; set; }
-        public string RepoName { get; set; }
+        public string Repo { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string CommitUrl { get; set; }
