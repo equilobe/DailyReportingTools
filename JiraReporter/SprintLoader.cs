@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    class JiraService
+    class SprintLoader
     {
         JiraPolicy Policy { get { return Report.Policy; } }
         JiraOptions JiraOptions { get { return Report.Options; } }
         JiraReport Report { get; set; }
 
-        public JiraService(JiraReport report)
+        public SprintLoader(JiraReport report)
         {
             Report = report;
         }

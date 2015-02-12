@@ -70,7 +70,7 @@ namespace JiraReporter
 
         public static Sprint GenerateSprint(JiraReport report)
         {
-            var jira = new JiraService(report);
+            var jira = new SprintLoader(report);
             return jira.GetLatestSprint();
         }
 
