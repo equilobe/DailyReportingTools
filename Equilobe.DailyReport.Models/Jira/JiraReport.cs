@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +21,7 @@ namespace Equilobe.DailyReport.Models.Jira
             Options = o;
         }
 
+        public ReportSettings Settings { get; set; }
 
         private TimeSpan? _offsetFromUtc;
         public TimeSpan OffsetFromUtc

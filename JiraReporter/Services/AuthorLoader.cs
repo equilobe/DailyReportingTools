@@ -12,6 +12,7 @@ using Equilobe.DailyReport.Models.ReportPolicy;
 using Equilobe.DailyReport.Models.Jira;
 using JiraReporter.Services;
 using Equilobe.DailyReport.Models.JiraOriginals;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter.Services
 {
@@ -32,7 +33,7 @@ namespace JiraReporter.Services
 
         public List<JiraAuthor> GetAuthors()
         {
-            var authors = RestApiRequests.GetUsers(_policy)
+            var authors = new JiraService().GetUsers(_context.Settings, _context.Policy.GeneratedProperties.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
@@ -51,7 +52,7 @@ namespace JiraReporter.Services
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
-            var user = RestApiRequests.GetUser(draft.Username, policy);
+            var user = new JiraService().GetUser(_context.Settings, draft.Username);
             var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);
             author.IndividualDraftInfo = draft;
@@ -101,10 +102,10 @@ namespace JiraReporter.Services
 
         private void SetTimesheets()
         {
-            _currentAuthor.CurrentTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.CurrentTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
             if (_sprint != null)
-                _currentAuthor.SprintTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc), _sprint.EndDate.ToOriginalTimeZone(_context.OffsetFromUtc), _currentAuthor.Username);
-            _currentAuthor.MonthTimesheet = RestApiRequests.GetTimesheetForUser(_policy, DateTime.Now.ToOriginalTimeZone(_context.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(_context.OffsetFromUtc).AddDays(-1), _currentAuthor.Username);
+                _currentAuthor.SprintTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc), _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.MonthTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _options.FromDate.StartOfMonth(), _options.ToDate.AddDays(-1), _currentAuthor.Username);
         }
 
 
@@ -328,7 +329,7 @@ namespace JiraReporter.Services
 
         private JiraAuthor GetProjectLead(string username)
         {
-            var lead = RestApiRequests.GetUser(username, _policy);
+            var lead = new JiraService().GetUser(_context.Settings, username);
             var projectManager = new JiraAuthor(lead);
             projectManager.IsProjectLead = true;
 

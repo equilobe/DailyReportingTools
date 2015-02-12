@@ -72,6 +72,11 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetSprintTasks(projectKey);
         }
 
+        public List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context)
+        {
+            return GetClient(context).GetProjectsInfo();
+        }
+
         private JiraClient GetClient(IJiraRequestContext context)
         {
             if (context.SharedSecret != null)

@@ -22,5 +22,6 @@ namespace Equilobe.DailyReport.Models.Services
         JiraIssue GetIssue(IJiraRequestContext context, string issueKey);
         JiraIssues GetCompletedIssues(IJiraRequestContext context, DateTime startDate, DateTime endDate);
         JiraIssues GetSprintTasks(IJiraRequestContext context, string projectKey);
+        List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context);
     }
 }

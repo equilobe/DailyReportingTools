@@ -77,7 +77,7 @@
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraReportHelpers.cs" />
-    <Compile Include="JiraService.cs" />
+    <Compile Include="SprintLoader.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="BaseReportProcessor.cs" />
     <Compile Include="IndividualReportProcessor.cs" />

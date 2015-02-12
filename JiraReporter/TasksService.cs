@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.SL;
 using JiraReporter.Model;
 using SourceControlLogReporter;
 using System;
@@ -15,8 +16,7 @@ namespace JiraReporter
         public void SetSprintTasks(JiraReport context)
         {
             context.SprintTasks = new SprintTasks();
-            var issues = RestApiRequests.GetSprintTasks(context.Policy);
-            var unfinishedTasks = GetUnfinishedTasks(context.Policy);
+            var unfinishedTasks = GetUnfinishedTasks(context);
             SetUnfinishedTasks(unfinishedTasks, context);
 
             var completedTasks = GetCompletedTasks(context);
@@ -41,7 +41,7 @@ namespace JiraReporter
         public List<CompleteIssue> GetCompletedTasks(JiraReport context)
         {
             var completedTasks = new List<CompleteIssue>();
-            var issues = RestApiRequests.GetCompletedIssues(context.Policy, context.ReportDate.AddDays(-6), context.ReportDate);
+            var issues = new JiraService().GetCompletedIssues(context.Settings, context.ReportDate.AddDays(-6), context.ReportDate);
             foreach (var jiraIssue in issues.issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
@@ -55,9 +55,9 @@ namespace JiraReporter
             return completedTasks;
         }
 
-        public JiraIssues GetUnfinishedTasks(JiraPolicy policy)
+        public JiraIssues GetUnfinishedTasks(JiraReport context)
         {
-            return RestApiRequests.GetSprintTasks(policy);
+            return new JiraService().GetSprintTasks(context.Settings, context.Policy.GeneratedProperties.ProjectKey);
         }
 
         public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)

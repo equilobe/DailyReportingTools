@@ -17,6 +17,7 @@ using JiraReporter.Services;
 using JiraReporter.Helpers;
 using CommandLine;
 using Equilobe.DailyReport.Models.JiraOriginals;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter
 {
@@ -30,7 +31,7 @@ namespace JiraReporter
 
             var report = new JiraReport(policy, options);
 
-            var project = RestApiRequests.GetProject(policy);
+            var project = new JiraService().GetProject(report.Settings, report.Policy.ProjectId.ToString());
             SetProjectInfo(policy, project);
             LoadReportDates(report);
             var policyService = new JiraPolicyService(report);
@@ -105,7 +106,7 @@ namespace JiraReporter
 
         private static void LoadReportDates(JiraReport context)
         {
-            var timesheetSample = RestApiRequests.GetTimesheet(context.Policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+            var timesheetSample = new JiraService().GetTimesheet(context.Settings, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
             context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             new DatesHelper(context).LoadDates();
         }

@@ -139,6 +139,13 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraIssues>(request);
         }
 
+        public List<ProjectInfo> GetProjectsInfo()
+        {
+            var request = new RestRequest(JiraApiUrls.Projects(), Method.GET);
+
+            return ResolveRequest<List<ProjectInfo>>(request);
+        }
+
         public RestRequest GetIssuesByJql(string jql)
         {
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);

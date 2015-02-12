@@ -6,15 +6,6 @@ using System.Web;
 
 namespace Equilobe.DailyReport.Models.ReportPolicy
 {
-    [DataContract]
-    public class ProjectInfo
-    {
-        [DataMember(Name = "id")]
-        public long ProjectId { get; set; }
-        [DataMember(Name = "name")]
-        public string ProjectName { get; set; }
-    }
-
     public class PolicySummary
     {
         public long ProjectId { get; set; }

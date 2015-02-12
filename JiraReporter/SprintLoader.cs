@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.SL;
 using RestSharp;
 using SourceControlLogReporter;
 using System;
@@ -24,7 +25,7 @@ namespace JiraReporter
 
         public List<View> GetRapidViewsFromProject()
         {
-            var views = RestApiRequests.GetRapidViews(Policy);
+            var views = new JiraService().GetRapidViews(Report.Settings);
             var rapidViews = new List<View>();
             foreach (var view in views)
             {
@@ -39,19 +40,19 @@ namespace JiraReporter
             return views.Find(v => v.sprintSupportEnabled == true);
         }
 
-        public RapidView GetRapidView(View activeView)
+        public RapidView GetRapidView(string activeViewId)
         {
-            return RestApiRequests.GetRapidView(activeView.id.ToString(), Policy);
+            return new JiraService().GetRapidView(Report.Settings, activeViewId);
         }
 
         public Sprint GetLatestSprint()
         {
             var projectViews = GetRapidViewsFromProject();
             var activeView = GetActiveView(projectViews);
-            var rapidView = GetRapidView(activeView);
+            var rapidView = GetRapidView(activeView.id.ToString());
             var rapidViewId = rapidView.rapidViewId.ToString();
-            var sprints = RestApiRequests.GetAllSprints(rapidViewId, Policy);
-            var sprint = GetCompleteSprint(sprints.Last(), rapidViewId);
+            var sprints = new JiraService().GetAllSprints(Report.Settings, rapidViewId);
+            var sprint = GetCompleteSprint(sprints.Last().id.ToString(), rapidViewId);
             sprint = GetSprintFromReportDates(sprint);
 
             return sprint;
@@ -65,9 +66,9 @@ namespace JiraReporter
             return sprint;
         }
 
-        public Sprint GetCompleteSprint(Sprint sprint, string rapidViewId)
+        public Sprint GetCompleteSprint(string sprintId, string rapidViewId)
         {
-            var completedSprint = RestApiRequests.GetSprintReport(rapidViewId, sprint.id.ToString(), Policy).sprint;
+            var completedSprint = new JiraService().GetSprintReport(Report.Settings, rapidViewId, sprintId).sprint; 
 
             return completedSprint;
         }

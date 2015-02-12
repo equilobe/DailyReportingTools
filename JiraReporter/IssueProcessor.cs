@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using JiraReporter.Model;
 using System;
@@ -36,7 +37,7 @@ namespace JiraReporter
             foreach (var issue in issues)
             {
                 var jiraIssue = new JiraIssue();
-                jiraIssue = RestApiRequests.GetIssue(issue.Key, _policy);
+                jiraIssue = new JiraService().GetIssue(_context.Settings, issue.Key);
                 SetIssue(issue, jiraIssue);
             }
         }
@@ -158,7 +159,7 @@ namespace JiraReporter
         private void SetParent(JiraIssue jiraIssue)
         {
             _currentIssue.Parent = new CompleteIssue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
-            var parent = RestApiRequests.GetIssue(_currentIssue.Parent.Key, _policy);
+            var parent = new JiraService().GetIssue(_context.Settings, _currentIssue.Parent.Key);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
@@ -168,7 +169,7 @@ namespace JiraReporter
             issue.SubtasksIssues = new List<CompleteIssue>();
             foreach (var task in issue.Subtasks)
             {
-                jiraIssue = RestApiRequests.GetIssue(task.key, _policy);
+                jiraIssue = new JiraService().GetIssue(_context.Settings, task.key);
                 issue.SubtasksIssues.Add(new CompleteIssue(jiraIssue));
                 SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
             }
