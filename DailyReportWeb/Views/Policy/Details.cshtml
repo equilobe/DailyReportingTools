@@ -229,16 +229,16 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Select user:</label>
-                        <select class="form-control">
-                            <option ng-repeat="user in report.policy.userOptions">{{user.jiraDisplayName}}</option>
-                        </select>
+                        <label>
+                            Select user:
+                        </label>
+                        <select class="form-control" ng-model="user" ng-options="user as user.jiraDisplayName for user in report.policy.userOptions"></select>
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-show="user.jiraDisplayName.length">
                 <div class="panel-heading">
-                    <h4>Dan Badea</h4>
+                    <h4>{{user.jiraDisplayName}}</h4>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -290,16 +290,13 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Select month:</label>
-                        <select class="form-control">
-                            <option>January</option>
-                            <option>Feruary</option>
-                        </select>
+                        <select class="form-control" ng-model="month" ng-options="month as month.monthName for user in report.policy.monthlyOptions"></select>
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-show="month.monthName.length">
                 <div class="panel-heading">
-                    <h4>January</h4>
+                    <h4>{{month.monthName}}</h4>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -471,13 +468,13 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" checked />
+                                <input type="checkbox" />
                                 Saturday
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" checked />
+                                <input type="checkbox" />
                                 Sunday
                             </label>
                         </div>
