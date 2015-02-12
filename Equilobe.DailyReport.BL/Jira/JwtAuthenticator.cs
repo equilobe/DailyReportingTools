@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Configuration;
 
-namespace JiraReporter
+namespace Equilobe.DailyReport.BL.Jira
 {
     public class JwtAuthenticator : IAuthenticator
     {

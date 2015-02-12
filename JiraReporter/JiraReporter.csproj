@@ -67,8 +67,8 @@
   <ItemGroup>
     <Compile Include="Helpers\JiraOffsetHelper.cs" />
     <Compile Include="Helpers\DatesHelper.cs" />
+    <Compile Include="Helpers\TimingHelpers.cs" />
     <Compile Include="Services\DayLogLoader.cs" />
-    <Compile Include="JiraApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="Services\AuthorLoader.cs" />
     <Compile Include="Deserialization.cs" />
@@ -78,7 +78,6 @@
     <Compile Include="IssueProcessor.cs" />
     <Compile Include="JiraReportHelpers.cs" />
     <Compile Include="JiraService.cs" />
-    <Compile Include="JwtAuthenticator.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="BaseReportProcessor.cs" />
     <Compile Include="IndividualReportProcessor.cs" />
@@ -95,12 +94,10 @@
     <Compile Include="ReportGenerator.cs" />
     <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
-    <Compile Include="TimeFormattingExtensions.cs" />
     <Compile Include="WidthHelpers.cs" />
     <Compile Include="SummaryHelpers.cs" />
     <Compile Include="Services\SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
-    <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="Services\TimesheetService.cs" />
     <Compile Include="WebDownloads.cs" />
@@ -172,10 +169,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">
-      <Project>{eaf12ce6-7405-4dd6-89f1-236828f2fe6e}</Project>
-      <Name>Equilobe.DailyReport.BL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
       <Name>Equilobe.DailyReport.Models</Name>

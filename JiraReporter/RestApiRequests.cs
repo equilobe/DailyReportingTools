@@ -14,134 +14,134 @@ namespace JiraReporter
 {
     public class RestApiRequests
     {
-        public static RestClient ClientLogin(JiraPolicy policy)
-        {
-            var client = new RestClient(policy.BaseUrl);
+        //public static RestClient ClientLogin(JiraPolicy policy)
+        //{
+        //    var client = new RestClient(policy.BaseUrl);
 
-            if (!String.IsNullOrEmpty(policy.SharedSecret))
-                client.Authenticator = new JwtAuthenticator(policy.SharedSecret);
-            else
-                client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
+        //    if (!String.IsNullOrEmpty(policy.SharedSecret))
+        //        client.Authenticator = new JwtAuthenticator(policy.SharedSecret);
+        //    else
+        //        client.Authenticator = new HttpBasicAuthenticator(policy.Username, policy.Password);
 
-            return client;
-        }
+        //    return client;
+        //}
 
-        public static T ResolveRequest<T>(JiraPolicy policy, RestRequest request, bool isXml = false)
-        {
-            var client = ClientLogin(policy);
-            var response = client.Execute(request);
+        //public static T ResolveRequest<T>(JiraPolicy policy, RestRequest request, bool isXml = false)
+        //{
+        //    var client = ClientLogin(policy);
+        //    var response = client.Execute(request);
 
-            ValidateResponse(response);
+        //    ValidateResponse(response);
 
-            if (isXml)
-                return Deserialization.XmlDeserialize<T>(response.Content);
-            else
-                return Deserialization.JsonDeserialize<T>(response.Content);
-        }
+        //    if (isXml)
+        //        return Deserialization.XmlDeserialize<T>(response.Content);
+        //    else
+        //        return Deserialization.JsonDeserialize<T>(response.Content);
+        //}
 
-        public static T ResolveJiraRequest<T>(JiraPolicy policy, RestRequest request) where T : new()
-        {
-            var client = ClientLogin(policy);
-            var response = client.Execute<T>(request);
+        //public static T ResolveJiraRequest<T>(JiraPolicy policy, RestRequest request) where T : new()
+        //{
+        //    var client = ClientLogin(policy);
+        //    var response = client.Execute<T>(request);
 
-            ValidateResponse(response);
+        //    ValidateResponse(response);
 
-            return response.Data;
-        }
+        //    return response.Data;
+        //}
 
-        private static void ValidateResponse(IRestResponse response)
-        {
-            if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
-                throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
-        }
+        //private static void ValidateResponse(IRestResponse response)
+        //{
+        //    if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
+        //        throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
+        //}
 
-        public static Project GetProject(JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.Project(policy.ProjectId.ToString()), Method.GET);
+        //public static Project GetProject(JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.Project(policy.ProjectId.ToString()), Method.GET);
 
-            return ResolveRequest<Project>(policy, request);
-        }
+        //    return ResolveRequest<Project>(policy, request);
+        //}
 
-        public static Timesheet GetTimesheetForUser(JiraPolicy policy, DateTime startDate, DateTime endDate, string targetUser)
-        {
-            var request = new RestRequest(JiraApiUrls.TimesheetForUser(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate), targetUser), Method.GET);
+        //public static Timesheet GetTimesheetForUser(JiraPolicy policy, DateTime startDate, DateTime endDate, string targetUser)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.TimesheetForUser(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate), targetUser), Method.GET);
 
-            return ResolveRequest<Timesheet>(policy, request, true);
-        }
+        //    return ResolveRequest<Timesheet>(policy, request, true);
+        //}
 
-        public static Timesheet GetTimesheet(JiraPolicy policy, DateTime startDate, DateTime endDate)
-        {
-            var request = new RestRequest(JiraApiUrls.Timesheet(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
+        //public static Timesheet GetTimesheet(JiraPolicy policy, DateTime startDate, DateTime endDate)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.Timesheet(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
 
-            return ResolveRequest<Timesheet>(policy, request, true);
-        }
+        //    return ResolveRequest<Timesheet>(policy, request, true);
+        //}
 
-        public static JiraUser GetUser(string username, JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.User(username), Method.GET);
+        //public static JiraUser GetUser(string username, JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.User(username), Method.GET);
 
-            return ResolveRequest<JiraUser>(policy, request);
-        }
+        //    return ResolveRequest<JiraUser>(policy, request);
+        //}
 
-        public static List<JiraUser> GetUsers(JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);
+        //public static List<JiraUser> GetUsers(JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);
 
-            return ResolveRequest<List<JiraUser>>(policy, request);
-        }
+        //    return ResolveRequest<List<JiraUser>>(policy, request);
+        //}
 
-        public static RapidView GetRapidView(string id, JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.RapidView(id), Method.GET);
-            
-            return ResolveRequest<RapidView>(policy, request);
-        }
+        //public static RapidView GetRapidView(string id, JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.RapidView(id), Method.GET);
 
-        public static List<View> GetRapidViews(JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.RapidViews(), Method.GET);
+        //    return ResolveRequest<RapidView>(policy, request);
+        //}
 
-            return ResolveRequest<Views>(policy, request).views;
-        }
+        //public static List<View> GetRapidViews(JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.RapidViews(), Method.GET);
 
-        public static SprintReport GetSprintReport(string rapidViewId, string sprintId, JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
-            
-            return ResolveRequest<SprintReport>(policy, request);
-        }
+        //    return ResolveRequest<Views>(policy, request).views;
+        //}
 
-        public static List<Sprint> GetAllSprints(string rapidViewId, JiraPolicy policy)
-        {
-            var request = new RestRequest(JiraApiUrls.AllSprints(rapidViewId), Method.GET);
+        //public static SprintReport GetSprintReport(string rapidViewId, string sprintId, JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
 
-            return ResolveRequest<Sprints>(policy, request).sprints;
-        }
+        //    return ResolveRequest<SprintReport>(policy, request);
+        //}
 
-        public static JiraIssue GetIssue(string issueKey, JiraPolicy policy)        
-        {
-            var request = new RestRequest(JiraApiUrls.Issue(issueKey), Method.GET);
+        //public static List<Sprint> GetAllSprints(string rapidViewId, JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.AllSprints(rapidViewId), Method.GET);
 
-            return ResolveJiraRequest<JiraIssue>(policy, request);
-        }
+        //    return ResolveRequest<Sprints>(policy, request).sprints;
+        //}
 
-        public static JiraIssues GetCompletedIssues(JiraPolicy policy, DateTime startDate, DateTime endDate)
-        {
-            var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
+        //public static JiraIssue GetIssue(string issueKey, JiraPolicy policy)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.Issue(issueKey), Method.GET);
 
-            return ResolveJiraRequest<JiraIssues>(policy, request);
-        }
+        //    return ResolveJiraRequest<JiraIssue>(policy, request);
+        //}
 
-        public static JiraIssues GetSprintTasks(JiraPolicy policy)
-        {
-            var request = GetIssuesByJql(JiraApiUrls.IssuesInOpenSprints(policy.GeneratedProperties.ProjectKey));
+        //public static JiraIssues GetCompletedIssues(JiraPolicy policy, DateTime startDate, DateTime endDate)
+        //{
+        //    var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
 
-            return ResolveJiraRequest<JiraIssues>(policy, request);
-        }
+        //    return ResolveJiraRequest<JiraIssues>(policy, request);
+        //}
 
-        public static RestRequest GetIssuesByJql(string jql)
-        {
-            return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
-        }
+        //public static JiraIssues GetSprintTasks(JiraPolicy policy)
+        //{
+        //    var request = GetIssuesByJql(JiraApiUrls.IssuesInOpenSprints(policy.GeneratedProperties.ProjectKey));
+
+        //    return ResolveJiraRequest<JiraIssues>(policy, request);
+        //}
+
+        //public static RestRequest GetIssuesByJql(string jql)
+        //{
+        //    return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
+        //}
     }
 }

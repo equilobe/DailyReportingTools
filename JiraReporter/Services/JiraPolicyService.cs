@@ -153,7 +153,6 @@ namespace JiraReporter.Services
 
         public void SetDefaultProperties()
         {
-            Policy.AdvancedOptions = new JiraAdvancedOptions();
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();

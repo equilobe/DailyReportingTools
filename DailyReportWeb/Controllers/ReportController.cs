@@ -13,7 +13,6 @@ namespace DailyReportWeb.Controllers
 {
     public class ReportController : Controller
     {
-
         [HttpGet]
         public ActionResult Send(string id, DateTime date)
         {

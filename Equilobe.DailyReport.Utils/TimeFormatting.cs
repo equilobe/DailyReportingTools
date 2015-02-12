@@ -1,13 +1,11 @@
-﻿using Equilobe.DailyReport.Models.Jira;
-using JiraReporter.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter
+namespace Equilobe.DailyReport.Utils
 {
     public static class TimeFormatting
     {
@@ -44,19 +42,5 @@ namespace JiraReporter
         {
             return date.ToString("yyyy'-'MM'-'dd' 'HH':'mm", DateTimeFormatInfo.InvariantInfo);
         }
-
-        public static void SetAverageWorkStringFormat(Timing timing)
-        {
-            timing.AverageWorkedMonthString = (timing.AverageWorkedMonth / 3600).RoundDoubleOneDecimal();
-            timing.AverageWorkedSprintString = (timing.AverageWorkedSprint / 3600).RoundDoubleOneDecimal();
-            timing.AverageWorkedString = (timing.AverageWorked / 3600).RoundDoubleOneDecimal();
-        }
-
-        public static void SetaAverageRemainingStringFormat(TimingDetailed timing)
-        {
-            timing.RemainingSprintAverageString = (timing.RemainingSprintAverage / 3600).RoundDoubleOneDecimal();
-            timing.RemainingMonthAverageString = (timing.RemainingMonthAverage / 3600).RoundDoubleOneDecimal();
-        }
-
     }
 }

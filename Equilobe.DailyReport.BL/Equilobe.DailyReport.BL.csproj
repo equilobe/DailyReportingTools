@@ -30,7 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JWT">
+      <HintPath>..\packages\JWT.1.3.2\lib\3.5\JWT.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
@@ -40,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jira\JiraApiUrls.cs" />
     <Compile Include="Jira\JiraClient.cs" />
+    <Compile Include="Jira\JwtAuthenticator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +57,13 @@
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
       <Name>Equilobe.DailyReport.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">
+      <Project>{7a42dd16-07e8-46a6-9083-47f342b644e5}</Project>
+      <Name>Equilobe.DailyReport.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -2,6 +2,8 @@
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Utils;
+using JiraReporter.Helpers;
 using JiraReporter.Model;
 using JiraReporter.Services;
 using System;
@@ -155,7 +157,7 @@ namespace JiraReporter.Services
             if (reportWorkingDays > 0)
                 _summary.Timing.AverageWorked = (double)_summary.Timing.TotalTimeSeconds / reportWorkingDays;
 
-            TimeFormatting.SetAverageWorkStringFormat(_summary.Timing);
+            TimingHelpers.SetAverageWorkStringFormat(_summary.Timing);
         }
 
         private void SetAverageRemainingTimePerDay(int monthRemainingDays, int sprintRemainingDays)
@@ -170,7 +172,7 @@ namespace JiraReporter.Services
             else
                 _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / sprintRemainingDays;
 
-            TimeFormatting.SetaAverageRemainingStringFormat(_summary.Timing);
+            TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
         }
 
         private void SetMonthEstimatedValue()
