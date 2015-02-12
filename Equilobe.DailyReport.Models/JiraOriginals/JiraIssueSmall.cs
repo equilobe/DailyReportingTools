@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Equilobe.JiraConnector.Models
+namespace Equilobe.DailyReport.Models.JiraOriginals
 {
     [Serializable]
     public class JiraIssueSmall

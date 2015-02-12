@@ -1,5 +1,6 @@
 ﻿using System;
 using Equilobe.DailyReport.Models.ReportPolicy;
+
 namespace Equilobe.DailyReport.Models.Jira
 {
     public interface IContext

@@ -108,7 +108,7 @@ namespace SourceControlLogReporter
             return subject;
         }
 
-        public void MoveToSent(string path)
+        public virtual void MoveToSent(string path)
         {
             Validation.EnsureDirectoryExists(policy.GeneratedProperties.ReportsPath);
 

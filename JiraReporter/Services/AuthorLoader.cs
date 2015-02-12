@@ -11,6 +11,7 @@ using RestSharp;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using Equilobe.DailyReport.Models.Jira;
 using JiraReporter.Services;
+using Equilobe.DailyReport.Models.JiraOriginals;
 
 namespace JiraReporter.Services
 {
@@ -73,7 +74,7 @@ namespace JiraReporter.Services
         {
             this._currentAuthor = a;
             SetTimesheets();
-            LoadTimesheetIssueDetails();
+            LoadIssues();
             SetIssues();
             OrderIssues();
             CalculateTimeSpent();
@@ -107,19 +108,21 @@ namespace JiraReporter.Services
         }
 
 
-        private void LoadTimesheetIssueDetails()
+        private void LoadIssues()
         {
-            var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _context);
-            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _context);
-            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _context);
+            _currentAuthor.Issues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
+            _currentAuthor.MonthIssues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
+            _currentAuthor.SprintIssues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.SprintTimesheet.Worklog.Issues);
         }
 
         private void SetIssues()
         {
             if (_currentAuthor.CurrentTimesheet != null && _currentAuthor.CurrentTimesheet.Worklog.Issues != null)
-                _currentAuthor.Issues = _currentAuthor.CurrentTimesheet.Worklog.Issues;
+                _currentAuthor.Issues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
             _currentAuthor.Issues.ForEach(issue => IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name));
+
+            var processor = new IssueProcessor(_context);
+            processor.SetIssues(_currentAuthor.Issues);
         }
 
         private void OrderIssues()

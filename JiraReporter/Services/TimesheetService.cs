@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using RestSharp;
@@ -22,25 +23,36 @@ namespace JiraReporter.Services
             return (Timesheet)serializer.Deserialize(reader);
         }
 
-        public void SetTimesheetIssues(Timesheet timesheet, JiraReport context)
-        {
-            if (timesheet == null)
-                return;
+        //public void SetTimesheetIssues(Timesheet timesheet, JiraReport context)
+        //{
+        //    if (timesheet == null)
+        //        return;
 
-            var issues = new List<CompleteIssue>(timesheet.Worklog.Issues);
-            var issueProcessor = new IssueProcessor(context);
-            issueProcessor.SetIssues(issues);
-        }
+        //    var issues = new List<CompleteIssue>(timesheet.Worklog.Issues);
+        //    var issueProcessor = new IssueProcessor(context);
+        //    issueProcessor.SetIssues(issues);
+        //}
 
-        public int GetTotalOriginalEstimate(Timesheet timesheet)
+        public static int GetTotalOriginalEstimate(List<CompleteIssue> issues)
         {
             int sum = 0;
-            if (timesheet != null && timesheet.Worklog != null && timesheet.Worklog.Issues != null)
-            {
-                var issues = timesheet.Worklog.Issues;
-                sum = issues.Sum(i => i.OriginalEstimateSeconds);
-            }
-            return sum;
+            if (issues == null)
+                return 0;
+
+            return sum = issues.Sum(i => i.OriginalEstimateSeconds);
+        }
+
+        public static List<CompleteIssue> GetIssuesFromJiraTimesheet(List<JiraIssueSmall> jiraIssues)
+        {
+            var issues = new List<CompleteIssue>();
+            foreach (var issue in jiraIssues)
+                issues.Add(new CompleteIssue
+                {
+                    Key = issue.Key,
+                    Entries = issue.Entries,
+                    Summary = issue.Summary
+                });
+            return issues;
         }
     }
 }

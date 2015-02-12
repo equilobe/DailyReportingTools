@@ -27,9 +27,7 @@ namespace JiraReporter
         public virtual void ProcessReport()
         {
             SaveReport();
-        //    SetEmailCollection(report.Authors);
-            Policy.EmailCollection = new List<string>();
-            Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
+            SetEmailCollection(Report.Authors);
             SendReport();
         }
 

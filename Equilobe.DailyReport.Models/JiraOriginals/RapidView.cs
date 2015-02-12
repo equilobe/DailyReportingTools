@@ -5,15 +5,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.Jira
+namespace Equilobe.DailyReport.Models.JiraOriginals
 {
-    public class SprintsData
+    public class RapidView
     {
         [DataMember]
         public int rapidViewId { get; set; }
         [DataMember]
-        public List<Sprint> sprints { get; set; }
-        [DataMember]
-        public bool canManageSprints { get; set; }
+        public SprintsData sprintsData { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.Jira
+namespace Equilobe.DailyReport.Models.JiraOriginals
 {
     public class Sprint
     {

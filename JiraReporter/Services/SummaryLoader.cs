@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using JiraReporter.Model;
 using JiraReporter.Services;
@@ -187,14 +188,14 @@ namespace JiraReporter.Services
             _summary.Timing.SprintAverageEstimateString = _summary.Timing.AllocatedHoursPerDay.RoundDoubleOneDecimal();
         }
 
-        private int GetTimesheetTotalEstimate(Timesheet timesheet)
-        {
-            var timesheetService = new TimesheetService();
-            if (timesheet == null)
-                return 0;
-            else
-                return timesheetService.GetTotalOriginalEstimate(timesheet);
-        }
+        //private int GetTimesheetTotalEstimate(Timesheet timesheet)
+        //{
+        //    var timesheetService = new TimesheetService();
+        //    if (timesheet == null)
+        //        return 0;
+        //    else
+        //        return timesheetService.GetTotalOriginalEstimate(timesheet);
+        //}
 
         private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {

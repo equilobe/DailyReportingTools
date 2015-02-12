@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.JiraOriginals;
+using Equilobe.DailyReport.Models.ReportPolicy;
 using System;
 using System.Collections.Generic;
 using System.IO;

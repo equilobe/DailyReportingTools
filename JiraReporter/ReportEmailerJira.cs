@@ -98,6 +98,16 @@ namespace JiraReporter
             }
         }
 
+        public override void MoveToSent(string path)
+        {
+            Validation.EnsureDirectoryExists(Policy.GeneratedProperties.ReportsPath);
+
+            var newFilePath = Path.Combine(Policy.GeneratedProperties.ReportsPath, Path.GetFileName(path));
+
+            File.Copy(path, newFilePath, overwrite: true);
+            File.Delete(path);
+        }
+
         protected override void UpdatePolicy()
         {
             var policyService = new JiraPolicyService(Report);

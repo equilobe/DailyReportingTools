@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.JiraOriginals;
 namespace Equilobe.DailyReport.Models.Jira
 {
     public interface IJiraReport : IContext

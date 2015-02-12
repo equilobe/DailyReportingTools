@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.JiraOriginals;
 using JiraReporter.Model;
 using System;
 using System.Collections.Generic;

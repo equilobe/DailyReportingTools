@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JiraReporter.Model;
 using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.JiraOriginals;
 
 namespace JiraReporter
 {

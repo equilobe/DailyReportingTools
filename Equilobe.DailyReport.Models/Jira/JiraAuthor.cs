@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Models.ReportPolicy;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,8 @@ namespace Equilobe.DailyReport.Models.Jira
         public Timesheet SprintTimesheet { get; set; }
 
         public List<CompleteIssue> Issues { get; set; }
+        public List<CompleteIssue> MonthIssues { get; set; }
+        public List<CompleteIssue> SprintIssues { get; set; }
         public List<CompleteIssue> InProgressTasks { get; set; }
         public List<CompleteIssue> OpenTasks { get; set; }
         public List<CompleteIssue> InProgressTasksParents { get; set; }

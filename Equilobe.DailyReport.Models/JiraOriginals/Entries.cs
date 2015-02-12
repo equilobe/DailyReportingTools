@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.Jira
+namespace Equilobe.DailyReport.Models.JiraOriginals
 {
     [Serializable]
     public class Entries

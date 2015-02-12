@@ -16,6 +16,7 @@ using Equilobe.DailyReport.Models.Jira;
 using JiraReporter.Services;
 using JiraReporter.Helpers;
 using CommandLine;
+using Equilobe.DailyReport.Models.JiraOriginals;
 
 namespace JiraReporter
 {

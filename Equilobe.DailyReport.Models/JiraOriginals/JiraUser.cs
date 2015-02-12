@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.IO;
 
-namespace Equilobe.DailyReport.Models.Jira
+namespace Equilobe.DailyReport.Models.JiraOriginals
 {
     [DataContract]
     public class JiraUser
