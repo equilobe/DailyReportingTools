@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Report;
 using Equilobe.DailyReport.Models.Services;
 using Equilobe.DailyReport.BL.Jira;
-using Equilobe.DailyReport.Models.JiraOriginals;
+using Equilobe.DailyReport.Models.Jira;
 
 namespace Equilobe.DailyReport.SL
 {

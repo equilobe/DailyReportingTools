@@ -12,11 +12,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SourceControlLogReporter;
-using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Report;
 using JiraReporter.Services;
 using JiraReporter.Helpers;
 using CommandLine;
-using Equilobe.DailyReport.Models.JiraOriginals;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
 
 namespace JiraReporter

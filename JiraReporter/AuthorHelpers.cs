@@ -5,8 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JiraReporter.Model;
+using Equilobe.DailyReport.Models.Report;
 using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.JiraOriginals;
 using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 

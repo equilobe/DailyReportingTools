@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 using JiraReporter.Model;
 using System.Net.Mime;
 using Equilobe.DailyReport.Models.ReportPolicy;
-using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Report;
 using JiraReporter.Services;
 
 namespace JiraReporter
