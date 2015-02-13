@@ -4,8 +4,8 @@
             $scope.policyList = list;
         });
 
-        $scope.updateReportTime = function (policySelected) {
-            $http.put("/api/policy", policySelected
+        $scope.updateReportTime = function (policy) {
+            $http.put("/api/policy", policy
     		).success(function () {
     		    console.log("success");
     		}).error(function () {
@@ -14,7 +14,24 @@
         };
     }])
     .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
-        $http.get("/api/policy/" + projectId).success(function (policySelected) {
-            $scope.policy = policySelected;
+        $http.get("/api/policy/" + projectId).success(function (report) {
+            $scope.report = report;
+
+            $scope.sourceControlType = !report.policy.sourceControlOptions ? "none" :
+                                       report.policy.sourceControlOptions.repoOwner && report.policy.sourceControlOptions.repo ? "GitHub" :
+                                       report.policy.sourceControlOptions.repo ? "SVN" : "none";
+
+            $scope.user = report.policy.userOptions ? report.policy.userOptions[0] : null;
+
+            $scope.month = report.policy.monthlyOptions ? report.policy.monthlyOptions[0] : null;
         });
+
+        $scope.updateReport = function (report) {
+            $http.put("/api/policy/" + report.projectId, report
+    		).success(function () {
+    		    console.log("success");
+    		}).error(function () {
+    		    console.log("error");
+    		});
+        }
     }]);

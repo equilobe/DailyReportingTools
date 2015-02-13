@@ -29,7 +29,7 @@ namespace SourceControlLogReporter
 
         public override Log CreateLog()
         {
-            var pullRequests = GetPullRequests(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName).ToList();
+            var pullRequests = GetPullRequests(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.Repo).ToList();
             var commits = GetReportCommits();
             return LoadLog(commits, pullRequests);
         }
@@ -160,7 +160,7 @@ namespace SourceControlLogReporter
 
         protected virtual List<GitHubCommit> GetReportCommits(string fromDate, string toDate)
         {
-            var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
+            var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.Repo, fromDate, toDate);
             commits = RemoveDuplicateCommits(commits);
             AddName(commits);
             return commits;
