@@ -79,7 +79,6 @@
   <ItemGroup>
     <Compile Include="Cmd.cs" />
     <Compile Include="DoubeExtensions.cs" />
-    <Compile Include="Ensure.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GitHubReport.cs" />
     <Compile Include="LogProcessor.cs" />
@@ -99,7 +98,6 @@
     <Compile Include="Reporter.cs" />
     <Compile Include="SvnNotAvailableException.cs" />
     <Compile Include="SvnReport.cs" />
-    <Compile Include="ValidateNotNullAttribute.cs" />
     <Compile Include="Validation.cs" />
   </ItemGroup>
   <ItemGroup>
