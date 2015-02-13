@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.BL.Jira
 {
-    public class JiraClient 
+    public class JiraClient
     {
         public RestClient Client { get; set; }
 
@@ -87,7 +87,9 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var request = new RestRequest(JiraApiUrls.Users(projectKey), Method.GET);
 
-            return ResolveRequest<List<JiraUser>>(request);
+            return ResolveRequest<List<JiraUser>>(request)
+                .Where(user => user.key.IndexOf("addon_") == -1)
+                .ToList(); 
         }
 
         public RapidView GetRapidView(string id)
