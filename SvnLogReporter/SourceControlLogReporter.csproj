@@ -78,15 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cmd.cs" />
-    <Compile Include="CommandLine.cs" />
-    <Compile Include="CommandLineText.cs" />
     <Compile Include="DoubeExtensions.cs" />
     <Compile Include="Ensure.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GitHubReport.cs" />
     <Compile Include="LogProcessor.cs" />
     <Compile Include="LogService.cs" />
-    <Compile Include="Options.cs" />
     <Compile Include="PolicyService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,7 +99,6 @@
     <Compile Include="Reporter.cs" />
     <Compile Include="SvnNotAvailableException.cs" />
     <Compile Include="SvnReport.cs" />
-    <Compile Include="TimeZone\DateTimeExtensions.cs" />
     <Compile Include="ValidateNotNullAttribute.cs" />
     <Compile Include="Validation.cs" />
   </ItemGroup>
@@ -129,11 +125,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Policies\" />
+    <Folder Include="TimeZone\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
       <Name>Equilobe.DailyReport.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.SL\Equilobe.DailyReport.SL.csproj">
+      <Project>{e884ac10-285d-4012-882e-7cfa035549e2}</Project>
+      <Name>Equilobe.DailyReport.SL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">
+      <Project>{7a42dd16-07e8-46a6-9083-47f342b644e5}</Project>
+      <Name>Equilobe.DailyReport.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

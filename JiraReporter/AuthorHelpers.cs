@@ -5,7 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JiraReporter.Model;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Utils;
+using JiraReporter.Helpers;
 
 namespace JiraReporter
 {
@@ -35,11 +38,11 @@ namespace JiraReporter
         }
 
 
-        public static List<JiraCommit> GetDayLogCommits(JiraAuthor author, DateTime date)
+        public static List<JiraCommit> GetDayLogCommits(JiraAuthor author, DateTime date, TimeSpan offsetFromUtc)
         {
             var commits = new List<JiraCommit>();
             if (author.Commits != null)
-                commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone() >= date && c.Entry.Date.ToOriginalTimeZone() < date.AddDays(1));
+                commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) >= date && c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) < date.AddDays(1));
             return commits;
         }
 
@@ -67,7 +70,7 @@ namespace JiraReporter
             else
                 author.Timing.AverageWorked = author.Timing.TotalTimeSeconds / reportWorkingDays;
 
-            TimeFormatting.SetAverageWorkStringFormat(author.Timing);
+            TimingHelpers.SetAverageWorkStringFormat(author.Timing);
         }
 
         public static double GetAuthorMaxAverage(JiraAuthor author)

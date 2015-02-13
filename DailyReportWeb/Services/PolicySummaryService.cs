@@ -1,10 +1,13 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.DAL;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Models.Web;
 
 namespace DailyReportWeb.Services
 {
@@ -13,7 +16,9 @@ namespace DailyReportWeb.Services
 
         public static List<PolicySummary> GetPoliciesSummary(string baseUrl, string sharedSecret)
         {
-            return GetProjectsInfo(baseUrl, sharedSecret)
+            var context = new ReportSettings { BaseUrl = baseUrl, SharedSecret = sharedSecret };
+            
+            return new JiraService().GetProjectsInfo(context)
                 .Select(projectInfo => new PolicySummary
                 {
                     BaseUrl = baseUrl,
@@ -31,19 +36,6 @@ namespace DailyReportWeb.Services
                 .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
                 .Select(qr => qr.ReportTime)
                 .FirstOrDefault();
-        }
-
-        private static List<ProjectInfo> GetProjectsInfo(string baseUrl, string sharedSecret)
-        {
-            var policy = new JiraPolicy
-            {
-                BaseUrl = baseUrl,
-                SharedSecret = sharedSecret
-            };
-
-            var request = new RestRequest(JiraReporter.JiraApiUrls.Projects(), Method.GET);
-
-            return JiraReporter.RestApiRequests.ResolveRequest<List<ProjectInfo>>(policy, request);
         }
     }
 }

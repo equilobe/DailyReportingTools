@@ -1,4 +1,4 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Storage;
 using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
@@ -8,21 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace JiraReporter.Services
 {
     public class JiraPolicyService
     {
-        JiraPolicy Policy { get; set; }
+        JiraPolicy Policy { get { return Context.Policy; } }
+        JiraReport Context { get; set; }
 
-        public JiraPolicyService(JiraPolicy policy)
+        public JiraPolicyService(JiraReport report)
         {
-            Policy = policy;
+            Context = report;
         }
 
-        public void SetPolicy(JiraOptions options)
+        public void SetPolicy()
         {
-            SetDefaultProperties(options);
+            SetDefaultProperties();
 
             SetUrls();
             Policy.CurrentOverride = GetCurrentOverride();
@@ -50,7 +52,7 @@ namespace JiraReporter.Services
 
         private Uri GetDraftConfirmationUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone();
+            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
@@ -59,7 +61,7 @@ namespace JiraReporter.Services
 
         private Uri GetResendDraftUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone();
+            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
@@ -68,7 +70,7 @@ namespace JiraReporter.Services
 
         private Uri GetIndividualDraftConfirmationUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone();
+            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
@@ -77,7 +79,7 @@ namespace JiraReporter.Services
 
         private Uri GetResendIndividualDraftUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone();
+            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
@@ -97,7 +99,7 @@ namespace JiraReporter.Services
             if (Policy.MonthlyOptions == null)
                 return null;
 
-            return Policy.MonthlyOptions.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
+            return Policy.MonthlyOptions.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
         }
 
         private bool IsThisMonthOverriden()
@@ -105,7 +107,7 @@ namespace JiraReporter.Services
             if (Policy.MonthlyOptions == null)
                 return false;
 
-            return Policy.MonthlyOptions.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone().CurrentMonth().ToLower());
+            return Policy.MonthlyOptions.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
         }
 
         private IDictionary<string, List<string>> GetUsersDictionary()
@@ -149,14 +151,13 @@ namespace JiraReporter.Services
 
 
 
-        public void SetDefaultProperties(JiraOptions options)
+        public void SetDefaultProperties()
         {
-            Policy.AdvancedOptions = new JiraAdvancedOptions();
             SetReportTitle();
             SetRootPath();
             SetPermanentTaskLabel();
             ResetToDefault();
-            SetDraftMode(options);
+            SetDraftMode();
         }
 
         public void ResetToDefault()
@@ -168,17 +169,17 @@ namespace JiraReporter.Services
             Policy.GeneratedProperties.WasResetToDefaultToday = true;
         }
 
-        private void SetDraftMode(JiraOptions options)
+        private void SetDraftMode()
         {
             if (Policy.AdvancedOptions.NoDraft || Policy.GeneratedProperties.IsFinalDraftConfirmed)
                 SetFinalReportMode();
             else
-                SetFinalAndIndividualDrafts(options);
+                SetFinalAndIndividualDrafts();
         }
 
-        private void SetFinalAndIndividualDrafts(JiraOptions options)
+        private void SetFinalAndIndividualDrafts()
         {
-            if (Policy.CanSendFullDraft(options.TriggerKey))
+            if (Policy.CanSendFullDraft(Context.Options.TriggerKey))
             {
                 Policy.GeneratedProperties.IsFinalDraft = true;
                 Policy.GeneratedProperties.IsIndividualDraft = false;

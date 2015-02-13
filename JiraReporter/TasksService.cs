@@ -1,5 +1,7 @@
-﻿using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.SL;
 using JiraReporter.Model;
 using SourceControlLogReporter;
 using System;
@@ -11,43 +13,40 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public SprintTasks GetSprintTasks(JiraPolicy policy, JiraOptions options, List<JiraPullRequest> pullRequests)
+        public void SetSprintTasks(JiraReport context)
         {
-            var sprintTasks = new SprintTasks();
-            var issues = RestApiRequests.GetSprintTasks(policy);
-            var unfinishedTasks = GetUnfinishedTasks(policy);
-            SetUnfinishedTasks(unfinishedTasks, sprintTasks, pullRequests, policy);
+            context.SprintTasks = new SprintTasks();
+            var unfinishedTasks = GetUnfinishedTasks(context);
+            SetUnfinishedTasks(unfinishedTasks, context);
 
-            var completedTasks = GetCompletedTasks(policy, options);
-            SetCompletedTasks(GroupCompletedTasks(completedTasks), sprintTasks);
-            SortTasks(sprintTasks);
-            SetSprintTasksErrors(policy, sprintTasks);
-
-            return sprintTasks;
+            var completedTasks = GetCompletedTasks(context);
+            SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.SprintTasks);
+            SortTasks(context.SprintTasks);
+            SetSprintTasksErrors(context);
         }
 
-        private void SetSprintTasksErrors(JiraPolicy policy, SprintTasks sprintTasks)
+        private void SetSprintTasksErrors(JiraReport report)
         {
             int completedErrors = 0;
-            TasksService.SetErrors(sprintTasks.UnassignedTasks, policy);
-            foreach (var list in sprintTasks.CompletedTasks)
+            TasksService.SetErrors(report.SprintTasks.UnassignedTasks, report.Policy);
+            foreach (var list in report.SprintTasks.CompletedTasks)
             {
-                TasksService.SetErrors(list.Value, policy);
+                TasksService.SetErrors(list.Value, report.Policy);
                 completedErrors += TasksService.GetErrorsCount(list.Value);
             }
-            sprintTasks.CompletedTasksErrorCount = completedErrors;
-            sprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(sprintTasks.UnassignedTasks);
+            report.SprintTasks.CompletedTasksErrorCount = completedErrors;
+            report.SprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(report.SprintTasks.UnassignedTasks);
         } 
 
-        public List<Issue> GetCompletedTasks(JiraPolicy policy, JiraOptions options)
+        public List<CompleteIssue> GetCompletedTasks(JiraReport context)
         {
-            var completedTasks = new List<Issue>();
-            var issues = RestApiRequests.GetCompletedIssues(policy, DateTime.Now.ToOriginalTimeZone().AddDays(-6), DateTime.Now.ToOriginalTimeZone());
+            var completedTasks = new List<CompleteIssue>();
+            var issues = new JiraService().GetCompletedIssues(context.Settings, context.ReportDate.AddDays(-6), context.ReportDate);
             foreach (var jiraIssue in issues.issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
                 {
-                    var issue = GetCompleteIssue(null, policy, jiraIssue);
+                    var issue = GetCompleteIssue(context, jiraIssue);
 
                     completedTasks.Add(issue);
                 }
@@ -56,20 +55,21 @@ namespace JiraReporter
             return completedTasks;
         }
 
-        public JiraIssues GetUnfinishedTasks(JiraPolicy policy)
+        public JiraIssues GetUnfinishedTasks(JiraReport context)
         {
-            return RestApiRequests.GetSprintTasks(policy);
+            return new JiraService().GetSprintTasks(context.Settings, context.Policy.GeneratedProperties.ProjectKey);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, SprintTasks tasks, List<JiraPullRequest> pullRequests, JiraPolicy policy)
+        public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
         {
-            tasks.InProgressTasks = new List<Issue>();
-            tasks.OpenTasks = new List<Issue>();
-            tasks.UnassignedTasks = new List<Issue>();
+            var tasks = context.SprintTasks;
+            tasks.InProgressTasks = new List<CompleteIssue>();
+            tasks.OpenTasks = new List<CompleteIssue>();
+            tasks.UnassignedTasks = new List<CompleteIssue>();
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
-                var issue = GetCompleteIssue(pullRequests, policy, jiraIssue);
+                var issue = GetCompleteIssue(context, jiraIssue);
 
                 if (issue.StatusCategory.name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
@@ -84,30 +84,30 @@ namespace JiraReporter
             }
         }
 
-        private static Issue GetCompleteIssue(List<JiraPullRequest> pullRequests, JiraPolicy policy, JiraIssue jiraIssue)
+        private static CompleteIssue GetCompleteIssue(JiraReport context, JiraIssue jiraIssue)
         {
-            var issue = new Issue(jiraIssue);
-            var issueProcessor = new IssueProcessor(policy, pullRequests);
+            var issue = new CompleteIssue(jiraIssue);
+            var issueProcessor = new IssueProcessor(context);
 
             issueProcessor.SetIssue(issue, jiraIssue);
-            IssueAdapter.SetIssueErrors(issue, policy);
+            IssueAdapter.SetIssueErrors(issue, context.Policy);
             return issue;
         }
 
-        public IEnumerable<IGrouping<string, Issue>> GroupCompletedTasks(List<Issue> completedTasks)
+        public IEnumerable<IGrouping<string, CompleteIssue>> GroupCompletedTasks(List<CompleteIssue> completedTasks, JiraReport context)
         {
             var tasks = from task in completedTasks
                         group task by task.CompletedTimeAgo into newGroup
-                        orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone())
+                        orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone(context.OffsetFromUtc))
                         select newGroup;
             tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
             return tasks;
         }
 
-        public void SetCompletedTasks(IEnumerable<IGrouping<string, Issue>> tasks, SprintTasks sprintTasks)
+        public void SetCompletedTasks(IEnumerable<IGrouping<string, CompleteIssue>> tasks, SprintTasks sprintTasks)
         {
-            var completedTasks = new Dictionary<string, List<Issue>>();
-            var issues = new List<Issue>();
+            var completedTasks = new Dictionary<string, List<CompleteIssue>>();
+            var issues = new List<CompleteIssue>();
             foreach (var task in tasks)
             {
                 issues = tasks.SelectMany(group => group).Where(group => group.CompletedTimeAgo == task.Key).ToList();
@@ -126,9 +126,9 @@ namespace JiraReporter
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        public static List<Issue> GetParentTasks(List<Issue> tasks, JiraAuthor author)
+        public static List<CompleteIssue> GetParentTasks(List<CompleteIssue> tasks, JiraAuthor author)
         {
-            List<Issue> parentTasks = new List<Issue>(tasks);
+            List<CompleteIssue> parentTasks = new List<CompleteIssue>(tasks);
             foreach (var task in tasks)
             {
                 IssueAdapter.SetSubtasksLoggedAuthor(task, author.Name);
@@ -136,19 +136,19 @@ namespace JiraReporter
                 {
                     IssueAdapter.SetLoggedAuthor(task, author.Name);
                     var parentIssue = parentTasks.Find(t => t.Key == task.Parent.Key);
-                    var parent = new Issue();
+                    var parent = new CompleteIssue();
                     if (parentIssue != null)
                     {
-                        parent = new Issue(parentIssue);
+                        parent = new CompleteIssue(parentIssue);
                         if (parent.AssigneeSubtasks == null)
-                            parent.AssigneeSubtasks = new List<Issue>();
+                            parent.AssigneeSubtasks = new List<CompleteIssue>();
                         if (parent.AssigneeSubtasks.Exists(t => t.Key == task.Key) == false)
-                            parent.AssigneeSubtasks.Add(new Issue(task));
+                            parent.AssigneeSubtasks.Add(new CompleteIssue(task));
                     }
                     else
                     {
                         parent = CreateParent(task, author);
-                        parent.AssigneeSubtasks.Add(new Issue(task));
+                        parent.AssigneeSubtasks.Add(new CompleteIssue(task));
                         IssueAdapter.SetLoggedAuthor(parent, author.Name);
                         parentTasks.Add(parent);
                     }
@@ -158,23 +158,23 @@ namespace JiraReporter
             return parentTasks;
         }
 
-        private static Issue CreateParent(Issue task, JiraAuthor author)
+        private static CompleteIssue CreateParent(CompleteIssue task, JiraAuthor author)
         {
-            var parent = new Issue(task.Parent);
+            var parent = new CompleteIssue(task.Parent);
             foreach (var subtask in parent.SubtasksIssues)
                 IssueAdapter.SetLoggedAuthor(subtask, author.Name);
-            parent.AssigneeSubtasks = new List<Issue>();
+            parent.AssigneeSubtasks = new List<CompleteIssue>();
             return parent;
         }
 
-        public static void SetErrors(List<Issue> tasks, JiraPolicy policy)
+        public static void SetErrors(List<CompleteIssue> tasks, JiraPolicy policy)
         {
             if (tasks != null && tasks.Count > 0)
                 foreach (var task in tasks)
                     IssueAdapter.SetIssueErrors(task, policy);
         }
 
-        public static int GetErrorsCount(List<Issue> tasks)
+        public static int GetErrorsCount(List<CompleteIssue> tasks)
         {
             if (tasks != null)
                 return tasks.Sum(t => t.ErrorsCount);
@@ -182,7 +182,7 @@ namespace JiraReporter
                 return 0;
         }
 
-        public static int GetTimeLeftForSpecificAuthorTasks(List<Issue> tasks, string authorName)
+        public static int GetTimeLeftForSpecificAuthorTasks(List<CompleteIssue> tasks, string authorName)
         {
             return tasks.Where(t => t.Assignee == authorName).Sum(i => i.TotalRemainingSeconds);
         }

@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,12 @@ namespace JiraReporter
 {
     public class HealthInspector
     {
-        JiraPolicy Policy { get; set; }
+        JiraReport Report { get; set; }
+        JiraPolicy Policy { get { return Report.Policy; } }
 
-        public HealthInspector(JiraPolicy policy)
+        public HealthInspector(JiraReport report)
         {
-            Policy = policy;
+            Report = report;
         }
         private static string GetHealthStatus(double variance, Health health, string specificString)
         {
@@ -96,9 +98,9 @@ namespace JiraReporter
             if (allocatedHours == 0)
                 return Health.None;
 
-            var workedDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), Policy.MonthlyOptions);
+            var workedDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).AddDays(-1), Policy.MonthlyOptions);
             var workedPerDay = totalTimeWorked / workedDays;
-            var monthWorkingDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().EndOfMonth(), Policy.MonthlyOptions);
+            var monthWorkingDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).EndOfMonth(), Policy.MonthlyOptions);
             var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
             return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }

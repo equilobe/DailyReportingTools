@@ -9,7 +9,8 @@ using System.Threading;
 using System.Net.Mail;
 using System.Globalization;
 using System.Diagnostics;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.SourceControl;
 
 namespace SourceControlLogReporter
 {
@@ -107,7 +108,7 @@ namespace SourceControlLogReporter
             return subject;
         }
 
-        public void MoveToSent(string path)
+        public virtual void MoveToSent(string path)
         {
             Validation.EnsureDirectoryExists(policy.GeneratedProperties.ReportsPath);
 

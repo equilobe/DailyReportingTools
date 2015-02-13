@@ -1,6 +1,9 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
+using JiraReporter.Helpers;
 using JiraReporter.Model;
 using JiraReporter.Services;
 using System;
@@ -13,22 +16,18 @@ namespace JiraReporter.Services
 {
     class SummaryLoader
     {
-        public List<JiraAuthor> _authors;
-        public SprintTasks _sprintTasks;
-        public List<JiraPullRequest> _pullRequests;
-        public JiraPolicy _policy;
-        public JiraOptions _options;
-        public Sprint _sprint;
+        public List<JiraAuthor> _authors { get { return _report.Authors; } }
+        public SprintTasks _sprintTasks { get { return _report.SprintTasks; } }
+        public List<JiraPullRequest> _pullRequests { get { return _report.PullRequests; } }
+        public JiraPolicy _policy { get { return _report.Policy; } }
+        public JiraOptions _options { get { return _report.Options; } }
+        public Sprint _sprint { get { return _report.Sprint; } }
         public Summary _summary;
+        public JiraReport _report;
 
-        public SummaryLoader(JiraPolicy policy, JiraOptions options, List<JiraAuthor> authors, SprintTasks sprintTasks, Sprint sprint, List<JiraPullRequest> pullRequests)
+        public SummaryLoader(JiraReport report)
         {
-            _authors = authors;
-            _sprintTasks = sprintTasks;
-            _pullRequests = pullRequests;
-            _policy = policy;
-            _options = options;
-            _sprint = sprint;
+            _report = report;
         }
 
         public Summary LoadSummary()
@@ -158,7 +157,7 @@ namespace JiraReporter.Services
             if (reportWorkingDays > 0)
                 _summary.Timing.AverageWorked = (double)_summary.Timing.TotalTimeSeconds / reportWorkingDays;
 
-            TimeFormatting.SetAverageWorkStringFormat(_summary.Timing);
+            TimingHelpers.SetAverageWorkStringFormat(_summary.Timing);
         }
 
         private void SetAverageRemainingTimePerDay(int monthRemainingDays, int sprintRemainingDays)
@@ -173,7 +172,7 @@ namespace JiraReporter.Services
             else
                 _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / sprintRemainingDays;
 
-            TimeFormatting.SetaAverageRemainingStringFormat(_summary.Timing);
+            TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
         }
 
         private void SetMonthEstimatedValue()
@@ -191,14 +190,14 @@ namespace JiraReporter.Services
             _summary.Timing.SprintAverageEstimateString = _summary.Timing.AllocatedHoursPerDay.RoundDoubleOneDecimal();
         }
 
-        private int GetTimesheetTotalEstimate(Timesheet timesheet)
-        {
-            var timesheetService = new TimesheetService();
-            if (timesheet == null)
-                return 0;
-            else
-                return timesheetService.GetTotalOriginalEstimate(timesheet);
-        }
+        //private int GetTimesheetTotalEstimate(Timesheet timesheet)
+        //{
+        //    var timesheetService = new TimesheetService();
+        //    if (timesheet == null)
+        //        return 0;
+        //    else
+        //        return timesheetService.GetTotalOriginalEstimate(timesheet);
+        //}
 
         private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
@@ -249,7 +248,7 @@ namespace JiraReporter.Services
 
         private void SetHealth(int sprintWorkedDays)
         {
-            var healthInspector = new HealthInspector(_policy);
+            var healthInspector = new HealthInspector(_report);
             _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions), _summary.Timing.TotalTimeHours);
             if (_sprint == null)
             {
@@ -446,18 +445,18 @@ namespace JiraReporter.Services
         private WorkingDaysInfo LoadWorkingDaysInfo()
         {
             var workingDaysInfo = new WorkingDaysInfo();
-            var now = DateTime.Now.ToOriginalTimeZone();
+            var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
             workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions);
             workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions);
             workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions);
             workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions);
             if (_sprint != null)
             {
-                var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone();
-                var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone();
-                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(), sprintEndDate, _policy.MonthlyOptions);
+                var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone(_report.OffsetFromUtc);
+                var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone(_report.OffsetFromUtc);
+                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate, _policy.MonthlyOptions);
                 workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions);
-                workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_sprint, _policy);
+                workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_report);
             }
             return workingDaysInfo;
         }

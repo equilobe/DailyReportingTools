@@ -11,7 +11,7 @@ using System.Net.Mail;
 using System.Configuration;
 using RazorEngine.Templating;
 using Octokit;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 
 namespace SourceControlLogReporter
 {

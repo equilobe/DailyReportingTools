@@ -65,8 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\JiraOffsetHelper.cs" />
+    <Compile Include="Helpers\DatesHelper.cs" />
+    <Compile Include="Helpers\TimingHelpers.cs" />
     <Compile Include="Services\DayLogLoader.cs" />
-    <Compile Include="JiraApiUrls.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="Services\AuthorLoader.cs" />
     <Compile Include="Deserialization.cs" />
@@ -74,10 +76,8 @@
     <Compile Include="Services\IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
-    <Compile Include="JiraOptions.cs" />
     <Compile Include="JiraReportHelpers.cs" />
-    <Compile Include="JiraService.cs" />
-    <Compile Include="JwtAuthenticator.cs" />
+    <Compile Include="SprintLoader.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="BaseReportProcessor.cs" />
     <Compile Include="IndividualReportProcessor.cs" />
@@ -92,14 +92,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportGenerator.cs" />
-    <Compile Include="RestApiRequests.cs" />
     <Compile Include="SourceControlProcessor.cs" />
-    <Compile Include="TimeFormattingExtensions.cs" />
     <Compile Include="WidthHelpers.cs" />
     <Compile Include="SummaryHelpers.cs" />
     <Compile Include="Services\SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
-    <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="Services\TimesheetService.cs" />
     <Compile Include="WebDownloads.cs" />
@@ -174,6 +171,14 @@
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
       <Name>Equilobe.DailyReport.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.SL\Equilobe.DailyReport.SL.csproj">
+      <Project>{e884ac10-285d-4012-882e-7cfa035549e2}</Project>
+      <Name>Equilobe.DailyReport.SL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">
+      <Project>{7a42dd16-07e8-46a6-9083-47f342b644e5}</Project>
+      <Name>Equilobe.DailyReport.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\SvnLogReporter\SourceControlLogReporter.csproj">
       <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>
