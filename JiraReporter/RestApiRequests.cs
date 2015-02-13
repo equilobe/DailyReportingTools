@@ -87,7 +87,7 @@ namespace JiraReporter
             var request = new RestRequest(JiraApiUrls.Users(policy.GeneratedProperties.ProjectKey), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(policy, request)
-                .Where(user => user.key.IndexOf("addon_") == -1)
+                .Where(user => !user.key.StartsWith("addon_"))
                 .ToList();
         }
 
