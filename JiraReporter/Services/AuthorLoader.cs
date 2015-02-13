@@ -8,35 +8,32 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using RestSharp;
-using Equilobe.DailyReport.Models.ReportPolicy;
-using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter.Services
 {
     class AuthorLoader
     {
-        SprintTasks _sprintIssues;
-        JiraPolicy _policy;
-        List<JiraCommit> _commits;
-        JiraOptions _options;
-        List<JiraPullRequest> _pullRequests;
-        Sprint _sprint;
+        SprintTasks _sprintIssues {get {return _context.SprintTasks;}}
+        JiraPolicy _policy { get { return _context.Policy; } }
+        List<JiraCommit> _commits { get { return _context.Commits; } }
+        JiraOptions _options { get { return _context.Options; } }
+        Sprint _sprint { get { return _context.Sprint; } }
         JiraAuthor _currentAuthor;
+        JiraReport _context;
 
-        public AuthorLoader(JiraOptions options, JiraPolicy policy, Sprint sprint, SprintTasks sprintIssues, List<JiraCommit> commits, List<JiraPullRequest> pullRequests)
+        public AuthorLoader(JiraReport context)
         {
-            this._sprintIssues = sprintIssues;
-            this._commits = commits;
-            this._policy = policy;
-            this._options = options;
-            this._pullRequests = pullRequests;
-            this._sprint = sprint;
+            this._context = context;
         }
 
         public List<JiraAuthor> GetAuthors()
         {
-            var authors = RestApiRequests.GetUsers(_policy)
+            var authors = new JiraService().GetUsers(_context.Settings, _context.Policy.GeneratedProperties.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
@@ -55,7 +52,7 @@ namespace JiraReporter.Services
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
-            var user = RestApiRequests.GetUser(draft.Username, policy);
+            var user = new JiraService().GetUser(_context.Settings, draft.Username);
             var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);
             author.IndividualDraftInfo = draft;
@@ -78,7 +75,7 @@ namespace JiraReporter.Services
         {
             this._currentAuthor = a;
             SetTimesheets();
-            LoadTimesheetIssueDetails();
+            LoadIssues();
             SetIssues();
             OrderIssues();
             CalculateTimeSpent();
@@ -105,26 +102,28 @@ namespace JiraReporter.Services
 
         private void SetTimesheets()
         {
-            _currentAuthor.CurrentTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.CurrentTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
             if (_sprint != null)
-                _currentAuthor.SprintTimesheet = RestApiRequests.GetTimesheetForUser(_policy, _sprint.StartDate.ToOriginalTimeZone(), _sprint.EndDate.ToOriginalTimeZone(), _currentAuthor.Username);
-            _currentAuthor.MonthTimesheet = RestApiRequests.GetTimesheetForUser(_policy, DateTime.Now.ToOriginalTimeZone().StartOfMonth(), DateTime.Now.ToOriginalTimeZone().AddDays(-1), _currentAuthor.Username);
+                _currentAuthor.SprintTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc), _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.MonthTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _options.FromDate.StartOfMonth(), _options.ToDate.AddDays(-1), _currentAuthor.Username);
         }
 
 
-        private void LoadTimesheetIssueDetails()
+        private void LoadIssues()
         {
-            var timesheetService = new TimesheetService();
-            timesheetService.SetTimesheetIssues(_currentAuthor.CurrentTimesheet, _policy, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.SprintTimesheet, _policy, _pullRequests);
-            timesheetService.SetTimesheetIssues(_currentAuthor.MonthTimesheet, _policy, _pullRequests);
+            _currentAuthor.Issues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
+            _currentAuthor.MonthIssues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
+            _currentAuthor.SprintIssues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.SprintTimesheet.Worklog.Issues);
         }
 
         private void SetIssues()
         {
             if (_currentAuthor.CurrentTimesheet != null && _currentAuthor.CurrentTimesheet.Worklog.Issues != null)
-                _currentAuthor.Issues = _currentAuthor.CurrentTimesheet.Worklog.Issues;
+                _currentAuthor.Issues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
             _currentAuthor.Issues.ForEach(issue => IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name));
+
+            var processor = new IssueProcessor(_context);
+            processor.SetIssues(_currentAuthor.Issues);
         }
 
         private void OrderIssues()
@@ -172,22 +171,22 @@ namespace JiraReporter.Services
                     commit.Entry.Link = _policy.SourceControlOptions.CommitUrl + commit.Entry.Revision;
         }
 
-        private void AddCommitIssuesNotInTimesheet(List<Issue> tasks)
+        private void AddCommitIssuesNotInTimesheet(List<CompleteIssue> tasks)
         {
             foreach (var task in tasks)
             {
                 if ((_currentAuthor.Issues != null && _currentAuthor.Issues.Exists(i => i.Key == task.Key) == false) || _currentAuthor.Issues == null)
                 {
-                    var issue = new Issue(task);
+                    var issue = new CompleteIssue(task);
                     issue.Commits = null;
                     IssueAdapter.AdjustIssueCommits(issue, _currentAuthor.Commits);
                     if (issue.Commits.Count > 0)
                     {
                         if (_currentAuthor.Issues == null)
-                            _currentAuthor.Issues = new List<Issue>();
+                            _currentAuthor.Issues = new List<CompleteIssue>();
                         issue.ExistsInTimesheet = true;
                         IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name);
-                        _currentAuthor.Issues.Add(new Issue(issue));
+                        _currentAuthor.Issues.Add(new CompleteIssue(issue));
                     }
                 }
             }
@@ -210,7 +209,7 @@ namespace JiraReporter.Services
 
         private void SetAuthorInProgressTasks()
         {
-            _currentAuthor.InProgressTasks = new List<Issue>();
+            _currentAuthor.InProgressTasks = new List<CompleteIssue>();
             _currentAuthor.InProgressTasks = GetAuthorTasks(_sprintIssues.InProgressTasks);
             TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
@@ -235,7 +234,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.DayLogs = new List<JiraDayLog>();
             foreach (var day in _options.ReportDates)
-                _currentAuthor.DayLogs.Add(DayLogLoader.CreateDayLog(_currentAuthor, day, _options));
+                _currentAuthor.DayLogs.Add(DayLogLoader.CreateDayLog(_currentAuthor, day, _context));
             _currentAuthor.DayLogs = _currentAuthor.DayLogs.OrderBy(d => d.Date).ToList();
             _currentAuthor.DayLogs.RemoveAll(d => d.Commits.Count == 0 && d.Issues == null);
         }
@@ -272,7 +271,7 @@ namespace JiraReporter.Services
 
         private void SetAuthorOpenTasks()
         {
-            _currentAuthor.OpenTasks = new List<Issue>();
+            _currentAuthor.OpenTasks = new List<CompleteIssue>();
             _currentAuthor.OpenTasks = GetAuthorTasks(_sprintIssues.OpenTasks);
             TasksService.SetErrors(_currentAuthor.OpenTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
@@ -285,9 +284,9 @@ namespace JiraReporter.Services
             _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        private List<Issue> GetAuthorTasks(List<Issue> tasks)
+        private List<CompleteIssue> GetAuthorTasks(List<CompleteIssue> tasks)
         {
-            var unfinishedTasks = new List<Issue>();
+            var unfinishedTasks = new List<CompleteIssue>();
             foreach (var task in tasks)
                 if (task.Assignee == _currentAuthor.Name)
                 {
@@ -330,7 +329,7 @@ namespace JiraReporter.Services
 
         private JiraAuthor GetProjectLead(string username)
         {
-            var lead = RestApiRequests.GetUser(username, _policy);
+            var lead = new JiraService().GetUser(_context.Settings, username);
             var projectManager = new JiraAuthor(lead);
             projectManager.IsProjectLead = true;
 

@@ -37,7 +37,7 @@ else
                 <b style="color:black; padding:1.5px">@Model.Resolution</b>
             }
         }
-        @if (DateTime.Compare(Model.Created.ToOriginalTimeZone(), DateTime.Now.ToOriginalTimeZone().AddDays(-1)) >= 0)
+        @if (Model.IsNew)
         {
             <b style="color:black"> NEW: </b>
         }

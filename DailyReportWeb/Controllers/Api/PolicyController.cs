@@ -8,11 +8,12 @@ using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.DAL;
-using Equilobe.DailyReport.Models.ReportPolicy;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Web;
 using JiraReporter;
 using DailyReportWeb.Services;
 using JiraReporter.Services;
+using Equilobe.DailyReport.SL;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -131,6 +132,12 @@ namespace DailyReportWeb.Controllers.Api
 
         private static JiraPolicy GetReportPolicyFromJira(long id, string baseUrl, string sharedSecret)
         {
+            var context = new ReportSettings
+            {
+                BaseUrl = baseUrl,
+                SharedSecret = sharedSecret
+            };
+
             var policy = new JiraPolicy
             {
                 BaseUrl = baseUrl,
@@ -138,14 +145,14 @@ namespace DailyReportWeb.Controllers.Api
                 ProjectId = id
             };
 
-            var project = RestApiRequests.GetProject(policy);
+            var project = new JiraService().GetProject(context, id.ToString());
             policy.GeneratedProperties = new JiraGeneratedProperties
             {
                 ProjectName = project.Name,
                 ProjectKey = project.Key
             };
 
-            policy.UserOptions = RestApiRequests.GetUsers(policy)
+            policy.UserOptions = new JiraService().GetUsers(context, project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,

@@ -1,5 +1,8 @@
-﻿using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Utils;
 using JiraReporter.Model;
 using System;
 using System.Collections.Generic;
@@ -11,28 +14,35 @@ namespace JiraReporter
 {
     class IssueProcessor
     {
-        JiraPolicy _policy;
-        List<JiraPullRequest> _pullRequests;
-        Issue _currentIssue;
-        JiraIssue _currentJiraIssue;
-
-        public IssueProcessor(JiraPolicy policy, List<JiraPullRequest> pullRequests)
+        JiraPolicy _policy
         {
-            this._policy = policy;
-            this._pullRequests = pullRequests;
+            get
+            {
+                return _context.Policy;
+            }
+        }
+        List<JiraPullRequest> _pullRequests;
+        CompleteIssue _currentIssue;
+        JiraIssue _currentJiraIssue;
+        JiraReport _context;
+
+        public IssueProcessor(JiraReport context)
+        {
+            this._context = context;
+            this._pullRequests = context.PullRequests;
         }
 
-        public void SetIssues(List<Issue> issues)
+        public void SetIssues(List<CompleteIssue> issues)
         {
             foreach (var issue in issues)
             {
                 var jiraIssue = new JiraIssue();
-                jiraIssue = RestApiRequests.GetIssue(issue.Key, _policy);
+                jiraIssue = new JiraService().GetIssue(_context.Settings, issue.Key);
                 SetIssue(issue, jiraIssue);
             }
         }
 
-        public void SetIssue(Issue issue, JiraIssue jiraIssue)
+        public void SetIssue(CompleteIssue issue, JiraIssue jiraIssue)
         {
             SetGenericIssue(issue, jiraIssue);
             if (issue.IsSubtask)
@@ -44,7 +54,7 @@ namespace JiraReporter
                 SetSubtasks(issue);
         }
 
-        private void SetGenericIssue(Issue issue, JiraIssue jiraIssue)
+        private void SetGenericIssue(CompleteIssue issue, JiraIssue jiraIssue)
         {
             this._currentIssue = issue;
             this._currentJiraIssue = jiraIssue;
@@ -67,6 +77,14 @@ namespace JiraReporter
             SetDisplayStatus();
             SetHasWorkLoggedByAssignee();
             SetIssueExceededEstimate();
+            SetIsNewProperty();
+        }
+
+        private void SetIsNewProperty()
+        {
+            if (_currentIssue.Created < DateTime.Now.ToOriginalTimeZone(_context.OffsetFromUtc).AddDays(-1))
+                return;
+            _currentIssue.IsNew = true;
         }
 
         private void SetSubtasks()
@@ -126,7 +144,7 @@ namespace JiraReporter
                 _currentIssue.Resolution = _currentJiraIssue.fields.resolution.name;
                 _currentIssue.StringResolutionDate = _currentJiraIssue.fields.resolutiondate;
                 _currentIssue.ResolutionDate = Convert.ToDateTime(_currentIssue.StringResolutionDate);
-                _currentIssue.CompletedTimeAgo = TimeFormatting.GetStringDay(_currentIssue.ResolutionDate.ToOriginalTimeZone());
+                _currentIssue.CompletedTimeAgo = TimeFormatting.GetStringDay(_currentIssue.ResolutionDate.ToOriginalTimeZone(_context.OffsetFromUtc), _context.ReportDate);
             }
         }
 
@@ -140,19 +158,19 @@ namespace JiraReporter
 
         private void SetParent(JiraIssue jiraIssue)
         {
-            _currentIssue.Parent = new Issue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
-            var parent = RestApiRequests.GetIssue(_currentIssue.Parent.Key, _policy);
+            _currentIssue.Parent = new CompleteIssue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
+            var parent = new JiraService().GetIssue(_context.Settings, _currentIssue.Parent.Key);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
-        private void SetSubtasks(Issue issue)
+        private void SetSubtasks(CompleteIssue issue)
         {
             var jiraIssue = new JiraIssue();
-            issue.SubtasksIssues = new List<Issue>();
+            issue.SubtasksIssues = new List<CompleteIssue>();
             foreach (var task in issue.Subtasks)
             {
-                jiraIssue = RestApiRequests.GetIssue(task.key, _policy);
-                issue.SubtasksIssues.Add(new Issue(jiraIssue));
+                jiraIssue = new JiraService().GetIssue(_context.Settings, task.key);
+                issue.SubtasksIssues.Add(new CompleteIssue(jiraIssue));
                 SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
             }
         }
@@ -174,7 +192,7 @@ namespace JiraReporter
             }
         }
 
-        private void EditIssuePullRequests(Issue issue)
+        private void EditIssuePullRequests(CompleteIssue issue)
         {
             if (issue.PullRequests != null)
                 foreach (var pullRequest in issue.PullRequests)

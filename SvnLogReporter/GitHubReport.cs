@@ -1,5 +1,5 @@
 ﻿using Equilobe.DailyReport.Models;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Octokit;
 using Octokit.Internal;
 using RazorEngine;
@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.SourceControl;
 
 namespace SourceControlLogReporter
 {
@@ -152,13 +153,16 @@ namespace SourceControlLogReporter
 
         protected virtual List<GitHubCommit> GetReportCommits()
         {
-            string fromDate = Options.DateToISO(Options.FromDate.ToGithubTime());
-            string toDate = Options.DateToISO(Options.ToDate.ToGithubTime());
+            string fromDate = Options.DateToISO(Options.FromDate);
+            string toDate = Options.DateToISO(Options.ToDate);
+            return GetReportCommits(fromDate, toDate);
+        }
+
+        protected virtual List<GitHubCommit> GetReportCommits(string fromDate, string toDate)
+        {
             var commits = ConcatCommits(Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.Repo, fromDate, toDate);
             commits = RemoveDuplicateCommits(commits);
-
             AddName(commits);
-
             return commits;
         } 
     }

@@ -1,5 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Model;
 using JiraReporter.Services;
 using SourceControlLogReporter;
@@ -14,49 +14,47 @@ namespace JiraReporter
 {
     public class BaseReportProcessor
     {
-        JiraPolicy Policy { get; set; }
-        JiraOptions Options { get; set; }
+        protected JiraPolicy Policy { get { return Report.Policy; } }
+        protected JiraOptions Options { get { return Report.Options; } }
+        protected JiraReport Report { get; set; }
 
-        public BaseReportProcessor(JiraPolicy policy, JiraOptions options)
+
+        public BaseReportProcessor(JiraReport report)
         {
-            Policy = policy;
-            Options = options;
+            Report = report;
         }
 
-        public virtual void ProcessReport(JiraReport report)
+        public virtual void ProcessReport()
         {
-            SaveReport(Policy, report);
-        //    SetEmailCollection(report.Authors);
-            Policy.EmailCollection = new List<string>();
-            Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
-            SendReport(report);
+            SaveReport();
+            SetEmailCollection(Report.Authors);
+            SendReport();
         }
 
-        protected virtual void SaveReport(JiraPolicy policy, JiraReport report)
+        protected virtual void SaveReport()
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\TimesheetReportTemplate.cshtml";
-            var reportPath = GetReportPath(report);
-            SaveReportToFile(report, reportPath, policy, viewPath);
+            var reportPath = GetReportPath();
+            SaveReportToFile(reportPath, viewPath);
         }
 
-        protected virtual string GetReportPath(JiraReport report)
+        protected virtual string GetReportPath()
         {
-            string reportPath = report.Policy.GeneratedProperties.ReportsPath;
+            string reportPath = Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
-            reportPath = Path.Combine(reportPath, report.Date.ToString("yyyy-MM-dd") + ".html");
+            reportPath = Path.Combine(reportPath, Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }
 
-        protected void SaveReportToFile<T>(T report, string reportPath, JiraPolicy policy, string viewPath)
+        protected void SaveReportToFile(string reportPath, string viewPath)
         {
-            var repCont = SourceControlLogReporter.ReportBase.ProcessReport(report, viewPath);
-            WriteReport(policy, repCont, reportPath);
+            var repCont = SourceControlLogReporter.ReportBase.ProcessReport(Report, viewPath);
+            WriteReport(Policy, repCont, reportPath);
         }
 
-        protected virtual void SendReport(JiraReport report)
+        protected virtual void SendReport()
         {
-            var emailer = new ReportEmailerJira(report.Policy, Options);
-            emailer.Authors = report.Authors;
+            var emailer = new ReportEmailerJira(Report);
 
             emailer.TrySendEmails();
         }

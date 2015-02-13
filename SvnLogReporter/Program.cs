@@ -12,21 +12,22 @@ using System.Net;
 using RazorEngine.Templating;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
-using CommandLine;
-using CommandLine.Text;
 using Octokit;
 using Octokit.Internal;
 using System.Globalization;
 using SourceControlLogReporter;
-using Equilobe.DailyReport.Models.ReportPolicy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.SourceControl;
+using CommandLine;
 
 namespace SourceControlLogReporter
 {
 
     class Program
     {
-        
+
+
         private static readonly Dictionary<SourceControlType, Func<Policy, Options, ReportBase>> Processors = new Dictionary<SourceControlType, Func<Policy, Options, ReportBase>>()
         {
             {SourceControlType.GitHub, ReportBase.Create<GitHubReport>},
@@ -57,11 +58,12 @@ namespace SourceControlLogReporter
 
         private static void ExecuteReporter(string[] args)
         {
-            Options options = GetCommandLineOptions(args);
+            Options options = new Options();
+            new CommandLineParser().ParseArguments(args, options);
             Policy policy = PolicyService.LoadFromFile(options.PolicyPath);
             var policyService = new PolicyService(policy);
             policyService.SetPolicy();
-            options.LoadDates(policy);
+            options.LoadDates();
 
             var processor = Processors[policy.SourceControlOptions.Type](policy, options);
             var report = processor.GenerateReport();
@@ -78,12 +80,6 @@ namespace SourceControlLogReporter
             AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", newConfigPath);
         }
 
-        private static Options GetCommandLineOptions(string[] args)
-        {
-            Options options = new Options();
-            ICommandLineParser parser = new CommandLineParser();
-            parser.ParseArguments(args, options);
-            return options;
-        }
+        
     }
 }

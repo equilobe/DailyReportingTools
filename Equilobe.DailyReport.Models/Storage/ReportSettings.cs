@@ -1,15 +1,15 @@
-﻿using Equilobe.DailyReport.Models.ReportPolicy;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class ReportSettings
+    public class ReportSettings : IJiraRequestContext
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

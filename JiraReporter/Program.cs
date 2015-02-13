@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Model;
 using RazorEngine;
 using RestSharp;
@@ -13,8 +12,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using SourceControlLogReporter;
-using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
+using JiraReporter.Helpers;
+using CommandLine;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter
 {
@@ -22,72 +25,75 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
-            JiraOptions options = GetCommandLineOptions(args);
-            JiraPolicy policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
-            var project = RestApiRequests.GetProject(policy);
+            var options = new JiraOptions();                
+            new CommandLineParser().ParseArguments(args, options);
+            var policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
+
+            var report = new JiraReport(policy, options);
+
+            var project = new JiraService().GetProject(report.Settings, report.Policy.ProjectId.ToString());
             SetProjectInfo(policy, project);
-            var policyService = new JiraPolicyService(policy);
-            policyService.SetPolicy(options);
+            LoadReportDates(report);
+            var policyService = new JiraPolicyService(report);
+            policyService.SetPolicy();        
 
-            LoadReportDates(policy, options);
-
-            if (RunReport(policy, options))
-                RunReportTool(policy, options);
+            if (RunReport(report))
+                RunReportTool(report);
             else
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
-        private static bool RunReport(JiraPolicy policy, JiraOptions options)
+        private static bool RunReport(JiraReport context)
         {
-            var today = DateTime.Now.ToOriginalTimeZone().Date;
+            var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
 
-            if (policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone().Date)
+            if (context.Policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
                 return false;
 
-            if (options.IsWeekend() == true)
+            if (DatesHelper.IsWeekend(context))
                 return false;
 
-            if (CheckDayFromOverrides(policy) == true)
+            if (CheckDayFromOverrides(context))
                 return false;
 
-            if (options.TriggerKey != null && !policy.IsForcedByLead(options.TriggerKey))
+            if (context.Options.TriggerKey != null && !context.Policy.IsForcedByLead(context.Options.TriggerKey))
                 return false;
 
             return true;
         }
 
-        private static bool CheckDayFromOverrides(JiraPolicy policy)
+        private static bool CheckDayFromOverrides(JiraReport context)
         {
-            if (policy.CurrentOverride != null && policy.CurrentOverride.NonWorkingDays != null)
-                return policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone().Day);
+            if (context.Policy.CurrentOverride != null && context.Policy.CurrentOverride.NonWorkingDays != null)
+                return context.Policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Day);
             return false;
         }
 
-        private static void RunReportTool(JiraPolicy policy, JiraOptions options)
+        private static void RunReportTool(JiraReport context)
         {
             SetTemplateGlobal();
 
-            var report = ReportGenerator.GenerateReport(policy, options);
+            var report = ReportGenerator.GenerateReport(context);
 
-            ProcessAndSendReport(policy, options, report);
+            ProcessAndSendReport(report);
         }
 
-        private static void ProcessAndSendReport(JiraPolicy policy, JiraOptions options, JiraReport report)
+        private static void ProcessAndSendReport(JiraReport report)
         {
-            if (policy.GeneratedProperties.IsIndividualDraft)
+            if (report.Policy.GeneratedProperties.IsIndividualDraft)
             {
                 foreach (var author in report.Authors)
                 {
-                    var individualReport = ReportGenerator.GetIndividualReport(report, author);
-                    var reportProcessor = new IndividualReportProcessor(policy, options);
-                    reportProcessor.ProcessReport(individualReport);
+                    report.Author = author;
+                    report.Title = JiraReportHelpers.GetReportTitle(report);
+                    var reportProcessor = new IndividualReportProcessor(report);
+                    reportProcessor.ProcessReport();
                 }
-        //        policy.SaveToFile(options.PolicyPath);
             }
             else
             {
-                var reportProcessor = new BaseReportProcessor(policy, options);
-                reportProcessor.ProcessReport(report);
+                var reportProcessor = new BaseReportProcessor(report);
+                reportProcessor.ProcessReport();
             }
         }
 
@@ -96,19 +102,13 @@ namespace JiraReporter
             Razor.SetTemplateBase(typeof(SourceControlLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
 
-        private static JiraOptions GetCommandLineOptions(string[] args)
-        {
-            JiraOptions options = new JiraOptions();
-            ICommandLineParser parser = new CommandLineParser();
-            parser.ParseArguments(args, options);
-            return options;
-        }
 
-        private static void LoadReportDates(JiraPolicy policy, JiraOptions options)
+
+        private static void LoadReportDates(JiraReport context)
         {
-            var timesheetSample = RestApiRequests.GetTimesheet(policy, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
-            DateTimeExtensions.SetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
-            options.LoadDates(policy);
+            var timesheetSample = new JiraService().GetTimesheet(context.Settings, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+            context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
+            new DatesHelper(context).LoadDates();
         }
 
         private static void SetProjectInfo(JiraPolicy policy, Project project)

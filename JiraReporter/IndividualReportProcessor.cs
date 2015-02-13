@@ -1,5 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.Models.ReportPolicy;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Services;
 using System;
 using System.Collections.Generic;
@@ -12,44 +12,31 @@ namespace JiraReporter.Model
 {
     public class IndividualReportProcessor : BaseReportProcessor
     {
-        JiraPolicy Policy { get; set; }
-        JiraOptions Options { get; set; }
-
-        public IndividualReportProcessor(JiraPolicy policy, JiraOptions options)
-            : base(policy, options)
+        public IndividualReportProcessor(JiraReport report)
+            : base(report)
         {
-            Policy = policy;
-            Options = options;
         }
 
-        public void ProcessReport(IndividualReport report)
+        public override void ProcessReport()
         {
-            SaveReport(Policy, report);
-            JiraPolicyService.SetIndividualEmail(report.Author.EmailAdress, Policy);
-            SendReport(report);
+            SaveReport();
+            JiraPolicyService.SetIndividualEmail(Report.Author.EmailAdress, Policy);
+            SendReport();
         }
 
-        private void SaveReport(JiraPolicy policy, IndividualReport individualReport)
+        protected override void SaveReport()
         {
             string viewPath = AppDomain.CurrentDomain.BaseDirectory + @"\Views\IndividualReportTemplate.cshtml";
-            var reportPath = GetReportPath(individualReport);
-            SaveReportToFile(individualReport, reportPath, policy, viewPath);
+            var reportPath = GetReportPath();
+            SaveReportToFile(reportPath, viewPath);
         }
 
-        private string GetReportPath(IndividualReport report)
+        protected override string GetReportPath()
         {
-            string reportPath = report.Policy.GeneratedProperties.ReportsPath;
+            string reportPath = Policy.GeneratedProperties.ReportsPath;
             SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
-            reportPath = Path.Combine(reportPath, report.Author.Name + "_" + report.Date.ToString("yyyy-MM-dd") + ".html");
+            reportPath = Path.Combine(reportPath, Report.Author.Name + "_" + Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
-        }
-
-        private void SendReport(IndividualReport report)
-        {
-            var emailer = new ReportEmailerJira(report.Policy, Options);
-            emailer.Author = report.Author;
-
-            emailer.TrySendEmails();
         }
     }
 }
