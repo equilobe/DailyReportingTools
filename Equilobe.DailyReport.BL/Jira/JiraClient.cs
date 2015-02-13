@@ -88,8 +88,8 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = new RestRequest(JiraApiUrls.Users(projectKey), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(request)
-                .Where(user => user.key.IndexOf("addon_") == -1)
-                .ToList(); 
+                .Where(user => !user.key.StartsWith("addon_"))
+                .ToList();
         }
 
         public RapidView GetRapidView(string id)
