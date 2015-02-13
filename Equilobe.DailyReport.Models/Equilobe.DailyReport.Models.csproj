@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="ReportFrame\IContext.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="Storage\JiraPolicy.cs" />
     <Compile Include="Storage\Month.cs" />
     <Compile Include="Storage\Policy.cs" />
-    <Compile Include="Storage\PolicySummary.cs" />
+    <Compile Include="Web\PolicySummary.cs" />
     <Compile Include="Storage\SourceControlOptions.cs" />
     <Compile Include="Storage\User.cs" />
     <Compile Include="Services\IJiraService.cs" />

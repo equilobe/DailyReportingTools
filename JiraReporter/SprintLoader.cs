@@ -23,7 +23,7 @@ namespace JiraReporter
             Report = report;
         }
 
-        public List<View> GetRapidViewsFromProject()
+        List<View> GetRapidViewsFromProject()
         {
             var views = new JiraService().GetRapidViews(Report.Settings);
             var rapidViews = new List<View>();
@@ -35,12 +35,12 @@ namespace JiraReporter
             return rapidViews;
         }
 
-        public View GetActiveView(List<View> views)
+        View GetActiveView(List<View> views)
         {
             return views.Find(v => v.sprintSupportEnabled == true);
         }
 
-        public RapidView GetRapidView(string activeViewId)
+        RapidView GetRapidView(string activeViewId)
         {
             return new JiraService().GetRapidView(Report.Settings, activeViewId);
         }
@@ -58,7 +58,7 @@ namespace JiraReporter
             return sprint;
         }
 
-        public Sprint GetSprintFromReportDates(Sprint sprint)
+        Sprint GetSprintFromReportDates(Sprint sprint)
         {
             if (sprint.EndDate < JiraOptions.FromDate)
                 return null;
@@ -66,7 +66,7 @@ namespace JiraReporter
             return sprint;
         }
 
-        public Sprint GetCompleteSprint(string sprintId, string rapidViewId)
+        Sprint GetCompleteSprint(string sprintId, string rapidViewId)
         {
             var completedSprint = new JiraService().GetSprintReport(Report.Settings, rapidViewId, sprintId).sprint; 
 

@@ -14,7 +14,7 @@ namespace Equilobe.DailyReport.BL.Jira
 {
     public class JiraClient
     {
-        public RestClient Client { get; set; }
+        RestClient Client { get; set; }
 
         public JiraClient(string baseUrl, string username, string password)
         {
@@ -28,7 +28,7 @@ namespace Equilobe.DailyReport.BL.Jira
             Client.Authenticator = new JwtAuthenticator(sharedSecret);
         }
 
-        public T ResolveRequest<T>(RestRequest request, bool isXml = false)
+        T ResolveRequest<T>(RestRequest request, bool isXml = false)
         {
             var response = Client.Execute(request);
 
@@ -40,7 +40,7 @@ namespace Equilobe.DailyReport.BL.Jira
                 return Deserialization.JsonDeserialize<T>(response.Content);
         }
 
-        public T ResolveJiraRequest<T>(RestRequest request) where T : new()
+        T ResolveJiraRequest<T>(RestRequest request) where T : new()
         {
             var response = Client.Execute<T>(request);
 
@@ -49,7 +49,7 @@ namespace Equilobe.DailyReport.BL.Jira
             return response.Data;
         }
 
-        private static void ValidateResponse(IRestResponse response)
+        static void ValidateResponse(IRestResponse response)
         {
             if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
                 throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));

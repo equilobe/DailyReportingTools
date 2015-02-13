@@ -7,6 +7,7 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Services;
 using Equilobe.DailyReport.BL.Jira;
 using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Jira.Filters;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -75,6 +76,11 @@ namespace Equilobe.DailyReport.SL
         public List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context)
         {
             return GetClient(context).GetProjectsInfo();
+        }
+
+        public Sprint GetProjectSprintForDate(ProjectDateFilter filter)
+        {
+            return null;
         }
 
         private JiraClient GetClient(IJiraRequestContext context)

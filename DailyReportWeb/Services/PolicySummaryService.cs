@@ -7,7 +7,7 @@ using System.Linq;
 using System.Web;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
-using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Web;
 
 namespace DailyReportWeb.Services
 {
