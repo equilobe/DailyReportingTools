@@ -77,12 +77,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cmd.cs" />
     <Compile Include="DoubeExtensions.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GitHubReport.cs" />
     <Compile Include="LogProcessor.cs" />
-    <Compile Include="LogService.cs" />
     <Compile Include="PolicyService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,9 +94,7 @@
     <Compile Include="ReportDateFormatter.cs" />
     <Compile Include="ReportEmailer.cs" />
     <Compile Include="Reporter.cs" />
-    <Compile Include="SvnNotAvailableException.cs" />
     <Compile Include="SvnReport.cs" />
-    <Compile Include="Validation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -5,6 +5,7 @@ using System.Web;
 using Microsoft.Win32.TaskScheduler;
 using System.Configuration;
 using SourceControlLogReporter;
+using Equilobe.DailyReport.Utils;
 
 namespace DailyReportWeb.Helpers
 {

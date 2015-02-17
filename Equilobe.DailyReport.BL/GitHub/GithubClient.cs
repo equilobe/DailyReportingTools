@@ -1,6 +1,6 @@
-﻿using Octokit;
+﻿using Equilobe.DailyReport.Utils;
+using Octokit;
 using Octokit.Internal;
-using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.Linq;

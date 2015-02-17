@@ -30,33 +30,8 @@ namespace SourceControlLogReporter
 
         public override Log CreateLog()
         {
-            var pullRequests = new GitHubService().GetPullRequests(Policy.SourceControlOptions.Credentials, Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName);
-            var commits = GetReportCommits();
-            return LoadLog(commits, pullRequests, Options.FromDate);
-        }
-
-        protected Log LoadLog(List<GitHubCommit> commits, List<PullRequest> pullRequests, DateTime fromDate)
-        {
-            var log = new Log();
-            if (pullRequests != null)
-                log.PullRequests = pullRequests;
-
-            log.Entries = new List<LogEntry>();
-            foreach (var commit in commits)
-            {
-                log.Entries.Add(
-                 new LogEntry
-                 {
-                     Author = commit.Commit.Author.Name,
-                     Date = commit.Commit.Author.Date,
-                     Message = commit.Commit.Message,
-                     Revision = commit.Sha,
-                     Link = commit.HtmlUrl
-                 });                
-            }
-
-            LogService.RemoveWrongEntries(fromDate, log);
-            return log;
+            var context = new SourceControlContext { SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate };
+            return new GitHubService().GetLog(context);
         }
 
         protected override void AddPullRequests(Report report, Log log)
@@ -64,11 +39,6 @@ namespace SourceControlLogReporter
             report.PullRequests = log.PullRequests;
         }
 
-        protected virtual List<GitHubCommit> GetReportCommits()
-        {
-            string fromDate = Options.DateToISO(Options.FromDate);
-            string toDate = Options.DateToISO(Options.ToDate);
-            return new GitHubService().GetAllCommits(Policy.SourceControlOptions.Credentials, Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
-        }
+
     }
 }

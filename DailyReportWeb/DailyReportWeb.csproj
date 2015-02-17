@@ -259,6 +259,10 @@
       <Project>{e884ac10-285d-4012-882e-7cfa035549e2}</Project>
       <Name>Equilobe.DailyReport.SL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">
+      <Project>{7a42dd16-07e8-46a6-9083-47f342b644e5}</Project>
+      <Name>Equilobe.DailyReport.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JiraReporter\JiraReporter.csproj">
       <Project>{d1e02075-5930-4ae3-a552-bf3fae984aa9}</Project>
       <Name>JiraReporter</Name>

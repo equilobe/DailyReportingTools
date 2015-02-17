@@ -55,11 +55,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GitHub\GithubClient.cs" />
+    <Compile Include="GitHub\LogLoader.cs" />
     <Compile Include="Jira\JiraApiUrls.cs" />
     <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Jira\JwtAuthenticator.cs" />
     <Compile Include="Jira\SprintLoader.cs" />
+    <Compile Include="LogHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Svn\SvnClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace JiraReporter
+namespace Equilobe.DailyReport.Utils
 {
     public class Serialization
     {
@@ -35,6 +35,16 @@ namespace JiraReporter
             DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
             MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
             return (T)ser.ReadObject(stream);
+        }
+
+        public static T XmlDeserializeFileContent <T>(string filePath)
+        {
+            XmlSerializer xs = new XmlSerializer(typeof(T));
+            using (var fs = File.OpenRead(filePath))
+            {
+                var content = (T)xs.Deserialize(fs);
+                return content;
+            }
         }
     }
 }

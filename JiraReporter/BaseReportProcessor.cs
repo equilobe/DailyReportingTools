@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
 using JiraReporter.Model;
 using JiraReporter.Services;
 using SourceControlLogReporter;
@@ -41,7 +42,7 @@ namespace JiraReporter
         protected virtual string GetReportPath()
         {
             string reportPath = Policy.GeneratedProperties.ReportsPath;
-            SourceControlLogReporter.Validation.EnsureDirectoryExists(reportPath);
+            Validation.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }

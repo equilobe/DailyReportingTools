@@ -15,5 +15,6 @@ namespace Equilobe.DailyReport.Models.Services
         List<Branch> GetBranches(IRequestContext context, string owner, string name);
         List<Octokit.User> GetAllContributors(IRequestContext context, string owner, string name);
         Octokit.User GetUser(IRequestContext context, string username);
+        Log GetLog(ISourceControlContext context);
     }
 }

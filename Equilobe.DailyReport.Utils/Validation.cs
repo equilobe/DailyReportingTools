@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace SourceControlLogReporter
+namespace Equilobe.DailyReport.Utils
 {
     public class Validation
     {

@@ -49,6 +49,7 @@
     <Compile Include="GitHubService.cs" />
     <Compile Include="JiraService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SvnService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">

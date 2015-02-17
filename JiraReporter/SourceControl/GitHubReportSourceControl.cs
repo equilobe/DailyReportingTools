@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Models.SourceControl;
 
 namespace JiraReporter.SourceControl
 {
@@ -31,17 +32,9 @@ namespace JiraReporter.SourceControl
 
         public override Log CreateLog()
         {
-            var pullRequests = new GitHubService().GetPullRequests(Policy.SourceControlOptions.Credentials, Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName);
-            var commits = GetReportCommits();
-            return LoadLog(commits, pullRequests, Options.FromDate);
-        }
-
-
-        protected override List<GitHubCommit> GetReportCommits()
-        {
-            string fromDate = JiraOptions.DateToISO(Options.FromDate);
-            string toDate = JiraOptions.DateToISO(Options.ToDate);
-            return new GitHubService().GetAllCommits(Policy.SourceControlOptions.Credentials, Policy.SourceControlOptions.RepoOwner, Policy.SourceControlOptions.RepoName, fromDate, toDate);
+            var context = new SourceControlContext { SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate };
+            var log = new GitHubService().GetLog(context);
+            return log;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.BL.GitHub;
+using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Services;
 using Octokit;
@@ -45,6 +46,12 @@ namespace Equilobe.DailyReport.SL
         public List<PullRequest> GetPullRequests(IRequestContext context, string owner, string name)
         {
             return GetClient(context).GetPullRequests(owner, name);
+        }
+
+        public Log GetLog(ISourceControlContext context)
+        {
+            var client = GetClient(context.SourceControlOptions.Credentials);
+            return new LogLoader(client, context).CreateLog();
         }
     }
 }
