@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Jira.Filters;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter
 {
@@ -70,8 +72,8 @@ namespace JiraReporter
 
         public static Sprint GenerateSprint(JiraReport report)
         {
-            var jira = new SprintLoader(report);
-            return jira.GetLatestSprint();
+            var projectDateFilter = new ProjectDateFilter { Context = report.Settings, Date = report.FromDate, ProjectKey = report.Policy.GeneratedProperties.ProjectKey, ProjectName = report.Policy.GeneratedProperties.ProjectName };
+            return new JiraService().GetProjectSprintForDate(projectDateFilter);
         }
 
         public static Summary LoadSummary(JiraReport report)

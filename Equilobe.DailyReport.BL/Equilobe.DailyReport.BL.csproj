@@ -58,6 +58,7 @@
     <Compile Include="Jira\JiraApiUrls.cs" />
     <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Jira\JwtAuthenticator.cs" />
+    <Compile Include="Jira\SprintLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

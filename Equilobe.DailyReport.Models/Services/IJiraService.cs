@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Jira.Filters;
 
 namespace Equilobe.DailyReport.Models.Services
 {
@@ -23,5 +24,6 @@ namespace Equilobe.DailyReport.Models.Services
         JiraIssues GetCompletedIssues(IJiraRequestContext context, DateTime startDate, DateTime endDate);
         JiraIssues GetSprintTasks(IJiraRequestContext context, string projectKey);
         List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context);
+        Sprint GetProjectSprintForDate(ProjectDateFilter filter);
     }
 }
