@@ -380,7 +380,7 @@ namespace JiraReporter.Services
                 var maxFromAuthor = AuthorHelpers.GetAuthorMaxAverage(author) / 3600;
                 max.Add(maxFromAuthor);
             }
-            max.Add(_summary.Timing.TotalRemainingAverage);
+            max.Add(_summary.Timing.UnassignedTasksHoursAverageLeft);
             double maxHours = (double)max.Max();
             return MathHelpers.RoundToNextEvenInteger(maxHours);
         }
@@ -418,7 +418,7 @@ namespace JiraReporter.Services
         {
             var widthHelper = new WidthHelpers(_summary.ChartMaxBarWidth);
             var workSummaryMax = GetWorkSummaryMax();
-            widthHelper.SetWorkSummaryChartWidths(_summary.Authors, workSummaryMax);
+            widthHelper.SetWorkSummaryChartWidths(_summary, workSummaryMax);
 
             var statusMax = GetStatusMax();
             GetStatusValues();

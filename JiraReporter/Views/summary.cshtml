@@ -1,6 +1,7 @@
 ﻿@{
     var day = string.Empty;
     var imgSrc = string.Empty;
+    var display = string.Empty;
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
@@ -124,13 +125,13 @@ else
             <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
         </span>
         <span style="margin-left:5px">
-            <a style="width:10px; height:10px; background-color:#999; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Estimated</span>
+            <a style="width:10px; height:10px; background-color:#999; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Estimated avg.</span>
         </span>
         <span style="margin-left:5px">
-            <a style="width:10px; height:10px; background-color:#FF6600; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Done</span>
+            <a style="width:10px; height:10px; background-color:#FF6600; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Done avg.</span>
         </span>
         <span style="margin-left:5px">
-            <a style="width:10px; height:10px; background-color:#337AB7; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Remaining</span>
+            <a style="width:10px; height:10px; background-color:#337AB7; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Remaining avg.</span>
         </span>
     </div>
     <table cellspacing="0" style="margin-top:20px">
@@ -238,22 +239,41 @@ else
                             <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
                             <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.AverageWorkedMonthString</div>
                         </div>
-                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:0px">
                             <div style="display:inline-block; background-color:#337AB7; width:@author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
                             <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.TotalRemainingString</div>
                         </div>
+                        @*<div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:20px; overflow:hidden; padding-bottom:2px">
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                        </div>*@
+
                     </td>
                 </tr>
             }
-            <tr>
-                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:15px; text-align:center; vertical-align:middle; color:black"><img src="cid:unassigned_48.png" /></td>
-                <td style="padding:0px; padding-bottom:5px;">
-                    <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                        <div style="display:inline-block; background-color:#337AB7; width:@Model.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Timing.TotalRemainingString</div>
-                    </div>
-                </td>
-            </tr>
+            @if (Model.Timing.UnassignedTasksSecondsLeft == 0)
+            {
+                display = "display:none !important";
+            }
+                <tr style="@display">
+                    <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:15px; text-align:center; vertical-align:middle; color:black"><img src="cid:unassigned_48.png" /></td>
+                    <td style="padding:0px; padding-bottom:5px;">
+                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                            <div style="display:inline-block; background-color:#337AB7; width:@Model.UnassignedRemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Timing.UnassignedTasksTimeLeftString</div>
+                        </div>
+                    </td>
+                </tr>
         </tbody>
     </table>
 </div>
