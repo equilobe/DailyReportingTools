@@ -44,6 +44,22 @@ namespace JiraReporter
             mailMessage.Attachments.Add(attachment);
         }
 
+        public void AddAttachementImageFromDisk(MailMessage mailMessage)
+        {
+            string attachmentRootPath = Environment.CurrentDirectory + @"\Content\Images";
+            foreach(var file in Directory.GetFiles(attachmentRootPath))
+            {
+                var attachment = new Attachment(file);
+                attachment.ContentDisposition.Inline = true;
+                attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
+                attachment.ContentId = Path.GetFileName(file);
+                attachment.ContentType.Name = Path.GetFileName(file);
+
+                mailMessage.Attachments.Add(attachment);
+            }
+
+        }
+
         public override MailMessage GetMessage(string reportPath)
         {
             var message = new MailMessage
@@ -71,8 +87,11 @@ namespace JiraReporter
             if (Policy.GeneratedProperties.IsIndividualDraft)
                 AddAttachementImage(Author.Image, Author.Username, message);
             else
+            {
                 foreach (var author in Authors)
                     AddAttachementImage(author.Image, author.Username, message);
+                AddAttachementImageFromDisk(message);
+            }
         }
 
         public override string GetReportSubject(string reportPath)
