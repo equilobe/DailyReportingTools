@@ -15,6 +15,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string InProgressUnassignedTasksTimeLeftString { get; set; }
 
         public int UnassignedTasksSecondsLeft { get; set; }
+        public double UnassignedTasksHoursAverageLeft { get; set; }
         public string UnassignedTasksTimeLeftString { get; set; }
 
         public double HourRateToCompleteSprint { get; set; }

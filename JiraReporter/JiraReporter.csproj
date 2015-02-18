@@ -108,6 +108,9 @@
     <None Include="Views\confirmationButton.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="Content\Images\calendar_month_48.png" />
+    <Content Include="Content\Images\sprint_48.png" />
+    <Content Include="Content\Images\unassigned_48.png" />
     <Content Include="Views\TimesheetReportTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -44,6 +44,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
                 return MonthChartPixelWidth.ToString() + "px";
             }
         }
+        public double RemainingChartPixelWidth { get; set; }
+        public string RemainingChartPixelWidthString
+        {
+            get
+            {
+                return RemainingChartPixelWidth.ToString() + "px";
+            }
+        }
         public Timesheet CurrentTimesheet { get; set; }
         public Timesheet MonthTimesheet { get; set; }
         public Timesheet SprintTimesheet { get; set; }

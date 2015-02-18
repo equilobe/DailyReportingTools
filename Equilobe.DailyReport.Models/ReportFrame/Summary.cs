@@ -39,6 +39,15 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
 
+        public double RemainingChartPixelWidth { get; set; }
+        public string RemainingChartPixelWidthString
+        {
+            get
+            {
+                return RemainingChartPixelWidth.ToString() + "px";
+            }
+        }
+
         public List<Error> Errors { get; set; }
         public List<Error> CompletedWithEstimateErrors { get; set; }
         public List<Error> CompletedWithNoWorkErrors { get; set; }

@@ -305,7 +305,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.Timing.TotalRemainingSeconds = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds + _currentAuthor.Timing.OpenTasksTimeLeftSeconds;
             _currentAuthor.Timing.TotalRemainingHours = _currentAuthor.Timing.TotalRemainingSeconds / 3600;
-            _currentAuthor.Timing.TotalRemainingString = _currentAuthor.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
+    //        _currentAuthor.Timing.TotalRemainingString = _currentAuthor.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
         }
 
         private void SetOverrideEmail()

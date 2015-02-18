@@ -118,7 +118,7 @@ else
 </div>
 
 <div style="margin-top:50px">
-    <h3 style="margin-top:15px; color:black">Status</h3>
+    <h3 style="margin-top:15px; color:black">Status (h/day)</h3>
     <div style="margin-top:20px;">
         <span style="margin-left:5px">
             <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
@@ -136,7 +136,7 @@ else
     <table cellspacing="0" style="margin-top:20px">
         <tbody>
             <tr>
-                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black">Sprint</td>
+                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="~/Content/Images/sprint_48.png" /></td>
                 <td style="padding:0px; padding-bottom:5px;">
                     @if (Model.Timing.AverageWorked > 0)
                     {
@@ -173,7 +173,7 @@ else
                 <td></td>
             </tr>
             <tr>
-                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black">Month</td>
+                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="~/Content/Images/calendar_month_48.png" /></td>
                 <td style="padding:0px; padding-bottom:5px;">
                     @if (Model.Policy.AllocatedHoursPerMonth > 0)
                     {
@@ -203,7 +203,7 @@ else
 </div>
 
 <div style="margin-top:50px">
-    <h3 style="margin-top:15px; color:black">Work summary / person</h3>
+    <h3 style="margin-top:15px; color:black">Work summary / person (h/day)</h3>
     <div style="margin-top:20px">
         <span style="margin-left:5px">
             <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
@@ -214,6 +214,9 @@ else
         <span style="margin-left:5px">
             <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
         </span>
+        <span style="margin-left:5px">
+            <a style="width:10px; height:10px; background-color:#5BC0DE; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Remaining avg.</span>
+        </span>
     </div>
     <table cellspacing="0" style="margin-top:20px">
         <tbody>
@@ -221,7 +224,7 @@ else
             {
                 imgSrc = "cid:" + author.Username;
                 <tr>
-                    <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@author.FirstName" />@*@author.FirstName*@</td>
+                    <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:15px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@author.FirstName" />@*@author.FirstName*@</td>
                     <td style="padding:0px; padding-bottom:5px">
                         <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -235,9 +238,22 @@ else
                             <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
                             <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.AverageWorkedMonthString</div>
                         </div>
+                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                            <div style="display:inline-block; background-color:#5BC0DE; width:@author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.TotalRemainingString</div>
+                        </div>
                     </td>
                 </tr>
             }
+            <tr>
+                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:15px; text-align:center; vertical-align:middle; color:black"><img src="~/Content/Images/unassigned_48.png" /></td>
+                <td style="padding:0px; padding-bottom:5px;">
+                    <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                        <div style="display:inline-block; background-color:#5BC0DE; width:@Model.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Timing.TotalRemainingString</div>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

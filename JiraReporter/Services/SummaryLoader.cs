@@ -87,7 +87,8 @@ namespace JiraReporter.Services
             _summary.Timing.InProgressUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
             _summary.Timing.InProgressUnassignedTasksTimeLeftString = _summary.Timing.InProgressUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
-            _summary.Timing.UnassignedTasksTimeLeftString = _summary.Timing.UnassignedTasksSecondsLeft.SetTimeFormat8Hour();
+            _summary.Timing.UnassignedTasksHoursAverageLeft = ((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600) / _summary.WorkingDays.SprintWorkingDaysLeft;
+            _summary.Timing.UnassignedTasksTimeLeftString = _summary.Timing.UnassignedTasksHoursAverageLeft.RoundDoubleOneDecimal();
         }
 
         private void SetReportDate()
@@ -145,7 +146,7 @@ namespace JiraReporter.Services
         private void SetAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {
             SetTotalAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
-            SetAuthorsAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
+            SetAuthorsAverageTiming();
         }
 
         private void SetTotalAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
@@ -199,10 +200,13 @@ namespace JiraReporter.Services
         //        return timesheetService.GetTotalOriginalEstimate(timesheet);
         //}
 
-        private void SetAuthorsAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
+        private void SetAuthorsAverageTiming()
         {
             foreach (var author in _summary.Authors)
-                AuthorHelpers.SetAuthorAverageWorkPerDay(author, monthWorkedDays, sprintWorkedDays, reportWorkingDays);
+            {
+                AuthorHelpers.SetAuthorAverageWorkPerDay(author, _summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.ReportWorkingDays);
+                AuthorHelpers.SetAuthorAverageRemainig(author, _summary.WorkingDays.SprintWorkingDaysLeft);
+            }
         }
 
         private void SetSummaryTasksTimeLeft(SprintTasks tasks)
@@ -219,7 +223,8 @@ namespace JiraReporter.Services
             _summary.Timing.OpenTasksTimeLeftString = _summary.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
 
             _summary.Timing.TotalRemainingSeconds = _summary.Timing.OpenTasksTimeLeftSeconds + _summary.Timing.InProgressTasksTimeLeftSeconds;
-            _summary.Timing.TotalRemainingString = _summary.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
+            _summary.Timing.TotalRemainingAverage = _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft;
+            _summary.Timing.TotalRemainingString = _summary.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
         }
 
         private void SetRemainingMonthlyHours()
@@ -372,10 +377,11 @@ namespace JiraReporter.Services
             var max = new List<double>();
             foreach (var author in _summary.Authors)
             {
-                var maxFromAuthor = AuthorHelpers.GetAuthorMaxAverage(author);
+                var maxFromAuthor = AuthorHelpers.GetAuthorMaxAverage(author) / 3600;
                 max.Add(maxFromAuthor);
             }
-            double maxHours = (double)max.Max() / 3600;
+            max.Add(_summary.Timing.TotalRemainingAverage);
+            double maxHours = (double)max.Max();
             return MathHelpers.RoundToNextEvenInteger(maxHours);
         }
 
