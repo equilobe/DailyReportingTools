@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
-    public interface IJiraRequestContext : IRequestContext
+    public interface IRequestContext
     {
-        string BaseUrl { get; }
-        string SharedSecret { get; }
+        string Username { get; set; }
+        string Password { get; set; }
     }
 }

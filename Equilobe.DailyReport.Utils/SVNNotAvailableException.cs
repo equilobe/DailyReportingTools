@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SourceControlLogReporter
+namespace Equilobe.DailyReport.Utils
 {
-    class SvnNotAvailableException : Exception
+   public class SvnNotAvailableException : Exception
     {
 
         public SvnNotAvailableException(Exception ex)
