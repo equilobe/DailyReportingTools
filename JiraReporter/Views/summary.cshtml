@@ -2,6 +2,7 @@
     var day = string.Empty;
     var imgSrc = string.Empty;
     var display = string.Empty;
+    var visibility = string.Empty;
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
@@ -78,9 +79,9 @@ else
                                     }
                                     @if (Model.Policy.GeneratedProperties.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
                                     {
-                                        if(Model.AuthorsNotConfirmed.Count > 0)
+                                        if (Model.AuthorsNotConfirmed.Count > 0)
                                         {
-                                            foreach(var author in Model.AuthorsNotConfirmed)
+                                            foreach (var author in Model.AuthorsNotConfirmed)
                                             {
                                                 <tr>
                                                     <td style="vertical-align:top; width:15px">
@@ -137,8 +138,11 @@ else
     <table cellspacing="0" style="margin-top:20px">
         <tbody>
             <tr>
-                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="cid:sprint_48.png" /></td>
-                <td style="padding:0px; padding-bottom:5px;">
+                <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid grey; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <img src="cid:sprint_48.png" />
+                    <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
+                </td>
+                <td style="padding:0px; padding-bottom:10px; height:75px">
                     @if (Model.Timing.AverageWorked > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
@@ -170,12 +174,15 @@ else
                 </td>
             </tr>
             <tr>
-                <td style="width:55px; height:10px; border-right:1px solid grey; padding-right:10px;"></td>
+                <td style="width:75px; height:15px; max-height:15px; padding-right:10px;"></td>
                 <td></td>
             </tr>
             <tr>
-                <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="cid:calendar_month_48.png" /></td>
-                <td style="padding:0px; padding-bottom:5px;">
+                <td style="width:75px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <img src="cid:calendar_month_48.png" />
+                    <span style="color:black; display:inline-block; padding-top:5px">Month</span>
+                </td>
+                <td style="padding:0px; padding-bottom:10px; height:55px;">
                     @if (Model.Policy.AllocatedHoursPerMonth > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
@@ -225,55 +232,83 @@ else
             {
                 imgSrc = "cid:" + author.Username;
                 <tr>
-                    <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:15px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@author.FirstName" />@*@author.FirstName*@</td>
-                    <td style="padding:0px; padding-bottom:5px">
-                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                            <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.Timing.AverageWorkedString</div>
-                        </div>
-                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                            <div style="display:inline-block; background-color:#F60; width:@author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.Timing.AverageWorkedSprintString</div>
-                        </div>
-                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                            <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.AverageWorkedMonthString</div>
-                        </div>
-                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:0px">
-                            <div style="display:inline-block; background-color:#337AB7; width:@author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.TotalRemainingString</div>
-                        </div>
+                    <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid grey; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                        <img src="@imgSrc" />
+                        <span style="color:black; display:inline-block; padding-top:5px">@author.ShortName</span>
+                    </td>
+                    <td style="padding:0px; padding-bottom:10px; height:55px">
+                        @if (author.Timing.TotalTimeSeconds > 0)
+                        {
+                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.Timing.AverageWorkedString</div>
+                            </div>
+                        }
+
+                        @if (author.Timing.SprintSecondsWorked > 0)
+                        {
+                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                <div style="display:inline-block; background-color:#F60; width:@author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@author.Timing.AverageWorkedSprintString</div>
+                            </div>
+                        }
+
+                        @if (author.Timing.MonthSecondsWorked > 0)
+                        {
+                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.AverageWorkedMonthString</div>
+                            </div>
+                        }
+
+                        @if (author.Timing.TotalRemainingSeconds > 0)
+                        {
+                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:0px">
+                                <div style="display:inline-block; background-color:#337AB7; width:@author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.TotalRemainingString</div>
+                            </div>
+                        }
+
+
                         @*<div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:20px; overflow:hidden; padding-bottom:2px">
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                            <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
-                        </div>*@
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                                <div style="display:inline-block; width:24px; height:10px; float:left; margin:0; border-right:1px solid grey"></div>
+                            </div>*@
 
                     </td>
+                </tr>
+                <tr>
+                    <td width="15px" style="width:75px; height:15px; padding-right:10px;"></td>
+                    <td width="15px"></td>
                 </tr>
             }
             @if (Model.Timing.UnassignedTasksSecondsLeft == 0)
             {
                 display = "display:none !important";
+                visibility = "visibility:hidden";
             }
-                <tr style="@display">
-                    <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:15px; text-align:center; vertical-align:middle; color:black"><img src="cid:unassigned_48.png" /></td>
-                    <td style="padding:0px; padding-bottom:5px;">
-                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                            <div style="display:inline-block; background-color:#337AB7; width:@Model.UnassignedRemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                            <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Timing.UnassignedTasksTimeLeftString</div>
-                        </div>
-                    </td>
-                </tr>
+            <tr style="@visibility; @display">
+                <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid grey; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <img src="cid:unassigned_48.png" />
+                    <span style="color:black; display:inline-block; padding-top:5px">Unassigned</span>
+                </td>
+                <td style="padding:0px; padding-bottom:10px; height:55px">
+                    <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                        <div style="display:inline-block; background-color:#337AB7; width:@Model.UnassignedRemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Timing.UnassignedTasksTimeLeftString</div>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

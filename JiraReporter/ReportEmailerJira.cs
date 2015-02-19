@@ -45,9 +45,9 @@ namespace JiraReporter
             string attachmentRootPath = Environment.CurrentDirectory + @"\Content\Images";
             foreach(var file in Directory.GetFiles(attachmentRootPath))
             {
-                var attachment = new Attachment(file);
+                var image = Image.FromFile(file);             
                 var attachmentId = Path.GetFileName(file);
-                AddAttachmentToMailMessage(mailMessage, attachment, attachmentId);
+                AddAttachementImage(image, attachmentId, mailMessage);
             }
         }
 
