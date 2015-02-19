@@ -11,8 +11,8 @@ namespace Equilobe.DailyReport.Models.Storage
         public long Id { get; set; }
         public long GeneratedSettingsId { get; set; }
         public string Username { get; set; }
-        public string UserKey { get; set; }
-        public bool Confirmed { get; set; }
+        public string UniqueUserKey { get; set; }
+        public DateTime ConfirmationDate { get; set; }
         public bool IsProjectLead { get; set; }
     }
 }
