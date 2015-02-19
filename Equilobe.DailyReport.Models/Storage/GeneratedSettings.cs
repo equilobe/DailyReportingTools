@@ -14,8 +14,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public DateTime LastDraftSentDate { get; set; }
         public bool WasResetToDefaultToday { get; set; } // reset procedure may not be used anymore
         public DateTime LastFinalDraftConfirmationDate { get; set; } // if we first check this property when confirming individual drafts, it cannot be changed by more than one instance at a time;
-                                                                   // is set in the web app;
-        public bool WasForcedByLead { get; set; } // TODO: remove this property. it can be checked by verifying LastDraftSentDate == DateTime.Today
+                                                                   // is set in the web app;    
         public List<IndividualDraftSettings> IndividualDrafts { get; set; }
     }
 }

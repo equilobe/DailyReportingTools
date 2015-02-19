@@ -13,6 +13,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string Username { get; set; }
         public string UniqueUserKey { get; set; }
         public DateTime ConfirmationDate { get; set; }
+        public DateTime ReportDate { get; set; }
         public bool IsProjectLead { get; set; }
     }
 }
