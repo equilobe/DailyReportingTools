@@ -24,8 +24,8 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public string Username { get; set; }
         public string Password { get; set; }
-        // NO DB
-        //public Policy Policy { get; set; }
+        [NotMapped]
+        public JiraPolicy Policy { get; set; }
         public virtual ReportExecutionSummary ReportExecutionSummary { get; set; }
         public virtual SerializedPolicy SerializedPolicy { get; set; }
         public virtual FinalDraftConfirmation FinalDraftConfirmation { get; set; }

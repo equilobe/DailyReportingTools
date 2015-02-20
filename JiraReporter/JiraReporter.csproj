@@ -71,7 +71,6 @@
     <Compile Include="Services\DayLogLoader.cs" />
     <Compile Include="AuthorHelpers.cs" />
     <Compile Include="Services\AuthorLoader.cs" />
-    <Compile Include="Deserialization.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="Services\IndividualReportInfoService.cs" />
     <Compile Include="IssueAdapter.cs" />

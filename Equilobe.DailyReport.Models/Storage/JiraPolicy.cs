@@ -16,7 +16,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string Password { get; set; }
         public string SharedSecret { get; set; }
 
-        public int ProjectId { get; set; }
+        public long ProjectId { get; set; }
         public string DraftEmails { get; set; }
         public string Emails { get; set; }
         public string ReportTime { get; set; }
