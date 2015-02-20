@@ -83,7 +83,7 @@ namespace JiraReporter
         {
             var max = Math.Max(author.Timing.AverageWorked, author.Timing.AverageWorkedSprint);
             max = Math.Max(max, author.Timing.AverageWorkedMonth);
-            return Math.Max(max, author.Timing.TotalRemainingSeconds);
+            return Math.Max(max, author.Timing.TotalRemainingAverage * 3600);
         }
 
         public static void SetAuthorWorkSummaryWidths(JiraAuthor author, int maxWidth, int maxValue)
