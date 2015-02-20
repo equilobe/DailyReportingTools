@@ -30,7 +30,12 @@
     </div>
 
     <div class="table">
-        <div class="container" ng-show="!policyList.length">
+        <div class="container" ng-if="loading">
+            <h3>
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+            </h3>
+        </div>
+        <div class="container" ng-if="!loading && !policyList.length">
             <h1>
                 <span class="alert-danger">
                     No projects available
@@ -40,7 +45,7 @@
                 Daily Report tool is unable to find any project.
             </p>
         </div>
-        <div class="container" ng-show="policyList.length">
+        <div class="container" ng-if="!loading && policyList.length">
             <div class="row">
                 <label class="col-sm-6 col-md-6">
                     Project name
