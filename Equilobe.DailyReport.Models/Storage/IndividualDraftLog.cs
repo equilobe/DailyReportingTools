@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class IndividualDraftSettings
+    public class IndividualDraftLog
     {
         public long Id { get; set; }
         public long ReportGenerationInfoId { get; set; }
