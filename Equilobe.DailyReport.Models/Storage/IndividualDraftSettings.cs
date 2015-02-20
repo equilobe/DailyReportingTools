@@ -9,7 +9,7 @@ namespace Equilobe.DailyReport.Models.Storage
     public class IndividualDraftSettings
     {
         public long Id { get; set; }
-        public long GeneratedSettingsId { get; set; }
+        public long GeneratedInfoId { get; set; }
         public string Username { get; set; }
         public string UniqueUserKey { get; set; }
         public DateTime ConfirmationDate { get; set; }
