@@ -25,6 +25,7 @@ namespace DailyReportWeb.Services
                     BaseUrl = baseUrl,
                     SharedSecret = sharedSecret,
                     ProjectId = projectInfo.ProjectId,
+                    ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
                     ReportTime = GetReportTime(baseUrl, projectInfo.ProjectId)
                 })
