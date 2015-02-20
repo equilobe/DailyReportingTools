@@ -62,7 +62,6 @@ namespace DailyReportWeb.Controllers.Api
                     db.ReportSettings.Add(reportSettings);
 
                     reportSettings.BaseUrl = policySummary.BaseUrl;
-                    reportSettings.SharedSecret = policySummary.SharedSecret;
                     reportSettings.ProjectId = policySummary.ProjectId;
         }
 
