@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web;
-using Atlassian.Connect;
-using RestSharp;
+﻿using Atlassian.Connect;
+using DailyReportWeb.Services;
 using Equilobe.DailyReport.DAL;
-using Equilobe.DailyReport.Interfaces;
+using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
-using JiraReporter;
-using DailyReportWeb.Services;
-using JiraReporter.Services;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -39,6 +36,7 @@ namespace DailyReportWeb.Controllers.Api
             return SyncReportSettingsToJira(id, baseUrl, sharedSecret);
         }
 
+        // PUT: api/Policy
         public void Put([FromBody]PolicySummary policySummary)
         {
             using (var db = new ReportsDb())
@@ -48,6 +46,7 @@ namespace DailyReportWeb.Controllers.Api
                 {
                     reportSettings = CreateFromPolicySummary(policySummary);
                     db.ReportSettings.Add(reportSettings);
+                    reportSettings.UniqueProjectKey = policySummary.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
                 }
                 reportSettings.ReportTime = policySummary.ReportTime;
 
@@ -65,9 +64,10 @@ namespace DailyReportWeb.Controllers.Api
                 {
                     reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
+                    reportSettings.UniqueProjectKey = updatedReportSettings.Policy.GeneratedProperties.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
                 }
                 updatedReportSettings.CopyProperties<IPolicy>(reportSettings);
-                reportSettings.PolicyXml = Serialization.XmlSerialize(updatedReportSettings.Policy);
+                reportSettings.SerializedPolicy.PolicyString = Serialization.XmlSerialize(updatedReportSettings.Policy);
 
                 db.SaveChanges();
             }
@@ -90,7 +90,6 @@ namespace DailyReportWeb.Controllers.Api
             return new ReportSettings
             {
                 BaseUrl = policySummary.BaseUrl,
-                SharedSecret = policySummary.SharedSecret,
                 ProjectId = policySummary.ProjectId
             };
         }
@@ -99,7 +98,22 @@ namespace DailyReportWeb.Controllers.Api
         {
             var jiraPolicy = GetReportPolicyFromJira(id, baseUrl, sharedSecret);
             var reportSettings = GetReportPolicyFromDb(id, baseUrl, sharedSecret);
-            reportSettings.Policy = reportSettings.PolicyXml == null ? jiraPolicy : SyncPolicyToJira(jiraPolicy, reportSettings.PolicyXml);
+          
+            //reportSettings.Policy = (reportSettings.SerializedPolicy == null || (reportSettings.SerializedPolicy != null && reportSettings.SerializedPolicy.PolicyString == null)) ? jiraPolicy : SyncPolicyToJira(jiraPolicy, reportSettings.SerializedPolicy.PolicyString);
+            //using (var context = new ReportsDb())
+            //{
+
+ 
+            //}
+
+            if (reportSettings.SerializedPolicy != null)
+            {
+                if (reportSettings.SerializedPolicy.PolicyString != null)
+                {
+                    reportSettings.Policy = SyncPolicyToJira(jiraPolicy, reportSettings.SerializedPolicy.PolicyString);
+                }
+            }
+            else reportSettings.Policy = jiraPolicy;
 
             return reportSettings;
         }
@@ -122,7 +136,6 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings = new ReportSettings
                     {
                         BaseUrl = baseUrl,
-                        SharedSecret = sharedSecret,
                         ProjectId = id
                     };
                 }
@@ -133,7 +146,7 @@ namespace DailyReportWeb.Controllers.Api
 
         private static JiraPolicy GetReportPolicyFromJira(long id, string baseUrl, string sharedSecret)
         {
-            var context = new ReportSettings
+            var context = new JiraRequestContext
             {
                 BaseUrl = baseUrl,
                 SharedSecret = sharedSecret

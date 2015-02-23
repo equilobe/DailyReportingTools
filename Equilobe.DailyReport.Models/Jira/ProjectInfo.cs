@@ -14,5 +14,7 @@ namespace Equilobe.DailyReport.Models.Jira
         public long ProjectId { get; set; }
         [DataMember(Name = "name")]
         public string ProjectName { get; set; }
+        [DataMember(Name = "key")]
+        public string ProjectKey { get; set; }
     }
 }

@@ -71,6 +71,7 @@
     <Compile Include="ReportFrame\JiraPullRequest.cs" />
     <Compile Include="ReportFrame\JiraReport.cs" />
     <Compile Include="ReportFrame\IJiraRequestContext.cs" />
+    <Compile Include="ReportFrame\JiraRequestContext.cs" />
     <Compile Include="ReportFrame\SprintTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
@@ -95,6 +96,9 @@
     <Compile Include="Jira\WorkLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage\AdvancedOptions.cs" />
+    <Compile Include="Storage\FinalDraftConfirmation.cs" />
+    <Compile Include="Storage\ReportExecutionSummary.cs" />
+    <Compile Include="Storage\IndividualDraftConfirmation.cs" />
     <Compile Include="Storage\JiraAdvancedOptions.cs" />
     <Compile Include="Storage\GeneratedProperties.cs" />
     <Compile Include="Storage\JiraGeneratedProperties.cs" />
@@ -102,6 +106,8 @@
     <Compile Include="Storage\JiraPolicy.cs" />
     <Compile Include="Storage\Month.cs" />
     <Compile Include="Storage\Policy.cs" />
+    <Compile Include="Storage\ReportExecutionInstance.cs" />
+    <Compile Include="Storage\SerializedPolicy.cs" />
     <Compile Include="Web\PolicySummary.cs" />
     <Compile Include="Storage\SourceControlOptions.cs" />
     <Compile Include="Storage\User.cs" />

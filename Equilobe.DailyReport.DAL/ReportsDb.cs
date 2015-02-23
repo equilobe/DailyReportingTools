@@ -17,5 +17,10 @@ namespace Equilobe.DailyReport.DAL
         }
 
         public DbSet<ReportSettings> ReportSettings { get; set; }
+        public DbSet<ReportExecutionSummary> ReportExecutionSummaries { get; set; }
+        public DbSet<ReportExecutionInstance> ReportExecutionInstances { get; set; }
+        public DbSet<FinalDraftConfirmation> FinalDraftConfirmations { get; set; }
+        public DbSet<IndividualDraftConfirmation> IndividualDraftConfirmations { get; set; }
+        public DbSet<SerializedPolicy> SerializedPolicies { get; set; }
     }
 }

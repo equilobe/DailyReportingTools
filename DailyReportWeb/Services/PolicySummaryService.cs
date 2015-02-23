@@ -8,6 +8,7 @@ using System.Web;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.Web;
+using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace DailyReportWeb.Services
 {
@@ -16,7 +17,7 @@ namespace DailyReportWeb.Services
 
         public static List<PolicySummary> GetPoliciesSummary(string baseUrl, string sharedSecret)
         {
-            var context = new ReportSettings { BaseUrl = baseUrl, SharedSecret = sharedSecret };
+            var context = new JiraRequestContext { BaseUrl = baseUrl, SharedSecret = sharedSecret };
             
             return new JiraService().GetProjectsInfo(context)
                 .Select(projectInfo => new PolicySummary
@@ -24,6 +25,7 @@ namespace DailyReportWeb.Services
                     BaseUrl = baseUrl,
                     SharedSecret = sharedSecret,
                     ProjectId = projectInfo.ProjectId,
+                    ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
                     ReportTime = GetReportTime(baseUrl, projectInfo.ProjectId)
                 })

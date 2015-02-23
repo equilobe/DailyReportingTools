@@ -20,7 +20,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             Options = o;
         }
 
-        public ReportSettings Settings { get; set; }
+        public IJiraRequestContext Settings { get; set; }
 
         private TimeSpan? _offsetFromUtc;
         public TimeSpan OffsetFromUtc
