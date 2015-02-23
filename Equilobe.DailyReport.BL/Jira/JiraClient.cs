@@ -51,7 +51,7 @@ namespace Equilobe.DailyReport.BL.Jira
                 throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
         }
 
-        public Project GetProject(string id)
+        public Project GetProject(long id)
         {
             var request = new RestRequest(JiraApiUrls.Project(id), Method.GET);
 
@@ -135,6 +135,13 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = GetIssuesByJql(JiraApiUrls.IssuesInOpenSprints(projectKey));
 
             return ResolveJiraRequest<JiraIssues>(request);
+        }
+
+        public ProjectInfo GetProjectInfo(long id)
+        {
+            var request = new RestRequest(JiraApiUrls.Project(id), Method.GET);
+
+            return ResolveRequest<ProjectInfo>(request);
         }
 
         public List<ProjectInfo> GetProjectsInfo()

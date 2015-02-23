@@ -1,5 +1,6 @@
-﻿using System;
-namespace Equilobe.DailyReport.Models.ReportFrame
+﻿using Equilobe.DailyReport.Models.ReportFrame;
+
+namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IIndividualReport : IJiraReport
     {

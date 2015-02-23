@@ -8,7 +8,7 @@ namespace Equilobe.DailyReport.BL
 {
     public class JiraApiUrls
     {
-        public static string Project(string id)
+        public static string Project(long id)
         {
             return string.Format("rest/api/2/project/{0}", id);
         }

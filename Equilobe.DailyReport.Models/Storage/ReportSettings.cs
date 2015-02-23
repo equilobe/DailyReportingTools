@@ -16,7 +16,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public string BaseUrl { get; set; }
         public long ProjectId { get; set; }
 
-
         [Required]
         public string ReportTime { get; set; }
         [Required]
@@ -24,8 +23,7 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public string Username { get; set; }
         public string Password { get; set; }
-        [NotMapped]
-        public JiraPolicy Policy { get; set; }
+
         public virtual ReportExecutionSummary ReportExecutionSummary { get; set; }
         public virtual SerializedPolicy SerializedPolicy { get; set; }
         public virtual FinalDraftConfirmation FinalDraftConfirmation { get; set; }

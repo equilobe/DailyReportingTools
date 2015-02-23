@@ -31,7 +31,7 @@ namespace JiraReporter
 
             var report = new JiraReport(policy, options);
 
-            var project = new JiraService().GetProject(report.Settings, report.Policy.ProjectId.ToString());
+            var project = new JiraService().GetProject(report.Settings, report.Policy.ProjectId);
             SetProjectInfo(policy, project);
             LoadReportDates(report);
             var policyService = new JiraPolicyService(report);

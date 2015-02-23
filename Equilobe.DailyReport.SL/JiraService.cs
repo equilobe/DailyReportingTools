@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Models.Services;
-using Equilobe.DailyReport.BL.Jira;
+﻿using Equilobe.DailyReport.BL.Jira;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Jira.Filters;
+using Equilobe.DailyReport.Models.ReportFrame;
+using System;
+using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.SL
 {
     public class JiraService : IJiraService
     {
-        public Project GetProject(IJiraRequestContext context, string id)
+        public Project GetProject(IJiraRequestContext context, long id)
         {
             return GetClient(context).GetProject(id);
         }
@@ -71,6 +68,11 @@ namespace Equilobe.DailyReport.SL
         public JiraIssues GetSprintTasks(IJiraRequestContext context, string projectKey)
         {
             return GetClient(context).GetSprintTasks(projectKey);
+        }
+
+        public ProjectInfo GetProjectInfo (IJiraRequestContext context, long id)
+        {
+            return GetClient(context).GetProjectInfo(id);
         }
 
         public List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context)

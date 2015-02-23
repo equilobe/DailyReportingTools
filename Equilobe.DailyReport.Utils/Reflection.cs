@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace DailyReportWeb.Services
+namespace Equilobe.DailyReport.Utils
 {
     public static class Reflection
     {
@@ -41,15 +41,18 @@ namespace DailyReportWeb.Services
                 throw new ArgumentNullException("destination");
 
             var propertyList = from property in typeof(T).GetProperties()
-                               where property.CanRead && property.CanWrite
-                                   && property != null
-                                   && (property.GetSetMethod(true) != null && !property.GetSetMethod(true).IsPrivate)
-                                   && (property.GetSetMethod().Attributes & MethodAttributes.Static) == 0
-                               select property;
+                               let sourceProperty = source.GetType().GetProperty(property.Name)
+                               let targetProperty = destination.GetType().GetProperty(property.Name)
+                               where (sourceProperty != null && targetProperty != null)
+                                   && (sourceProperty.CanRead && targetProperty.CanRead)
+                                   && (targetProperty.GetSetMethod(true) != null && !targetProperty.GetSetMethod(true).IsPrivate)
+                                   && (targetProperty.GetSetMethod().Attributes & MethodAttributes.Static) == 0
+                                   && targetProperty.PropertyType.IsAssignableFrom(sourceProperty.PropertyType)
+                               select new { sourceProperty = sourceProperty, targetProperty = targetProperty };
 
-            foreach (PropertyInfo property in propertyList)
+            foreach (var property in propertyList)
             {
-                property.SetValue(destination, property.GetValue(source, null), null);
+                property.targetProperty.SetValue(destination, property.sourceProperty.GetValue(source, null), null);
             }
         }
     }

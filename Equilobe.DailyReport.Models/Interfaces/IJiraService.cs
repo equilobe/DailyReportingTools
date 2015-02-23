@@ -1,16 +1,12 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Jira;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Models.Jira;
 
-namespace Equilobe.DailyReport.Models.Services
+namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IJiraService
     {
-        Project GetProject(IJiraRequestContext context, string id);
+        Project GetProject(IJiraRequestContext context, long id);
         Timesheet GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser);
         Timesheet GetTimesheet(IJiraRequestContext context, DateTime startDate, DateTime endDate);
         JiraUser GetUser(IJiraRequestContext context, string username);

@@ -20,22 +20,22 @@
     .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
         $scope.loading = true;
 
-        $http.get("/api/policy/" + projectId).success(function (report) {
-            $scope.report = report;
+        $http.get("/api/policy/" + projectId).success(function (policy) {
+            $scope.policy = policy;
 
-            $scope.sourceControlType = !report.policy.sourceControlOptions ? "none" :
-                                       report.policy.sourceControlOptions.repoOwner && report.policy.sourceControlOptions.repo ? "GitHub" :
-                                       report.policy.sourceControlOptions.repo ? "SVN" : "none";
+            $scope.sourceControlType = !policy.sourceControlOptions ? "none" :
+                                       policy.sourceControlOptions.repoOwner && policy.sourceControlOptions.repo ? "GitHub" :
+                                       policy.sourceControlOptions.repo ? "SVN" : "none";
 
-            $scope.user = report.policy.userOptions ? report.policy.userOptions[0] : null;
+            $scope.user = policy.userOptions ? policy.userOptions[0] : null;
 
-            $scope.month = report.policy.monthlyOptions ? report.policy.monthlyOptions[0] : null;
+            $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
 
             $scope.loading = false;
         });
 
-        $scope.updateReport = function (report) {
-            $http.put("/api/policy/" + report.projectId, report
+        $scope.updatePolicy = function (policy) {
+            $http.put("/api/policy/" + policy.projectId, policy
     		).success(function () {
     		    console.log("success");
     		}).error(function () {

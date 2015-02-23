@@ -60,9 +60,9 @@
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="ReportFrame\Error.cs" />
-    <Compile Include="ReportFrame\IContext.cs" />
-    <Compile Include="ReportFrame\IIndividualReport.cs" />
-    <Compile Include="ReportFrame\IJiraReport.cs" />
+    <Compile Include="Interfaces\IContext.cs" />
+    <Compile Include="Interfaces\IIndividualReport.cs" />
+    <Compile Include="Interfaces\IJiraReport.cs" />
     <Compile Include="ReportFrame\CompleteIssue.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
@@ -70,7 +70,7 @@
     <Compile Include="ReportFrame\JiraOptions.cs" />
     <Compile Include="ReportFrame\JiraPullRequest.cs" />
     <Compile Include="ReportFrame\JiraReport.cs" />
-    <Compile Include="ReportFrame\IJiraRequestContext.cs" />
+    <Compile Include="Interfaces\IJiraRequestContext.cs" />
     <Compile Include="ReportFrame\JiraRequestContext.cs" />
     <Compile Include="ReportFrame\SprintTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
@@ -108,11 +108,12 @@
     <Compile Include="Storage\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedPolicy.cs" />
+    <Compile Include="Web\PolicyBuffer.cs" />
     <Compile Include="Web\PolicySummary.cs" />
     <Compile Include="Storage\SourceControlOptions.cs" />
     <Compile Include="Storage\User.cs" />
-    <Compile Include="Services\IJiraService.cs" />
-    <Compile Include="Services\IService.cs" />
+    <Compile Include="Interfaces\IJiraService.cs" />
+    <Compile Include="Interfaces\IService.cs" />
     <Compile Include="SourceControl\Author.cs" />
     <Compile Include="SourceControl\DayLog.cs" />
     <Compile Include="SourceControl\Log.cs" />
