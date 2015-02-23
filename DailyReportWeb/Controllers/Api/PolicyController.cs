@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web;
-using Atlassian.Connect;
-using RestSharp;
+﻿using Atlassian.Connect;
+using DailyReportWeb.Services;
 using Equilobe.DailyReport.DAL;
-using Equilobe.DailyReport.Interfaces;
+using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
-using JiraReporter;
-using DailyReportWeb.Services;
-using JiraReporter.Services;
 using Equilobe.DailyReport.SL;
-using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Utils;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Data.Entity;
+using System.Linq;
+using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -42,6 +36,7 @@ namespace DailyReportWeb.Controllers.Api
             return SyncReportSettingsToJira(id, baseUrl, sharedSecret);
         }
 
+        // PUT: api/Policy
         public void Put([FromBody]PolicySummary policySummary)
         {
             using (var db = new ReportsDb())

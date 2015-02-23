@@ -1,14 +1,10 @@
-﻿using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Models.Jira;
+﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Utils;
-using JiraReporter;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.BL.Jira
 {

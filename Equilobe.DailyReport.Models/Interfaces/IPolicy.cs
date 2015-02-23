@@ -1,4 +1,4 @@
-﻿namespace Equilobe.DailyReport.Interfaces
+﻿namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IPolicy
     {
