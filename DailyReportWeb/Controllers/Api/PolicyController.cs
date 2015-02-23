@@ -8,6 +8,7 @@ using System.Web;
 using Atlassian.Connect;
 using RestSharp;
 using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using JiraReporter;
@@ -70,7 +71,7 @@ namespace DailyReportWeb.Controllers.Api
                     db.ReportSettings.Add(reportSettings);
                     reportSettings.UniqueProjectKey = updatedReportSettings.Policy.GeneratedProperties.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
                 }
-                updatedReportSettings.CopyProperties(reportSettings);
+                updatedReportSettings.CopyProperties<IPolicy>(reportSettings);
                 reportSettings.SerializedPolicy.PolicyString = Serialization.XmlSerialize(updatedReportSettings.Policy);
 
                 db.SaveChanges();
@@ -125,7 +126,7 @@ namespace DailyReportWeb.Controllers.Api
         private JiraPolicy SyncPolicyToJira(JiraPolicy policy, string policyXml)
         {
             Deserialization.XmlDeserialize<JiraPolicy>(policyXml)
-                .CopyProperties(policy);
+                .CopyProperties<IPolicy>(policy);
 
             return policy;
         }

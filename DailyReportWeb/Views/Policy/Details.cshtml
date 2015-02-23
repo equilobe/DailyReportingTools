@@ -18,7 +18,12 @@
 </head>
 
 <body ng-controller="policyEditPage">
-    <form name="advancedOptionsForm">
+    <div class="container" ng-if="loading">
+        <h3>
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+        </h3>
+    </div>
+    <form name="advancedOptionsForm" ng-if="!loading">
         <div id="jumbo" class="jumbotron">
             <div class="container">
                 <h1>

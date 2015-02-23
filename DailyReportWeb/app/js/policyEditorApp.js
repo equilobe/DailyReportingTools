@@ -1,7 +1,11 @@
 ﻿angular.module("policyEditorApp", [])
     .controller("policyListPage", ['$scope', '$http', function ($scope, $http) {
+        $scope.loading = true;
+
         $http.get("/api/policy").success(function (list) {
             $scope.policyList = list;
+
+            $scope.loading = false;
         });
 
         $scope.updateReportTime = function (policy) {
@@ -14,6 +18,8 @@
         };
     }])
     .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
+        $scope.loading = true;
+
         $http.get("/api/policy/" + projectId).success(function (report) {
             $scope.report = report;
 
@@ -24,6 +30,8 @@
             $scope.user = report.policy.userOptions ? report.policy.userOptions[0] : null;
 
             $scope.month = report.policy.monthlyOptions ? report.policy.monthlyOptions[0] : null;
+
+            $scope.loading = false;
         });
 
         $scope.updateReport = function (report) {
