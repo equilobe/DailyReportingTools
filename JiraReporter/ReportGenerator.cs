@@ -63,6 +63,22 @@ namespace JiraReporter
             return authors;
         }
 
+        public static JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
+        {
+            return new JiraReport(report.Policy, report.Options)
+            {
+                Author = author,
+                Summary = report.Summary,
+                OffsetFromUtc = report.OffsetFromUtc,
+                PullRequests = report.PullRequests,
+                Sprint = report.Sprint,
+                SprintTasks = report.SprintTasks,
+                Commits = report.Commits,
+                JiraRequestContext = report.JiraRequestContext,
+                Title = JiraReportHelpers.GetReportTitle(report)
+            };
+        }
+
 
         private static void SetSprintReport(JiraReport report)
         {
