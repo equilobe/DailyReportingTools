@@ -43,12 +43,22 @@ namespace DailyReportWeb.Controllers.Api
                 var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
                 if (reportSettings == null)
                 {
-                    reportSettings = PolicyService.CreateFromPolicySummary(policySummary);
+                    if (policySummary.ReportTime == null)
+                        return;
+
+                    reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
 
+                    policySummary.CopyProperties(reportSettings);
                     reportSettings.UniqueProjectKey = policySummary.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
                 }
-                reportSettings.ReportTime = policySummary.ReportTime;
+                else
+                {
+                    if (reportSettings.ReportTime == policySummary.ReportTime)
+                        return;
+
+                    reportSettings.ReportTime = policySummary.ReportTime;
+                }
 
                 db.SaveChanges();
             }

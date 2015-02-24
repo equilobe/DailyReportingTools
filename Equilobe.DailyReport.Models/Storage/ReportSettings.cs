@@ -14,9 +14,8 @@ namespace Equilobe.DailyReport.Models.Storage
         public long Id { get; set; }
         [Required]
         public string BaseUrl { get; set; }
-        public long ProjectId { get; set; }
-
         [Required]
+        public long ProjectId { get; set; }
         public string ReportTime { get; set; }
         [Required]
         public string UniqueProjectKey { get; set; }

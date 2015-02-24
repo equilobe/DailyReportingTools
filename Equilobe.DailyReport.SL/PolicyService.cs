@@ -23,15 +23,6 @@ namespace Equilobe.DailyReport.SL
             return userId;
         }
 
-        public static ReportSettings CreateFromPolicySummary(PolicySummary policySummary)
-        {
-            return new ReportSettings
-            {
-                BaseUrl = policySummary.BaseUrl,
-                ProjectId = policySummary.ProjectId
-            };
-        }
-
         public static PolicyBuffer GetPolicy(string baseUrl, string sharedSecret, long projectId)
         {
             var jiraPolicy = GetPolicyFromJira(baseUrl, sharedSecret, projectId);
