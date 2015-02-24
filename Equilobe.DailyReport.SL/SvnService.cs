@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.BL.Svn;
 using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
 using System;
 using System.Collections.Generic;

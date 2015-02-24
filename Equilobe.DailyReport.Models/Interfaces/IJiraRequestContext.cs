@@ -1,9 +1,10 @@
-﻿using Equilobe.DailyReport.Models.ReportFrame;
-namespace Equilobe.DailyReport.Models.Interfaces
+﻿namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IJiraRequestContext : IRequestContext
+    public interface IJiraRequestContext 
     {
         string BaseUrl { get; }
         string SharedSecret { get; }
+        string Username { get; }
+        string Password { get; }
     }
 }

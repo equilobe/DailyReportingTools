@@ -1,5 +1,5 @@
 ﻿using Equilobe.DailyReport.Models;
-using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Utils;
 using Octokit;
@@ -35,22 +35,22 @@ namespace Equilobe.DailyReport.BL.GitHub
             if (pullRequests != null)
                 log.PullRequests = pullRequests;
 
-            log.Entries = new List<LogEntry>();
-            foreach (var commit in commits)
-            {
-                log.Entries.Add(
-                 new LogEntry
-                 {
-                     Author = commit.Commit.Author.Name,
-                     Date = commit.Commit.Author.Date,
-                     Message = commit.Commit.Message,
-                     Revision = commit.Sha,
-                     Link = commit.HtmlUrl
-                 });
-            }
+            log.Entries = commits.Select(GetLogEntry).ToList();
 
             LogHelpers.RemoveWrongEntries(fromDate, log);
             return log;
+        }
+
+        private static LogEntry GetLogEntry(GitHubCommit commit)
+        {
+            return new LogEntry
+            {
+                Author = commit.Commit.Author.Name,
+                Date = commit.Commit.Author.Date,
+                Message = commit.Commit.Message,
+                Revision = commit.Commit.Sha,
+                Link = commit.HtmlUrl
+            };
         }
 
         List<GitHubCommit> GetReportCommits()

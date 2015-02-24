@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.ReportFrame
+namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IRequestContext
+    public interface ISourceControlRequestContext
     {
         string Username { get; set; }
         string Password { get; set; }
