@@ -32,5 +32,15 @@ namespace Equilobe.DailyReport.Utils
             MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
             return (T)ser.ReadObject(stream);
         }
+
+        public static T XmlDeserializeFileContent <T>(string filePath)
+        {
+            XmlSerializer xs = new XmlSerializer(typeof(T));
+            using (var fs = File.OpenRead(filePath))
+            {
+                var content = (T)xs.Deserialize(fs);
+                return content;
+            }
+        }
     }
 }

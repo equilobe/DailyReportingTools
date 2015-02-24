@@ -3,8 +3,8 @@
     public interface IJiraRequestContext 
     {
         string BaseUrl { get; }
-        string Username { get;  }
-        string Password { get; }
         string SharedSecret { get; }
+        string Username { get; }
+        string Password { get; }
     }
 }

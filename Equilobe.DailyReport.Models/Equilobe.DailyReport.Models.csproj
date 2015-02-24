@@ -64,6 +64,8 @@
     <Compile Include="Interfaces\IIndividualReport.cs" />
     <Compile Include="Interfaces\IJiraReport.cs" />
     <Compile Include="ReportFrame\CompleteIssue.cs" />
+    <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
+    <Compile Include="Interfaces\ISourceControlContext.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
@@ -95,7 +97,11 @@
     <Compile Include="Jira\Views.cs" />
     <Compile Include="Jira\WorkLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interfaces\IGitHubService.cs" />
+    <Compile Include="Interfaces\ISvnService.cs" />
+    <Compile Include="SourceControl\SourceControlContext.cs" />
     <Compile Include="Storage\AdvancedOptions.cs" />
+    <Compile Include="Storage\Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />
     <Compile Include="Storage\IndividualDraftConfirmation.cs" />

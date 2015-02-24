@@ -75,11 +75,11 @@ namespace JiraReporter.Services
         {
             this._currentAuthor = a;
             SetTimesheets();
+            SetCommits();
             LoadIssues();
             SetIssues();
             OrderIssues();
-            CalculateTimeSpent();
-            SetCommits();
+            CalculateTimeSpent();       
             SetName();
 
             AddCommitIssuesNotInTimesheet();

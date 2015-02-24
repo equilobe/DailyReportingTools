@@ -8,13 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.SourceControl;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter.SourceControl
 {
     class SvnReportSourceControl : SvnReport
     {
-        JiraPolicy Policy { get; set; }
-        JiraOptions Options { get; set; }
+        JiraReport Context { get; set; }
+        JiraPolicy Policy { get { return Context.Policy; } }
+        JiraOptions Options { get { return Context.Options; } }
         public string PathToLog
         {
             get
@@ -23,43 +26,16 @@ namespace JiraReporter.SourceControl
             }
         }
 
-        public SvnReportSourceControl(JiraPolicy policy, JiraOptions options)
+        public SvnReportSourceControl(JiraReport context)
         {
-            Policy = policy;
-            Options = options;
+            Context = context;
         }
 
         public override Log CreateLog()
         {
-            ExecuteSvnCommand();
-            var log = LogService.LoadLog(PathToLog);
-            LogService.RemoveWrongEntries(Options.FromDate, log);
-            SetCommitsLink(log.Entries);
+            var context = new SourceControlContext{SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate};
+            var log = new SvnService().GetLog(context, PathToLog);
             return log;
-        }
-
-        public override void ExecuteSvnCommand()
-        {
-            Validation.EnsureDirectoryExists(Path.GetDirectoryName(PathToLog));
-            try
-            {
-                var command = GetCommandString();
-                Cmd.ExecuteSingleCommand(command);
-            }
-            catch (Exception)
-            {
-                return;
-            }
-        }
-
-        public override void SetCommitsLink(List<LogEntry> entries)
-        {
-            if (entries == null)
-                return;
-
-            foreach (var entry in entries)
-                if (entry.Link == null && Policy.SourceControlOptions.CommitUrl != null)
-                    entry.Link = Policy.SourceControlOptions.CommitUrl + entry.Revision;
         }
     }
 }

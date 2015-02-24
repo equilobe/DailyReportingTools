@@ -17,6 +17,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             Options = o;
         }
 
+        public ReportSettings Settings
+        {
+            get
+            {
+                return new ReportSettings { BaseUrl = Policy.BaseUrl, Password = Policy.Password, Username = Policy.Username };
+            }
+        }
+
         private TimeSpan? _offsetFromUtc;
         public TimeSpan OffsetFromUtc
         {

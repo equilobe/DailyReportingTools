@@ -13,8 +13,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string RepoOwner { get; set; }
         //Repo contains repository URL for SVN or repository Name for GitHub
         public string Repo { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public Credentials Credentials { get; set; }
         public string CommitUrl { get; set; }
     }
 }

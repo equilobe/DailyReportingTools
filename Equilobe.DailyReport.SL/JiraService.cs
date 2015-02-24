@@ -82,7 +82,8 @@ namespace Equilobe.DailyReport.SL
 
         public Sprint GetProjectSprintForDate(ProjectDateFilter filter)
         {
-            return null;
+            var client = GetClient(filter.Context);
+            return new SprintLoader(filter, client).GetLatestSprint();
         }
 
         private JiraClient GetClient(IJiraRequestContext context)

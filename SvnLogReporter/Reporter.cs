@@ -12,6 +12,7 @@ using System.Configuration;
 using RazorEngine.Templating;
 using Octokit;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
 
 namespace SourceControlLogReporter
 {
