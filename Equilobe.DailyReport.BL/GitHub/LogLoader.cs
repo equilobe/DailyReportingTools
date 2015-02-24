@@ -24,7 +24,7 @@ namespace Equilobe.DailyReport.BL.GitHub
 
         public Log CreateLog()
         {
-            var pullRequests = Client.GetPullRequests(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.RepoName);
+            var pullRequests = Client.GetPullRequests(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.Repo);
             var commits = GetReportCommits();
             return LoadLog(commits, pullRequests, Context.FromDate);
         }
@@ -57,7 +57,7 @@ namespace Equilobe.DailyReport.BL.GitHub
         {
             string fromDate = TimeFormatting.DateToISO(Context.FromDate);
             string toDate = TimeFormatting.DateToISO(Context.ToDate);
-            return Client.GetAllCommits(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.RepoName, fromDate, toDate);
+            return Client.GetAllCommits(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.Repo, fromDate, toDate);
         }
     }
 }

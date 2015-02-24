@@ -3,7 +3,6 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Utils;
-using JiraReporter;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,7 +61,7 @@ namespace Equilobe.DailyReport.BL.Svn
         string GetCommandString(string pathToLog)
         {
             return string.Format("svn log {0} --xml --username \"{1}\" --password \"{2}\" -r{{{3:yyyy-MM-ddTHH:mmZ}}}:{{{4:yyyy-MM-ddTHH:mmZ}}} > \"{5}\"",
-                            SourceControlOptions.RepoUrl,
+                            SourceControlOptions.Repo,
                             SourceControlOptions.Credentials.Username,
                             SourceControlOptions.Credentials.Password,
                             FromDate,

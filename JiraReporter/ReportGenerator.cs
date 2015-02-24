@@ -72,7 +72,7 @@ namespace JiraReporter
 
         public static Sprint GenerateSprint(JiraReport report)
         {
-            var projectDateFilter = new ProjectDateFilter { Context = report.Settings, Date = report.FromDate, ProjectKey = report.Policy.GeneratedProperties.ProjectKey, ProjectName = report.Policy.GeneratedProperties.ProjectName };
+            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.Policy.GeneratedProperties.ProjectKey, ProjectName = report.Policy.GeneratedProperties.ProjectName };
             return new JiraService().GetProjectSprintForDate(projectDateFilter);
         }
 
