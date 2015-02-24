@@ -48,7 +48,7 @@ namespace Equilobe.DailyReport.BL.GitHub
                 Author = commit.Commit.Author.Name,
                 Date = commit.Commit.Author.Date,
                 Message = commit.Commit.Message,
-                Revision = commit.Commit.Sha,
+                Revision = commit.Sha,
                 Link = commit.HtmlUrl
             };
         }
