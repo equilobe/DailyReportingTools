@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using DailyReportWeb.Helpers;
-using System.Configuration;
-using JiraReporter;
+﻿using DailyReportWeb.Helpers;
 using JiraReporter.Services;
+using System;
+using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
