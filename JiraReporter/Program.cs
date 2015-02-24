@@ -85,9 +85,8 @@ namespace JiraReporter
             {
                 foreach (var author in report.Authors)
                 {
-                    report.Author = author;
-                    report.Title = JiraReportHelpers.GetReportTitle(report);
-                    var reportProcessor = new IndividualReportProcessor(report);
+                    var individualReport = ReportGenerator.GetIndividualReport(report, author);
+                    var reportProcessor = new IndividualReportProcessor(individualReport);
                     reportProcessor.ProcessReport();
                 }
             }
