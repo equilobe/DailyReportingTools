@@ -7,9 +7,6 @@ div.disabled {
     background-color: #eee;
 }
 
-.container-alternate {
-}
-
 .checkbox-inline,
 .checkbox-inline + .checkbox-inline {
     margin-left: 0;
@@ -87,23 +84,44 @@ div.disabled {
 
 .form-notification {
     position: absolute;
-    color: rgba(185, 74, 72, 0.8);
-    background-color: rgb(255, 255, 255);
-}
-
-td > .form-notification {
-    top: 15px;
-    right: 20px;
-}
-
-div > .form-notification {
-    top: 7px;
+    top: 9px;
     right: 12px;
     font-size: 14px;
+    color: rgba(185, 74, 72, 0.8);
+    background-color: rgb(255, 255, 255);
+    line-height: normal;
 }
 
-#jumbo div > .form-notification {
-    top: 2px;
+.project {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-top: 1px solid #ddd;
+}
+
+.project > div:first-of-type {
+    padding-top: 7px;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin 1.2s infinite linear;
+    -ms-animation: spin 1.2s infinite linear;
+    -webkit-animation: spinw 1.2s infinite linear;
+    -moz-animation: spinm 1.2s infinite linear;
+}
+ 
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+  
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+ 
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
 }
 
 @media only screen and (max-width : 520px) {

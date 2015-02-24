@@ -30,8 +30,9 @@ namespace JiraReporter
             var policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
 
             var report = new JiraReport(policy, options);
+            report.JiraRequestContext = new JiraRequestContext(report.Policy.BaseUrl, report.Policy.Username, report.Policy.Password);
 
-            var project = new JiraService().GetProject(report.Settings, report.Policy.ProjectId.ToString());
+            var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(policy, project);
             LoadReportDates(report);
             var policyService = new JiraPolicyService(report);
@@ -106,7 +107,7 @@ namespace JiraReporter
 
         private static void LoadReportDates(JiraReport context)
         {
-            var timesheetSample = new JiraService().GetTimesheet(context.Settings, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+            var timesheetSample = new JiraService().GetTimesheet(context.JiraRequestContext, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
             context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             new DatesHelper(context).LoadDates();
         }

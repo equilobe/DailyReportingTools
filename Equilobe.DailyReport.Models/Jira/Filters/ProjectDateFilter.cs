@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Equilobe.DailyReport.Models.ReportFrame;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using System;
 
 namespace Equilobe.DailyReport.Models.Jira.Filters
 {

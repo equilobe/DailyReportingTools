@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportFrame;
+using System;
 using System.Collections.Generic;
-using Equilobe.DailyReport.Models.Storage;
-using Equilobe.DailyReport.Models.Jira;
-namespace Equilobe.DailyReport.Models.ReportFrame
+
+namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IJiraReport : IContext
     {

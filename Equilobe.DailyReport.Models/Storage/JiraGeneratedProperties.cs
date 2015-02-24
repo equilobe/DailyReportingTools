@@ -43,7 +43,7 @@ namespace Equilobe.DailyReport.Models.Storage
         [XmlIgnore]
         public string ProjectManager { get; set; }
 
-        public string RootPath { get; set; }
+        public string RootPath { get { return Path.GetFullPath(ProjectName); } }
 
         [XmlIgnore]
         public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }

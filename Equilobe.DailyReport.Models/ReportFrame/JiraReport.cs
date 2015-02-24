@@ -1,11 +1,8 @@
-﻿using Equilobe.DailyReport.Models.Jira;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -169,5 +166,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
                 _author = value;
             }
         }
+
+        public JiraRequestContext JiraRequestContext { get; set; }
     }
 }

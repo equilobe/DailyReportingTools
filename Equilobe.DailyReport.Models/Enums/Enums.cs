@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Enums
 {
-    public enum SourceControlType { GitHub, SVN };
-    public enum ErrorType { HasRemaining, HasNoTimeSpent, HasNoRemaining, Unassigned, NotConfirmed };
-    public enum Health { Bad, Weak, Good, None };
+    public enum SourceControlType { GitHub, SVN }
+    public enum ErrorType { HasRemaining, HasNoTimeSpent, HasNoRemaining, Unassigned, NotConfirmed }
+    public enum Health { Bad, Weak, Good, None }
+    public enum SendScope { SendIndividualDraft, SendFinalDraft, SendReport}
 }
