@@ -298,7 +298,7 @@ namespace JiraReporter.Services
 
         private void SetImage()
         {
-            _currentAuthor.Image = WebDownloads.ImageFromURL(_currentAuthor.AvatarLink.OriginalString, _policy.Username, _policy.Password);
+            _currentAuthor.Image = WebDownloads.ImageFromURL(_policy, _currentAuthor.AvatarLink.OriginalString);
         }
 
         private void SetRemainingEstimate()

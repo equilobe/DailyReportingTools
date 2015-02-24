@@ -88,7 +88,7 @@ namespace Equilobe.DailyReport.SL
 
         private JiraClient GetClient(IJiraRequestContext context)
         {
-            if (context.SharedSecret != null)
+            if (!string.IsNullOrEmpty(context.SharedSecret))
                 return new JiraClient(context.BaseUrl, context.SharedSecret);
             else
                 return new JiraClient(context.BaseUrl, context.Username, context.Password);

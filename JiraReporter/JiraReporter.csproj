@@ -167,6 +167,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">
+      <Project>{eaf12ce6-7405-4dd6-89f1-236828f2fe6e}</Project>
+      <Name>Equilobe.DailyReport.BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.DAL\Equilobe.DailyReport.DAL.csproj">
+      <Project>{7bad124b-c59f-45f6-8111-136b2ea61c3a}</Project>
+      <Name>Equilobe.DailyReport.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
       <Name>Equilobe.DailyReport.Models</Name>
