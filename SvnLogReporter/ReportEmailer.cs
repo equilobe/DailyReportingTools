@@ -60,10 +60,9 @@ namespace SourceControlLogReporter
             {
                 EmailReport(path);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Email not available");
-
+                Debug.WriteLine(ex.Message);
             }
         }
 

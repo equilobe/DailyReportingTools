@@ -11,11 +11,7 @@ namespace Equilobe.DailyReport.SL
     {
         public static PolicySummary GetPolicySummary(string baseUrl, string sharedSecret, long projectId)
         {
-            var context = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                SharedSecret = sharedSecret
-            };
+            var context = new JiraRequestContext(baseUrl, sharedSecret);
 
             var projectInfo = new JiraService().GetProjectInfo(context, projectId);
             return new PolicySummary
@@ -30,11 +26,7 @@ namespace Equilobe.DailyReport.SL
 
         public static List<PolicySummary> GetPoliciesSummary(string baseUrl, string sharedSecret)
         {
-            var context = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                SharedSecret = sharedSecret
-            };
+            var context = new JiraRequestContext(baseUrl, sharedSecret);
 
             return new JiraService().GetProjectsInfo(context)
                 .Select(projectInfo => new PolicySummary

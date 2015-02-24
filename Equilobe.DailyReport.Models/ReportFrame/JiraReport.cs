@@ -17,8 +17,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             Options = o;
         }
 
-        public IJiraRequestContext Settings { get; set; }
-
         private TimeSpan? _offsetFromUtc;
         public TimeSpan OffsetFromUtc
         {
@@ -160,5 +158,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
                 _author = value;
             }
         }
+
+        public JiraRequestContext JiraRequestContext { get; set; }
     }
 }
