@@ -65,7 +65,7 @@ namespace JiraReporter
 
         public static JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
         {
-            return new JiraReport(report.Policy, report.Options)
+            var individualReport =  new JiraReport(report.Policy, report.Options)
             {
                 Author = author,
                 Summary = report.Summary,
@@ -75,8 +75,11 @@ namespace JiraReporter
                 SprintTasks = report.SprintTasks,
                 Commits = report.Commits,
                 JiraRequestContext = report.JiraRequestContext,
-                Title = JiraReportHelpers.GetReportTitle(report)
             };
+            individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
+
+            return individualReport;
+
         }
 
 

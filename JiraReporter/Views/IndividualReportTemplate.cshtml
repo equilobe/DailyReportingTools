@@ -150,13 +150,13 @@
                 <div style="margin-top:20px; line-height:1.4em;">
                     <b style="color:sienna; font-size:16px;">In Progress</b>
 
-                    @if (Model.Author.InProgressTasksTimeLeftSeconds == 0)
+                    @if (Model.Author.Timing.InProgressTasksTimeLeftSeconds == 0)
                     {
-                        <span style="color:red; font-size:12px;"> &#x25cf; @Model.Author.InProgressTasksTimeLeft left</span>
+                        <span style="color:red; font-size:12px;"> &#x25cf; @Model.Author.Timing.InProgressTasksTimeLeftString left</span>
                     }
                     else
                     {
-                        <span style="color:sienna; font-size:12px;"> &#x25cf; @Model.Author.InProgressTasksTimeLeft left</span>
+                        <span style="color:sienna; font-size:12px;"> &#x25cf; @Model.Author.Timing.InProgressTasksTimeLeftString left</span>
                     }
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                         <tbody>
@@ -194,13 +194,13 @@
             {
                 <div style="line-height:1.4em; color:sienna; margin-top:20px;">
                     <b style="font-size: 16px; color: sienna">Upcoming </b>
-                    @if (Model.Author.OpenTasksTimeLeftSeconds != 0)
+                    @if (Model.Author.Timing.OpenTasksTimeLeftSeconds != 0)
                     {
-                        <span style="color: sienna; font-size:12px;"> &#x25cf; @Model.Author.OpenTasksTimeLeft left</span>
+                        <span style="color: sienna; font-size:12px;"> &#x25cf; @Model.Author.Timing.OpenTasksTimeLeftString left</span>
                     }
                     else
                     {
-                        <span style="color:red; font-size:12px;">&#x25cf; @Model.Author.OpenTasksTimeLeft left</span>
+                        <span style="color:red; font-size:12px;">&#x25cf; @Model.Author.Timing.OpenTasksTimeLeftString left</span>
                     }
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                         <tbody>
