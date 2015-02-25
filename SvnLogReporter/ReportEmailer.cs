@@ -102,7 +102,7 @@ namespace SourceControlLogReporter
         public virtual string GetReportSubject(string reportPath)
         {
             string subject = string.Empty;
-            subject += policy.AdvancedOptions.ReportTitle + " | ";
+            subject += policy.ReportTitle + " | ";
             subject += ReportDateFormatter.GetReportDate(options.FromDate, options.ToDate);
 
             return subject;

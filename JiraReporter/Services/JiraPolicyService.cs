@@ -154,7 +154,7 @@ namespace JiraReporter.Services
         public void SetDefaultProperties()
         {
             if (Policy.AdvancedOptions == null)
-                Policy.AdvancedOptions = new JiraAdvancedOptions();
+                Policy.AdvancedOptions = new AdvancedOptions();
             SetReportTitle();
             SetPermanentTaskLabel();
             ResetToDefault();

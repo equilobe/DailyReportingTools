@@ -1,33 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using System.Configuration;
-using RazorEngine;
-using System.Net.Mail;
-using System.Net;
-using RazorEngine.Templating;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
-using Octokit;
-using Octokit.Internal;
-using System.Globalization;
-using SourceControlLogReporter;
-using Equilobe.DailyReport.Models.Storage;
+﻿using CommandLine;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.SourceControl;
-using CommandLine;
+using Equilobe.DailyReport.Models.Storage;
+using RazorEngine;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SourceControlLogReporter
 {
-
     class Program
     {
-
-
         private static readonly Dictionary<SourceControlType, Func<Policy, Options, ReportBase>> Processors = new Dictionary<SourceControlType, Func<Policy, Options, ReportBase>>()
         {
             {SourceControlType.GitHub, ReportBase.Create<GitHubReport>},
@@ -79,7 +62,5 @@ namespace SourceControlLogReporter
             var newConfigPath = Path.Combine(Environment.CurrentDirectory, Path.GetFileName(currentConfigPath));
             AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", newConfigPath);
         }
-
-        
     }
 }

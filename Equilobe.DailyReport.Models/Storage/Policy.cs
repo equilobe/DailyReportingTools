@@ -7,6 +7,7 @@ namespace Equilobe.DailyReport.Models.Storage
     public class Policy
     {
         public string ReportTime { get; set; }
+        public string ReportTitle { get; set; }
 
         [XmlIgnore]
         public DateTime ReportTimeDateFormat { get; set; }
@@ -16,8 +17,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public SourceControlOptions SourceControlOptions { get; set; }
 
         public GeneratedProperties GeneratedProperties { get; set; }
-
-        public AdvancedOptions AdvancedOptions { get; set; }
 
         [XmlIgnore]
         public List<string> EmailCollection { get; set; }

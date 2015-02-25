@@ -55,8 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
-    <Compile Include="Interfaces\IPolicy.cs" />
-    <Compile Include="Interfaces\IPolicySummary.cs" />
+    <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="ReportFrame\Error.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Interfaces\IGitHubService.cs" />
     <Compile Include="Interfaces\ISvnService.cs" />
     <Compile Include="SourceControl\SourceControlContext.cs" />
-    <Compile Include="Storage\AdvancedOptions.cs" />
     <Compile Include="Storage\Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />
@@ -114,8 +112,7 @@
     <Compile Include="Storage\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedPolicy.cs" />
-    <Compile Include="Web\PolicyBuffer.cs" />
-    <Compile Include="Web\PolicySummary.cs" />
+    <Compile Include="Web\Policy.cs" />
     <Compile Include="Storage\SourceControlOptions.cs" />
     <Compile Include="Storage\User.cs" />
     <Compile Include="Interfaces\IJiraService.cs" />

@@ -27,7 +27,7 @@ namespace Equilobe.DailyReport.SL
         {
             var jiraPolicy = GetPolicyFromJira(baseUrl, sharedSecret, projectId);
             var policySummary = PolicySummaryService.GetPolicySummary(baseUrl, sharedSecret, projectId);
-            var policyXml = GetPolicyFromDb(baseUrl, sharedSecret, projectId);
+            var policyXml = GetPolicyFromDb(baseUrl, projectId);
 
             return SyncPolicy(jiraPolicy, policySummary, policyXml);
         }
@@ -65,7 +65,7 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public static string GetPolicyFromDb(string baseUrl, string sharedSecret, long projectId)
+        public static string GetPolicyFromDb(string baseUrl, long projectId)
         {
             using (var db = new ReportsDb())
             {
@@ -80,16 +80,16 @@ namespace Equilobe.DailyReport.SL
 
         public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, string policyXml)
         {
-            var policy = new PolicyBuffer();
-            jiraPolicy.CopyProperties<IPolicy>(policy);
+            var policyBuffer = new PolicyBuffer();
+            jiraPolicy.CopyProperties(policyBuffer);
+
+            policySummary.CopyProperties(policyBuffer);
 
             if (!string.IsNullOrEmpty(policyXml))
-                Deserialization.XmlDeserialize<PolicyBuffer>(policyXml)
-                    .CopyProperties<IPolicy>(policy);
+                Deserialization.XmlDeserialize<PolicyDetails>(policyXml)
+                    .CopyProperties(policyBuffer);
 
-            policySummary.CopyProperties<IPolicy>(policy);
-
-            return policy;
+            return policyBuffer;
         }
     }
 }

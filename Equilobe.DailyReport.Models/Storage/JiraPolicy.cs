@@ -31,7 +31,7 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public SourceControlOptions SourceControlOptions { get; set; }
 
-        public JiraAdvancedOptions AdvancedOptions { get; set; }
+        public AdvancedOptions AdvancedOptions { get; set; }
 
         public List<Month> MonthlyOptions { get; set; }
 

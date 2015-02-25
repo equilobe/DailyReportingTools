@@ -75,15 +75,20 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
 
+                    updatedPolicy.CopyProperties<IReportSetting>(reportSettings);
                     reportSettings.UniqueProjectKey = updatedPolicy.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
                 }
-                updatedPolicy.CopyProperties<IPolicySummary>(reportSettings);
-
-                if (reportSettings.SerializedPolicy == null)
+                else
                 {
-                    reportSettings.SerializedPolicy = new SerializedPolicy();
+                    if (reportSettings.ReportTime != updatedPolicy.ReportTime)
+                        reportSettings.ReportTime = updatedPolicy.ReportTime;
                 }
-                reportSettings.SerializedPolicy.PolicyString = Serialization.XmlSerialize(updatedPolicy);
+
+                var policy = new PolicyDetails();
+                updatedPolicy.CopyProperties<ISerializedPolicy>(policy);
+                if (reportSettings.SerializedPolicy == null)
+                    reportSettings.SerializedPolicy = new SerializedPolicy();
+                reportSettings.SerializedPolicy.PolicyString = Serialization.XmlSerialize(policy);
 
                 db.SaveChanges();
             }

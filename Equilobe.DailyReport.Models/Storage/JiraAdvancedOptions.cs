@@ -8,8 +8,7 @@ using System.Xml.Serialization;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-
-    public class JiraAdvancedOptions 
+    public class AdvancedOptions 
     {
         public string ReportTitle { get; set; }
 
@@ -50,7 +49,7 @@ namespace Equilobe.DailyReport.Models.Storage
         [XmlIgnore]
         public List<DayOfWeek> WeekendDaysList { get; set; }
 
-        public JiraAdvancedOptions()
+        public AdvancedOptions()
         {
             PermanentTaskLabel = "permanent";
             WeekendDays = "Saturday Sunday";

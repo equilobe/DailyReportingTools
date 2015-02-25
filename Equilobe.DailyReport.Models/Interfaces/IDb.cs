@@ -1,21 +1,24 @@
 ﻿using Equilobe.DailyReport.Models.Storage;
+using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IPolicy
+    public interface IReportSetting
     {
         string BaseUrl { get; set; }
         long ProjectId { get; set; }
-        string ProjectName { get; set; }
-        string ProjectKey { get; set; }
-        string UniqueProjectKey { get; set; }
         string ReportTime { get; set; }
+    }
+
+    public interface ISerializedPolicy
+    {
         string DraftEmails { get; set; }
         string Emails { get; set; }
-        int AllocatedHoursPerMonth { get; set; }
         int AllocatedHoursPerDay { get; set; }
+        int AllocatedHoursPerMonth { get; set; }
         SourceControlOptions SourceControlOptions { get; set;}
-        GeneratedProperties GeneratedProperties { get; set; }
+        List<User> UserOptions { get; set; }
+        List<Month> MonthlyOptions { get; set; }
         AdvancedOptions AdvancedOptions { get; set; }
     }
 }
