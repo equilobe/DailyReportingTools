@@ -25,14 +25,14 @@ namespace Equilobe.DailyReport.SL
 
         public static PolicyBuffer GetPolicy(string baseUrl, string sharedSecret, long projectId)
         {
-            var jiraPolicy = GetPolicyFromJira(baseUrl, sharedSecret, projectId);
+            var jiraPolicy = GetJiraPolicy(baseUrl, sharedSecret, projectId);
             var policySummary = PolicySummaryService.GetPolicySummary(baseUrl, sharedSecret, projectId);
-            var policyXml = GetPolicyFromDb(baseUrl, projectId);
+            var policyDetails = GetPolicyDetails(baseUrl, projectId);
 
-            return SyncPolicy(jiraPolicy, policySummary, policyXml);
+            return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
-        public static JiraPolicy GetPolicyFromJira(string baseUrl, string sharedSecret, long projectId)
+        public static JiraPolicy GetJiraPolicy(string baseUrl, string sharedSecret, long projectId)
         {
             var context = new JiraRequestContext
             {
@@ -65,29 +65,27 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public static string GetPolicyFromDb(string baseUrl, long projectId)
+        public static PolicyDetails GetPolicyDetails(string baseUrl, long projectId)
         {
             using (var db = new ReportsDb())
             {
                 var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl);
 
-                if (reportSettings != null && reportSettings.SerializedPolicy != null)
-                    return reportSettings.SerializedPolicy.PolicyString;
+                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                    return null;
 
-                return null;
+                return Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString);
             }
         }
 
-        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, string policyXml)
+        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policyDetails)
         {
             var policyBuffer = new PolicyBuffer();
             jiraPolicy.CopyProperties(policyBuffer);
 
             policySummary.CopyProperties(policyBuffer);
 
-            if (!string.IsNullOrEmpty(policyXml))
-                Deserialization.XmlDeserialize<PolicyDetails>(policyXml)
-                    .CopyProperties(policyBuffer);
+            policyDetails.CopyProperties(policyBuffer);
 
             return policyBuffer;
         }
