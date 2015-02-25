@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportFrame;
+﻿using Atlassian.Connect;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace JiraReporter.Helpers
 
         public static JiraRequestContext GetJiraRequestContext(JiraPolicy policy)
         {
+            policy.SharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(policy.BaseUrl);
+
             if (policy.SharedSecret != null)
                 return new JiraRequestContext(policy.BaseUrl, policy.SharedSecret);
 
