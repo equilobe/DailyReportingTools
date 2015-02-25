@@ -122,62 +122,22 @@
                         </label>
                         <div class="form-group">
                             <label class="radio-inline">
-                                <input type="radio" value="none" ng-model="sourceControlType" />
+                                <input type="radio" value="None" ng-model="policy.sourceControlOptions.type" />
                                 None
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" value="SVN" ng-model="sourceControlType" />
-                                SVN
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" value="GitHub" ng-model="sourceControlType" />
+                                <input type="radio" value="GitHub" ng-model="policy.sourceControlOptions.type" />
                                 GitHub
                             </label>
+                            <label class="radio-inline">
+                                <input type="radio" value="SVN" ng-model="policy.sourceControlOptions.type" />
+                                SVN
+                            </label>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" ng-if="sourceControlType == 'SVN'">
-                <div class="panel-heading">
-                    <h4>SVN</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>
-                                    Repository Url:
-                                </label>
-                                <div ng-form="svnRepoUrlForm">
-                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repo" ng-pattern=@Html.Raw(@"/^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$/") />
-                                    <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>
-                                    Username:
-                                </label>
-                                <div>
-                                    <input type="text" name="svnUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.username" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>
-                                    Password:
-                                </label>
-                                <div>
-                                    <input type="text" name="svnPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.password" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" ng-if="sourceControlType == 'GitHub'">
+            <div class="panel panel-default" ng-if="policy.sourceControlOptions.type == 'GitHub'">
                 <div class="panel-heading">
                     <h4>GitHub</h4>
                 </div>
@@ -209,7 +169,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.username" />
+                                    <input type="text" name="gitUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" />
                                 </div>
                             </div>
                         </div>
@@ -219,7 +179,47 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.password" />
+                                    <input type="text" name="gitPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" ng-if="policy.sourceControlOptions.type == 'SVN'">
+                <div class="panel-heading">
+                    <h4>SVN</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    Repository Url:
+                                </label>
+                                <div ng-form="svnRepoUrlForm">
+                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repo" ng-pattern=@Html.Raw(@"/^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$/") />
+                                    <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Username:
+                                </label>
+                                <div>
+                                    <input type="text" name="svnUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Password:
+                                </label>
+                                <div>
+                                    <input type="text" name="svnPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" />
                                 </div>
                             </div>
                         </div>
@@ -269,7 +269,7 @@
                             <div class="form-group">
                                 <label>Email override:</label>
                                 <div ng-form="emailOverrideForm">
-                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="policy.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") />
+                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="user.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") />
                                     <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                                 </div>
                             </div>
@@ -277,7 +277,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="checkbox">
-                                    <input type="checkbox" />
+                                    <input type="checkbox" ng-model="user.ignored" ng-checked="user.ignored" />
                                     Exclude from report
                                 </label>
                                 <p class="help-block">An excluded user won't show up in the report and won't receive the </p>
@@ -295,7 +295,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Select month:</label>
-                        <select class="form-control" ng-model="month" ng-options="month as month.monthName for user in policy.monthlyOptions"></select>
+                        <select class="form-control" ng-model="month" ng-options="month as month.monthName for month in policy.monthlyOptions"></select>
                     </div>
                 </div>
             </div>
@@ -393,19 +393,19 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.noIndividualDraft" />
+                                <input type="checkbox" ng-model="policy.advancedOptions.noIndividualDraft" ng-checked="policy.advancedOptions.noDraft" ng-disabled="policy.advancedOptions.noDraft" />
                                 Do not send a draft report to each user
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToAllUsers">
+                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToAllUsers" />
                                 Send final draft to all users
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToProjectManager" />
+                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToProjectManager" ng-checked="policy.advancedOptions.sendDraftToAllUsers" ng-disabled="policy.advancedOptions.sendDraftToAllUsers" />
                                 Send final draft to project manager
                             </label>
                         </div>

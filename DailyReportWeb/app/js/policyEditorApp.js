@@ -21,15 +21,13 @@
         $scope.loading = true;
 
         $http.get("/api/policy/" + projectId).success(function (policy) {
-            $scope.policy = policy;
-
-            $scope.sourceControlType = !policy.sourceControlOptions ? "none" :
-                                       policy.sourceControlOptions.repoOwner && policy.sourceControlOptions.repo ? "GitHub" :
-                                       policy.sourceControlOptions.repo ? "SVN" : "none";
+            if (!policy.sourceControlOptions)
+                policy.sourceControlOptions = { type: "None" };
 
             $scope.user = policy.userOptions ? policy.userOptions[0] : null;
-
             $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
+
+            $scope.policy = policy;
 
             $scope.loading = false;
         });
