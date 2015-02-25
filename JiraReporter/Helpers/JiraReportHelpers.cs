@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter
+namespace JiraReporter.Helpers
 {
     public static class JiraReportHelpers
     {
@@ -14,13 +14,21 @@ namespace JiraReporter
         {
             var title = string.Empty;
             var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(report.Options.FromDate, report.Options.ToDate);
-            if (report.Policy.GeneratedProperties.IsFinalDraft || report.Policy.GeneratedProperties.IsIndividualDraft)
+            if (report.IsFinalDraft || report.IsIndividualDraft)
                 title += "DRAFT | ";
             if (individualReport)
                 title += report.Author.Name + " | ";
-            title += report.Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
+            title += report.ProjectName + " Daily Report | " + reportDate;
 
             return title;
+        }
+
+        public static JiraRequestContext GetJiraRequestContext(JiraPolicy policy)
+        {
+            if (policy.SharedSecret != null)
+                return new JiraRequestContext(policy.BaseUrl, policy.SharedSecret);
+
+            return new JiraRequestContext(policy.BaseUrl, policy.Username, policy.Password);
         }
     }
 }

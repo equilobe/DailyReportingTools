@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.SL;
+using JiraReporter.Helpers;
 
 namespace JiraReporter
 {
@@ -52,8 +53,8 @@ namespace JiraReporter
             var authorLoader = new AuthorLoader(context);
             if (context.Options.DraftKey != null)
             {
-                var author = authorLoader.CreateAuthorByKey(context.Options.DraftKey, context.Policy);
-                if (context.Policy.GeneratedProperties.ProjectManager == author.Username)
+                var author = authorLoader.CreateAuthorByKey(context.Options.DraftKey, context);
+                if (context.ProjectManager == author.Username)
                     author.IsProjectLead = true;
                 authors.Add(author);
             }
@@ -79,7 +80,6 @@ namespace JiraReporter
             individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
 
             return individualReport;
-
         }
 
 
@@ -91,7 +91,7 @@ namespace JiraReporter
 
         public static Sprint GenerateSprint(JiraReport report)
         {
-            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.Policy.GeneratedProperties.ProjectKey, ProjectName = report.Policy.GeneratedProperties.ProjectName };
+            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
             return new JiraService().GetProjectSprintForDate(projectDateFilter);
         }
 

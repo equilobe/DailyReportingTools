@@ -68,7 +68,7 @@ namespace JiraReporter
 
         private void AddMailAttachments(MailMessage message)
         {
-            if (Policy.GeneratedProperties.IsIndividualDraft)
+            if (Report.IsIndividualDraft)
                 AddAttachementImage(Author.Image, Author.Username, message);
             else
                 foreach (var author in Authors)
@@ -79,9 +79,9 @@ namespace JiraReporter
         {
             string subject = string.Empty;
 
-            if (Policy.GeneratedProperties.IsFinalDraft || Policy.GeneratedProperties.IsIndividualDraft)
+            if (Report.IsFinalDraft || Report.IsIndividualDraft)
                 subject += "DRAFT | ";
-            if (Policy.GeneratedProperties.IsIndividualDraft)
+            if (Report.IsIndividualDraft)
                 subject += Author.Name + " | ";
             subject += Policy.AdvancedOptions.ReportTitle + " | ";
             subject += ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
@@ -91,9 +91,9 @@ namespace JiraReporter
 
         protected override void SendEmails()
         {
-            Validation.EnsureDirectoryExists(Policy.GeneratedProperties.UnsentReportsPath);
+            Validation.EnsureDirectoryExists(Report.UnsentReportsPath);
 
-            foreach (var file in Directory.GetFiles(Policy.GeneratedProperties.UnsentReportsPath))
+            foreach (var file in Directory.GetFiles(Report.UnsentReportsPath))
             {
                 TryEmailReport(file);
             }
@@ -101,9 +101,9 @@ namespace JiraReporter
 
         public override void MoveToSent(string path)
         {
-            Validation.EnsureDirectoryExists(Policy.GeneratedProperties.ReportsPath);
+            Validation.EnsureDirectoryExists(Report.ReportsPath);
 
-            var newFilePath = Path.Combine(Policy.GeneratedProperties.ReportsPath, Path.GetFileName(path));
+            var newFilePath = Path.Combine(Report.ReportsPath, Path.GetFileName(path));
 
             File.Copy(path, newFilePath, overwrite: true);
             File.Delete(path);
@@ -111,23 +111,19 @@ namespace JiraReporter
 
         protected override void UpdatePolicy()
         {
-            var policyService = new JiraPolicyService(Report);
-            if (Policy.GeneratedProperties.IsFinalDraft)
-            {
-                Policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-                Policy.GeneratedProperties.LastDraftSentDate = Options.ToDate;
-                if (Policy.IsForcedByLead(Options.TriggerKey))
-                    Policy.GeneratedProperties.WasForcedByLead = true;
-            }
+            //var policyService = new JiraContextService(Report);
+            //if (Policy.GeneratedProperties.IsFinalDraft)
+            //{
+            //    Policy.GeneratedProperties.IsFinalDraftConfirmed = false;
+            //    Policy.GeneratedProperties.LastDraftSentDate = Options.ToDate;
+            //    //if (Policy.IsForcedByLead(Options.TriggerKey))
+            //    //    Policy.GeneratedProperties.WasForcedByLead = true;
+            //}
 
-            if (Policy.GeneratedProperties.IsFinalReport)
-            {
-                Policy.GeneratedProperties.LastReportSentDate = Options.ToDate;
-                policyService.ResetPolicyToDefault();
-                Policy.GeneratedProperties.WasResetToDefaultToday = false;
-            }
+            //if (Policy.GeneratedProperties.IsFinalReport)
+            //    Policy.GeneratedProperties.LastReportSentDate = Options.ToDate;
 
-            JiraPolicyService.SaveToFile(Options.PolicyPath, Policy);
+         //   JiraPolicyService.SaveToFile(Options.PolicyPath, Policy);
         }
     }
 }

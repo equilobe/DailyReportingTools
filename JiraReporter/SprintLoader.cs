@@ -29,7 +29,7 @@ namespace JiraReporter
             var rapidViews = new List<View>();
             foreach (var view in views)
             {
-                if (view.filter.query.ToLower().Contains(Policy.GeneratedProperties.ProjectKey.ToLower()) || view.filter.query.ToLower().Contains(Policy.GeneratedProperties.ProjectName.ToLower()))
+                if (view.filter.query.ToLower().Contains(Report.ProjectKey.ToLower()) || view.filter.query.ToLower().Contains(Report.ProjectName.ToLower()))
                     rapidViews.Add(view);
             }
             return rapidViews;

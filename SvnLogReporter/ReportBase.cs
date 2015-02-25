@@ -23,7 +23,7 @@ namespace SourceControlLogReporter
         {
             get
             {
-                return GetLogFilePath(Policy.GeneratedProperties.LogPath, Options.ReportDate);
+                return GetLogFilePath(Policy.LogPath, Options.ReportDate);
             }
         }
 

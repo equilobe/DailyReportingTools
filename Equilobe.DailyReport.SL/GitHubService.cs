@@ -1,6 +1,4 @@
-﻿
-
-using Equilobe.DailyReport.BL.GitHub;
+﻿using Equilobe.DailyReport.BL.GitHub;
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
 using Octokit;

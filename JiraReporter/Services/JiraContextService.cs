@@ -12,19 +12,19 @@ using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace JiraReporter.Services
 {
-    public class JiraPolicyService
+    public class JiraContextService
     {
         JiraPolicy Policy { get { return Context.Policy; } }
         JiraReport Context { get; set; }
 
-        public JiraPolicyService(JiraReport report)
+        public JiraContextService(JiraReport report)
         {
             Context = report;
         }
 
         public void SetPolicy()
         {
-            SetDefaultProperties();
+          //  SetDefaultProperties();
 
             SetUrls();
             Policy.CurrentOverride = GetCurrentOverride();
@@ -39,15 +39,16 @@ namespace JiraReporter.Services
         {
             if (Policy.MonthlyOptions != null)
                 foreach (var month in Policy.MonthlyOptions)
-                    month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
+                    if (!string.IsNullOrEmpty(month.NonWorkingDays))
+                        month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
         }
 
         private void SetUrls()
         {
-            Policy.GeneratedProperties.DraftConfirmationUrl = GetDraftConfirmationUrl();
-            Policy.GeneratedProperties.ResendDraftUrl = GetResendDraftUrl();
-            Policy.GeneratedProperties.IndividualDraftConfirmationUrl = GetIndividualDraftConfirmationUrl();
-            Policy.GeneratedProperties.ResendIndividualDraftUrl = GetResendIndividualDraftUrl();
+            Context.DraftConfirmationUrl = GetDraftConfirmationUrl();
+            Context.ResendDraftUrl = GetResendDraftUrl();
+            Context.IndividualDraftConfirmationUrl = GetIndividualDraftConfirmationUrl();
+            Context.ResendIndividualDraftUrl = GetResendIndividualDraftUrl();
         }
 
         private Uri GetDraftConfirmationUrl()
@@ -56,7 +57,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + Policy.GeneratedProperties.ProjectKey + Policy.GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetResendDraftUrl()
@@ -65,7 +66,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + Policy.GeneratedProperties.ProjectKey + Policy.GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
@@ -74,7 +75,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/confirmIndividualDraft/" + Policy.GeneratedProperties.ProjectKey + Policy.GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetResendIndividualDraftUrl()
@@ -83,7 +84,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + Policy.GeneratedProperties.ProjectKey + Policy.GeneratedProperties.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private static DateTime GetDateTimeFromString(string date)
@@ -151,28 +152,28 @@ namespace JiraReporter.Services
 
 
 
-        public void SetDefaultProperties()
-        {
-            if (Policy.AdvancedOptions == null)
-                Policy.AdvancedOptions = new AdvancedOptions();
-            SetReportTitle();
-            SetPermanentTaskLabel();
-            ResetToDefault();
-            SetDraftMode();
-        }
+        //public void SetDefaultProperties()
+        //{
+        //    if (Policy.AdvancedOptions == null)
+        //        Policy.AdvancedOptions = new AdvancedOptions();
+        //    SetReportTitle();
+        //    SetPermanentTaskLabel();
+        //    ResetToDefault();
+        //    SetDraftMode();
+        //}
 
-        public void ResetToDefault()
-        {
-            if (Policy.GeneratedProperties.LastDraftSentDate.Date == DateTime.Today || Policy.GeneratedProperties.LastDraftSentDate == new DateTime() || Policy.GeneratedProperties.WasResetToDefaultToday)
-                return;
+        //public void ResetToDefault()
+        //{
+        //    if (Policy.GeneratedProperties.LastDraftSentDate.Date == DateTime.Today || Policy.GeneratedProperties.LastDraftSentDate == new DateTime() || Policy.GeneratedProperties.WasResetToDefaultToday)
+        //        return;
 
-            ResetPolicyToDefault();
-            Policy.GeneratedProperties.WasResetToDefaultToday = true;
-        }
+        //    ResetPolicyToDefault();
+        //    Policy.GeneratedProperties.WasResetToDefaultToday = true;
+        //}
 
         private void SetDraftMode()
         {
-            if (Policy.AdvancedOptions.NoDraft || Policy.GeneratedProperties.IsFinalDraftConfirmed)
+            if (Policy.AdvancedOptions.NoDraft || Context.IsFinalDraftConfirmed)
                 SetFinalReportMode();
             else
                 SetFinalAndIndividualDrafts();
@@ -182,40 +183,21 @@ namespace JiraReporter.Services
         {
             if (Policy.CanSendFullDraft(Context.Options.TriggerKey))
             {
-                Policy.GeneratedProperties.IsFinalDraft = true;
-                Policy.GeneratedProperties.IsIndividualDraft = false;
+                Context.IsFinalDraft = true;
+                Context.IsIndividualDraft = false;
             }
             else
             {
-                Policy.GeneratedProperties.IsFinalDraft = false;
-                Policy.GeneratedProperties.IsIndividualDraft = true;
+                Context.IsFinalDraft = false;
+                Context.IsIndividualDraft = true;
             }
         }
 
         private void SetFinalReportMode()
         {
-            Policy.GeneratedProperties.IsFinalDraft = false;
-            Policy.GeneratedProperties.IsIndividualDraft = false;
-            Policy.GeneratedProperties.IsFinalReport = true;
-        }
-
-        private void SetReportTitle()
-        {
-            if (Policy.AdvancedOptions.ReportTitle == null)
-                Policy.AdvancedOptions.ReportTitle = Policy.GeneratedProperties.ProjectName + " Daily Report";
-        }
-
-        private void SetPermanentTaskLabel()
-        {
-            if (Policy.AdvancedOptions.PermanentTaskLabel != null)
-                Policy.AdvancedOptions.PermanentTaskLabel = Policy.AdvancedOptions.PermanentTaskLabel.ToLower();
-        }
-
-        public void ResetPolicyToDefault()
-        {
-            Policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-            Policy.GeneratedProperties.IndividualDrafts = null;
-            Policy.GeneratedProperties.WasForcedByLead = false;
+            Context.IsFinalDraft = false;
+            Context.IsIndividualDraft = false;
+            Context.IsFinalReport = true;
         }
 
         private List<DayOfWeek> GetWeekendDays()
@@ -240,11 +222,11 @@ namespace JiraReporter.Services
             }
         }
 
-        public static void SetPolicyFinalReport(JiraPolicy policy, string policyPath)
-        {
-            policy.GeneratedProperties.IsFinalDraftConfirmed = true;
-            SaveToFile(policyPath, policy);
-        }
+  //      public static void SetPolicyFinalReport(JiraPolicy policy, string policyPath) //TODO: adjust method to work with database
+  //      {
+  //          Context.GeneratedProperties.IsFinalDraftConfirmed = true;
+  ////          SaveToFile(policyPath, policy);
+  //      }
 
         public static string GetPolicyPath(string key)
         {
@@ -259,14 +241,14 @@ namespace JiraReporter.Services
             return LoadFromFile(policyPath);
         }
 
-        public static bool SetIndividualDraftConfirmation(JiraPolicy policy, string key, string policyPath)
+        public static bool SetIndividualDraftConfirmation(JiraReport context, string key)
         {
             try
             {
-                var draftsInfo = policy.GeneratedProperties.IndividualDrafts;
+                var draftsInfo = context.IndividualDrafts;
                 var draft = draftsInfo.Find(d => d.UserKey == key);
                 draft.Confirmed = true;
-                SaveToFile(policyPath, policy);
+  //            SaveToFile(policyPath, policy);
 
                 return true;
             }
@@ -275,6 +257,5 @@ namespace JiraReporter.Services
                 return false;
             }
         }
-
     }
 }

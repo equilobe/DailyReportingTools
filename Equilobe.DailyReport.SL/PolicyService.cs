@@ -23,13 +23,13 @@ namespace Equilobe.DailyReport.SL
             return userId;
         }
 
-        public static PolicyBuffer GetPolicy(string baseUrl, string sharedSecret, long projectId)
+        public static PolicyBuffer GetSyncedPolicy(string baseUrl, string sharedSecret, long projectId)
         {
             var jiraPolicy = GetPolicyFromJira(baseUrl, sharedSecret, projectId);
             var policySummary = PolicySummaryService.GetPolicySummary(baseUrl, sharedSecret, projectId);
-            var policyXml = GetPolicyFromDb(baseUrl, projectId);
+            var policy = GetPolicyFromDb(baseUrl, projectId);
 
-            return SyncPolicy(jiraPolicy, policySummary, policyXml);
+            return SyncPolicy(jiraPolicy, policySummary, policy);
         }
 
         public static JiraPolicy GetPolicyFromJira(string baseUrl, string sharedSecret, long projectId)
@@ -48,12 +48,6 @@ namespace Equilobe.DailyReport.SL
             };
 
             var project = new JiraService().GetProject(context, projectId);
-            policy.GeneratedProperties = new JiraGeneratedProperties
-            {
-                ProjectName = project.Name,
-                ProjectKey = project.Key
-            };
-
             policy.UserOptions = new JiraService().GetUsers(context, project.Key)
                 .Select(user => new User
                 {
@@ -65,29 +59,47 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public static string GetPolicyFromDb(string baseUrl, long projectId)
+        public static PolicyDetails GetPolicyFromDb(string baseUrl, long projectId)
         {
             using (var db = new ReportsDb())
             {
                 var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl);
 
                 if (reportSettings != null && reportSettings.SerializedPolicy != null)
-                    return reportSettings.SerializedPolicy.PolicyString;
+                    return Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString);
 
                 return null;
             }
         }
 
-        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, string policyXml)
+        public static PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+
+                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                    return null;
+
+                var policyBuffer = new PolicyBuffer();
+                reportSettings.CopyProperties<IReportSetting>(policyBuffer);
+
+                if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
+                    Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
+                        .CopyProperties(policyBuffer);
+
+                return policyBuffer;
+            }
+        }
+
+        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policy)
         {
             var policyBuffer = new PolicyBuffer();
             jiraPolicy.CopyProperties(policyBuffer);
 
             policySummary.CopyProperties(policyBuffer);
 
-            if (!string.IsNullOrEmpty(policyXml))
-                Deserialization.XmlDeserialize<PolicyDetails>(policyXml)
-                    .CopyProperties(policyBuffer);
+            policy.CopyProperties(policyBuffer);
 
             return policyBuffer;
         }

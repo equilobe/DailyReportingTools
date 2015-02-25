@@ -57,7 +57,7 @@ namespace JiraReporter
 
         public JiraIssues GetUnfinishedTasks(JiraReport context)
         {
-            return new JiraService().GetSprintTasks(context.JiraRequestContext, context.Policy.GeneratedProperties.ProjectKey);
+            return new JiraService().GetSprintTasks(context.JiraRequestContext, context.ProjectKey);
         }
 
         public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)

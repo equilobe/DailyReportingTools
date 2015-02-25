@@ -18,6 +18,7 @@ using JiraReporter.Helpers;
 using CommandLine;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter
 {
@@ -27,15 +28,20 @@ namespace JiraReporter
         {
             var options = new JiraOptions();                
             new CommandLineParser().ParseArguments(args, options);
-            var policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
+          
+       //     var policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
+            var policyBuffer = PolicyService.GetPolicyBufferFromDb(options.UniqueProjectKey);
+            var policy = new JiraPolicy();
+            policyBuffer.CopyProperties(policy);
 
             var report = new JiraReport(policy, options);
-            report.JiraRequestContext = new JiraRequestContext(report.Policy.BaseUrl, report.Policy.Username, report.Policy.Password);
+            report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(policy);
 
             var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
-            SetProjectInfo(policy, project);
+            SetProjectInfo(report, project);
             LoadReportDates(report);
-            var policyService = new JiraPolicyService(report);
+
+            var policyService = new JiraContextService(report);
             policyService.SetPolicy();        
 
             if (RunReport(report))
@@ -48,7 +54,7 @@ namespace JiraReporter
         {
             var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
 
-            if (context.Policy.GeneratedProperties.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
+            if (context.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
                 return false;
 
             if (DatesHelper.IsWeekend(context))
@@ -81,7 +87,7 @@ namespace JiraReporter
 
         private static void ProcessAndSendReport(JiraReport report)
         {
-            if (report.Policy.GeneratedProperties.IsIndividualDraft)
+            if (report.IsIndividualDraft)
             {
                 foreach (var author in report.Authors)
                 {
@@ -111,12 +117,12 @@ namespace JiraReporter
             new DatesHelper(context).LoadDates();
         }
 
-        private static void SetProjectInfo(JiraPolicy policy, Project project)
+        private static void SetProjectInfo(JiraReport report, Project project)
         {
-            policy.GeneratedProperties.ProjectName = project.Name;
-            policy.GeneratedProperties.ProjectKey = project.Key;
+            report.ProjectName = project.Name;
+            report.ProjectKey = project.Key;
             if (project.Lead != null)
-                policy.GeneratedProperties.ProjectManager = project.Lead.key;
+                report.ProjectManager = project.Lead.key;
         }
     }
 }

@@ -3,6 +3,7 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -15,6 +16,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         {
             Policy = p;
             Options = o;
+            UniqueProjectKey = Options.UniqueProjectKey;
         }
 
         public ReportSettings Settings
@@ -156,7 +158,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         {
             get
             {
-                if (!Policy.GeneratedProperties.IsIndividualDraft)
+                if (IsIndividualDraft)
                     throw new InvalidOperationException("This is not an individual report!");
 
                 return _author;
@@ -167,6 +169,34 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
 
+        public string ProjectKey { get; set; }
+        public string ProjectName { get; set; }
+        public string UniqueProjectKey { get; set; }
+
         public JiraRequestContext JiraRequestContext { get; set; }
+
+        public DateTime LastReportSentDate { get; set; }
+        public DateTime LastDraftSentDate { get; set; }
+        public bool IsFinalDraftConfirmed { get; set; }
+
+        public List<IndividualDraftInfo> IndividualDrafts { get; set; }
+
+        public bool IsFinalDraft { get; set; }
+        public bool IsIndividualDraft { get; set; }
+        public bool IsFinalReport { get; set; }
+
+        public Uri DraftConfirmationUrl { get; set; }
+        public Uri ResendDraftUrl { get; set; }
+        public Uri IndividualDraftConfirmationUrl { get; set; }
+        public Uri ResendIndividualDraftUrl { get; set; }
+
+        public string ProjectManager { get; set; }
+
+        public string RootPath { get { return Path.GetFullPath(ProjectName); } }
+
+        public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }
+        public string LogArchivePath { get { return Path.Combine(RootPath, "LogArchive"); } }
+        public string ReportsPath { get { return Path.Combine(RootPath, "Reports"); } }
+        public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
     }
 }

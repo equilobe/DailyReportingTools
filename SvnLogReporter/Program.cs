@@ -43,8 +43,8 @@ namespace SourceControlLogReporter
         {
             Options options = new Options();
             new CommandLineParser().ParseArguments(args, options);
-            Policy policy = PolicyService.LoadFromFile(options.PolicyPath);
-            var policyService = new PolicyService(policy);
+            Policy policy = SourceControlPolicyService.LoadFromFile(options.PolicyPath);
+            var policyService = new SourceControlPolicyService(policy);
             policyService.SetPolicy();
             options.LoadDates();
 

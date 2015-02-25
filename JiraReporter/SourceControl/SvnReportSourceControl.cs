@@ -22,7 +22,7 @@ namespace JiraReporter.SourceControl
         {
             get
             {
-                return GetLogFilePath(Policy.GeneratedProperties.LogPath, Options.ReportDate);
+                return GetLogFilePath(Context.LogPath, Options.ReportDate);
             }
         }
 

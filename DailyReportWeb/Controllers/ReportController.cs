@@ -1,4 +1,5 @@
 ﻿using DailyReportWeb.Helpers;
+using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Services;
 using System;
 using System.Web.Mvc;
@@ -13,13 +14,14 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
 
-            var policy = JiraPolicyService.LoadPolicy(id);
-            var policyPath = JiraPolicyService.GetPolicyPath(id);
+            var policy = JiraContextService.LoadPolicy(id);
+            var policyPath = JiraContextService.GetPolicyPath(id);
 
             if (!policy.CanSendFullDraft())
                 return Content("Not all individual drafts were confirmed");
 
-            JiraPolicyService.SetPolicyFinalReport(policy, policyPath);
+          // TODO: set final report mode
+          //  JiraContextService.SetPolicyFinalReport(policy, policyPath);
 
             if (ReportRunner.TryRunReportTask(id))
                 return Content("Report confirmed. Final report sent");
@@ -33,8 +35,8 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend draft for another date");
 
-            var policy = JiraPolicyService.LoadPolicy(id);
-            var policyPath = JiraPolicyService.GetPolicyPath(id);
+            var policy = JiraContextService.LoadPolicy(id);
+            var policyPath = JiraContextService.GetPolicyPath(id);
 
             if (!policy.CanSendFullDraft(draftKey))
                 return Content("Cannot send report if not all individual drafts were confirmed");
@@ -57,10 +59,13 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
 
-            var policyPath = JiraPolicyService.GetPolicyPath(id);
-            var policy = JiraPolicyService.LoadFromFile(policyPath);
+            var policyPath = JiraContextService.GetPolicyPath(id);
+       //    var policy = JiraPolicyService.LoadFromFile(policyPath);
+            var policy = new JiraPolicy();
 
-            var confirm = JiraPolicyService.SetIndividualDraftConfirmation(policy, draftKey, policyPath);
+            //TODO: use db to store confirmations
+         //   var confirm = JiraContextService.SetIndividualDraftConfirmation(policy, draftKey);
+            var confirm = false;
             if (!confirm)
                 return Content("Error in confirmation");
 
@@ -81,7 +86,7 @@ namespace DailyReportWeb.Controllers
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend report for another date");
 
-            var policy = JiraPolicyService.LoadPolicy(id);
+            var policy = JiraContextService.LoadPolicy(id);
 
             if (policy.CheckIndividualDraftConfirmation(draftKey))
                 return Content("Draft is already confirmed. Can't resend");

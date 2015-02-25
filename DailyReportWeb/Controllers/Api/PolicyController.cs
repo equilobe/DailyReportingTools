@@ -32,7 +32,7 @@ namespace DailyReportWeb.Controllers.Api
             var baseUrl = User.GetBaseUrl();
             var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
 
-            return PolicyService.GetPolicy(baseUrl, sharedSecret, id);
+            return PolicyService.GetSyncedPolicy(baseUrl, sharedSecret, id);
         }
 
         // PUT: api/Policy

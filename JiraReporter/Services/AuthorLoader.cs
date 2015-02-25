@@ -33,7 +33,7 @@ namespace JiraReporter.Services
 
         public List<JiraAuthor> GetAuthors()
         {
-            var authors = new JiraService().GetUsers(_context.JiraRequestContext, _context.Policy.GeneratedProperties.ProjectKey)
+            var authors = new JiraService().GetUsers(_context.JiraRequestContext, _context.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
@@ -43,15 +43,15 @@ namespace JiraReporter.Services
             authors.RemoveAll(a=> a.IsProjectLead == false && AuthorIsEmpty(a));
            
             var individualReportService = new IndividualReportInfoService();
-            individualReportService.SetIndividualDraftInfo(authors, _policy);
+            individualReportService.SetIndividualDraftInfo(authors, _context);
 
             return authors;
         }
 
-        public JiraAuthor CreateAuthorByKey(string key, JiraPolicy policy)
+        public JiraAuthor CreateAuthorByKey(string key, JiraReport context)
         {
             var draftInfoService = new IndividualReportInfoService();
-            var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
+            var draft = draftInfoService.GetIndividualDraftInfo(key, context);
             var user = new JiraService().GetUser(_context.JiraRequestContext, draft.Username);
             var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);
@@ -317,10 +317,10 @@ namespace JiraReporter.Services
 
         private void SetProjectLead(List<JiraAuthor> authors)
         {
-            var lead = authors.Find(a => a.Username == _policy.GeneratedProperties.ProjectManager);
+            var lead = authors.Find(a => a.Username == _context.ProjectManager);
             if (lead == null)
             {
-                var projectManager = GetProjectLead(_policy.GeneratedProperties.ProjectManager);
+                var projectManager = GetProjectLead(_context.ProjectManager);
                 authors.Add(projectManager);
             }
             else

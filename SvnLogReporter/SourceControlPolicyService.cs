@@ -10,11 +10,11 @@ using System.Xml.Serialization;
 
 namespace SourceControlLogReporter
 {
-    public class PolicyService
+    public class SourceControlPolicyService
     {
         Policy Policy { get; set; }
 
-        public PolicyService(Policy policy)
+        public SourceControlPolicyService(Policy policy)
         {
             Policy = policy;
         }
