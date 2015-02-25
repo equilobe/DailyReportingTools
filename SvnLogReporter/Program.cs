@@ -48,6 +48,9 @@ namespace SourceControlLogReporter
             policyService.SetPolicy();
             options.LoadDates();
 
+            if (policy.SourceControlOptions.Type == SourceControlType.None)
+                return;
+
             var processor = Processors[policy.SourceControlOptions.Type](policy, options);
             var report = processor.GenerateReport();
             Reporter.WriteReport(policy, report, processor.PathToLog);
