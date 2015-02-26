@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.SL;
 
 namespace JiraReporter.Services
 {
@@ -182,7 +183,7 @@ namespace JiraReporter.Services
 
         private void SetFinalAndIndividualDrafts()
         {
-            if (Policy.CanSendFullDraft(Context.Options.TriggerKey))
+            if (ReportService.CanSendFullDraft(Context.UniqueProjectKey, Context.Options.TriggerKey))
             {
                 Context.IsFinalDraft = true;
                 Context.IsIndividualDraft = false;
@@ -223,40 +224,17 @@ namespace JiraReporter.Services
             }
         }
 
-  //      public static void SetPolicyFinalReport(JiraPolicy policy, string policyPath) //TODO: adjust method to work with database
-  //      {
-  //          Context.GeneratedProperties.IsFinalDraftConfirmed = true;
-  ////          SaveToFile(policyPath, policy);
-  //      }
+        //public static string GetPolicyPath(string key)
+        //{
+        //    var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
+        //    var policyPath = basePath + @"\Policies\" + key + ".xml";
+        //    return policyPath;
+        //}
 
-        public static string GetPolicyPath(string key)
-        {
-            var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var policyPath = basePath + @"\Policies\" + key + ".xml";
-            return policyPath;
-        }
-
-        public static JiraPolicy LoadPolicy(string id)
-        {
-            var policyPath = GetPolicyPath(id);
-            return LoadFromFile(policyPath);
-        }
-
-        public static bool SetIndividualDraftConfirmation(JiraReport context, string key)
-        {
-            try
-            {
-                var draftsInfo = context.IndividualDrafts;
-                var draft = draftsInfo.Find(d => d.UserKey == key);
-                draft.Confirmed = true;
-  //            SaveToFile(policyPath, policy);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        //public static JiraPolicy LoadPolicy(string id)
+        //{
+        //    var policyPath = GetPolicyPath(id);
+        //    return LoadFromFile(policyPath);
+        //}
     }
 }

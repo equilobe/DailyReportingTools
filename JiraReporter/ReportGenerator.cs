@@ -76,6 +76,11 @@ namespace JiraReporter
                 SprintTasks = report.SprintTasks,
                 Commits = report.Commits,
                 JiraRequestContext = report.JiraRequestContext,
+                ProjectName = report.ProjectName,
+                IsFinalDraft = report.IsFinalDraft,
+                IsIndividualDraft = report.IsIndividualDraft,
+                IsFinalReport = report.IsFinalReport,
+                UniqueProjectKey = report.UniqueProjectKey
             };
             individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
 

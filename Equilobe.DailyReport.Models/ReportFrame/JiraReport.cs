@@ -152,7 +152,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         {
             get
             {
-                if (IsIndividualDraft)
+                if (!IsIndividualDraft)
                     throw new InvalidOperationException("This is not an individual report!");
 
                 return _author;

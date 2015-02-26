@@ -64,8 +64,9 @@ namespace JiraReporter
             if (CheckDayFromOverrides(context))
                 return false;
 
-            if (context.Options.TriggerKey != null && !context.Policy.IsForcedByLead(context.Options.TriggerKey))
-                return false;
+            //if (context.Options.TriggerKey != null && !context.Policy.IsForcedByLead(context.Options.TriggerKey))
+            //    return false;
+            //Use instead ReportExecutionInstannces
 
             return true;
         }
@@ -93,6 +94,7 @@ namespace JiraReporter
                 foreach (var author in report.Authors)
                 {
                     var individualReport = ReportGenerator.GetIndividualReport(report, author);
+                    ReportService.SaveIndividualDraftConfirmation(report.UniqueProjectKey, author.IndividualDraftInfo);
                     var reportProcessor = new IndividualReportProcessor(individualReport);
                     reportProcessor.ProcessReport();
                 }

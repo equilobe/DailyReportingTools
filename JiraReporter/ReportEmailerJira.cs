@@ -14,6 +14,7 @@ using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.DAL;
 
 namespace JiraReporter
 {
@@ -109,8 +110,22 @@ namespace JiraReporter
             File.Delete(path);
         }
 
-        protected override void UpdatePolicy()
+        protected override void UpdateReportSettings()
         {
+            using(var db = new ReportsDb())
+            {
+                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == Report.UniqueProjectKey);
+
+                if (report.ReportExecutionSummary == null)
+                    report.ReportExecutionSummary = new ReportExecutionSummary();
+
+                if(Report.IsFinalDraft)
+                    report.ReportExecutionSummary.LastDraftSentDate = Report.Options.ToDate;
+                if (Report.IsFinalReport)
+                    report.ReportExecutionSummary.LastFinalReportSentDate = Report.Options.ToDate;
+
+                db.SaveChanges();
+            }
             //var policyService = new JiraContextService(Report);
             //if (Policy.GeneratedProperties.IsFinalDraft)
             //{
