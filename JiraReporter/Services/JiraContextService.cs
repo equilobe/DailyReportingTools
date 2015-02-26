@@ -24,7 +24,7 @@ namespace JiraReporter.Services
 
         public void SetPolicy()
         {
-          //  SetDefaultProperties();
+            SetDefaultProperties();
 
             SetUrls();
             Policy.CurrentOverride = GetCurrentOverride();
@@ -32,6 +32,7 @@ namespace JiraReporter.Services
             Policy.Users = GetUsersDictionary();
             Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
             Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
+            SetDraftMode();
             SetMonthlyNonWorkingDays();
         }
 
@@ -152,15 +153,15 @@ namespace JiraReporter.Services
 
 
 
-        //public void SetDefaultProperties()
-        //{
-        //    if (Policy.AdvancedOptions == null)
-        //        Policy.AdvancedOptions = new AdvancedOptions();
-        //    SetReportTitle();
-        //    SetPermanentTaskLabel();
+        public void SetDefaultProperties()
+        {
+            if (Policy.AdvancedOptions == null) 
+                Policy.AdvancedOptions = new AdvancedOptions();
+         //   SetReportTitle();
+       //     SetPermanentTaskLabel();
         //    ResetToDefault();
         //    SetDraftMode();
-        //}
+        }
 
         //public void ResetToDefault()
         //{
@@ -173,7 +174,7 @@ namespace JiraReporter.Services
 
         private void SetDraftMode()
         {
-            if (Policy.AdvancedOptions.NoDraft || Context.IsFinalDraftConfirmed)
+            if (Policy.AdvancedOptions.NoDraft || Context.LastFinalDraftConfirmationDate == Context.Options.ToDate)
                 SetFinalReportMode();
             else
                 SetFinalAndIndividualDrafts();

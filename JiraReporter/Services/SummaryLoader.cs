@@ -50,6 +50,7 @@ namespace JiraReporter.Services
             _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
+            _summary.IsFinalDraft = _report.IsFinalDraft;
 
             SetDates(_options);
             SetReportDate();

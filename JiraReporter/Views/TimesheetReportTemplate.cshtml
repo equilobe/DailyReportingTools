@@ -200,7 +200,7 @@
 
     @Partial("Views/completedTasks.cshtml", Model.SprintTasks)
    
-    @if (Model.Policy.GeneratedProperties.IsFinalDraft)
+    @if (Model.IsFinalDraft)
     {
         <div>
             <table style="margin-top:50px; width:500px; height:150px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
@@ -212,7 +212,7 @@
                     </tr>
                     <tr>
                         <td width="100px" height="40px">
-                            @Partial("Views/confirmationButton.cshtml", Model.Policy.GeneratedProperties.DraftConfirmationUrl)
+                            @Partial("Views/confirmationButton.cshtml", Model.DraftConfirmationUrl)
                         </td>
                     </tr>
                     <tr>
@@ -247,7 +247,7 @@
                    </tr>
                    <tr>
                        <td width="100px" height="40px">
-                           @Partial("Views/resendDraftButton.cshtml", Model.Policy.GeneratedProperties.ResendDraftUrl)
+                           @Partial("Views/resendDraftButton.cshtml", Model.ResendDraftUrl)
                        </td>
                    </tr>                   
                     <tr>

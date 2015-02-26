@@ -19,13 +19,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             UniqueProjectKey = Options.UniqueProjectKey;
         }
 
-        public ReportSettings Settings
-        {
-            get
-            {
-                return new ReportSettings { BaseUrl = Policy.BaseUrl, Password = Policy.Password, Username = Policy.Username };
-            }
-        }
+        public ReportSettings Settings { get; set; }
 
         private TimeSpan? _offsetFromUtc;
         public TimeSpan OffsetFromUtc
@@ -177,7 +171,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public DateTime LastReportSentDate { get; set; }
         public DateTime LastDraftSentDate { get; set; }
-        public bool IsFinalDraftConfirmed { get; set; }
+        public DateTime LastFinalDraftConfirmationDate { get; set; }
 
         public List<IndividualDraftInfo> IndividualDrafts { get; set; }
 

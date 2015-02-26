@@ -36,6 +36,7 @@ namespace JiraReporter
 
             var report = new JiraReport(policy, options);
             report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(policy);
+            JiraReportHelpers.SetReportFromDb(report);
 
             var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
@@ -54,7 +55,7 @@ namespace JiraReporter
         {
             var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
 
-            if (context.LastReportSentDate.Date == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
+            if (context.LastReportSentDate.Date == today)
                 return false;
 
             if (DatesHelper.IsWeekend(context))

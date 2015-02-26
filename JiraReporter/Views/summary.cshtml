@@ -75,7 +75,7 @@ else
                                             </tr>
                                         }
                                     }
-                                    @if (Model.Policy.GeneratedProperties.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
+                                    @if (Model.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
                                     {
                                         if(Model.AuthorsNotConfirmed.Count > 0)
                                         {
