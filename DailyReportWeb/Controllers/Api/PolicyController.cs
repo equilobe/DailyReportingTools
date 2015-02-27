@@ -35,7 +35,7 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // PUT: api/Policy
-        public void Put([FromBody]PolicySummary policySummary)
+        public void Post([FromBody]PolicySummary policySummary)
         {
             using (var db = new ReportsDb())
             {
@@ -68,7 +68,7 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // PUT: api/Policy/5
-        public void Put(long id, [FromBody]PolicyBuffer updatedPolicy)
+        public void Post(long id, [FromBody]PolicyBuffer updatedPolicy)
         {
             using (var db = new ReportsDb())
             {

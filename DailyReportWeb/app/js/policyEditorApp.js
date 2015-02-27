@@ -9,7 +9,7 @@
         });
 
         $scope.updateReportTime = function (policy) {
-            $http.put("/api/policy", policy
+            $http.post("/api/policy", policy
     		).success(function () {
     		    console.log("success");
     		}).error(function () {
@@ -33,7 +33,7 @@
         });
 
         $scope.updatePolicy = function (policy) {
-            $http.put("/api/policy/" + policy.projectId, policy
+            $http.post("/api/policy/" + policy.projectId, policy
     		).success(function () {
     		    console.log("success");
     		}).error(function () {
