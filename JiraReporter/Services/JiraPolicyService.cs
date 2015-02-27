@@ -39,7 +39,8 @@ namespace JiraReporter.Services
         {
             if (Policy.MonthlyOptions != null)
                 foreach (var month in Policy.MonthlyOptions)
-                    month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
+                    if (month.NonWorkingDays != null)
+                        month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
         }
 
         private void SetUrls()
