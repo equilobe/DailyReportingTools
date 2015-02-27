@@ -44,7 +44,6 @@ div.disabled {
 
 .daily-report {
     background-color: white;
-    border: 1px solid;
     display: inline-block;
 }
 
@@ -60,17 +59,17 @@ div.disabled {
 
 .alert-warning .daily-report {
     border-color: #c09853;
-    background: #fff url("Images/individuals.png") no-repeat center;
+    background: url("Images/individuals.png") no-repeat center;
 }
 
 .alert-info .daily-report {
     border-color: #3a87ad;
-    background: #fff url("Images/manager.png") no-repeat center;
+    background: url("Images/manager.png") no-repeat center;
 }
 
 .alert-success .daily-report {
     border-color: #468847;
-    background: #fff url("Images/stakeholders.png") no-repeat center;
+    background: url("Images/stakeholders.png") no-repeat center;
 }
 
 .step-facts {
