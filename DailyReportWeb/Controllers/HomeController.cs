@@ -1,15 +1,8 @@
-﻿using Atlassian.Connect;
-using Atlassian.Connect.Entities;
-using Atlassian.Connect.Jwt;
-using Newtonsoft.Json;
+﻿using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Utils;
 using System;
-using System.Dynamic;
-using System.Web;
-using System.Web.Mvc;
-using System.Linq;
-using Equilobe.DailyReport.DAL;
-using Equilobe.DailyReport.Models.Storage;
 using System.Configuration;
+using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
@@ -37,25 +30,36 @@ namespace DailyReportWeb.Controllers
         [HttpGet]
         public ActionResult Descriptor()
         {
-            var descriptor = new ConnectDescriptor()
+            var descriptor = new
             {
                 name = "Daily Report Tool",
                 description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
                 key = ConfigurationManager.AppSettings["addonKey"],
-                vendor = new ConnectDescriptorVendor()
+                baseUrl = UriExtensions.GetHostUrl(Request.Url.OriginalString),
+                vendor = new
                 {
                     name = "Equilobe Software",
                     url = "http://equilobe.com/"
                 },
+                links = new
+                {
+                    self = UriExtensions.GetHostUrl(Request.Url.OriginalString) + "/howto",
+                    documentation = UriExtensions.GetHostUrl(Request.Url.OriginalString) + "/docs"
+                },
+                apiVersion = 1,
                 authentication = new
                 {
                     type = "jwt"
                 },
                 lifecycle = new
                 {
-                    installed = "/installed"
+                    installed = "/installed",
+                    uninstalled = "/uninstalled"
                 },
-                apiVersion = 1,
+                scopes = new[]
+                {
+                    "PROJECT_ADMIN"
+                },
                 modules = new
                 {
                     generalPages = new[] 
@@ -73,7 +77,7 @@ namespace DailyReportWeb.Controllers
                             {
                                 new
                                 {
-                                    condition = "user_is_logged_in"
+                                    condition = "user_is_admin"
                                 }
                             }
                         }
@@ -81,16 +85,21 @@ namespace DailyReportWeb.Controllers
                 }
             };
 
-            descriptor.SetBaseUrlFromRequest(Request);
-            descriptor.scopes.Add("PROJECT_ADMIN");
-
             return Json(descriptor, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult InstalledCallback()
         {
-            SecretKeyPersister.SaveSecretKey(Request);
+            DbService.SaveSharedSecret(Request);
+
+            return Content(String.Empty);
+        }
+
+        [HttpPost]
+        public ActionResult UninstalledCallback()
+        {
+            DbService.DeleteSharedSecret(Request);
 
             return Content(String.Empty);
         }

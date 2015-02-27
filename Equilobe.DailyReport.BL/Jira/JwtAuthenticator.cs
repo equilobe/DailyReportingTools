@@ -1,14 +1,12 @@
 ﻿using JWT;
 using RestSharp;
-using RestSharp.Contrib;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Configuration;
+using System.Web;
 
 namespace Equilobe.DailyReport.BL.Jira
 {
@@ -50,6 +48,11 @@ namespace Equilobe.DailyReport.BL.Jira
                 .Append("&")
                 .Append(GetCanonicalQueryString(relativeUrl))
                 .ToString();
+        }
+
+        public static string CalculateHash(string relativeUrl, string method)
+        {
+            return CalculateHash(GenerateCanonicalRequest(relativeUrl, method));
         }
 
         public static string CalculateHash(string canonicalRequest)
@@ -114,6 +117,14 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public string SharedSecret { get; set; }
         public string JwtTokenString { get; set; }
+
+        public DecodedJwtToken Decode()
+        {
+            return new DecodedJwtToken(SharedSecret)
+            {
+                Claims = JsonWebToken.DecodeToObject(JwtTokenString, SharedSecret) as IDictionary<string, object>
+            };
+        }
     }
 
     public class DecodedJwtToken
@@ -130,6 +141,31 @@ namespace Equilobe.DailyReport.BL.Jira
         public EncodedJwtToken Encode()
         {
             return new EncodedJwtToken(SharedSecret, JsonWebToken.Encode(Claims, SharedSecret, JwtHashAlgorithm.HS256));
+        }
+
+        public void ValidateToken(HttpRequestBase request)
+        {
+            ValidateTokenHasNotExpired();
+            ValidateQueryStringHash(request);
+        }
+
+        private void ValidateTokenHasNotExpired()
+        {
+            var expiresAt = Convert.ToInt64(Claims["exp"]);
+
+            var now = DateTime.UtcNow.Millisecond / 1000L;
+
+            if (expiresAt < now)
+                throw new Exception("JWT Token Expired");
+        }
+
+        private void ValidateQueryStringHash(HttpRequestBase request)
+        {
+            var qsh = JwtAuthenticator.CalculateHash(request.Url.PathAndQuery, request.HttpMethod);
+            var requestQsh = Claims["qsh"] as string;
+
+            if (qsh != requestQsh)
+                throw new Exception("QSH Does not match.");
         }
     }
 }
