@@ -1,5 +1,4 @@
-﻿using Atlassian.Connect;
-using Equilobe.DailyReport.DAL;
+﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
@@ -21,7 +20,7 @@ namespace DailyReportWeb.Controllers.Api
         public IEnumerable<PolicySummary> Get()
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+            var sharedSecret = DbService.GetSharedSecret(baseUrl);
 
             return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
         }
@@ -30,9 +29,9 @@ namespace DailyReportWeb.Controllers.Api
         public PolicyBuffer Get(long id)
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(baseUrl);
+            var sharedSecret = DbService.GetSharedSecret(baseUrl);
 
-            return PolicyService.GetSyncedPolicy(baseUrl, sharedSecret, id);
+            return PolicyService.GetPolicy(baseUrl, sharedSecret, id);
         }
 
         // PUT: api/Policy
@@ -40,7 +39,9 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId && qr.BaseUrl == policySummary.BaseUrl);
+                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == policySummary.BaseUrl);
+
+                var reportSettings = installedInstance.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId);
                 if (reportSettings == null)
                 {
                     if (policySummary.ReportTime == null)
@@ -50,7 +51,9 @@ namespace DailyReportWeb.Controllers.Api
                     db.ReportSettings.Add(reportSettings);
 
                     policySummary.CopyProperties(reportSettings);
-                    reportSettings.UniqueProjectKey = policySummary.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
+
+                    reportSettings.InstalledInstanceId = installedInstance.Id;
+                    reportSettings.UniqueProjectKey = ProjectService.GetUniqueProjectKey(policySummary.ProjectKey);
                 }
                 else
                 {
@@ -69,14 +72,18 @@ namespace DailyReportWeb.Controllers.Api
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId && qr.BaseUrl == updatedPolicy.BaseUrl);
+                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedPolicy.BaseUrl);
+
+                var reportSettings = installedInstance.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId);
                 if (reportSettings == null)
                 {
                     reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
 
                     updatedPolicy.CopyProperties<IReportSetting>(reportSettings);
-                    reportSettings.UniqueProjectKey = updatedPolicy.ProjectKey + Path.GetRandomFileName().Replace(".", string.Empty);
+
+                    reportSettings.InstalledInstanceId = installedInstance.Id;
+                    reportSettings.UniqueProjectKey = ProjectService.GetUniqueProjectKey(updatedPolicy.ProjectKey);
                 }
                 else
                 {

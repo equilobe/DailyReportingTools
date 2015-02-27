@@ -32,6 +32,15 @@ namespace DailyReportWeb
                 }
             );
             routes.MapRoute(
+                name: "uninstalled-callback",
+                url: "uninstalled",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "UninstalledCallback"
+                }
+            );
+            routes.MapRoute(
 				name: "setup-policies",
 				url: "setup",
                 defaults: new

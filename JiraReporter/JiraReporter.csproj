@@ -107,7 +107,6 @@
     <Compile Include="TasksService.cs" />
     <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="Services\TimesheetService.cs" />
-    <Compile Include="WebDownloads.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

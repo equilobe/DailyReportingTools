@@ -44,7 +44,6 @@ div.disabled {
 
 .daily-report {
     background-color: white;
-    border: 1px solid;
     display: inline-block;
 }
 
@@ -54,20 +53,23 @@ div.disabled {
 }
 
 .daily-report-big {
-    width: 100px;
-    height: 120px;
+    width: 128px;
+    height: 128px;
 }
 
 .alert-warning .daily-report {
     border-color: #c09853;
+    background: url("Images/individuals.png") no-repeat center;
 }
 
 .alert-info .daily-report {
     border-color: #3a87ad;
+    background: url("Images/manager.png") no-repeat center;
 }
 
 .alert-success .daily-report {
     border-color: #468847;
+    background: url("Images/stakeholders.png") no-repeat center;
 }
 
 .step-facts {

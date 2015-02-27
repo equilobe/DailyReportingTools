@@ -1,5 +1,4 @@
-﻿using Atlassian.Connect.Jwt;
-using Equilobe.DailyReport.SL;
+﻿using Equilobe.DailyReport.SL;
 using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers

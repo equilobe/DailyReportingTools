@@ -20,7 +20,7 @@ namespace Equilobe.DailyReport.SL
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = GetReportTime(baseUrl, projectInfo.ProjectId)
+                ReportTime = DbService.GetReportTime(baseUrl, projectInfo.ProjectId)
             };
         }
 
@@ -35,17 +35,9 @@ namespace Equilobe.DailyReport.SL
                     ProjectId = projectInfo.ProjectId,
                     ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
-                    ReportTime = GetReportTime(baseUrl, projectInfo.ProjectId)
+                    ReportTime = DbService.GetReportTime(baseUrl, projectInfo.ProjectId)
                 })
                 .ToList();
-        }
-
-        public static string GetReportTime(string baseUrl, long projectId)
-        {
-            return new ReportsDb().ReportSettings
-                .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
-                .Select(qr => qr.ReportTime)
-                .FirstOrDefault();
         }
     }
 }

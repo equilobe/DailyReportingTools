@@ -13,6 +13,8 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
+using System.Drawing;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter.Services
 {
@@ -298,7 +300,7 @@ namespace JiraReporter.Services
 
         private void SetImage()
         {
-            _currentAuthor.Image = WebDownloads.ImageFromURL(_policy, _currentAuthor.AvatarLink.OriginalString);
+            _currentAuthor.Image = GetImageFromURL(_policy, _currentAuthor.AvatarLink.OriginalString);
         }
 
         private void SetRemainingEstimate()
@@ -334,6 +336,21 @@ namespace JiraReporter.Services
             projectManager.IsProjectLead = true;
 
             return projectManager;
+        }
+
+        private Image GetImageFromURL(JiraPolicy policy, string url)
+        {
+            var webClient = new WebClient();
+            webClient.Headers.Add("Content-Type", "image/png");
+            webClient.Authorize(policy, UriExtensions.GetRelativeUrl(url));
+
+            var imageData = webClient.DownloadData(url);
+
+            MemoryStream stream = new MemoryStream(imageData);
+            var img = Image.FromStream(stream);
+            stream.Close();
+
+            return img;
         }
     }
 }

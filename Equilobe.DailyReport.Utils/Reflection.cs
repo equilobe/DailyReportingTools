@@ -13,10 +13,8 @@ namespace Equilobe.DailyReport.Utils
         /// <param name="destination">The destination.</param>
         public static void CopyProperties(this object source, object destination)
         {
-            if (source == null)
-                throw new ArgumentNullException("source");
-            if (destination == null)
-                throw new ArgumentNullException("destination");
+            if (source == null || destination == null)
+                return;
 
             var propertyList = from sourceProperty in source.GetType().GetProperties()
                                let targetProperty = destination.GetType().GetProperty(sourceProperty.Name)
@@ -35,10 +33,8 @@ namespace Equilobe.DailyReport.Utils
 
         public static void CopyProperties<T>(this object source, object destination)
         {
-            if (source == null)
-                throw new ArgumentNullException("source");
-            if (destination == null)
-                throw new ArgumentNullException("destination");
+            if (source == null || destination == null)
+                return;
 
             var propertyList = from property in typeof(T).GetProperties()
                                let sourceProperty = source.GetType().GetProperty(property.Name)

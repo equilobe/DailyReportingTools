@@ -28,12 +28,9 @@ namespace JiraReporter.Helpers
         {
             //  policy.SharedSecret = SecretKeyProviderFactory.GetSecretKeyProvider().GetSecretKey(policy.BaseUrl);
 
-            //if (policy.SharedSecret != null)
-            //    return new JiraRequestContext(policy.BaseUrl, policy.SharedSecret);
+            if (policy.SharedSecret != null)
+                return new JiraRequestContext(policy.BaseUrl, policy.SharedSecret);
 
-            //return new JiraRequestContext(policy.BaseUrl, policy.Username, policy.Password);
-            policy.Username = "sebastian.dumitrascu";
-            policy.Password = "clatite";
             return new JiraRequestContext(policy.BaseUrl, policy.Username, policy.Password);
         }
 

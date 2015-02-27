@@ -101,6 +101,7 @@
     <Compile Include="SourceControl\SourceControlContext.cs" />
     <Compile Include="Storage\Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
+    <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />
     <Compile Include="Storage\IndividualDraftConfirmation.cs" />
     <Compile Include="Storage\AdvancedOptions.cs" />

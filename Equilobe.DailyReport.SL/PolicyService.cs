@@ -1,4 +1,4 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
@@ -23,16 +23,16 @@ namespace Equilobe.DailyReport.SL
             return userId;
         }
 
-        public static PolicyBuffer GetSyncedPolicy(string baseUrl, string sharedSecret, long projectId)
+        public static PolicyBuffer GetPolicy(string baseUrl, string sharedSecret, long projectId)
         {
-            var jiraPolicy = GetPolicyFromJira(baseUrl, sharedSecret, projectId);
+            var jiraPolicy = GetJiraPolicy(baseUrl, sharedSecret, projectId);
             var policySummary = PolicySummaryService.GetPolicySummary(baseUrl, sharedSecret, projectId);
-            var policy = GetPolicyFromDb(baseUrl, projectId);
+            var policyDetails = GetPolicyDetails(baseUrl, projectId);
 
-            return SyncPolicy(jiraPolicy, policySummary, policy);
+            return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
-        public static JiraPolicy GetPolicyFromJira(string baseUrl, string sharedSecret, long projectId)
+        public static JiraPolicy GetJiraPolicy(string baseUrl, string sharedSecret, long projectId)
         {
             var context = new JiraRequestContext
             {
@@ -48,6 +48,7 @@ namespace Equilobe.DailyReport.SL
             };
 
             var project = new JiraService().GetProject(context, projectId);
+
             policy.UserOptions = new JiraService().GetUsers(context, project.Key)
                 .Select(user => new User
                 {
@@ -59,17 +60,29 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public static PolicyDetails GetPolicyFromDb(string baseUrl, long projectId)
+        public static PolicyDetails GetPolicyDetails(string baseUrl, long projectId)
         {
             using (var db = new ReportsDb())
             {
                 var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl);
 
-                if (reportSettings != null && reportSettings.SerializedPolicy != null)
-                    return Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString);
+                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                    return null;
 
-                return null;
+                return Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString);
             }
+        }
+
+        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policyDetails)
+        {
+            var policyBuffer = new PolicyBuffer();
+            jiraPolicy.CopyProperties(policyBuffer);
+
+            policySummary.CopyProperties(policyBuffer);
+
+            policyDetails.CopyProperties(policyBuffer);
+
+            return policyBuffer;
         }
 
         public static PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
@@ -91,17 +104,7 @@ namespace Equilobe.DailyReport.SL
                 return policyBuffer;
             }
         }
-
-        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policy)
-        {
-            var policyBuffer = new PolicyBuffer();
-            jiraPolicy.CopyProperties(policyBuffer);
-
-            policySummary.CopyProperties(policyBuffer);
-
-            policy.CopyProperties(policyBuffer);
-
-            return policyBuffer;
-        }
     }
 }
+
+
