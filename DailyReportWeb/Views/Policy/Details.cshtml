@@ -39,7 +39,7 @@
                                 Send at:
                             </label>
                             <div ng-form="reportTimeForm">
-                                <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" />
+                                <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-blur="policyStatus = 'changed'" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" />
                                 <span class="form-notification" ng-show="reportTimeForm.reportTime.$error.pattern"><b>Enter valid time</b> (23:59)</span>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                             Send draft to:
                         </label>
                         <div ng-form="emailDraftForm">
-                            <input name="emailDraft" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.draftEmails" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
+                            <input name="emailDraft" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.draftEmails" ng-blur="policyStatus = 'changed'" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
                             <span class="form-notification" ng-show="emailDraftForm.emailDraft.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                         </div>
                         <p class="help-block">Leave blank to send to everyone in the team.</p>
@@ -73,7 +73,7 @@
                             Send final report to:
                         </label>
                         <div ng-form="emailFinalForm">
-                            <input name="emailFinal" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emails" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
+                            <input name="emailFinal" type="text" class="form-control" placeholder="dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emails" ng-blur="policyStatus = 'changed'" ng-pattern=@Html.Raw(@"/^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$/") />
                             <span class="form-notification" ng-show="emailFinalForm.emailFinal.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                         </div>
                         <p class="help-block">Leave blank to send to everyone in the team.</p>
@@ -92,7 +92,7 @@
                             Expected daily team work rate (hours/day):
                         </label>
                         <div ng-form="hoursDayPlanningForm">
-                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="24" ng-model="policy.allocatedHoursPerDay" ng-pattern="/^[0-9]+$/" />
+                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="24" ng-model="policy.allocatedHoursPerDay" ng-blur="policyStatus = 'changed'" ng-pattern="/^[0-9]+$/" />
                             <span class="form-notification" ng-show="hoursDayPlanningForm.hoursDayPlanning.$error.pattern"><b>Enter valid number</b> (84)</span>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                             Monthly hour limit:
                         </label>
                         <div ng-form="hoursMonthPlanningForm">
-                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="400" ng-model="policy.allocatedHoursPerMonth" ng-pattern="/^[0-9]+$/" />
+                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="400" ng-model="policy.allocatedHoursPerMonth" ng-blur="policyStatus = 'changed'" ng-pattern="/^[0-9]+$/" />
                             <span class="form-notification" ng-show="hoursMonthPlanningForm.hoursMonthPlanning.$error.pattern"><b>Enter valid number</b> (584)</span>
                         </div>
                     </div>
@@ -271,9 +271,9 @@
                 <div class="panel-heading">
                     <h4>
                         {{user.jiraDisplayName}}
-                        <small class="pull-right" ng-show="user.sourceControlUsername.length">
-                            <label>
-                                {{user.sourceControlUsernames}}
+                        <small class="pull-right">
+                            <label ng-repeat="sourceControlUser in user.sourceControlUsernames">
+                                [ {{sourceControlUser}} ]
                             </label>
                         </small>
                     </h4>
@@ -288,7 +288,8 @@
                                 <div class="input-group">
                                     <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in policy.sourceControlUsernames"></select>
                                     <span class="input-group-btn">
-                                        <a role="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
+                                        <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames.indexOf(sourceControlUsername) != -1 }"><span class="glyphicon glyphicon-plus"></span></a>
+                                        <a role="button" class="btn btn-default" ng-click="removeSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames.indexOf(sourceControlUsername) == -1 }"><span class="glyphicon glyphicon-minus"></span></a>
                                     </span>
                                 </div>
                             </div>
@@ -297,7 +298,7 @@
                             <div class="form-group">
                                 <label>Email override:</label>
                                 <div ng-form="emailOverrideForm">
-                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="user.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") />
+                                    <input name="emailOverride" type="text" class="form-control" placeholder="dan@equilobe.com" ng-model="user.emailOverride" ng-pattern=@Html.Raw(@"/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/") ng-blur="policyStatus = 'changed'" />
                                     <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern"><b>Enter valid email</b> (dan@eq.com)</span>
                                 </div>
                             </div>
@@ -380,7 +381,7 @@
                         <label>
                             Report title:
                         </label>
-                        <input type="text" class="form-control" placeholder="Daily Report" ng-model="policy.advancedOptions.reportTitle" />
+                        <input type="text" class="form-control" placeholder="Daily Report" ng-model="policy.advancedOptions.reportTitle" ng-blur="policyStatus = 'changed'" />
                         <p class="help-block">
                             If left blank the default will be used: Daily
                         </p>
@@ -391,7 +392,7 @@
                         <label>
                             Reopened tasks status:
                         </label>
-                        <input type="text" class="form-control" placeholder="Reopened" ng-model="policy.advancedOptions.reopenedStatus" />
+                        <input type="text" class="form-control" placeholder="Reopened" ng-model="policy.advancedOptions.reopenedStatus" ng-blur="policyStatus = 'changed'" />
                         <p class="help-block">
                             If left blank the default will be used: Reopened.
                         </p>
@@ -402,7 +403,7 @@
                         <label>
                             Label used for permanent tasks:
                         </label>
-                        <input type="text" class="form-control" placeholder="permanent" ng-model="policy.advancedOptions.permanentTaskLabel" />
+                        <input type="text" class="form-control" placeholder="permanent" ng-model="policy.advancedOptions.permanentTaskLabel" ng-blur="policyStatus = 'changed'" />
                         <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
                     </div>
                 </div>
@@ -517,7 +518,13 @@
         </div>
         <div class="container">
             <h3>
-                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updatePolicy(this)">Save advanced options</button>
+                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updatePolicy(this)">
+                    Save advanced options
+                    <span class="glyphicon glyphicon-share-alt" ng-show="policyStatus == 'changed'"></span>
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="policyStatus == 'saving'"></span>
+                    <span class="glyphicon glyphicon-ok" ng-show="policyStatus == 'success'"></span>
+                    <span class="glyphicon glyphicon-remove" ng-show="policyStatus == 'error'"></span>
+                </button>
             </h3>
         </div>
     </form>

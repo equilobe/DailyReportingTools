@@ -21,23 +21,26 @@
         $scope.policyStatus = "loading";
 
         $http.get("/api/policy/" + projectId).success(function (policy) {
-            if (!policy.sourceControlOptions)
-                policy.sourceControlOptions = { type: "None" };
-
             $scope.user = policy.userOptions ? policy.userOptions[0] : null;
             $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
             $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
+            
+            if (!policy.sourceControlOptions)
+                policy.sourceControlOptions = { type: "None" };
 
             $scope.policy = policy;
-
             $scope.policyStatus = "loaded";
         });
 
         $scope.updatePolicy = function ($scope) {
+            $scope.policyStatus = 'saving';
+
             $http.post("/api/policy/" + $scope.policy.projectId, $scope.policy
                 ).success(function () {
+                    $scope.policyStatus = "success";
                     console.log("success");
                 }).error(function () {
+                    $scope.policyStatus = "error";
                     console.log("error");
                 });
         }
@@ -55,5 +58,19 @@
                 .error(function () {
                     $scope.sourceControlStatus = "error";
                 });;
+        }
+
+        $scope.addSourceControlUsername = function ($scope) {
+            $scope.user.sourceControlUsernames.push($scope.sourceControlUsername);
+        }
+
+        $scope.removeSourceControlUsername = function ($scope) {
+            for(var i = $scope.user.sourceControlUsernames.length -1; i >= 0; i--) {
+                if ($scope.user.sourceControlUsernames[i] == $scope.sourceControlUsername)
+                {
+                    $scope.user.sourceControlUsernames.splice(i, 1);
+                    break;
+                }
+            }
         }
     }]);
