@@ -1,15 +1,15 @@
 ﻿angular.module("policyEditorApp", [])
     .controller("policyListPage", ['$scope', '$http', function ($scope, $http) {
-        $scope.loading = true;
+        $scope.policyStatus = "loading";
 
         $http.get("/api/policy").success(function (list) {
             $scope.policyList = list;
 
-            $scope.loading = false;
+            $scope.policyStatus = "loaded";
         });
 
-        $scope.updateReportTime = function (policy) {
-            $http.post("/api/policy", policy
+        $scope.updateReportTime = function ($scope) {
+            $http.post("/api/policy", $scope.policy
     		).success(function () {
     		    console.log("success");
     		}).error(function () {
@@ -18,26 +18,42 @@
         };
     }])
     .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
-        $scope.loading = true;
+        $scope.policyStatus = "loading";
 
         $http.get("/api/policy/" + projectId).success(function (policy) {
             if (!policy.sourceControlOptions)
                 policy.sourceControlOptions = { type: "None" };
 
             $scope.user = policy.userOptions ? policy.userOptions[0] : null;
+            $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
             $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
 
             $scope.policy = policy;
 
-            $scope.loading = false;
+            $scope.policyStatus = "loaded";
         });
 
-        $scope.updatePolicy = function (policy) {
-            $http.post("/api/policy/" + policy.projectId, policy
-    		).success(function () {
-    		    console.log("success");
-    		}).error(function () {
-    		    console.log("error");
-    		});
+        $scope.updatePolicy = function ($scope) {
+            $http.post("/api/policy/" + $scope.policy.projectId, $scope.policy
+                ).success(function () {
+                    console.log("success");
+                }).error(function () {
+                    console.log("error");
+                });
+        }
+
+        $scope.updateContributors = function ($scope) {
+            $scope.sourceControlStatus = "loading";
+
+            $http.post("/api/sourcecontrol", $scope.policy.sourceControlOptions)
+                .success(function (sourceControlUsernames) {
+                    $scope.sourceControlStatus = "success";
+
+                    $scope.policy.sourceControlUsernames = sourceControlUsernames;
+                    $scope.sourceControlUsername = $scope.policy.sourceControlUsernames ? $scope.policy.sourceControlUsernames[0] : null;
+                })
+                .error(function () {
+                    $scope.sourceControlStatus = "error";
+                });;
         }
     }]);

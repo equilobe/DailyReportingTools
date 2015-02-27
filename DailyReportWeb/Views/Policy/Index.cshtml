@@ -30,12 +30,12 @@
     </div>
 
     <div class="table">
-        <div class="container" ng-if="loading">
+        <div class="container" ng-if="policyStatus == 'loading'">
             <h3>
                 <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
             </h3>
         </div>
-        <div class="container" ng-if="!loading && !policyList.length">
+        <div class="container" ng-if="policyStatus == 'loaded' && !policyList.length">
             <h1>
                 <span class="alert-danger">
                     No projects available
@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-sm-4 col-md-4">
                     <div ng-form="reportForm">
-                        <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" ng-blur="updateReportTime(this.policy)" />
+                        <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" ng-blur="updateReportTime(this)" />
                         <span class="form-notification" ng-show="reportForm.reportTime.$error.pattern"><b>Enter valid time</b> (23:59)</span>
                     </div>
                 </div>

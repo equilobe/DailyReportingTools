@@ -1,13 +1,10 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web.Http;
 
@@ -100,17 +97,5 @@ namespace DailyReportWeb.Controllers.Api
                 db.SaveChanges();
             }
         }
-
-        // Policies are not created directly!
-        // POST: api/Policy
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        // Policies are not deleted directly!
-        // DELETE: api/Policy/5
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

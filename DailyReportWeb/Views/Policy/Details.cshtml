@@ -18,19 +18,19 @@
 </head>
 
 <body ng-controller="policyEditPage">
-    <div class="container" ng-if="loading">
+    <div class="container" ng-if="policyStatus == 'loading'">
         <h3>
             <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
         </h3>
     </div>
-    <form name="advancedOptionsForm" ng-if="!loading">
+    <form name="advancedOptionsForm" ng-if="policyStatus == 'loaded'">
         <div id="jumbo" class="jumbotron">
             <div class="container">
                 <h1>
                     {{policy.projectName}}
                 </h1>
                 <p class="help-block">
-                    Use this page to configure all options for the daily 
+                    Use this page to configure all options for the daily
                 </p>
                 <div class="row">
                     <div class="col-md-4">
@@ -139,9 +139,22 @@
             </div>
             <div class="panel panel-default" ng-if="policy.sourceControlOptions.type == 'GitHub'">
                 <div class="panel-heading">
-                    <h4>GitHub</h4>
+                    <h4>
+                        {{policy.sourceControlOptions.type}}
+                        <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid">
+                            <label>
+                                Check availability:
+                            </label>
+                            <a role="button" ng-click="updateContributors(this)">
+                                <span class="glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
+                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
+                                <span class="glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
+                                <span class="glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
+                            </a>
+                        </small>
+                    </h4>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" ng-form="sourceControlForm">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -149,7 +162,7 @@
                                     Repository Owner:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitRepoOwner" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repoOwner" />
+                                    <input type="text" name="gitRepoOwner" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repoOwner" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -159,7 +172,7 @@
                                     Repository Name:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitRepoName" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repo" />
+                                    <input type="text" name="gitRepoName" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repo" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -169,7 +182,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" />
+                                    <input type="text" name="gitUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -179,7 +192,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" />
+                                    <input type="text" name="gitPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -188,9 +201,22 @@
             </div>
             <div class="panel panel-default" ng-if="policy.sourceControlOptions.type == 'SVN'">
                 <div class="panel-heading">
-                    <h4>SVN</h4>
+                    <h4>
+                        {{policy.sourceControlOptions.type}}
+                        <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid">
+                            <label>
+                                Check availability:
+                            </label>
+                            <a role="button" ng-click="updateContributors(this)">
+                                <span class="glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
+                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
+                                <span class="glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
+                                <span class="glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
+                            </a>
+                        </small>
+                    </h4>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" ng-form="sourceControlForm">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -198,7 +224,7 @@
                                     Repository Url:
                                 </label>
                                 <div ng-form="svnRepoUrlForm">
-                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repo" ng-pattern=@Html.Raw(@"/^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$/") />
+                                    <input type="text" name="svnRepoUrl" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.repo" ng-blur="sourceControlStatus = 'changed'" ng-pattern=@Html.Raw(@"/^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$/") />
                                     <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                                 </div>
                             </div>
@@ -209,7 +235,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input type="text" name="svnUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" />
+                                    <input type="text" name="svnUsername" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -219,7 +245,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input type="text" name="svnPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" />
+                                    <input type="text" name="svnPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -243,7 +269,14 @@
             </div>
             <div class="panel panel-default" ng-show="user.jiraDisplayName.length">
                 <div class="panel-heading">
-                    <h4>{{user.jiraDisplayName}}</h4>
+                    <h4>
+                        {{user.jiraDisplayName}}
+                        <small class="pull-right" ng-show="user.sourceControlUsername.length">
+                            <label>
+                                {{user.sourceControlUsernames}}
+                            </label>
+                        </small>
+                    </h4>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -253,14 +286,9 @@
                                     Source control account:
                                 </label>
                                 <div class="input-group">
-                                    <select class="form-control">
-                                        <option>--none--</option>
-                                        <option selected="selected">dan</option>
-                                        <option>catalin</option>
-                                        <option>sebi</option>
-                                    </select>
+                                    <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in policy.sourceControlUsernames"></select>
                                     <span class="input-group-btn">
-                                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
+                                        <a role="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></a>
                                     </span>
                                 </div>
                             </div>
@@ -280,7 +308,7 @@
                                     <input type="checkbox" ng-model="user.ignored" ng-checked="user.ignored" />
                                     Exclude from report
                                 </label>
-                                <p class="help-block">An excluded user won't show up in the report and won't receive the </p>
+                                <p class="help-block">An excluded user won't show up in the report and won't receive the report</p>
                             </div>
                         </div>
                     </div>
@@ -354,7 +382,7 @@
                         </label>
                         <input type="text" class="form-control" placeholder="Daily Report" ng-model="policy.advancedOptions.reportTitle" />
                         <p class="help-block">
-                            If left blank the default will be used: Daily 
+                            If left blank the default will be used: Daily
                         </p>
                     </div>
                 </div>
@@ -489,7 +517,7 @@
         </div>
         <div class="container">
             <h3>
-                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updatePolicy(this.policy)">Save advanced options</button>
+                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updatePolicy(this)">Save advanced options</button>
             </h3>
         </div>
     </form>

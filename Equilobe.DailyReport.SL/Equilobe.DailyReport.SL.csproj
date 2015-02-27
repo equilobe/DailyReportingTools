@@ -74,6 +74,7 @@
     <Compile Include="PolicySummaryService.cs" />
     <Compile Include="ProjectService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SourceControlService.cs" />
     <Compile Include="SvnService.cs" />
   </ItemGroup>
   <ItemGroup>

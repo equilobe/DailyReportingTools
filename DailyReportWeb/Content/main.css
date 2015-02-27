@@ -110,6 +110,10 @@ div.disabled {
     -webkit-animation: spinw 1.2s infinite linear;
     -moz-animation: spinm 1.2s infinite linear;
 }
+
+a[ng-click] {
+    cursor: pointer;
+}
  
 @keyframes spin {
     from { transform: scale(1) rotate(0deg);}
