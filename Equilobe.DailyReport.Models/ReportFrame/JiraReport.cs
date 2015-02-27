@@ -168,6 +168,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string UniqueProjectKey { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
+        public ExecutionInstance ExecutionInstance { get; set; }
 
         public DateTime LastReportSentDate { get; set; }
         public DateTime LastDraftSentDate { get; set; }
@@ -179,10 +180,10 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool IsIndividualDraft { get; set; }
         public bool IsFinalReport { get; set; }
 
-        public Uri DraftConfirmationUrl { get; set; }
-        public Uri ResendDraftUrl { get; set; }
+        public Uri SendReportUrl { get; set; }
+        public Uri SendDraftUrl { get; set; }
         public Uri IndividualDraftConfirmationUrl { get; set; }
-        public Uri ResendIndividualDraftUrl { get; set; }
+        public Uri SendIndividualDraftUrl { get; set; }
 
         public string ProjectManager { get; set; }
 

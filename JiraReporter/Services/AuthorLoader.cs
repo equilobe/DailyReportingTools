@@ -50,10 +50,10 @@ namespace JiraReporter.Services
             return authors;
         }
 
-        public JiraAuthor CreateAuthorByKey(string key, JiraReport context)
+        public JiraAuthor CreateAuthorByKey(JiraReport context)
         {
             var draftInfoService = new IndividualReportInfoService();
-            var draft = draftInfoService.GetIndividualDraftInfo(key, context);
+            var draft = draftInfoService.GetIndividualDraftInfo(context);
             var user = new JiraService().GetUser(_context.JiraRequestContext, draft.Username);
             var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);

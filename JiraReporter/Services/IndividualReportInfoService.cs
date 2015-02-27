@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.ReportFrame;
+﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Model;
 using System;
@@ -32,7 +33,6 @@ namespace JiraReporter.Services
         {
             var individualDraft = new IndividualDraftInfo
             {
-                Name = author.Name,
                 Username = author.Username,
                 UserKey = RandomGenerator.GetRandomString(),
                 IsLead = author.IsProjectLead
@@ -45,9 +45,9 @@ namespace JiraReporter.Services
         private void SetIndividualUrls(IndividualDraftInfo individualDraft, JiraReport context)
         {
             individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, context.IndividualDraftConfirmationUrl);
-            individualDraft.ResendDraftUrl = GetUrl(individualDraft, context.ResendIndividualDraftUrl);
+            individualDraft.ResendDraftUrl = GetUrl(individualDraft, context.SendIndividualDraftUrl);
             if (individualDraft.IsLead)
-                individualDraft.ForceDraftUrl = GetUrl(individualDraft, context.ResendDraftUrl);
+                individualDraft.ForceDraftUrl = GetUrl(individualDraft, context.SendDraftUrl);
         }
 
         private static Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
@@ -57,9 +57,24 @@ namespace JiraReporter.Services
             return new Uri(baseUrl + "&" + url);
         }
 
-        public IndividualDraftInfo GetIndividualDraftInfo(string key, JiraReport context)
+        public IndividualDraftInfo GetIndividualDraftInfo(JiraReport context)
         {
-            var draft = context.IndividualDrafts.Single(d => d.UserKey == key);
+            var draftConfirmation= new IndividualDraftConfirmation();
+
+            using(var db = new ReportsDb())
+            {
+                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.UniqueProjectKey);
+                draftConfirmation = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.UniqueUserKey == context.ExecutionInstance.UniqueUserKey);
+            }
+
+            var draft = new IndividualDraftInfo
+            {
+                UserKey = draftConfirmation.UniqueUserKey,
+                Username = draftConfirmation.Username,
+                IsLead = draftConfirmation.IsProjectLead,
+                LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value
+            };
+
             SetIndividualUrls(draft, context);
 
             return draft;

@@ -29,21 +29,21 @@ namespace JiraReporter
             var options = new JiraOptions();                
             new CommandLineParser().ParseArguments(args, options);
           
-       //     var policy = JiraPolicyService.LoadFromFile(options.PolicyPath);
             var policyBuffer = PolicyService.GetPolicyBufferFromDb(options.UniqueProjectKey);
             var policy = new JiraPolicy();
             policyBuffer.CopyProperties(policy);
 
             var report = new JiraReport(policy, options);
             report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(policy);
-            JiraReportHelpers.SetReportFromDb(report);
+            ReportService.SetReportFromDb(report);
+            report.ExecutionInstance = DbService.GetExecutionInstance(report.Options.ExecutionId);
 
             var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
             LoadReportDates(report);
 
-            var policyService = new JiraContextService(report);
-            policyService.SetPolicy();        
+            var contextService = new JiraContextService(report);
+            contextService.SetPolicy();        
 
             if (RunReport(report))
                 RunReportTool(report);

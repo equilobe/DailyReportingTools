@@ -65,6 +65,7 @@
     <Compile Include="ReportFrame\CompleteIssue.cs" />
     <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
     <Compile Include="Interfaces\ISourceControlContext.cs" />
+    <Compile Include="ReportFrame\ExecutionInstance.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />

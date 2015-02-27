@@ -51,9 +51,9 @@ namespace JiraReporter
         {
             var authors = new List<JiraAuthor>();
             var authorLoader = new AuthorLoader(context);
-            if (context.Options.DraftKey != null)
+            if (context.ExecutionInstance != null && context.ExecutionInstance.UniqueUserKey != null)
             {
-                var author = authorLoader.CreateAuthorByKey(context.Options.DraftKey, context);
+                var author = authorLoader.CreateAuthorByKey(context);
                 if (context.ProjectManager == author.Username)
                     author.IsProjectLead = true;
                 authors.Add(author);
@@ -66,7 +66,7 @@ namespace JiraReporter
 
         public static JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
         {
-            var individualReport =  new JiraReport(report.Policy, report.Options)
+            var individualReport = new JiraReport(report.Policy, report.Options)
             {
                 Author = author,
                 Summary = report.Summary,

@@ -11,12 +11,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class JiraOptions : Equilobe.DailyReport.Models.SourceControl.Options
     {
-        [Option(null, "draftKey", Required = false)]
-        public string DraftKey { get; set; }
-        [Option(null, "triggerKey", Required = false)]
-        public string TriggerKey { get; set; }
+        //[Option(null, "draftKey", Required = false)]
+        //public string DraftKey { get; set; }
         [Option(null, "uniqueProjectKey", Required = true)]
         public string UniqueProjectKey { get; set; }
+        [Option(null, "executionId", Required = false)]
+        public long ExecutionId { get; set; }
 
 
         public JiraPolicy Policy { get; set; }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Models.Enums;
 
 namespace JiraReporter.Services
 {
@@ -33,7 +34,7 @@ namespace JiraReporter.Services
             Policy.Users = GetUsersDictionary();
             Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
             Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
-            SetDraftMode();
+            SetReportType();
             SetMonthlyNonWorkingDays();
         }
 
@@ -47,10 +48,10 @@ namespace JiraReporter.Services
 
         private void SetUrls()
         {
-            Context.DraftConfirmationUrl = GetDraftConfirmationUrl();
-            Context.ResendDraftUrl = GetResendDraftUrl();
+            Context.SendReportUrl = GetDraftConfirmationUrl();
+            Context.SendDraftUrl = GetResendDraftUrl();
             Context.IndividualDraftConfirmationUrl = GetIndividualDraftConfirmationUrl();
-            Context.ResendIndividualDraftUrl = GetResendIndividualDraftUrl();
+            Context.SendIndividualDraftUrl = GetResendIndividualDraftUrl();
         }
 
         private Uri GetDraftConfirmationUrl()
@@ -59,7 +60,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/send/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendReport/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetResendDraftUrl()
@@ -68,7 +69,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/resendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
@@ -156,12 +157,12 @@ namespace JiraReporter.Services
 
         public void SetDefaultProperties()
         {
-            if (Policy.AdvancedOptions == null) 
+            if (Policy.AdvancedOptions == null)
                 Policy.AdvancedOptions = new AdvancedOptions();
-         //   SetReportTitle();
-       //     SetPermanentTaskLabel();
-        //    ResetToDefault();
-        //    SetDraftMode();
+            //   SetReportTitle();
+            //     SetPermanentTaskLabel();
+            //    ResetToDefault();
+            //    SetDraftMode();
         }
 
         //public void ResetToDefault()
@@ -173,26 +174,47 @@ namespace JiraReporter.Services
         //    Policy.GeneratedProperties.WasResetToDefaultToday = true;
         //}
 
-        private void SetDraftMode()
+        private void SetReportType()
         {
-            if (Policy.AdvancedOptions.NoDraft || Context.LastFinalDraftConfirmationDate == Context.Options.ToDate)
-                SetFinalReportMode();
+            if (ReportService.IsOnSchedule(Context))
+                SetScheduledReportType();
             else
-                SetFinalAndIndividualDrafts();
+                SetReportTypeBySendingScope();
         }
 
-        private void SetFinalAndIndividualDrafts()
+        private void SetReportTypeBySendingScope()
         {
-            if (ReportService.CanSendFullDraft(Context.UniqueProjectKey, Context.Options.TriggerKey))
-            {
+            if (Context.ExecutionInstance.Scope == SendScope.SendFinalDraft)
                 Context.IsFinalDraft = true;
-                Context.IsIndividualDraft = false;
-            }
             else
-            {
-                Context.IsFinalDraft = false;
-                Context.IsIndividualDraft = true;
-            }
+                if (Context.ExecutionInstance.Scope == SendScope.SendIndividualDraft)
+                    Context.IsIndividualDraft = true;
+                else
+                    if (Context.ExecutionInstance.Scope == SendScope.SendReport)
+                        Context.IsFinalReport = true;
+        }
+
+        private void SetScheduledReportType()
+        {
+            if (Context.Policy.AdvancedOptions.NoDraft)
+                SetFinalReportMode();
+            else
+                if (Context.Policy.AdvancedOptions.NoIndividualDraft && !Context.Policy.AdvancedOptions.NoDraft)
+                    SetFullDraftMode();
+                else
+                    SetIndividualDraftMode();
+        }
+
+        private void SetIndividualDraftMode()
+        {
+            Context.IsFinalDraft = false;
+            Context.IsIndividualDraft = true;
+        }
+
+        private void SetFullDraftMode()
+        {
+            Context.IsFinalDraft = true;
+            Context.IsIndividualDraft = false;
         }
 
         private void SetFinalReportMode()

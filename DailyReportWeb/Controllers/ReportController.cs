@@ -1,4 +1,5 @@
 ﻿using DailyReportWeb.Helpers;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
 using JiraReporter.Services;
@@ -10,7 +11,7 @@ namespace DailyReportWeb.Controllers
     public class ReportController : Controller
     {
         [HttpGet]
-        public ActionResult Send(string id, DateTime date)
+        public ActionResult SendReport(string id, DateTime date)
         {
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
@@ -19,6 +20,7 @@ namespace DailyReportWeb.Controllers
                 return Content("Not all individual drafts were confirmed");
 
             ReportService.SetFinalDraftConfirmation(id);
+            ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
           // TODO: test this method;
 
             if (ReportRunner.TryRunReportTask(id))
@@ -28,19 +30,13 @@ namespace DailyReportWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult ResendDraft(string id, DateTime date, string draftKey="")
+        public ActionResult SendDraft(string id, DateTime date, string draftKey="")
         {
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend draft for another date");
 
             if (!ReportService.CanSendFullDraft(id, draftKey))
                 return Content("Cannot send report if not all individual drafts were confirmed");
-
-            if (!string.IsNullOrEmpty(draftKey))
-            {
-                ReportRunner.RunReportDirectly(id, draftKey, true);
-                return Content("Draft report was sent");
-            }
 
             if (ReportRunner.TryRunReportTask(id))
                 return Content("Draft report was resent");
