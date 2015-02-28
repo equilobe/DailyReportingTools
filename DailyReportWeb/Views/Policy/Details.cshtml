@@ -142,15 +142,13 @@
                     <h4>
                         {{policy.sourceControlOptions.type}}
                         <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid">
-                            <label>
-                                Check availability:
-                            </label>
                             <a role="button" ng-click="updateContributors(this)">
-                                <span class="glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
-                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
-                                <span class="glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
-                                <span class="glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
+                                Check availability:
                             </a>
+                            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
+                            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
+                            <span class="alert-success glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
+                            <span class="alert-danger glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
                         </small>
                     </h4>
                 </div>
@@ -204,15 +202,13 @@
                     <h4>
                         {{policy.sourceControlOptions.type}}
                         <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid">
-                            <label>
-                                Check availability:
-                            </label>
                             <a role="button" ng-click="updateContributors(this)">
-                                <span class="glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
-                                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
-                                <span class="glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
-                                <span class="glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
+                                Check availability:
                             </a>
+                            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
+                            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
+                            <span class="alert-success glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
+                            <span class="alert-danger glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
                         </small>
                     </h4>
                 </div>
@@ -517,15 +513,13 @@
             </div>
         </div>
         <div class="container">
-            <h3>
-                <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updatePolicy(this)">
-                    Save advanced options
-                    <span class="glyphicon glyphicon-share-alt" ng-show="policyStatus == 'changed'"></span>
-                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="policyStatus == 'saving'"></span>
-                    <span class="glyphicon glyphicon-ok" ng-show="policyStatus == 'success'"></span>
-                    <span class="glyphicon glyphicon-remove" ng-show="policyStatus == 'error'"></span>
-                </button>
-            </h3>
+            <button class="btn btn-success" ng-disabled="!advancedOptionsForm.$valid" ng-click="updatePolicy(this)">
+                Save advanced options
+            </button>
+            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="policyStatus == 'changed'"></span>
+            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="policyStatus == 'saving'"></span>
+            <span class="alert-success glyphicon glyphicon-ok" ng-show="policyStatus == 'success'"></span>
+            <span class="alert-danger glyphicon glyphicon-remove" ng-show="policyStatus == 'error'"></span>
         </div>
     </form>
 
