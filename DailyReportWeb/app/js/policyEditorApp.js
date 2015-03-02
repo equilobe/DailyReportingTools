@@ -9,12 +9,15 @@
         });
 
         $scope.updateReportTime = function ($scope) {
+            if ($scope.reportForm.reportTime.$invalid || $scope.reportForm.reportTime.$pristine)
+                return;
+
             $http.post("/api/policy", $scope.policy
-    		).success(function () {
-    		    console.log("success");
-    		}).error(function () {
-    		    console.log("error");
-    		});
+            ).success(function () {
+                console.log("success");
+            }).error(function () {
+                console.log("error");
+            });
         };
     }])
     .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
@@ -24,7 +27,7 @@
             $scope.user = policy.userOptions ? policy.userOptions[0] : null;
             $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
             $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
-            
+
             if (!policy.sourceControlOptions)
                 policy.sourceControlOptions = { type: "None" };
 
@@ -57,7 +60,7 @@
                 })
                 .error(function () {
                     $scope.sourceControlStatus = "error";
-                });;
+                });
         }
 
         $scope.addSourceControlUsername = function ($scope) {
@@ -65,12 +68,10 @@
         }
 
         $scope.removeSourceControlUsername = function ($scope) {
-            for(var i = $scope.user.sourceControlUsernames.length -1; i >= 0; i--) {
-                if ($scope.user.sourceControlUsernames[i] == $scope.sourceControlUsername)
-                {
+            for (var i = $scope.user.sourceControlUsernames.length - 1; i >= 0; i--)
+                if ($scope.user.sourceControlUsernames[i] == $scope.sourceControlUsername) {
                     $scope.user.sourceControlUsernames.splice(i, 1);
                     break;
                 }
-            }
         }
     }]);
