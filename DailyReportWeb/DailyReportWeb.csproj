@@ -151,6 +151,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Api\PolicyController.cs" />
+    <Compile Include="Controllers\Api\SourceControlController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PolicyController.cs" />
     <Compile Include="Controllers\ReportController.cs" />

@@ -82,6 +82,9 @@ namespace Equilobe.DailyReport.SL
 
             policyDetails.CopyProperties(policyBuffer);
 
+            if (policyBuffer.SourceControlOptions != null)
+                policyBuffer.SourceControlUsernames = SourceControlService.GetContributors(policyBuffer.SourceControlOptions);
+
             return policyBuffer;
         }
 
