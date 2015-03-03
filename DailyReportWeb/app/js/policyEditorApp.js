@@ -37,6 +37,7 @@
 
         $scope.updatePolicy = function ($scope) {
             $scope.policyStatus = 'saving';
+            $scope.advancedOptionsForm.$setPristine();
 
             $http.post("/api/policy/" + $scope.policy.projectId, $scope.policy
                 ).success(function () {
