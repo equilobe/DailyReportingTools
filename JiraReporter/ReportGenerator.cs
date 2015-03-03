@@ -51,7 +51,7 @@ namespace JiraReporter
         {
             var authors = new List<JiraAuthor>();
             var authorLoader = new AuthorLoader(context);
-            if (context.ExecutionInstance != null && context.ExecutionInstance.UniqueUserKey != null)
+            if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey))
             {
                 var author = authorLoader.CreateAuthorByKey(context);
                 if (context.ProjectManager == author.Username)

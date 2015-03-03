@@ -174,7 +174,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public DateTime LastDraftSentDate { get; set; }
         public DateTime LastFinalDraftConfirmationDate { get; set; }
 
-        public List<IndividualDraftInfo> IndividualDrafts { get; set; }
+    //    public List<IndividualDraftInfo> IndividualDrafts { get; set; }
 
         public bool IsFinalDraft { get; set; }
         public bool IsIndividualDraft { get; set; }
@@ -193,5 +193,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string LogArchivePath { get { return Path.Combine(RootPath, "LogArchive"); } }
         public string ReportsPath { get { return Path.Combine(RootPath, "Reports"); } }
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
+
+        public bool IsOnSchedule { get; set; }
     }
 }

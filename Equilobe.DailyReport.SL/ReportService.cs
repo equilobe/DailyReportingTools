@@ -86,7 +86,7 @@ namespace Equilobe.DailyReport.SL
                 if (draft == null)
                     return false;
 
-                draft.LastDateConfirmed = DateTime.Today;
+                draft.LastDateConfirmed = DateTime.Now;
                 db.SaveChanges();
                 return true;
             }
@@ -101,7 +101,7 @@ namespace Equilobe.DailyReport.SL
                     return false;
 
                 var draft = report.IndividualDraftConfirmations.SingleOrDefault(d => d.UniqueUserKey == draftKey);
-                if (draft == null || draft.LastDateConfirmed != DateTime.Today)
+                if (draft == null || draft.LastDateConfirmed.Value.Date != DateTime.Today)
                     return false;
 
                 return true;
@@ -146,7 +146,8 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var reportSettings = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == report.UniqueProjectKey);
-                report.Settings = reportSettings;
+                report.Settings = new ReportSettings();
+                reportSettings.CopyProperties(report.Settings);
                 if (reportSettings.ReportExecutionSummary != null)
                 {
                     if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
@@ -166,15 +167,13 @@ namespace Equilobe.DailyReport.SL
             using(var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(r=>r.UniqueProjectKey == uniqueProjectKey);
-                if(report == null)
-                    return;
 
                 if (report.ReportExecutionInstances == null)
                     report.ReportExecutionInstances = new List<ReportExecutionInstance>();
 
                 report.ReportExecutionInstances.Add(new ReportExecutionInstance
                 {
-                    DateAdded = DateTime.Today,
+                    DateAdded = DateTime.Now,
                     Scope = scope,
                     UniqueUserKey = userKey
                 });
@@ -183,12 +182,23 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static bool IsOnSchedule(JiraReport context)
+        public static ReportExecutionInstance GetUnexecutedInstance(ReportSettings report)
         {
-            if (context.Options.ExecutionId == null)
-                return true;
+            var execInstance = report.ReportExecutionInstances.Where(qr => qr.DateExecuted == null).FirstOrDefault();
+            return execInstance;
+        }
 
-            return false;
+        public static void SetExecutionInstance(JiraReport report)
+        {
+            var unexecutedInstance = GetUnexecutedInstance(report.Settings);
+            if (unexecutedInstance != null)
+            {
+                report.ExecutionInstance = new ExecutionInstance();
+                unexecutedInstance.CopyProperties(report.ExecutionInstance);
+                DbService.SetExecutionDate(unexecutedInstance.Id);
+            }
+            else
+                report.IsOnSchedule = true;
         }
     }
 }

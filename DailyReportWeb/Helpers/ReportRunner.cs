@@ -11,11 +11,11 @@ namespace DailyReportWeb.Helpers
 {
     public class ReportRunner
     {
-        public static bool TryRunReportTask(string id)
+        public static bool TryRunReportTask(string uniqueProjectKey)
         {
             try
             {
-                RunReportTask(id);
+                RunReportTask(uniqueProjectKey);
                 return true;
             }
             catch

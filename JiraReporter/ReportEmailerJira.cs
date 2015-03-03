@@ -78,16 +78,7 @@ namespace JiraReporter
 
         public override string GetReportSubject(string reportPath)
         {
-            string subject = string.Empty;
-
-            if (Report.IsFinalDraft || Report.IsIndividualDraft)
-                subject += "DRAFT | ";
-            if (Report.IsIndividualDraft)
-                subject += Author.Name + " | ";
-            subject += Policy.AdvancedOptions.ReportTitle + " | ";
-            subject += ReportDateFormatter.GetReportDate(Options.FromDate, Options.ToDate);
-
-            return subject;
+            return Report.Title;
         }
 
         protected override void SendEmails()

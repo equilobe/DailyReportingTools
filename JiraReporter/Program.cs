@@ -28,15 +28,14 @@ namespace JiraReporter
         {
             var options = new JiraOptions();                
             new CommandLineParser().ParseArguments(args, options);
-          
-            var policyBuffer = PolicyService.GetPolicyBufferFromDb(options.UniqueProjectKey);
-            var policy = new JiraPolicy();
-            policyBuffer.CopyProperties(policy);
+
+            var policy = PolicyService.GetPolicy(options.UniqueProjectKey);
 
             var report = new JiraReport(policy, options);
-            report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(policy);
             ReportService.SetReportFromDb(report);
-            report.ExecutionInstance = DbService.GetExecutionInstance(report.Options.ExecutionId);
+            report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(report);
+
+            ReportService.SetExecutionInstance(report);
 
             var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
@@ -64,9 +63,8 @@ namespace JiraReporter
             if (CheckDayFromOverrides(context))
                 return false;
 
-            //if (context.Options.TriggerKey != null && !context.Policy.IsForcedByLead(context.Options.TriggerKey))
-            //    return false;
-            //Use instead ReportExecutionInstannces
+            if (context.ExecutionInstance != null && context.ExecutionInstance.DateAdded.Date != DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
+                return false;
 
             return true;
         }
@@ -110,8 +108,6 @@ namespace JiraReporter
         {
             Razor.SetTemplateBase(typeof(SourceControlLogReporter.RazorEngine.ExtendedTemplateBase<>));
         }
-
-
 
         private static void LoadReportDates(JiraReport context)
         {

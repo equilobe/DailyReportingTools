@@ -15,9 +15,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         //public string DraftKey { get; set; }
         [Option(null, "uniqueProjectKey", Required = true)]
         public string UniqueProjectKey { get; set; }
-        [Option(null, "executionId", Required = false)]
-        public long ExecutionId { get; set; }
-
 
         public JiraPolicy Policy { get; set; }
     }

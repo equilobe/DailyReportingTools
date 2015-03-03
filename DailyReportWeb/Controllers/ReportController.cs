@@ -38,6 +38,7 @@ namespace DailyReportWeb.Controllers
             if (!ReportService.CanSendFullDraft(id, draftKey))
                 return Content("Cannot send report if not all individual drafts were confirmed");
 
+            ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
             if (ReportRunner.TryRunReportTask(id))
                 return Content("Draft report was resent");
             else
@@ -58,6 +59,7 @@ namespace DailyReportWeb.Controllers
 
             if (ReportService.CanSendFullDraft(id))
             {
+                ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
                 if (!ReportRunner.TryRunReportTask(id))
                     return Content("Report confirmed. Error in sending full draft report");
 
@@ -75,6 +77,8 @@ namespace DailyReportWeb.Controllers
 
             if (ReportService.CheckIndividualConfirmation(id,draftKey))
                 return Content("Draft is already confirmed. Can't resend");
+
+            ReportService.SetReportExecutionInstance(id, SendScope.SendIndividualDraft, draftKey);
 
             ReportRunner.RunReportDirectly(id, draftKey);
 

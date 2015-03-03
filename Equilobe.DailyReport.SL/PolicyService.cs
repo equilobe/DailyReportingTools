@@ -104,6 +104,14 @@ namespace Equilobe.DailyReport.SL
                 return policyBuffer;
             }
         }
+
+        public static JiraPolicy GetPolicy(string uniqueProjectKey)
+        {
+            var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
+            var policy = new JiraPolicy();
+            policyBuffer.CopyProperties(policy);
+            return policy;
+        }
     }
 }
 

@@ -25,15 +25,18 @@ namespace JiraReporter.Helpers
             return title;
         }
 
-        public static JiraRequestContext GetJiraRequestContext(JiraPolicy policy)
+        public static JiraRequestContext GetJiraRequestContext(JiraReport report)
         {
         //    policy.SharedSecret = DbService.GetSharedSecret(policy.BaseUrl);
             //set username and password
 
-            if (!string.IsNullOrEmpty(policy.SharedSecret))
-                return new JiraRequestContext(policy.BaseUrl, policy.SharedSecret);
+            if (!string.IsNullOrEmpty(report.Policy.SharedSecret))
+                return new JiraRequestContext(report.Policy.BaseUrl, report.Policy.SharedSecret);
 
-            return new JiraRequestContext(policy.BaseUrl, policy.Username, policy.Password);
+            report.Policy.Username = report.Settings.Username;
+            report.Policy.Password = report.Settings.Password;
+
+            return new JiraRequestContext(report.Policy.BaseUrl, report.Settings.Username, report.Settings.Password);
         }
     }
 }

@@ -176,7 +176,7 @@ namespace JiraReporter.Services
 
         private void SetReportType()
         {
-            if (ReportService.IsOnSchedule(Context))
+            if (Context.IsOnSchedule)
                 SetScheduledReportType();
             else
                 SetReportTypeBySendingScope();
