@@ -36,13 +36,13 @@ namespace Equilobe.DailyReport.SL
                 if (!isForcedByLead && report.ReportExecutionSummary == null)
                     return false;
 
-                if (isForcedByLead || report.ReportExecutionSummary.LastDraftSentDate == DateTime.Today)
+                if (isForcedByLead || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today)
                     return true;
 
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
                     return false;
 
-                if (individualReports.Exists(r => r.LastDateConfirmed != DateTime.Today))
+                if (individualReports.Exists(r => r.LastDateConfirmed.Value.Date != DateTime.Today))
                     return false;
 
                 return true;
@@ -78,7 +78,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
-                if (report == null || report.IndividualDraftConfirmations == null)
+                if (report == null || report.IndividualDraftConfirmations == null || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today || report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today)
                     return false;
 
                 var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.ReportSettingsId == report.Id).ToList();
