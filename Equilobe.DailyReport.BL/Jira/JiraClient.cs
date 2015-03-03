@@ -155,5 +155,12 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
+
+        public List<JiraIssue> GetUpdatedIssues(string projectKey, string fromDate, string toDate)
+        {
+            var request = GetIssuesByJql(JiraApiUrls.UpdatedIssues(projectKey, fromDate, toDate));
+
+            return ResolveRequest<JiraIssues>(request).issues;
+        }
     }
 }

@@ -42,7 +42,10 @@ namespace JiraReporter
             LoadReportDates(report);
 
             var contextService = new JiraContextService(report);
-            contextService.SetPolicy();        
+            contextService.SetPolicy();  
+      
+             var client = new Equilobe.DailyReport.BL.Jira.JiraClient(report.JiraRequestContext.BaseUrl, report.JiraRequestContext.Username, report.JiraRequestContext.Password);
+             var updated = client.GetUpdatedIssues(report.ProjectKey, DateTime.Today.AddDays(-1).ToString("yyyy/MM/dd HH:mm"), DateTime.Today.ToString("yyyy/MM/dd HH:mm"));
 
             if (RunReport(report))
                 RunReportTool(report);

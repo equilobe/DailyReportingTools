@@ -77,5 +77,10 @@ namespace Equilobe.DailyReport.BL
         {
             return string.Format("project = '{0}' AND sprint in openSprints()", project);
         }
+
+        public static string UpdatedIssues(string projectKey, string fromDate, string endDate)
+        {
+            return string.Format("project = '{0}' AND updated >= '{1}' AND updated <= '{2}'", projectKey, fromDate, endDate);
+        }
     }
 }
