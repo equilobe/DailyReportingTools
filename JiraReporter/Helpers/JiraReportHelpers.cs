@@ -27,10 +27,10 @@ namespace JiraReporter.Helpers
 
         public static JiraRequestContext GetJiraRequestContext(JiraReport report)
         {
-            report.Policy.SharedSecret = DbService.GetSharedSecret(report.Policy.BaseUrl);
+       //     report.Policy.SharedSecret = DbService.GetSharedSecret(report.Policy.BaseUrl);
 
-            if (!string.IsNullOrEmpty(report.Policy.SharedSecret))
-                return new JiraRequestContext(report.Policy.BaseUrl, report.Policy.SharedSecret);
+          //  if (!string.IsNullOrEmpty(report.Policy.SharedSecret))
+        //        return new JiraRequestContext(report.Policy.BaseUrl, report.Policy.SharedSecret);
 
             report.Policy.Username = report.Settings.Username;
             report.Policy.Password = report.Settings.Password;

@@ -109,7 +109,6 @@
     <Compile Include="SummaryHelpers.cs" />
     <Compile Include="Services\SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
-    <Compile Include="TimesheetExtensions.cs" />
     <Compile Include="Services\TimesheetService.cs" />
   </ItemGroup>
   <ItemGroup>
