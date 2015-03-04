@@ -8,8 +8,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
     public interface IJiraService
     {
         Project GetProject(IJiraRequestContext context, long id);
-        Timesheet GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser);
-        Timesheet GetTimesheet(IJiraRequestContext context, DateTime startDate, DateTime endDate);
+        List<JiraIssue> GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser);
+     //   Timesheet GetTimesheet(IJiraRequestContext context, DateTime startDate, DateTime endDate);
         JiraUser GetUser(IJiraRequestContext context, string username);
         List<JiraUser> GetUsers(IJiraRequestContext context, string projectKey);
         RapidView GetRapidView(IJiraRequestContext context, string id);

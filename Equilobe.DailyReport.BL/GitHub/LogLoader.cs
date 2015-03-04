@@ -45,7 +45,7 @@ namespace Equilobe.DailyReport.BL.GitHub
         {
             return new LogEntry
             {
-                Author = commit.Commit.Author.Name,
+                Author = commit.Author.Login,
                 Date = commit.Commit.Author.Date,
                 Message = commit.Commit.Message,
                 Revision = commit.Sha,

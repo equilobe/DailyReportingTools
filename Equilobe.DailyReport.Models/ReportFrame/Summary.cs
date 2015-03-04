@@ -16,6 +16,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public string ReportDate { get; set; }
+        public bool IsFinalDraft { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }

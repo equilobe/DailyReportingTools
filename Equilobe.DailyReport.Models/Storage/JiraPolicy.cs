@@ -37,7 +37,7 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public List<User> UserOptions { get; set; }
 
-        public JiraGeneratedProperties GeneratedProperties { get; set; }
+      //  public GeneratedProperties GeneratedProperties { get; set; }
 
         [XmlIgnore]
         public Month CurrentOverride { get; set; }
@@ -47,22 +47,5 @@ namespace Equilobe.DailyReport.Models.Storage
 
         [XmlIgnore]
         public IDictionary<string, List<string>> Users { get; set; }
-
-
-        private static TimeSpan? _offsetFromUtc;
-        [XmlIgnore]
-        private static TimeSpan OffsetFromUtc
-        {
-            get
-            {
-                if (!_offsetFromUtc.HasValue)
-                    throw new ApplicationException("You must first initialize the Offset");
-                return _offsetFromUtc.Value;
-            }
-            set
-            {
-                _offsetFromUtc = value;
-            }
-        }
     }
 }

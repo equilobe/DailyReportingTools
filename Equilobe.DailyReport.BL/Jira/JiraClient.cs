@@ -58,19 +58,19 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<Project>(request);
         }
 
-        public Timesheet GetTimesheetForUser(DateTime startDate, DateTime endDate, string targetUser)
-        {
-            var request = new RestRequest(JiraApiUrls.TimesheetForUser(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate), targetUser), Method.GET);
+        //public Timesheet GetTimesheetForUser(DateTime startDate, DateTime endDate, string targetUser)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.TimesheetForUser(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate), targetUser), Method.GET);
 
-            return ResolveRequest<Timesheet>(request, true);
-        }
+        //    return ResolveRequest<Timesheet>(request, true);
+        //}
 
-        public Timesheet GetTimesheet(DateTime startDate, DateTime endDate)
-        {
-            var request = new RestRequest(JiraApiUrls.Timesheet(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
+        //public Timesheet GetTimesheet(DateTime startDate, DateTime endDate)
+        //{
+        //    var request = new RestRequest(JiraApiUrls.Timesheet(TimeFormatting.DateToString(startDate), TimeFormatting.DateToString(endDate)), Method.GET);
 
-            return ResolveRequest<Timesheet>(request, true);
-        }
+        //    return ResolveRequest<Timesheet>(request, true);
+        //}
 
         public JiraUser GetUser(string username)
         {
@@ -154,6 +154,13 @@ namespace Equilobe.DailyReport.BL.Jira
         public RestRequest GetIssuesByJql(string jql)
         {
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
+        }
+
+        public List<JiraIssue> GetWorklogs(string author, string fromDate, string toDate)
+        {
+            var request = GetIssuesByJql(JiraApiUrls.WorkLogs(author, fromDate, toDate));
+
+            return ResolveRequest<JiraIssues>(request).issues;
         }
     }
 }

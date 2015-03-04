@@ -9,10 +9,9 @@ namespace Equilobe.DailyReport.Models.Storage
 {
     public class IndividualDraftInfo
     {
-        public string Name { get; set; }
         public string Username { get; set; }
         public string UserKey { get; set; }
-        public bool Confirmed { get; set; }
+        public DateTime LastConfirmationDate { get; set; }
         public bool IsLead { get; set; }
         [XmlIgnore]
         public Uri ConfirmationDraftUrl { get; set; }

@@ -36,9 +36,9 @@ namespace SourceControlLogReporter
             if (options.NoEmail)
                 return;
 
-            Validation.EnsureDirectoryExists(policy.GeneratedProperties.UnsentReportsPath);
+            Validation.EnsureDirectoryExists(policy.UnsentReportsPath);
 
-            foreach (var file in Directory.GetFiles(policy.GeneratedProperties.UnsentReportsPath))
+            foreach (var file in Directory.GetFiles(policy.UnsentReportsPath))
             {
                 TryEmailReport(file);
             }
@@ -78,10 +78,10 @@ namespace SourceControlLogReporter
             smtp.Send(message);
             MoveToSent(reportPath);
 
-            UpdatePolicy();
+            UpdateReportSettings();
         }
 
-        protected virtual void UpdatePolicy()
+        protected virtual void UpdateReportSettings()
         {
             return;
         }
@@ -110,9 +110,9 @@ namespace SourceControlLogReporter
 
         public virtual void MoveToSent(string path)
         {
-            Validation.EnsureDirectoryExists(policy.GeneratedProperties.ReportsPath);
+            Validation.EnsureDirectoryExists(policy.ReportsPath);
 
-            var newFilePath = Path.Combine(policy.GeneratedProperties.ReportsPath, Path.GetFileName(path));
+            var newFilePath = Path.Combine(policy.ReportsPath, Path.GetFileName(path));
 
             File.Copy(path, newFilePath, overwrite: true);
             File.Delete(path);

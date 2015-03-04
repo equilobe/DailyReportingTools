@@ -11,11 +11,11 @@ namespace DailyReportWeb.Helpers
 {
     public class ReportRunner
     {
-        public static bool TryRunReportTask(string id)
+        public static bool TryRunReportTask(string uniqueProjectKey)
         {
             try
             {
-                RunReportTask(id);
+                RunReportTask(uniqueProjectKey);
                 return true;
             }
             catch
@@ -34,21 +34,21 @@ namespace DailyReportWeb.Helpers
             }
         }
 
-        public static void RunReportDirectly(string policyName, string draftKey, bool isForced = false)
+        public static void RunReportDirectly(string uniqueProjectKey, string userKey = "")
         {
             var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var command = GetCommand(policyName, draftKey, isForced);
+            var command = GetCommand(uniqueProjectKey, userKey);
             Cmd.ExecuteSingleCommand(command, basePath);
         }
 
-        private static string GetCommand(string policyName, string draftKey, bool isForced = false)
+        private static string GetCommand(string uniqueProjectKey, string draftKey = "")
         {
             var draftKeyOption = string.Empty;
-            if (isForced)
-                draftKeyOption = " --triggerKey " + draftKey;
-            else
-                draftKeyOption = " --draftKey " + draftKey;
-            var command = "jiraReporter.exe" + " --policy" + @" Policies\" + policyName + ".xml" + draftKeyOption;
+            if(!string.IsNullOrEmpty(draftKey))
+               draftKeyOption = " --draftKey " + draftKey;
+
+            var uniqueProjectKeyOptions = " --uniqueProjectKey " + uniqueProjectKey;
+            var command = "jiraReporter.exe" + uniqueProjectKeyOptions + draftKeyOption;
 
             return command;
         }

@@ -101,7 +101,7 @@ namespace JiraReporter
         private void SetEmptyEntries()
         {
             if (_currentIssue.Entries == null)
-                _currentIssue.Entries = new List<Entries>();
+                _currentIssue.Entries = new List<Entry>();
         }
 
         private void SetIssueType()

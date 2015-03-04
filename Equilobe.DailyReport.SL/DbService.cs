@@ -1,6 +1,9 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
+using System;
 using System.Linq;
 using System.Web;
 
@@ -54,6 +57,28 @@ namespace Equilobe.DailyReport.SL
                 .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
                 .Select(qr => qr.ReportTime)
                 .FirstOrDefault();
+        }
+
+        public static void SetExecutionDate(long id)
+        {
+            using(var db = new ReportsDb())
+            {
+                var reportExecutionInstance = db.ReportExecutionInstances.Single(e => e.Id == id);
+                reportExecutionInstance.DateExecuted = DateTime.Now;
+
+                db.SaveChanges();
+            }
+        }
+
+        public static ReportSettings GetReportSettingsFromDb(string uniqueProjectKey)
+        {       
+            using(var db = new ReportsDb())
+            {
+                var reportSettings = new ReportSettings();
+                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
+                report.CopyProperties(reportSettings);
+                return reportSettings;
+            }
         }
     }
 }

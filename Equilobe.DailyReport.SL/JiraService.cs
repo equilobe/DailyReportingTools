@@ -15,15 +15,17 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetProject(id);
         }
 
-        public Timesheet GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser)
+        public List<JiraIssue> GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser)
         {
-            return GetClient(context).GetTimesheetForUser(startDate, endDate, targetUser);
+            var client = GetClient(context);
+
+            return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(targetUser, startDate, endDate);
         }
 
-        public Timesheet GetTimesheet(IJiraRequestContext context, DateTime startDate, DateTime endDate)
-        {
-            return GetClient(context).GetTimesheet(startDate, endDate);
-        }
+        //public Timesheet GetTimesheet(IJiraRequestContext context, DateTime startDate, DateTime endDate)
+        //{
+        //    return GetClient(context).GetTimesheet(startDate, endDate);
+        //}
 
         public JiraUser GetUser(IJiraRequestContext context, string username)
         {
