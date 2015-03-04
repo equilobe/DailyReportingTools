@@ -84,7 +84,6 @@
     <Compile Include="Jira\Entries.cs" />
     <Compile Include="Jira\Filter.cs" />
     <Compile Include="Jira\JiraIssue.cs" />
-    <Compile Include="Jira\JiraIssueSmall.cs" />
     <Compile Include="Jira\JiraUser.cs" />
     <Compile Include="Jira\Project.cs" />
     <Compile Include="Jira\RapidView.cs" />
@@ -92,10 +91,8 @@
     <Compile Include="Jira\SprintReport.cs" />
     <Compile Include="Jira\Sprints.cs" />
     <Compile Include="Jira\SprintsData.cs" />
-    <Compile Include="Jira\Timesheet.cs" />
     <Compile Include="Jira\View.cs" />
     <Compile Include="Jira\Views.cs" />
-    <Compile Include="Jira\WorkLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IGitHubService.cs" />
     <Compile Include="Interfaces\ISvnService.cs" />

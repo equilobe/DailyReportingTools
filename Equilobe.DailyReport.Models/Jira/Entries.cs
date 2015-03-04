@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace Equilobe.DailyReport.Models.Jira
 {
     [Serializable]
-    public class Entries
+    public class Entry
     {
         [XmlElement("comment")]
         public string Comment { get; set; }

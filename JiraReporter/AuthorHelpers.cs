@@ -47,13 +47,13 @@ namespace JiraReporter
         }
 
 
-        public static List<string> GetAuthorsFromTimesheet(Timesheet timesheet)
-        {
-            var authors = new List<string>();
-            if (timesheet != null && timesheet.Worklog != null)
-                authors = timesheet.Worklog.Issues.SelectMany(i => i.Entries.Select(e => e.AuthorFullName)).Distinct().ToList();
-            return authors;
-        }
+        //public static List<string> GetAuthorsFromTimesheet(List<CompleteIssue> timesheet)
+        //{
+        //    var authors = new List<string>();
+        //    if (timesheet != null && timesheet.Worklog != null)
+        //        authors = timesheet.Worklog.Issues.SelectMany(i => i.Entries.Select(e => e.AuthorFullName)).Distinct().ToList();
+        //    return authors;
+        //}
 
         public static void SetAuthorAverageWorkPerDay(JiraAuthor author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {

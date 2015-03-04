@@ -58,7 +58,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasAssignedSubtasksInProgress { get; set; }
         public bool HasWorkLoggedByAssignee { get; set; }
         public string Summary { get; set; }
-        public List<Entries> Entries { get; set; }
+        public List<Entry> Entries { get; set; }
 
         public CompleteIssue()
         {
