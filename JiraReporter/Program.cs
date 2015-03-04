@@ -44,9 +44,6 @@ namespace JiraReporter
             var contextService = new JiraContextService(report);
             contextService.SetPolicy();  
       
-             var client = new Equilobe.DailyReport.BL.Jira.JiraClient(report.JiraRequestContext.BaseUrl, report.JiraRequestContext.Username, report.JiraRequestContext.Password);
-             var updated = client.GetUpdatedIssues(report.ProjectKey, DateTime.Today.AddDays(-1).ToString("yyyy/MM/dd HH:mm"), DateTime.Today.ToString("yyyy/MM/dd HH:mm"));
-
             if (RunReport(report))
                 RunReportTool(report);
             else
@@ -114,8 +111,9 @@ namespace JiraReporter
 
         private static void LoadReportDates(JiraReport context)
         {
-            var timesheetSample = new JiraService().GetTimesheet(context.JiraRequestContext, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
-            context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
+          //  var timesheetSample = new JiraService().GetTimesheet(context.JiraRequestContext, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
+          //  context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
+            context.OffsetFromUtc = new TimeSpan(2,0,0);
             new DatesHelper(context).LoadDates();
         }
 
