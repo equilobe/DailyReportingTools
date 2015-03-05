@@ -7,37 +7,37 @@ namespace Equilobe.DailyReport.SL
 {
     public class GitHubService : IGitHubService
     {
-        private GithubClient GetClient(ISourceControlRequestContext context)
+        private GithubClient GetClient(ICredentials context)
         {
             return new GithubClient(context.Username, context.Password);
         }
 
-        public List<GitHubCommit> GetBranchCommits(ISourceControlRequestContext context, string repositoryOwner, string repositoryName, string sinceDate, string untilDate, string branch)
+        public List<GitHubCommit> GetBranchCommits(ICredentials context, string repositoryOwner, string repositoryName, string sinceDate, string untilDate, string branch)
         {
             return GetClient(context).GetBranchCommits(repositoryOwner, repositoryName, sinceDate, untilDate, branch);
         }
 
-        public List<GitHubCommit> GetAllCommits(ISourceControlRequestContext context, string owner, string name, string sinceDate, string untilDate)
+        public List<GitHubCommit> GetAllCommits(ICredentials context, string owner, string name, string sinceDate, string untilDate)
         {
             return GetClient(context).GetAllCommits(owner, name, sinceDate, untilDate);
         }
 
-        public List<Branch> GetBranches(ISourceControlRequestContext context, string owner, string name)
+        public List<Branch> GetBranches(ICredentials context, string owner, string name)
         {
             return GetClient(context).GetBranches(owner, name);
         }
 
-        public List<Octokit.User> GetAllContributors(ISourceControlRequestContext context, string owner, string name)
+        public List<Octokit.User> GetAllContributors(ICredentials context, string owner, string name)
         {
             return GetClient(context).GetAllContributors(owner, name);
         }
 
-        public Octokit.User GetUser(ISourceControlRequestContext context, string username)
+        public Octokit.User GetUser(ICredentials context, string username)
         {
             return GetClient(context).GetUser(username);
         }
 
-        public List<PullRequest> GetPullRequests(ISourceControlRequestContext context, string owner, string name)
+        public List<PullRequest> GetPullRequests(ICredentials context, string owner, string name)
         {
             return GetClient(context).GetPullRequests(owner, name);
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter.Helpers
 {

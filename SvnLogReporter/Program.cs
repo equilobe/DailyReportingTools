@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Models.Storage;
 using RazorEngine;

@@ -12,6 +12,7 @@ using System.Diagnostics;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace SourceControlLogReporter
 {

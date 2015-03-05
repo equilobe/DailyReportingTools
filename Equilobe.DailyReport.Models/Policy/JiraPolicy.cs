@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.Storage
+namespace Equilobe.DailyReport.Models.Policy
 {
     public class JiraPolicy
     {
-        //Base Properties
         public string BaseUrl { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
@@ -36,8 +35,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public List<Month> MonthlyOptions { get; set; }
 
         public List<User> UserOptions { get; set; }
-
-      //  public GeneratedProperties GeneratedProperties { get; set; }
 
         [XmlIgnore]
         public Month CurrentOverride { get; set; }

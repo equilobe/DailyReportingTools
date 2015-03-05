@@ -15,6 +15,8 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
 using System.Drawing;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Policy;
+using JiraReporter.Helpers;
 
 namespace JiraReporter.Services
 {
@@ -78,7 +80,6 @@ namespace JiraReporter.Services
             this._currentAuthor = a;
             SetTimesheets();
             SetCommits();
-            // LoadIssues();
             OrderIssues();
             CalculateTimeSpent();
             SetName();
@@ -125,24 +126,6 @@ namespace JiraReporter.Services
 
             return completeIssues;
         }
-
-
-        //private void LoadIssues()
-        //{
-        //    _currentAuthor.Issues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
-        //    _currentAuthor.MonthIssues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
-        //    _currentAuthor.SprintIssues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.SprintTimesheet.Worklog.Issues);
-        //}
-
-        //private void SetIssues()
-        //{
-        //    //if (_currentAuthor.CurrentTimesheet != null && _currentAuthor.CurrentTimesheet.Worklog.Issues != null)
-        //    //    _currentAuthor.Issues = TimesheetService.GetIssuesFromJiraTimesheet(_currentAuthor.CurrentTimesheet.Worklog.Issues);
-        //    //_currentAuthor.Issues.ForEach(issue => IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name));
-
-        //    var processor = new IssueProcessor(_context);
-        //    processor.SetIssues(_currentAuthor.Issues);
-        //}
 
         private void OrderIssues()
         {

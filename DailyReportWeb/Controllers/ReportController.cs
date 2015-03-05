@@ -21,7 +21,6 @@ namespace DailyReportWeb.Controllers
 
             ReportService.SetFinalDraftConfirmation(id);
             ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
-          // TODO: test this method;
 
             if (ReportRunner.TryRunReportTask(id))
                 return Content("Report confirmed. Final report sent");
@@ -54,7 +53,7 @@ namespace DailyReportWeb.Controllers
             if (ReportService.CheckIndividualConfirmation(id, draftKey))
                 return Content("This draft is already confirmed");
 
-            if (!ReportService.ConfirmIndividualDraft(id, draftKey)) // test this method
+            if (!ReportService.ConfirmIndividualDraft(id, draftKey)) 
                 return Content("Error in confirmation");
 
             if (ReportService.CanSendFullDraft(id))

@@ -111,8 +111,6 @@ namespace JiraReporter
 
         private static void LoadReportDates(JiraReport context)
         {
-          //  var timesheetSample = new JiraService().GetTimesheet(context.JiraRequestContext, DateTime.Today.AddDays(1), DateTime.Today.AddDays(1));
-          //  context.OffsetFromUtc = JiraOffsetHelper.GetOriginalTimeZoneFromDateAtMidnight(timesheetSample.StartDate);
             context.OffsetFromUtc = new TimeSpan(2,0,0);
             new DatesHelper(context).LoadDates();
         }

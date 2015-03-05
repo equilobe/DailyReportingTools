@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace SourceControlLogReporter
 {

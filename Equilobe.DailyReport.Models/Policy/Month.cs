@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.Storage
+namespace Equilobe.DailyReport.Models.Policy
 {
     public class Month
     {

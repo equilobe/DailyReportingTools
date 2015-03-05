@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.Storage
+namespace Equilobe.DailyReport.Models.Policy
 {
     public class Policy
     {

@@ -15,6 +15,7 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter
 {
@@ -117,19 +118,6 @@ namespace JiraReporter
 
                 db.SaveChanges();
             }
-            //var policyService = new JiraContextService(Report);
-            //if (Policy.GeneratedProperties.IsFinalDraft)
-            //{
-            //    Policy.GeneratedProperties.IsFinalDraftConfirmed = false;
-            //    Policy.GeneratedProperties.LastDraftSentDate = Options.ToDate;
-            //    //if (Policy.IsForcedByLead(Options.TriggerKey))
-            //    //    Policy.GeneratedProperties.WasForcedByLead = true;
-            //}
-
-            //if (Policy.GeneratedProperties.IsFinalReport)
-            //    Policy.GeneratedProperties.LastReportSentDate = Options.ToDate;
-
-         //   JiraPolicyService.SaveToFile(Options.PolicyPath, Policy);
         }
     }
 }

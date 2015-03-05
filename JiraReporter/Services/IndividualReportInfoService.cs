@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Model;
@@ -17,16 +18,11 @@ namespace JiraReporter.Services
             if (!context.IsIndividualDraft)
                 return;
 
-           // var individualDrafts = new List<IndividualDraftInfo>();
-
             foreach (var author in authors)
             {
                 var individualDraft = GenerateIndividualDraftInfo(author, context);
-         //       individualDrafts.Add(individualDraft);
                 author.IndividualDraftInfo = individualDraft;
             }
-
-     //       context.IndividualDrafts = individualDrafts;
         }
 
         private IndividualDraftInfo GenerateIndividualDraftInfo(JiraAuthor author, JiraReport context)

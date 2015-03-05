@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class JiraOptions : Equilobe.DailyReport.Models.SourceControl.Options
     {
-        //[Option(null, "draftKey", Required = false)]
-        //public string DraftKey { get; set; }
         [Option(null, "uniqueProjectKey", Required = true)]
         public string UniqueProjectKey { get; set; }
 

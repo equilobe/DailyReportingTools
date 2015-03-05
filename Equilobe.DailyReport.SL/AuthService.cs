@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.BL.Jira;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Configuration;

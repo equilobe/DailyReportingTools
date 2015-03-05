@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
@@ -173,8 +174,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public DateTime LastReportSentDate { get; set; }
         public DateTime LastDraftSentDate { get; set; }
         public DateTime LastFinalDraftConfirmationDate { get; set; }
-
-    //    public List<IndividualDraftInfo> IndividualDrafts { get; set; }
 
         public bool IsFinalDraft { get; set; }
         public bool IsIndividualDraft { get; set; }

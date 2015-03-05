@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -14,6 +15,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     {
         public string Name { get; set; }
         public string Username { get; set; }
+        public string UserKey { get; set; }
         public string ShortName { get; set; }
         public string FirstName { get; set; }
         public string Initials { get; set; }
@@ -73,7 +75,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         {
             Name = user.displayName;
             EmailAdress = user.emailAddress;
-            Username = user.key;
+            Username = user.name;
+            UserKey = user.key;
             AvatarLink = user.avatarUrls.Big;
         }
 

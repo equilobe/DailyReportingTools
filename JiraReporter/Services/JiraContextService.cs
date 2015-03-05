@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter.Services
 {
@@ -159,20 +160,7 @@ namespace JiraReporter.Services
         {
             if (Policy.AdvancedOptions == null)
                 Policy.AdvancedOptions = new AdvancedOptions();
-            //   SetReportTitle();
-            //     SetPermanentTaskLabel();
-            //    ResetToDefault();
-            //    SetDraftMode();
         }
-
-        //public void ResetToDefault()
-        //{
-        //    if (Policy.GeneratedProperties.LastDraftSentDate.Date == DateTime.Today || Policy.GeneratedProperties.LastDraftSentDate == new DateTime() || Policy.GeneratedProperties.WasResetToDefaultToday)
-        //        return;
-
-        //    ResetPolicyToDefault();
-        //    Policy.GeneratedProperties.WasResetToDefaultToday = true;
-        //}
 
         private void SetReportType()
         {
@@ -245,18 +233,5 @@ namespace JiraReporter.Services
                     };
             }
         }
-
-        //public static string GetPolicyPath(string key)
-        //{
-        //    var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-        //    var policyPath = basePath + @"\Policies\" + key + ".xml";
-        //    return policyPath;
-        //}
-
-        //public static JiraPolicy LoadPolicy(string id)
-        //{
-        //    var policyPath = GetPolicyPath(id);
-        //    return LoadFromFile(policyPath);
-        //}
     }
 }

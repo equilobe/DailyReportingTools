@@ -19,7 +19,6 @@ namespace JiraReporter
     {
         public static JiraReport GenerateReport(JiraReport report)
         {
-            var timesheetService = new TimesheetService();
             report.PullRequests = new List<JiraPullRequest>();
             report.Commits = new List<JiraCommit>();
 

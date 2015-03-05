@@ -1,5 +1,6 @@
 ﻿﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;

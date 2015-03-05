@@ -10,7 +10,7 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 
-namespace JiraReporter
+namespace JiraReporter.Helpers
 {
     static class AuthorHelpers
     {
@@ -45,15 +45,6 @@ namespace JiraReporter
                 commits = author.Commits.FindAll(c => c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) >= date && c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) < date.AddDays(1));
             return commits;
         }
-
-
-        //public static List<string> GetAuthorsFromTimesheet(List<CompleteIssue> timesheet)
-        //{
-        //    var authors = new List<string>();
-        //    if (timesheet != null && timesheet.Worklog != null)
-        //        authors = timesheet.Worklog.Issues.SelectMany(i => i.Entries.Select(e => e.AuthorFullName)).Distinct().ToList();
-        //    return authors;
-        //}
 
         public static void SetAuthorAverageWorkPerDay(JiraAuthor author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
         {

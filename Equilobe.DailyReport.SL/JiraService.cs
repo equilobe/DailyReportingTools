@@ -22,11 +22,6 @@ namespace Equilobe.DailyReport.SL
             return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(targetUser, startDate, endDate);
         }
 
-        //public Timesheet GetTimesheet(IJiraRequestContext context, DateTime startDate, DateTime endDate)
-        //{
-        //    return GetClient(context).GetTimesheet(startDate, endDate);
-        //}
-
         public JiraUser GetUser(IJiraRequestContext context, string username)
         {
             return GetClient(context).GetUser(username);

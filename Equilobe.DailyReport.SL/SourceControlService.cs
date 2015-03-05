@@ -1,5 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Enums;
-using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Policy;
 using System.Collections.Generic;
 using System.Linq;
 

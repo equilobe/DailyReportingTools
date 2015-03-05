@@ -82,7 +82,7 @@
     <Compile Include="Helpers\DatesHelper.cs" />
     <Compile Include="Helpers\TimingHelpers.cs" />
     <Compile Include="Services\DayLogLoader.cs" />
-    <Compile Include="AuthorHelpers.cs" />
+    <Compile Include="Helpers\AuthorHelpers.cs" />
     <Compile Include="Services\AuthorLoader.cs" />
     <Compile Include="HealthInspector.cs" />
     <Compile Include="Services\IndividualReportInfoService.cs" />
@@ -95,7 +95,6 @@
     <Compile Include="IndividualReportProcessor.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
     <Compile Include="Services\JiraContextService.cs" />
-    <Compile Include="JiraPolicyExtensions.cs" />
     <Compile Include="RandomGenerator.cs" />
     <Compile Include="ReportEmailerJira.cs" />
     <Compile Include="SourceControl\GitHubReportSourceControl.cs" />
@@ -109,7 +108,6 @@
     <Compile Include="SummaryHelpers.cs" />
     <Compile Include="Services\SummaryLoader.cs" />
     <Compile Include="TasksService.cs" />
-    <Compile Include="Services\TimesheetService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
