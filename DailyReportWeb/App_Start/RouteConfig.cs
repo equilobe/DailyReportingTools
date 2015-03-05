@@ -32,6 +32,15 @@ namespace DailyReportWeb
                 }
             );
             routes.MapRoute(
+                name: "uninstalled-callback",
+                url: "uninstalled",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "UninstalledCallback"
+                }
+            );
+            routes.MapRoute(
 				name: "setup-policies",
 				url: "setup",
                 defaults: new
@@ -62,6 +71,7 @@ namespace DailyReportWeb
 
             var jsonFormatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
             jsonFormatter.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
 
             return config;
         }

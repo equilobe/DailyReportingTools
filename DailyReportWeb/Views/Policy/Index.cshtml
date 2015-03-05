@@ -29,32 +29,49 @@
         </div>
     </div>
 
-    <div class="container">
-        <table class=" table">
-            <tr>
-                <th>
+    <div class="table">
+        <div class="container" ng-if="policyStatus == 'loading'">
+            <h3>
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+            </h3>
+        </div>
+        <div class="container" ng-if="policyStatus == 'loaded' && !policyList.length">
+            <h1>
+                <span class="alert-danger">
+                    No projects available
+                </span>
+            </h1>
+            <p class="help-block">
+                Daily Report tool is unable to find any project.
+            </p>
+        </div>
+        <div class="container" ng-if="!loading && policyList.length">
+            <div class="row">
+                <label class="col-sm-6 col-md-6">
                     Project name
-                </th>
-                <th>
+                </label>
+                <label class="col-sm-4 col-md-4">
                     Report time
-                </th>
-                <th>
+                </label>
+                <label class="col-sm-2 col-md-2">
                     Options
-                </th>
-            </tr>
-            <tr ng-repeat="policy in policyList">
-                <td>
+                </label>
+            </div>
+            <div class="row project" ng-repeat="policy in policyList">
+                <div class="col-sm-6 col-md-6">
                     {{policy.projectName}}
-                </td>
-                <td ng-form="reportForm">
-                    <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" ng-blur="updateReportTime(this.policy)" />
-                    <span class="form-notification" ng-show="reportForm.reportTime.$error.pattern"><b>Enter valid time</b> (23:59)</span>
-                </td>
-                <td>
-                    <a ng-href="~/Policy/Details/{{policy.projectId}}" ng-click="updateReportTime(this.policy)" class="btn btn-default">Details</a>
-                </td>
-            </tr>
-        </table>
+                </div>
+                <div class="col-sm-4 col-md-4">
+                    <div ng-form="reportForm">
+                        <input name="reportTime" type="text" class="form-control" placeholder="08:00" ng-model="policy.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false; updateReportTime(this)" ng-pattern="/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/" />
+                        <span class="form-notification" ng-show="reportForm.reportTime.$error.pattern && !reportTime.focus"><b>Enter valid time</b> (23:59)</span>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <a ng-href="~/Policy/Details/{{policy.projectId}}" class="btn btn-default">Details</a>
+                </div>
+            </div>
+        </div>
     </div>
 
 

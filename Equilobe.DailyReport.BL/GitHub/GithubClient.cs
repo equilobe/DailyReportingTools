@@ -28,12 +28,10 @@ namespace Equilobe.DailyReport.BL.GitHub
         public List<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate)
         {
             var branches = GetBranches(owner, name);
-            var commits = new List<GitHubCommit>();
-            foreach (var branch in branches)
-                commits = commits.Concat(GetBranchCommits(owner, name, sinceDate, untilDate, branch.Name)).ToList();
+            var commits = branches.SelectMany(br => GetBranchCommits(owner, name, sinceDate, untilDate, br.Name)).ToList();
             commits.ForEach(AddName);
 
-            return commits.Distinct().ToList();
+            return commits.ToLookup(c => c.Sha).Select(commit => commit.First()).ToList();
         }
 
         public List<Branch> GetBranches(string owner, string name)

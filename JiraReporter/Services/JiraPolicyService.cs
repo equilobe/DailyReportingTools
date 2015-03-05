@@ -39,7 +39,8 @@ namespace JiraReporter.Services
         {
             if (Policy.MonthlyOptions != null)
                 foreach (var month in Policy.MonthlyOptions)
-                    month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
+                    if (month.NonWorkingDays != null)
+                        month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
         }
 
         private void SetUrls()
@@ -154,9 +155,8 @@ namespace JiraReporter.Services
         public void SetDefaultProperties()
         {
             if (Policy.AdvancedOptions == null)
-                Policy.AdvancedOptions = new JiraAdvancedOptions();
+                Policy.AdvancedOptions = new AdvancedOptions();
             SetReportTitle();
-            SetRootPath();
             SetPermanentTaskLabel();
             ResetToDefault();
             SetDraftMode();
@@ -198,12 +198,6 @@ namespace JiraReporter.Services
             Policy.GeneratedProperties.IsFinalDraft = false;
             Policy.GeneratedProperties.IsIndividualDraft = false;
             Policy.GeneratedProperties.IsFinalReport = true;
-        }
-
-        private void SetRootPath()
-        {
-            if (Policy.GeneratedProperties.RootPath == null)
-                Policy.GeneratedProperties.RootPath = Path.GetFullPath(Policy.GeneratedProperties.ProjectName);
         }
 
         private void SetReportTitle()

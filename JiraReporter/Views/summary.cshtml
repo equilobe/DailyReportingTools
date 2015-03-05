@@ -230,7 +230,7 @@ else
         <tbody>
             @foreach (var author in Model.Authors)
             {
-                imgSrc = "cid:" + author.Username;
+                imgSrc = "cid:" + author.AvatarId;
                 <tr>
                     <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid grey; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                         <img src="@imgSrc" />

@@ -63,6 +63,25 @@ namespace JiraReporter
             return authors;
         }
 
+        public static JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
+        {
+            var individualReport =  new JiraReport(report.Policy, report.Options)
+            {
+                Author = author,
+                Summary = report.Summary,
+                OffsetFromUtc = report.OffsetFromUtc,
+                PullRequests = report.PullRequests,
+                Sprint = report.Sprint,
+                SprintTasks = report.SprintTasks,
+                Commits = report.Commits,
+                JiraRequestContext = report.JiraRequestContext,
+            };
+            individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
+
+            return individualReport;
+
+        }
+
 
         private static void SetSprintReport(JiraReport report)
         {
@@ -72,7 +91,7 @@ namespace JiraReporter
 
         public static Sprint GenerateSprint(JiraReport report)
         {
-            var projectDateFilter = new ProjectDateFilter { Context = report.Settings, Date = report.FromDate, ProjectKey = report.Policy.GeneratedProperties.ProjectKey, ProjectName = report.Policy.GeneratedProperties.ProjectName };
+            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.Policy.GeneratedProperties.ProjectKey, ProjectName = report.Policy.GeneratedProperties.ProjectName };
             return new JiraService().GetProjectSprintForDate(projectDateFilter);
         }
 

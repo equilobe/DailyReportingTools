@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using System;
 
-namespace Equilobe.DailyReport.Models.ReportFrame
+namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IContext
     {

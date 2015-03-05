@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Equilobe.DailyReport.Models.Interfaces;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
@@ -14,5 +10,7 @@ namespace Equilobe.DailyReport.Models.Jira
         public long ProjectId { get; set; }
         [DataMember(Name = "name")]
         public string ProjectName { get; set; }
+        [DataMember(Name = "key")]
+        public string ProjectKey { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Equilobe.DailyReport.Models;
-using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Utils;
 using Octokit;
@@ -24,7 +24,7 @@ namespace Equilobe.DailyReport.BL.GitHub
 
         public Log CreateLog()
         {
-            var pullRequests = Client.GetPullRequests(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.RepoName);
+            var pullRequests = Client.GetPullRequests(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.Repo);
             var commits = GetReportCommits();
             return LoadLog(commits, pullRequests, Context.FromDate);
         }
@@ -35,29 +35,29 @@ namespace Equilobe.DailyReport.BL.GitHub
             if (pullRequests != null)
                 log.PullRequests = pullRequests;
 
-            log.Entries = new List<LogEntry>();
-            foreach (var commit in commits)
-            {
-                log.Entries.Add(
-                 new LogEntry
-                 {
-                     Author = commit.Commit.Author.Name,
-                     Date = commit.Commit.Author.Date,
-                     Message = commit.Commit.Message,
-                     Revision = commit.Sha,
-                     Link = commit.HtmlUrl
-                 });
-            }
+            log.Entries = commits.Select(GetLogEntry).ToList();
 
             LogHelpers.RemoveWrongEntries(fromDate, log);
             return log;
+        }
+
+        private static LogEntry GetLogEntry(GitHubCommit commit)
+        {
+            return new LogEntry
+            {
+                Author = commit.Commit.Author.Name,
+                Date = commit.Commit.Author.Date,
+                Message = commit.Commit.Message,
+                Revision = commit.Sha,
+                Link = commit.HtmlUrl
+            };
         }
 
         List<GitHubCommit> GetReportCommits()
         {
             string fromDate = TimeFormatting.DateToISO(Context.FromDate);
             string toDate = TimeFormatting.DateToISO(Context.ToDate);
-            return Client.GetAllCommits(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.RepoName, fromDate, toDate);
+            return Client.GetAllCommits(Context.SourceControlOptions.RepoOwner, Context.SourceControlOptions.Repo, fromDate, toDate);
         }
     }
 }

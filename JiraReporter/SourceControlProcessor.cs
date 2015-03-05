@@ -18,11 +18,14 @@ namespace JiraReporter
         public static readonly Dictionary<SourceControlType, Func<JiraReport, ReportBase>> Processors = new Dictionary<SourceControlType, Func<JiraReport, ReportBase>>()
         {
             {SourceControlType.GitHub, ReportBaseSourceControl.Create<GitHubReportSourceControl>},
-            {SourceControlType.SVN, ReportBaseSourceControl.Create<SvnReportSourceControl>}
+            {SourceControlType.SVN, ReportBaseSourceControl.Create<SvnReportSourceControl>},
         };
 
         public static Log GetSourceControlLog(JiraReport report)
         {
+            if (report.Policy.SourceControlOptions.Type == SourceControlType.None)
+                return new Log();
+
             var processors = SourceControlProcessor.Processors[report.Policy.SourceControlOptions.Type](report);
             var log = processors.CreateLog();
             return log;

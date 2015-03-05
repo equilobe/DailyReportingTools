@@ -28,6 +28,7 @@ namespace JiraReporter.Services
                     foreach (var issue in author.Issues)
                     {
                         dayLog.Issues.Add(new CompleteIssue(issue));
+                        dayLog.Issues.Last().ExistsInTimesheet = true;
                         IssueAdapter.RemoveWrongEntries(dayLog.Issues.Last(), date, context.OffsetFromUtc);
                         IssueAdapter.TimeSpentFromEntries(dayLog.Issues.Last());
                         IssueAdapter.SetTimeFormat(dayLog.Issues.Last());

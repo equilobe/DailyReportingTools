@@ -55,22 +55,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="ReportFrame\Error.cs" />
-    <Compile Include="ReportFrame\IContext.cs" />
-    <Compile Include="ReportFrame\IIndividualReport.cs" />
-    <Compile Include="ReportFrame\IJiraReport.cs" />
+    <Compile Include="Interfaces\IContext.cs" />
+    <Compile Include="Interfaces\IIndividualReport.cs" />
+    <Compile Include="Interfaces\IJiraReport.cs" />
     <Compile Include="ReportFrame\CompleteIssue.cs" />
-    <Compile Include="ReportFrame\IRequestContext.cs" />
-    <Compile Include="ReportFrame\ISourceControlContext.cs" />
+    <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
+    <Compile Include="Interfaces\ISourceControlContext.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
     <Compile Include="ReportFrame\JiraOptions.cs" />
     <Compile Include="ReportFrame\JiraPullRequest.cs" />
     <Compile Include="ReportFrame\JiraReport.cs" />
-    <Compile Include="ReportFrame\IJiraRequestContext.cs" />
+    <Compile Include="Interfaces\IJiraRequestContext.cs" />
+    <Compile Include="ReportFrame\JiraRequestContext.cs" />
     <Compile Include="ReportFrame\SprintTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
@@ -94,11 +96,14 @@
     <Compile Include="Jira\Views.cs" />
     <Compile Include="Jira\WorkLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IGitHubService.cs" />
-    <Compile Include="Services\ISvnService.cs" />
+    <Compile Include="Interfaces\IGitHubService.cs" />
+    <Compile Include="Interfaces\ISvnService.cs" />
     <Compile Include="SourceControl\SourceControlContext.cs" />
-    <Compile Include="Storage\AdvancedOptions.cs" />
     <Compile Include="Storage\Credentials.cs" />
+    <Compile Include="Storage\FinalDraftConfirmation.cs" />
+    <Compile Include="Storage\InstalledInstance.cs" />
+    <Compile Include="Storage\ReportExecutionSummary.cs" />
+    <Compile Include="Storage\IndividualDraftConfirmation.cs" />
     <Compile Include="Storage\JiraAdvancedOptions.cs" />
     <Compile Include="Storage\GeneratedProperties.cs" />
     <Compile Include="Storage\JiraGeneratedProperties.cs" />
@@ -106,11 +111,13 @@
     <Compile Include="Storage\JiraPolicy.cs" />
     <Compile Include="Storage\Month.cs" />
     <Compile Include="Storage\Policy.cs" />
-    <Compile Include="Web\PolicySummary.cs" />
+    <Compile Include="Storage\ReportExecutionInstance.cs" />
+    <Compile Include="Storage\SerializedPolicy.cs" />
+    <Compile Include="Web\Policy.cs" />
     <Compile Include="Storage\SourceControlOptions.cs" />
     <Compile Include="Storage\User.cs" />
-    <Compile Include="Services\IJiraService.cs" />
-    <Compile Include="Services\IService.cs" />
+    <Compile Include="Interfaces\IJiraService.cs" />
+    <Compile Include="Interfaces\IService.cs" />
     <Compile Include="SourceControl\Author.cs" />
     <Compile Include="SourceControl\DayLog.cs" />
     <Compile Include="SourceControl\Log.cs" />
@@ -129,6 +136,7 @@
       <Name>Equilobe.DailyReport.Utils</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

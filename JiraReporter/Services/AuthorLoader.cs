@@ -13,6 +13,8 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using JiraReporter.Services;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.SL;
+using System.Drawing;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter.Services
 {
@@ -33,7 +35,7 @@ namespace JiraReporter.Services
 
         public List<JiraAuthor> GetAuthors()
         {
-            var authors = new JiraService().GetUsers(_context.Settings, _context.Policy.GeneratedProperties.ProjectKey)
+            var authors = new JiraService().GetUsers(_context.JiraRequestContext, _context.Policy.GeneratedProperties.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
@@ -52,7 +54,7 @@ namespace JiraReporter.Services
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(key, policy);
-            var user = new JiraService().GetUser(_context.Settings, draft.Username);
+            var user = new JiraService().GetUser(_context.JiraRequestContext, draft.Username);
             var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);
             author.IndividualDraftInfo = draft;
@@ -89,6 +91,7 @@ namespace JiraReporter.Services
             SetAuthorErrors();           
             SetRemainingEstimate();
             SetImage();
+            SetAvatarId();
             SetOverrideEmail();
         }
 
@@ -102,10 +105,10 @@ namespace JiraReporter.Services
 
         private void SetTimesheets()
         {
-            _currentAuthor.CurrentTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.CurrentTimesheet = new JiraService().GetTimesheetForUser(_context.JiraRequestContext, _options.FromDate, _options.ToDate.AddDays(-1), _currentAuthor.Username);
             if (_sprint != null)
-                _currentAuthor.SprintTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc), _options.ToDate.AddDays(-1), _currentAuthor.Username);
-            _currentAuthor.MonthTimesheet = new JiraService().GetTimesheetForUser(_context.Settings, _options.FromDate.StartOfMonth(), _options.ToDate.AddDays(-1), _currentAuthor.Username);
+                _currentAuthor.SprintTimesheet = new JiraService().GetTimesheetForUser(_context.JiraRequestContext, _sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc), _options.ToDate.AddDays(-1), _currentAuthor.Username);
+            _currentAuthor.MonthTimesheet = new JiraService().GetTimesheetForUser(_context.JiraRequestContext, _options.FromDate.StartOfMonth(), _options.ToDate.AddDays(-1), _currentAuthor.Username);
         }
 
 
@@ -298,7 +301,7 @@ namespace JiraReporter.Services
 
         private void SetImage()
         {
-            _currentAuthor.Image = WebDownloads.ImageFromURL(_currentAuthor.AvatarLink.OriginalString, _policy.Username, _policy.Password);
+            _currentAuthor.Image = GetImageFromURL(_policy, _currentAuthor.AvatarLink.OriginalString);
         }
 
         private void SetRemainingEstimate()
@@ -329,11 +332,32 @@ namespace JiraReporter.Services
 
         private JiraAuthor GetProjectLead(string username)
         {
-            var lead = new JiraService().GetUser(_context.Settings, username);
+            var lead = new JiraService().GetUser(_context.JiraRequestContext, username);
             var projectManager = new JiraAuthor(lead);
             projectManager.IsProjectLead = true;
 
             return projectManager;
+        }
+
+        private Image GetImageFromURL(JiraPolicy policy, string url)
+        {
+            var webClient = new WebClient();
+            webClient.Headers.Add("Content-Type", "image/png");
+            webClient.Authorize(policy, UriExtensions.GetRelativeUrl(url));
+
+            var imageData = webClient.DownloadData(url);
+
+            MemoryStream stream = new MemoryStream(imageData);
+            var img = Image.FromStream(stream);
+            stream.Close();
+
+            return img;
+        }
+
+        private void SetAvatarId()
+        {
+            var avatar = _currentAuthor.AvatarLink.OriginalString;
+            _currentAuthor.AvatarId = avatar.Substring(avatar.LastIndexOf("avatarId="));
         }
     }
 }

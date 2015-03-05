@@ -85,11 +85,11 @@ namespace JiraReporter
         private void AddMailAttachments(MailMessage message)
         {
             if (Policy.GeneratedProperties.IsIndividualDraft)
-                AddAttachementImage(Author.Image, Author.Username, message);
+                AddAttachementImage(Author.Image, Author.AvatarId, message);
             else
             {
                 foreach (var author in Authors)
-                    AddAttachementImage(author.Image, author.Username, message);
+                    AddAttachementImage(author.Image, author.AvatarId, message);
                 AddAttachementImageFromDisk(message);
             }
         }
