@@ -17,7 +17,7 @@ namespace JiraReporter
 {
     class IssueAdapter
     {
-        public static void RemoveWrongEntries(CompleteIssue issue, DateTime date, TimeSpan offsetFromUtc)
+        public static void RemoveWrongEntries(IssueDetailed issue, DateTime date, TimeSpan offsetFromUtc)
         {
             if (issue.Entries != null)
             {
@@ -27,18 +27,18 @@ namespace JiraReporter
             }
         }
 
-        public static void RemoveWrongIssues(List<CompleteIssue> issues)
+        public static void RemoveWrongIssues(List<IssueDetailed> issues)
         {
             if (issues != null)
                 issues.RemoveAll(i => i.Entries.Count == 0 && i.Commits.Count == 0);
         }
 
-        public static void TimeSpentFromEntries(CompleteIssue issue)
+        public static void TimeSpentFromEntries(IssueDetailed issue)
         {
             issue.TimeSpent = issue.Entries.Sum(e => e.TimeSpent);
         }
 
-        public static void SetTimeFormat(CompleteIssue issue)
+        public static void SetTimeFormat(IssueDetailed issue)
         {
             if (issue.TimeSpent > 0)
                 issue.TimeLogged = issue.TimeSpent.SetTimeFormat();
@@ -49,24 +49,24 @@ namespace JiraReporter
             issue.RemainingEstimate = issue.RemainingEstimateSeconds.SetTimeFormat8Hour();
         }
 
-        private static void SetIssueExists(CompleteIssue issue, List<CompleteIssue> issues)
+        private static void SetIssueExists(IssueDetailed issue, List<IssueDetailed> issues)
         {
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
         }
 
-        public static void SetIssuesExistInTimesheet(List<CompleteIssue> issues, List<CompleteIssue> timesheet)
+        public static void SetIssuesExistInTimesheet(List<IssueDetailed> issues, List<IssueDetailed> timesheet)
         {
             foreach (var issue in issues)
                 SetIssueExists(issue, timesheet);
         }
 
-        public static bool IssueExistsTimesheet(CompleteIssue issue, List<CompleteIssue> issues)
+        public static bool IssueExistsTimesheet(IssueDetailed issue, List<IssueDetailed> issues)
         {
             if (issues.Exists(i => i.Key == issue.Key))
                 return true;
             return false;
         }
-		public static List<CompleteIssue> OrderIssues(List<CompleteIssue> issues)
+		public static List<IssueDetailed> OrderIssues(List<IssueDetailed> issues)
         {
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
@@ -82,7 +82,7 @@ namespace JiraReporter
                 }
         }
 
-        public static void AdjustIssueCommits(CompleteIssue issue, List<JiraCommit> commits)
+        public static void AdjustIssueCommits(IssueDetailed issue, List<JiraCommit> commits)
         {
             issue.Commits = new List<JiraCommit>();
             issue.Commits = commits.FindAll(commit => ContainsKey(commit.Entry.Message, issue.Key) == true);
@@ -100,21 +100,21 @@ namespace JiraReporter
             return msg.Contains(keyLower);
         }
 
-        public static void RemoveWrongCommits(CompleteIssue issue, DateTime date, TimeSpan offsetFromUtc)
+        public static void RemoveWrongCommits(IssueDetailed issue, DateTime date, TimeSpan offsetFromUtc)
         {
             var commits = new List<JiraCommit>(issue.Commits);
             commits.RemoveAll(c => c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) < date || c.Entry.Date.ToOriginalTimeZone(offsetFromUtc) >= date.AddDays(1));
             issue.Commits = commits;
         }
 
-        private static void EditIssueCommits(CompleteIssue issue)
+        private static void EditIssueCommits(IssueDetailed issue)
         {
             if (issue.Commits.Count > 0)
                 foreach (var commit in issue.Commits)
                     commit.TaskSynced = true;
         }
 
-        public static int GetTasksTimeLeftSeconds(List<CompleteIssue> tasks)
+        public static int GetTasksTimeLeftSeconds(List<IssueDetailed> tasks)
         {
             int sum = 0;
             foreach (var task in tasks)
@@ -126,7 +126,7 @@ namespace JiraReporter
             return sum;
         }
 
-        public static void HasTasksInProgress(CompleteIssue task)
+        public static void HasTasksInProgress(IssueDetailed task)
         {
             if (task.Subtasks.Count > 0)
             {
@@ -135,21 +135,21 @@ namespace JiraReporter
             }
         }
 
-        public static bool HasSubtasksInProgress(CompleteIssue task)
+        public static bool HasSubtasksInProgress(IssueDetailed task)
         {
             if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksIssues.Exists(s => s.StatusCategory.name == "In Progress"))
                 return true;
             return false;
         }
 
-        public static bool HasAssignedSubtasksInProgress(CompleteIssue task)
+        public static bool HasAssignedSubtasksInProgress(IssueDetailed task)
         {
             if (HasSubtasksInProgress(task) == true && task.SubtasksIssues.Exists(s => s.Assignee == task.Assignee))
                 return true;
             return false;
         }
 
-        public static void SetIssueErrors(CompleteIssue issue, JiraPolicy policy)
+        public static void SetIssueErrors(IssueDetailed issue, JiraPolicy policy)
         {
             issue.Errors = new List<Error>();
             if (issue.IsSubtask == false && issue.Label != policy.AdvancedOptions.PermanentTaskLabel)
@@ -185,21 +185,21 @@ namespace JiraReporter
 
 
 
-        public static void SetLoggedAuthor(CompleteIssue issue, string authorName)
+        public static void SetLoggedAuthor(IssueDetailed issue, string authorName)
         {
                 issue.LoggedAuthor = AuthorHelpers.GetCleanName(authorName);
         }
 
-        public static void SetSubtasksLoggedAuthor(CompleteIssue issue, string authorName)
+        public static void SetSubtasksLoggedAuthor(IssueDetailed issue, string authorName)
         {
             if (issue.SubtasksIssues != null && issue.SubtasksIssues.Count > 0)
                 foreach (var subtask in issue.SubtasksIssues)
                     SetLoggedAuthor(subtask, authorName);
         }
 
-        public static CompleteIssue GetBasicIssue (JiraIssue issue)
+        public static IssueDetailed GetBasicIssue (JiraIssue issue)
         {
-            var basicIssue = new CompleteIssue
+            var basicIssue = new IssueDetailed
             {
                 Key = issue.key,
                 Summary = issue.fields.summary

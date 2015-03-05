@@ -111,11 +111,11 @@ namespace JiraReporter.Services
             _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_options.FromDate.StartOfMonth(), _options.ToDate.AddDays(-1));
         }
 
-        private List<CompleteIssue> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
+        private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
         {
             var issues = new JiraService().GetTimesheetForUser(_context.JiraRequestContext, fromDate, toDate, _currentAuthor.Username);
             var issueProcessor = new IssueProcessor(_context);
-            var completeIssues = new List<CompleteIssue>();
+            var completeIssues = new List<IssueDetailed>();
             foreach (var issue in issues)
             {
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
@@ -145,7 +145,7 @@ namespace JiraReporter.Services
                 _currentAuthor.Timing.SprintSecondsWorked = GetSecondsWorked(_currentAuthor.SprintIssues);
         }
 
-        private int GetSecondsWorked(List<CompleteIssue> issues)
+        private int GetSecondsWorked(List<IssueDetailed> issues)
         {
             return issues.Sum(i => i.Entries.Sum(t => t.TimeSpent));
         }
@@ -178,22 +178,22 @@ namespace JiraReporter.Services
                     commit.Entry.Link = _policy.SourceControlOptions.CommitUrl + commit.Entry.Revision;
         }
 
-        private void AddCommitIssuesNotInTimesheet(List<CompleteIssue> tasks)
+        private void AddCommitIssuesNotInTimesheet(List<IssueDetailed> tasks)
         {
             foreach (var task in tasks)
             {
                 if ((_currentAuthor.Issues != null && _currentAuthor.Issues.Exists(i => i.Key == task.Key) == false) || _currentAuthor.Issues == null)
                 {
-                    var issue = new CompleteIssue(task);
+                    var issue = new IssueDetailed(task);
                     issue.Commits = null;
                     IssueAdapter.AdjustIssueCommits(issue, _currentAuthor.Commits);
                     if (issue.Commits.Count > 0)
                     {
                         if (_currentAuthor.Issues == null)
-                            _currentAuthor.Issues = new List<CompleteIssue>();
+                            _currentAuthor.Issues = new List<IssueDetailed>();
                         issue.ExistsInTimesheet = true;
                         IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name);
-                        _currentAuthor.Issues.Add(new CompleteIssue(issue));
+                        _currentAuthor.Issues.Add(new IssueDetailed(issue));
                     }
                 }
             }
@@ -216,7 +216,7 @@ namespace JiraReporter.Services
 
         private void SetAuthorInProgressTasks()
         {
-            _currentAuthor.InProgressTasks = new List<CompleteIssue>();
+            _currentAuthor.InProgressTasks = new List<IssueDetailed>();
             _currentAuthor.InProgressTasks = GetAuthorTasks(_sprintIssues.InProgressTasks);
             TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
@@ -278,7 +278,7 @@ namespace JiraReporter.Services
 
         private void SetAuthorOpenTasks()
         {
-            _currentAuthor.OpenTasks = new List<CompleteIssue>();
+            _currentAuthor.OpenTasks = new List<IssueDetailed>();
             _currentAuthor.OpenTasks = GetAuthorTasks(_sprintIssues.OpenTasks);
             TasksService.SetErrors(_currentAuthor.OpenTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
@@ -291,9 +291,9 @@ namespace JiraReporter.Services
             _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        private List<CompleteIssue> GetAuthorTasks(List<CompleteIssue> tasks)
+        private List<IssueDetailed> GetAuthorTasks(List<IssueDetailed> tasks)
         {
-            var unfinishedTasks = new List<CompleteIssue>();
+            var unfinishedTasks = new List<IssueDetailed>();
             foreach (var task in tasks)
                 if (task.Assignee == _currentAuthor.Name)
                 {

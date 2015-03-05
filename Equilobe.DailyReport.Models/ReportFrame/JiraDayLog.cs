@@ -11,7 +11,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public DateTime Date { get; set; }
         public int TimeSpent { get; set; }
         public string TimeLogged { get; set; }
-        public List<CompleteIssue> Issues { get; set; }
+        public List<IssueDetailed> Issues { get; set; }
         public List<JiraCommit> Commits { get; set; }
         public string Title { get; set; }
 

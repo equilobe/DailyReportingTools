@@ -62,7 +62,7 @@
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
     <Compile Include="Interfaces\IJiraReport.cs" />
-    <Compile Include="ReportFrame\CompleteIssue.cs" />
+    <Compile Include="ReportFrame\IssueDetailed.cs" />
     <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
     <Compile Include="Interfaces\ISourceControlContext.cs" />
     <Compile Include="ReportFrame\ExecutionInstance.cs" />

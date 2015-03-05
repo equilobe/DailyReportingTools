@@ -24,7 +24,7 @@ namespace JiraReporter
             }
         }
         List<JiraPullRequest> _pullRequests;
-        CompleteIssue _currentIssue;
+        IssueDetailed _currentIssue;
         JiraIssue _currentJiraIssue;
         JiraReport _context;
 
@@ -34,7 +34,7 @@ namespace JiraReporter
             this._pullRequests = context.PullRequests;
         }
 
-        public void SetIssues(List<CompleteIssue> issues)
+        public void SetIssues(List<IssueDetailed> issues)
         {
             foreach (var issue in issues)
             {
@@ -44,7 +44,7 @@ namespace JiraReporter
             }
         }
 
-        public void SetIssue(CompleteIssue issue, JiraIssue jiraIssue)
+        public void SetIssue(IssueDetailed issue, JiraIssue jiraIssue)
         {
             SetGenericIssue(issue, jiraIssue);
             if (issue.IsSubtask)
@@ -56,7 +56,7 @@ namespace JiraReporter
                 SetSubtasks(issue);
         }
 
-        private void SetGenericIssue(CompleteIssue issue, JiraIssue jiraIssue)
+        private void SetGenericIssue(IssueDetailed issue, JiraIssue jiraIssue)
         {
             this._currentIssue = issue;
             this._currentJiraIssue = jiraIssue;
@@ -160,19 +160,19 @@ namespace JiraReporter
 
         private void SetParent(JiraIssue jiraIssue)
         {
-            _currentIssue.Parent = new CompleteIssue { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
+            _currentIssue.Parent = new IssueDetailed { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
             var parent = new JiraService().GetIssue(_context.JiraRequestContext, _currentIssue.Parent.Key);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
-        private void SetSubtasks(CompleteIssue issue)
+        private void SetSubtasks(IssueDetailed issue)
         {
             var jiraIssue = new JiraIssue();
-            issue.SubtasksIssues = new List<CompleteIssue>();
+            issue.SubtasksIssues = new List<IssueDetailed>();
             foreach (var task in issue.Subtasks)
             {
                 jiraIssue = new JiraService().GetIssue(_context.JiraRequestContext, task.key);
-                issue.SubtasksIssues.Add(new CompleteIssue(jiraIssue));
+                issue.SubtasksIssues.Add(new IssueDetailed(jiraIssue));
                 SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
             }
         }
@@ -194,7 +194,7 @@ namespace JiraReporter
             }
         }
 
-        private void EditIssuePullRequests(CompleteIssue issue)
+        private void EditIssuePullRequests(IssueDetailed issue)
         {
             if (issue.PullRequests != null)
                 foreach (var pullRequest in issue.PullRequests)
