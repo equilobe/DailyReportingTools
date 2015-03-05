@@ -20,7 +20,7 @@ namespace Equilobe.DailyReport.SL
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = DbService.GetReportTime(baseUrl, projectInfo.ProjectId)
+                ReportTime = DataService.GetReportTime(baseUrl, projectInfo.ProjectId)
             };
         }
 
@@ -35,7 +35,7 @@ namespace Equilobe.DailyReport.SL
                     ProjectId = projectInfo.ProjectId,
                     ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
-                    ReportTime = DbService.GetReportTime(baseUrl, projectInfo.ProjectId)
+                    ReportTime = DataService.GetReportTime(baseUrl, projectInfo.ProjectId)
                 })
                 .ToList();
         }

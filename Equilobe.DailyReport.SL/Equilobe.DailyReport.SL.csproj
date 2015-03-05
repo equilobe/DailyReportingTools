@@ -69,7 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbService.cs" />
+    <Compile Include="DataService.cs" />
     <Compile Include="GitHubService.cs" />
     <Compile Include="JiraService.cs" />
     <Compile Include="AuthService.cs" />

@@ -45,7 +45,7 @@ namespace Equilobe.DailyReport.SL
                     throw new Exception("Authentication failed, missing host and context from caller");
                 }
 
-                var sharedSecret = DbService.GetSharedSecret(baseUrl);
+                var sharedSecret = DataService.GetSharedSecret(baseUrl);
 
                 var token = new EncodedJwtToken(sharedSecret, requestToken).Decode();
                 token.ValidateToken(filterContext.HttpContext.Request);

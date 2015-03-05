@@ -17,7 +17,7 @@ namespace DailyReportWeb.Controllers.Api
         public IEnumerable<PolicySummary> Get()
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = DbService.GetSharedSecret(baseUrl);
+            var sharedSecret = DataService.GetSharedSecret(baseUrl);
 
             return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
         }
@@ -26,7 +26,7 @@ namespace DailyReportWeb.Controllers.Api
         public PolicyBuffer Get(long id)
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = DbService.GetSharedSecret(baseUrl);
+            var sharedSecret = DataService.GetSharedSecret(baseUrl);
 
             return PolicyService.GetPolicy(baseUrl, sharedSecret, id);
         }

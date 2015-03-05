@@ -10,7 +10,7 @@ using System.Web;
 
 namespace Equilobe.DailyReport.SL
 {
-    public class DbService
+    public class DataService
     {
         public static void SaveSharedSecret(HttpRequestBase request)
         {
@@ -73,17 +73,6 @@ namespace Equilobe.DailyReport.SL
                 reportExecutionInstance.DateExecuted = DateTime.Now;
 
                 db.SaveChanges();
-            }
-        }
-
-        public static ReportSettings GetReportSettingsFromDb(string uniqueProjectKey)
-        {       
-            using(var db = new ReportsDb())
-            {
-                var reportSettings = new ReportSettings();
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
-                report.CopyProperties(reportSettings);
-                return reportSettings;
             }
         }
     }
