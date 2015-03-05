@@ -73,7 +73,7 @@ else
             <table cellspacing="0" style="margin-top:20px">
                 <tbody>
                         @{
-                            imgSrc = "cid:" + Model.Author.Username;
+                            imgSrc = "cid:" + Model.Author.AvatarId;
                         }
                         <tr>
                             <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" />@*@Model.Author.FirstName*@</td>

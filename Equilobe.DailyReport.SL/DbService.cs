@@ -4,6 +4,7 @@ using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
@@ -28,14 +29,11 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static void DeleteSharedSecret(HttpRequestBase request)
+        public static void DeleteSharedSecret(string baseUrl)
         {
-            var bodyText = new System.IO.StreamReader(request.InputStream).ReadToEnd();
-            var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
-
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == instanceData.BaseUrl);
+                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == baseUrl);
                 db.InstalledInstances.Remove(installedInstance);
 
                 db.SaveChanges();
@@ -46,7 +44,6 @@ namespace Equilobe.DailyReport.SL
         {
             return new ReportsDb().InstalledInstances
                 .Where(x => x.BaseUrl == baseUrl)
-                .OrderByDescending(x => x.Id)
                 .Select(x => x.SharedSecret)
                 .FirstOrDefault();
         }
@@ -57,6 +54,15 @@ namespace Equilobe.DailyReport.SL
                 .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
                 .Select(qr => qr.ReportTime)
                 .FirstOrDefault();
+        }
+
+        public static List<string> GetUniqueProjectsKey(string baseUrl)
+        {
+            return new ReportsDb().InstalledInstances
+                .Where(installedInstance => installedInstance.BaseUrl == baseUrl)
+                .SelectMany(installedInstance => installedInstance.ReportSettings
+                .Select(reportSettings => reportSettings.UniqueProjectKey))
+                .ToList();
         }
 
         public static void SetExecutionDate(long id)

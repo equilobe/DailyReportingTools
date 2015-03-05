@@ -1,4 +1,4 @@
-﻿using DailyReportWeb.Helpers;
+﻿using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
@@ -22,7 +22,7 @@ namespace DailyReportWeb.Controllers
             ReportService.SetFinalDraftConfirmation(id);
             ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
 
-            if (ReportRunner.TryRunReportTask(id))
+            if (TaskSchedulerService.TryRunReportTask(id))
                 return Content("Report confirmed. Final report sent");
             else
                 return Content("Error in sending the final report");
@@ -38,7 +38,13 @@ namespace DailyReportWeb.Controllers
                 return Content("Cannot send report if not all individual drafts were confirmed");
 
             ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
-            if (ReportRunner.TryRunReportTask(id))
+            if (!string.IsNullOrEmpty(draftKey))
+            {
+                TaskSchedulerService.RunReportDirectly(id, draftKey, true);
+                return Content("Draft report was sent");
+            }
+
+            if (TaskSchedulerService.TryRunReportTask(id))
                 return Content("Draft report was resent");
             else
                 return Content("Error in sending draft report");
@@ -59,7 +65,7 @@ namespace DailyReportWeb.Controllers
             if (ReportService.CanSendFullDraft(id))
             {
                 ReportService.SetReportExecutionInstance(id, SendScope.SendFinalDraft);
-                if (!ReportRunner.TryRunReportTask(id))
+                if (!TaskSchedulerService.TryRunReportTask(id))
                     return Content("Report confirmed. Error in sending full draft report");
 
                 return Content("Report confirmed. Full draft sent");
@@ -78,8 +84,7 @@ namespace DailyReportWeb.Controllers
                 return Content("Draft is already confirmed. Can't resend");
 
             ReportService.SetReportExecutionInstance(id, SendScope.SendIndividualDraft, draftKey);
-
-            ReportRunner.RunReportDirectly(id, draftKey);
+            TaskSchedulerService.RunReportDirectly(id, draftKey);
 
             return Content("Report resent");
         }

@@ -62,6 +62,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<JiraDayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
         public Uri AvatarLink { get; set; }
+        public string AvatarId { get; set; }
         public Image Image { get; set; }
         public IndividualDraftInfo IndividualDraftInfo { get; set; }
         public bool IsProjectLead { get; set; }

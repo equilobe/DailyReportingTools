@@ -91,6 +91,7 @@ namespace JiraReporter.Services
             SetAuthorErrors();
             SetRemainingEstimate();
             SetImage();
+            SetAvatarId();
             SetOverrideEmail();
         }
 
@@ -355,6 +356,12 @@ namespace JiraReporter.Services
             stream.Close();
 
             return img;
+        }
+
+        private void SetAvatarId()
+        {
+            var avatar = _currentAuthor.AvatarLink.OriginalString;
+            _currentAuthor.AvatarId = avatar.Substring(avatar.LastIndexOf("avatarId="));
         }
     }
 }
