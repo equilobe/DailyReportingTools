@@ -64,16 +64,5 @@ namespace Equilobe.DailyReport.SL
                 .Select(reportSettings => reportSettings.UniqueProjectKey))
                 .ToList();
         }
-
-        public static void SetExecutionDate(long id)
-        {
-            using(var db = new ReportsDb())
-            {
-                var reportExecutionInstance = db.ReportExecutionInstances.Single(e => e.Id == id);
-                reportExecutionInstance.DateExecuted = DateTime.Now;
-
-                db.SaveChanges();
-            }
-        }
     }
 }

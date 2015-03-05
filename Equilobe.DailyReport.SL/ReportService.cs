@@ -196,7 +196,10 @@ namespace Equilobe.DailyReport.SL
             {
                 report.ExecutionInstance = new ExecutionInstance();
                 unexecutedInstance.CopyProperties(report.ExecutionInstance);
-                DataService.SetExecutionDate(unexecutedInstance.Id);
+                using(var db = new ReportsDb())
+                {
+                    db.SetExecutionDate(unexecutedInstance.Id);
+                }
             }
             else
                 report.IsOnSchedule = true;
