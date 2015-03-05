@@ -55,16 +55,18 @@
             $http.post("/api/sourcecontrol", $scope.policy.sourceControlOptions)
                 .success(function (sourceControlUsernames) {
                     $scope.sourceControlStatus = "success";
-
                     $scope.policy.sourceControlUsernames = sourceControlUsernames;
-                    $scope.sourceControlUsername = $scope.policy.sourceControlUsernames ? $scope.policy.sourceControlUsernames[0] : null;
                 })
                 .error(function () {
                     $scope.sourceControlStatus = "error";
+                    $scope.policy.sourceControlUsernames = null;
                 });
         }
 
         $scope.addSourceControlUsername = function ($scope) {
+            if ($scope.user.sourceControlUsernames == null)
+                $scope.user.sourceControlUsernames = [];
+
             $scope.user.sourceControlUsernames.push($scope.sourceControlUsername);
         }
 
