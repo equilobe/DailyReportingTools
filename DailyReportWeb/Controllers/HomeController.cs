@@ -1,5 +1,7 @@
-﻿using Equilobe.DailyReport.SL;
+﻿using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Configuration;
 using System.Web.Mvc;
@@ -99,7 +101,11 @@ namespace DailyReportWeb.Controllers
         [HttpPost]
         public ActionResult UninstalledCallback()
         {
-            DbService.DeleteSharedSecret(Request);
+            var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
+            var baseUrl = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).BaseUrl;
+
+            DbService.DeleteSharedSecret(baseUrl);
+            TaskSchedulerService.Delete(DbService.GetUniqueProjectsKey(baseUrl));
 
             return Content(String.Empty);
         }

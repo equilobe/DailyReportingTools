@@ -1,4 +1,4 @@
-﻿using DailyReportWeb.Helpers;
+﻿using Equilobe.DailyReport.SL;
 using JiraReporter.Services;
 using System;
 using System.Web.Mvc;
@@ -21,7 +21,7 @@ namespace DailyReportWeb.Controllers
 
             JiraPolicyService.SetPolicyFinalReport(policy, policyPath);
 
-            if (ReportRunner.TryRunReportTask(id))
+            if (TaskSchedulerService.TryRunReportTask(id))
                 return Content("Report confirmed. Final report sent");
             else
                 return Content("Error in sending the final report");
@@ -41,11 +41,11 @@ namespace DailyReportWeb.Controllers
 
             if (!string.IsNullOrEmpty(draftKey))
             {
-                ReportRunner.RunReportDirectly(id, draftKey, true);
+                TaskSchedulerService.RunReportDirectly(id, draftKey, true);
                 return Content("Draft report was sent");
             }
 
-            if (ReportRunner.TryRunReportTask(id))
+            if (TaskSchedulerService.TryRunReportTask(id))
                 return Content("Draft report was resent");
             else
                 return Content("Error in sending draft report");
@@ -66,7 +66,7 @@ namespace DailyReportWeb.Controllers
 
             if (policy.CanSendFullDraft())
             {
-                if (!ReportRunner.TryRunReportTask(id))
+                if (!TaskSchedulerService.TryRunReportTask(id))
                     return Content("Report confirmed. Error in sending full draft report");
 
                 return Content("Report confirmed. Full draft sent");
@@ -86,7 +86,7 @@ namespace DailyReportWeb.Controllers
             if (policy.CheckIndividualDraftConfirmation(draftKey))
                 return Content("Draft is already confirmed. Can't resend");
 
-            ReportRunner.RunReportDirectly(id, draftKey);
+            TaskSchedulerService.RunReportDirectly(id, draftKey);
 
             return Content("Report resent");
         }
