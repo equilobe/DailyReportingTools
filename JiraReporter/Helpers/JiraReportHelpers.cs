@@ -1,12 +1,14 @@
-﻿using Equilobe.DailyReport.Models.ReportFrame;
+﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.SL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JiraReporter
+namespace JiraReporter.Helpers
 {
     public static class JiraReportHelpers
     {
@@ -14,13 +16,21 @@ namespace JiraReporter
         {
             var title = string.Empty;
             var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(report.Options.FromDate, report.Options.ToDate);
-            if (report.Policy.GeneratedProperties.IsFinalDraft || report.Policy.GeneratedProperties.IsIndividualDraft)
+            if (report.IsFinalDraft || report.IsIndividualDraft)
                 title += "DRAFT | ";
             if (individualReport)
                 title += report.Author.Name + " | ";
-            title += report.Policy.GeneratedProperties.ProjectName + " Daily Report | " + reportDate;
+            title += report.ProjectName + " Daily Report | " + reportDate;
 
             return title;
+        }
+
+        public static JiraRequestContext GetJiraRequestContext(JiraReport report)
+        {
+            report.Policy.Username = report.Settings.Username;
+            report.Policy.Password = report.Settings.Password;
+
+            return new JiraRequestContext(report.Policy.BaseUrl, report.Settings.Username, report.Settings.Password);
         }
     }
 }

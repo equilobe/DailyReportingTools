@@ -13,6 +13,7 @@ using RazorEngine.Templating;
 using Octokit;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace SourceControlLogReporter
 {
@@ -21,9 +22,9 @@ namespace SourceControlLogReporter
 
         public static void WriteReport(Policy p, string report, string path)
         {
-            Validation.EnsureDirectoryExists(p.GeneratedProperties.LogArchivePath);
+            Validation.EnsureDirectoryExists(p.LogArchivePath);
 
-            var archivedFilePath = Path.Combine(p.GeneratedProperties.LogArchivePath, Path.GetFileName(path));
+            var archivedFilePath = Path.Combine(p.LogArchivePath, Path.GetFileName(path));
 
             if (File.Exists(path))
             {
@@ -35,9 +36,9 @@ namespace SourceControlLogReporter
                 File.WriteAllText(archivedFilePath, report);
             }
 
-            Validation.EnsureDirectoryExists(p.GeneratedProperties.UnsentReportsPath);
+            Validation.EnsureDirectoryExists(p.UnsentReportsPath);
 
-            var reportPath = Path.Combine(p.GeneratedProperties.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
+            var reportPath = Path.Combine(p.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
 
             File.WriteAllText(reportPath, report);
         }

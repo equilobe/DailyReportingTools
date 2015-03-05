@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter
 {
@@ -57,7 +58,7 @@ namespace JiraReporter
 
         public JiraIssues GetUnfinishedTasks(JiraReport context)
         {
-            return new JiraService().GetSprintTasks(context.JiraRequestContext, context.Policy.GeneratedProperties.ProjectKey);
+            return new JiraService().GetSprintTasks(context.JiraRequestContext, context.ProjectKey);
         }
 
         public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)

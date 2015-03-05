@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.Storage
+namespace Equilobe.DailyReport.Models.Policy
 {
     public class SourceControlOptions
     {

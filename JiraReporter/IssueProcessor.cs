@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Policy;
+using JiraReporter.Helpers;
 
 namespace JiraReporter
 {
@@ -101,7 +103,7 @@ namespace JiraReporter
         private void SetEmptyEntries()
         {
             if (_currentIssue.Entries == null)
-                _currentIssue.Entries = new List<Entries>();
+                _currentIssue.Entries = new List<Entry>();
         }
 
         private void SetIssueType()

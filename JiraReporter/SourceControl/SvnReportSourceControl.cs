@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter.SourceControl
 {
@@ -22,7 +23,7 @@ namespace JiraReporter.SourceControl
         {
             get
             {
-                return GetLogFilePath(Policy.GeneratedProperties.LogPath, Options.ReportDate);
+                return GetLogFilePath(Context.LogPath, Options.ReportDate);
             }
         }
 

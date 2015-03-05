@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Policy;
+using JiraReporter.Helpers;
 
 namespace JiraReporter
 {
@@ -19,7 +21,7 @@ namespace JiraReporter
         {
             if (issue.Entries != null)
             {
-                var newEntries = new List<Entries>(issue.Entries);
+                var newEntries = new List<Entry>(issue.Entries);
                 newEntries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(offsetFromUtc) < date || e.StartDate.ToOriginalTimeZone(offsetFromUtc) >= date.AddDays(1));
                 issue.Entries = newEntries;
             }
@@ -47,8 +49,6 @@ namespace JiraReporter
             issue.RemainingEstimate = issue.RemainingEstimateSeconds.SetTimeFormat8Hour();
         }
 
-
-
         private static void SetIssueExists(CompleteIssue issue, List<CompleteIssue> issues)
         {
             issue.ExistsInTimesheet = IssueExistsTimesheet(issue, issues);
@@ -70,8 +70,6 @@ namespace JiraReporter
         {
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
-
-
 
         public static void AdjustIssueCommits(JiraDayLog dayLog, TimeSpan offsetFromUtc)
         {
@@ -197,6 +195,30 @@ namespace JiraReporter
             if (issue.SubtasksIssues != null && issue.SubtasksIssues.Count > 0)
                 foreach (var subtask in issue.SubtasksIssues)
                     SetLoggedAuthor(subtask, authorName);
+        }
+
+        public static CompleteIssue GetBasicIssue (JiraIssue issue)
+        {
+            var basicIssue = new CompleteIssue
+            {
+                Key = issue.key,
+                Summary = issue.fields.summary
+            };
+            if (issue.fields.worklog != null && issue.fields.worklog.worklogs != null)
+                basicIssue.Entries = issue.fields.worklog.worklogs.Select(wk => new Entry
+                {
+                    Author = wk.author.name,
+                    AuthorFullName = wk.author.displayName,
+                    StartDate = Convert.ToDateTime(wk.started),
+                    Created = Convert.ToDateTime(wk.created),
+                    Updated = Convert.ToDateTime(wk.updated),
+                    Comment = wk.comment,
+                    TimeSpent = wk.timeSpentSeconds,
+                    UpdateAuthor = wk.updateAuthor.name,
+                    UpdateAuthorFullName = wk.updateAuthor.displayName
+                }).ToList();
+
+            return basicIssue;
         }
     }
 }

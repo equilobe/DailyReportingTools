@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Storage;
+﻿using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,11 +11,11 @@ using System.Xml.Serialization;
 
 namespace SourceControlLogReporter
 {
-    public class PolicyService
+    public class SourceControlPolicyService
     {
         Policy Policy { get; set; }
 
-        public PolicyService(Policy policy)
+        public SourceControlPolicyService(Policy policy)
         {
             Policy = policy;
         }

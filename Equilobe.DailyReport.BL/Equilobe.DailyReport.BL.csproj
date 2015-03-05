@@ -61,6 +61,7 @@
     <Compile Include="Jira\JiraClient.cs" />
     <Compile Include="Jira\JwtAuthenticator.cs" />
     <Compile Include="Jira\SprintLoader.cs" />
+    <Compile Include="Jira\TimesheetGenerator.cs" />
     <Compile Include="LogHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Svn\SvnClient.cs" />

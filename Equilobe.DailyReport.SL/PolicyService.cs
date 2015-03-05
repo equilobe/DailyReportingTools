@@ -1,5 +1,6 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
@@ -48,11 +49,6 @@ namespace Equilobe.DailyReport.SL
             };
 
             var project = new JiraService().GetProject(context, projectId);
-            policy.GeneratedProperties = new JiraGeneratedProperties
-            {
-                ProjectName = project.Name,
-                ProjectKey = project.Key
-            };
 
             policy.UserOptions = new JiraService().GetUsers(context, project.Key)
                 .Select(user => new User
@@ -92,5 +88,35 @@ namespace Equilobe.DailyReport.SL
 
             return policyBuffer;
         }
+
+        public static PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+
+                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                    return null;
+
+                var policyBuffer = new PolicyBuffer();
+                reportSettings.CopyProperties<IReportSetting>(policyBuffer);
+
+                if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
+                    Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
+                        .CopyProperties(policyBuffer);
+
+                return policyBuffer;
+            }
+        }
+
+        public static JiraPolicy GetPolicy(string uniqueProjectKey)
+        {
+            var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
+            var policy = new JiraPolicy();
+            policyBuffer.CopyProperties(policy);
+            return policy;
+        }
     }
 }
+
+

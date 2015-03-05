@@ -29,6 +29,10 @@ namespace JiraReporter
         {
             SaveReport();
             SetEmailCollection(Report.Authors);
+
+            //Policy.EmailCollection = new List<string>();
+            //Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
+
             SendReport();
         }
 
@@ -41,7 +45,7 @@ namespace JiraReporter
 
         protected virtual string GetReportPath()
         {
-            string reportPath = Policy.GeneratedProperties.ReportsPath;
+            string reportPath = Report.ReportsPath;
             Validation.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
@@ -50,7 +54,7 @@ namespace JiraReporter
         protected void SaveReportToFile(string reportPath, string viewPath)
         {
             var repCont = SourceControlLogReporter.ReportBase.ProcessReport(Report, viewPath);
-            WriteReport(Policy, repCont, reportPath);
+            WriteReport(Report, repCont, reportPath);
         }
 
         protected virtual void SendReport()
@@ -64,7 +68,7 @@ namespace JiraReporter
         {
             Policy.EmailCollection = new List<string>();
 
-            if (Policy.GeneratedProperties.IsFinalDraft)
+            if (Report.IsFinalDraft)
                 SetDraftEmailCollection(authors);
             else
                 SetFinalReportEmailCollection(authors);
@@ -75,7 +79,7 @@ namespace JiraReporter
         private void SetFinalReportEmailCollection(List<JiraAuthor> authors)
         {
             if (Policy.AdvancedOptions.SendFinalToOthers)
-                Policy.EmailCollection = JiraPolicyService.GetFinalAddedEmails(Policy);
+                Policy.EmailCollection = JiraContextService.GetFinalAddedEmails(Policy);
             if (Policy.AdvancedOptions.SendFinalToAllUsers)
                 AddUsersEmailAdresses(authors);
         }
@@ -83,7 +87,7 @@ namespace JiraReporter
         private void SetDraftEmailCollection(List<JiraAuthor> authors)
         {
             if (Policy.AdvancedOptions.SendDraftToOthers)
-                Policy.EmailCollection = JiraPolicyService.GetDraftAddedEmails(Policy);
+                Policy.EmailCollection = JiraContextService.GetDraftAddedEmails(Policy);
             if (!Policy.AdvancedOptions.SendDraftToAllUsers && Policy.AdvancedOptions.SendDraftToProjectManager)
                 Policy.EmailCollection.Add(authors.Find(a => a.IsProjectLead).EmailAdress);
             else
@@ -97,11 +101,11 @@ namespace JiraReporter
                     Policy.EmailCollection.Add(author.EmailAdress);
         }
 
-        private static void WriteReport(JiraPolicy policy, string report, string path)
+        private static void WriteReport(JiraReport context, string report, string path)
         {
-            Validation.EnsureDirectoryExists(policy.GeneratedProperties.LogArchivePath);
+            Validation.EnsureDirectoryExists(context.LogArchivePath);
 
-            var archivedFilePath = Path.Combine(policy.GeneratedProperties.LogArchivePath, Path.GetFileName(path));
+            var archivedFilePath = Path.Combine(context.LogArchivePath, Path.GetFileName(path));
 
             if (File.Exists(path))
             {
@@ -113,9 +117,9 @@ namespace JiraReporter
                 File.WriteAllText(archivedFilePath, report);
             }
 
-            Validation.EnsureDirectoryExists(policy.GeneratedProperties.UnsentReportsPath);
+            Validation.EnsureDirectoryExists(context.UnsentReportsPath);
 
-            var reportPath = Path.Combine(policy.GeneratedProperties.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
+            var reportPath = Path.Combine(context.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
 
             File.WriteAllText(reportPath, report);
         }

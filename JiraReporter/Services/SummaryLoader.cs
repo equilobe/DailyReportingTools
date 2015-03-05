@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter.Services
 {
@@ -50,6 +51,7 @@ namespace JiraReporter.Services
             _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
+            _summary.IsFinalDraft = _report.IsFinalDraft;
 
             SetDates(_options);
             SetReportDate();
@@ -324,12 +326,12 @@ namespace JiraReporter.Services
 
         private void SetAuthorsNotConfirmed()
         {
-            if (!_policy.GeneratedProperties.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
+            if (!_report.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
                 return;
 
             _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
             _summary.ConfirmationErrors = new List<Error>();
-            var notConfirmed = _policy.GeneratedProperties.IndividualDrafts.Where(d => !d.Confirmed).ToList();
+            var notConfirmed = _report.Settings.IndividualDraftConfirmations.Where(d => d.LastDateConfirmed.Value.Date != DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Date).ToList();
             foreach (var author in _summary.Authors)
             {
                 var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);

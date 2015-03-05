@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Models.Storage;
 using RazorEngine;
@@ -43,8 +44,8 @@ namespace SourceControlLogReporter
         {
             Options options = new Options();
             new CommandLineParser().ParseArguments(args, options);
-            Policy policy = PolicyService.LoadFromFile(options.PolicyPath);
-            var policyService = new PolicyService(policy);
+            Policy policy = SourceControlPolicyService.LoadFromFile(options.PolicyPath);
+            var policyService = new SourceControlPolicyService(policy);
             policyService.SetPolicy();
             options.LoadDates();
 
