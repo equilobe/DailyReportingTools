@@ -7,18 +7,18 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IJiraService
     {
-        Project GetProject(IJiraRequestContext context, long id);
-        List<JiraIssue> GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser);
-        JiraUser GetUser(IJiraRequestContext context, string username);
-        List<JiraUser> GetUsers(IJiraRequestContext context, string projectKey);
-        RapidView GetRapidView(IJiraRequestContext context, string id);
-        List<View> GetRapidViews(IJiraRequestContext context);
-        SprintReport GetSprintReport(IJiraRequestContext context, string rapidViewId, string sprintId);
-        List<Sprint> GetAllSprints(IJiraRequestContext context, string rapidViewId);
-        JiraIssue GetIssue(IJiraRequestContext context, string issueKey);
-        JiraIssues GetCompletedIssues(IJiraRequestContext context, DateTime startDate, DateTime endDate);
-        JiraIssues GetSprintTasks(IJiraRequestContext context, string projectKey);
-        List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context);
+        Project GetProject(long id);
+        List<JiraIssue> GetTimesheetForUser(DateTime startDate, DateTime endDate, string targetUser);
+        JiraUser GetUser(string username);
+        List<JiraUser> GetUsers(string projectKey);
+        RapidView GetRapidView(string id);
+        List<View> GetRapidViews();
+        SprintReport GetSprintReport(string rapidViewId, string sprintId);
+        List<Sprint> GetAllSprints(string rapidViewId);
+        JiraIssue GetIssue(string issueKey);
+        JiraIssues GetCompletedIssues(DateTime startDate, DateTime endDate);
+        JiraIssues GetSprintTasks(string projectKey);
+        List<ProjectInfo> GetProjectsInfo();
         Sprint GetProjectSprintForDate(ProjectDateFilter filter);
     }
 }

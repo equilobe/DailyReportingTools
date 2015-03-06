@@ -29,13 +29,15 @@ namespace Equilobe.DailyReport.SL
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
-            var baserUrl = queryString["xdm_e"] + queryString["cp"];
-            return baserUrl;
+            //var baseUrl = queryString["xdm_e"] + queryString["cp"];
+            var baseUrl = "http://192.168.17.5:2990/jira";
+            return baseUrl;
         }
 
         public string GetJiraUsername(NameValueCollection queryString)
         {
-            var userId = queryString["user_id"];
+            //var userId = queryString["user_id"];
+            var userId = "admin";
             return userId;
         }
 
@@ -62,10 +64,11 @@ namespace Equilobe.DailyReport.SL
                 SharedSecret = _sharedSecret,
                 ProjectId = projectId
             };
+            var jiraService = new JiraService(context);
 
-            var project = new JiraService().GetProject(context, projectId);
+            var project = jiraService.GetProject(projectId);
 
-            policy.UserOptions = new JiraService().GetUsers(context, project.Key)
+            policy.UserOptions = jiraService.GetUsers(project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,

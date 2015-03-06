@@ -193,15 +193,6 @@ namespace JiraReporter.Services
             _summary.Timing.SprintAverageEstimateString = _summary.Timing.AllocatedHoursPerDay.RoundDoubleOneDecimal();
         }
 
-        //private int GetTimesheetTotalEstimate(Timesheet timesheet)
-        //{
-        //    var timesheetService = new TimesheetService();
-        //    if (timesheet == null)
-        //        return 0;
-        //    else
-        //        return timesheetService.GetTotalOriginalEstimate(timesheet);
-        //}
-
         private void SetAuthorsAverageTiming()
         {
             foreach (var author in _summary.Authors)

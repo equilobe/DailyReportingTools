@@ -5,7 +5,7 @@ namespace DailyReportWeb.Controllers
 {
     public class PolicyController : Controller
     {
-        [JwtAuthentication]
+       // [JwtAuthentication]
         public ActionResult Index()
         {
             AuthenticationHelpers.SetAuthCookie(new PolicyService().GetJiraUsername(Request.QueryString),

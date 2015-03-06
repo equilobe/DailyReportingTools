@@ -39,7 +39,7 @@ namespace JiraReporter
             foreach (var issue in issues)
             {
                 var jiraIssue = new JiraIssue();
-                jiraIssue = new JiraService().GetIssue(_context.JiraRequestContext, issue.Key);
+                jiraIssue = new JiraService(_context.JiraRequestContext).GetIssue(issue.Key);
                 SetIssue(issue, jiraIssue);
             }
         }
@@ -161,7 +161,7 @@ namespace JiraReporter
         private void SetParent(JiraIssue jiraIssue)
         {
             _currentIssue.Parent = new IssueDetailed { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
-            var parent = new JiraService().GetIssue(_context.JiraRequestContext, _currentIssue.Parent.Key);
+            var parent = new JiraService(_context.JiraRequestContext).GetIssue(_currentIssue.Parent.Key);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
@@ -171,7 +171,7 @@ namespace JiraReporter
             issue.SubtasksIssues = new List<IssueDetailed>();
             foreach (var task in issue.Subtasks)
             {
-                jiraIssue = new JiraService().GetIssue(_context.JiraRequestContext, task.key);
+                jiraIssue = new JiraService(_context.JiraRequestContext).GetIssue(task.key);
                 issue.SubtasksIssues.Add(new IssueDetailed(jiraIssue));
                 SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
             }
