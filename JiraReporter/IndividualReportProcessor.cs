@@ -21,7 +21,9 @@ namespace JiraReporter.Model
         public override void ProcessReport()
         {
             SaveReport();
-            JiraPolicyService.SetIndividualEmail(Report.Author.EmailAdress, Policy);
+            JiraContextService.SetIndividualEmail(Report.Author.EmailAdress, Policy);
+            Policy.EmailCollection = new List<string>();
+            Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
             SendReport();
         }
 
@@ -34,7 +36,7 @@ namespace JiraReporter.Model
 
         protected override string GetReportPath()
         {
-            string reportPath = Policy.GeneratedProperties.ReportsPath;
+            string reportPath = Report.ReportsPath;
             Validation.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, Report.Author.Name + "_" + Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
