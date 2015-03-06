@@ -8,8 +8,8 @@ namespace DailyReportWeb.Controllers
         [JwtAuthentication]
         public ActionResult Index()
         {
-            AuthenticationHelpers.SetAuthCookie(PolicyService.GetJiraUsername(Request.QueryString),
-                                                PolicyService.GetJiraBaseUrl(Request.QueryString));
+            AuthenticationHelpers.SetAuthCookie(new PolicyService().GetJiraUsername(Request.QueryString),
+                                                new PolicyService().GetJiraBaseUrl(Request.QueryString));
             return View();
         }
 

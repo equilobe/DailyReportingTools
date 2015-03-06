@@ -7,7 +7,7 @@ namespace Equilobe.DailyReport.SL
 {
     public class SourceControlService
     {
-        public static List<string> GetContributors(SourceControlOptions sourceControlOptions)
+        public List<string> GetContributors(SourceControlOptions sourceControlOptions)
         {
             if (sourceControlOptions.Type == SourceControlType.GitHub)
                 return new GitHubService().GetAllContributors(sourceControlOptions.Credentials, sourceControlOptions.RepoOwner, sourceControlOptions.Repo)

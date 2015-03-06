@@ -11,7 +11,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public List<string> Post([FromBody]SourceControlOptions sourceControlOptions)
         {
-            return SourceControlService.GetContributors(sourceControlOptions);
+            return new SourceControlService().GetContributors(sourceControlOptions);
         }
     }
 }

@@ -15,11 +15,29 @@ namespace Equilobe.DailyReport.SL
 {
     public class ReportService
     {
-        public static bool CanSendFullDraft(string uniqueProjectKey, string userKey = "")
+        public string _uniqueProjectKey { get; set; }
+        public JiraReport _report { get; set; }
+
+        public ReportService()
+        {
+
+        }
+
+        public ReportService(string uniqueProjectKey)
+        {
+            _uniqueProjectKey = uniqueProjectKey;
+        }
+
+        public ReportService(JiraReport report)
+        {
+            _report = report;
+        }
+
+        public bool CanSendFullDraft(string userKey = "")
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == _uniqueProjectKey);
                 var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.ReportSettingsId == report.Id).ToList();
                 var isForcedByLead = IsForcedByLead(userKey, individualReports);
 
@@ -48,10 +66,9 @@ namespace Equilobe.DailyReport.SL
 
                 return true;
             }
-
         }
 
-        private static bool IsForcedByLead(string userKey, List<IndividualDraftConfirmation> individualConfirmations)
+        private bool IsForcedByLead(string userKey, List<IndividualDraftConfirmation> individualConfirmations)
         {
             if (individualConfirmations == null)
                 return false;
@@ -63,22 +80,22 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        public static void SetFinalDraftConfirmation(string key)
+        public void SetFinalDraftConfirmation()
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == key);
+                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _uniqueProjectKey);
                 report.FinalDraftConfirmation.LastFinalDraftConfirmationDate = DateTime.Today;
 
                 db.SaveChanges();
             }
         }
 
-        public static bool ConfirmIndividualDraft(string uniqueProjectKey, string draftKey)
+        public bool ConfirmIndividualDraft(string draftKey)
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == _uniqueProjectKey);
                 if (report == null || report.IndividualDraftConfirmations == null || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today || report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today)
                     return false;
 
@@ -93,11 +110,11 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static bool CheckIndividualConfirmation(string uniqueProjectKey, string draftKey)
+        public bool CheckIndividualConfirmation(string draftKey)
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == _uniqueProjectKey);
                 if (report.IndividualDraftConfirmations == null)
                     return false;
 
@@ -109,11 +126,11 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static void SaveIndividualDraftConfirmation(string uniqueProjectKey, IndividualDraftInfo draft)
+        public void SaveIndividualDraftConfirmation(IndividualDraftInfo draft)
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
+                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _uniqueProjectKey);
                 if (report.IndividualDraftConfirmations == null)
                     report.IndividualDraftConfirmations = new List<IndividualDraftConfirmation>();
                 var individualDraft = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.Username == draft.Username);
@@ -126,7 +143,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private static void CreateNewIndividualDraftConfirmation(IndividualDraftInfo draft, ICollection<IndividualDraftConfirmation> confirmations)
+        private void CreateNewIndividualDraftConfirmation(IndividualDraftInfo draft, ICollection<IndividualDraftConfirmation> confirmations)
         {
             confirmations.Add(new IndividualDraftConfirmation
             {
@@ -136,38 +153,38 @@ namespace Equilobe.DailyReport.SL
             });
         }
 
-        private static void UpdateIndividualDraftConfirmation(IndividualDraftConfirmation individualDraft, IndividualDraftInfo draft)
+        private void UpdateIndividualDraftConfirmation(IndividualDraftConfirmation individualDraft, IndividualDraftInfo draft)
         {
             individualDraft.IsProjectLead = draft.IsLead;
             individualDraft.UniqueUserKey = draft.UserKey;
         }
 
-        public static void SetReportFromDb(JiraReport report)
+        public void SetReportFromDb()
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == report.UniqueProjectKey);
-                report.Settings = new ReportSettings();
-                reportSettings.CopyProperties(report.Settings);
+                var reportSettings = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
+                _report.Settings = new ReportSettings();
+                reportSettings.CopyProperties(_report.Settings);
                 if (reportSettings.ReportExecutionSummary != null)
                 {
                     if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
-                        report.LastDraftSentDate = reportSettings.ReportExecutionSummary.LastDraftSentDate.Value;
+                        _report.LastDraftSentDate = reportSettings.ReportExecutionSummary.LastDraftSentDate.Value;
                     if (reportSettings.ReportExecutionSummary.LastFinalReportSentDate != null)
-                        report.LastReportSentDate = reportSettings.ReportExecutionSummary.LastFinalReportSentDate.Value;
+                        _report.LastReportSentDate = reportSettings.ReportExecutionSummary.LastFinalReportSentDate.Value;
                 }
 
                 if (reportSettings.FinalDraftConfirmation != null)
                     if (reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
-                        report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
+                        _report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
             }
         }
 
-        public static void SetReportExecutionInstance(string uniqueProjectKey, SendScope scope, string userKey = "")
+        public void SetReportExecutionInstance(SendScope scope, string userKey = "")
         {
             using(var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r=>r.UniqueProjectKey == uniqueProjectKey);
+                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _uniqueProjectKey);
 
                 if (report.ReportExecutionInstances == null)
                     report.ReportExecutionInstances = new List<ReportExecutionInstance>();
@@ -183,26 +200,26 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static ReportExecutionInstance GetUnexecutedInstance(ReportSettings report)
+        public ReportExecutionInstance GetUnexecutedInstance(ReportSettings report)
         {
             var execInstance = report.ReportExecutionInstances.Where(qr => qr.DateExecuted == null).FirstOrDefault();
             return execInstance;
         }
 
-        public static void SetExecutionInstance(JiraReport report)
+        public void SetExecutionInstance()
         {
-            var unexecutedInstance = GetUnexecutedInstance(report.Settings);
+            var unexecutedInstance = GetUnexecutedInstance(_report.Settings);
             if (unexecutedInstance != null)
             {
-                report.ExecutionInstance = new ExecutionInstance();
-                unexecutedInstance.CopyProperties(report.ExecutionInstance);
+                _report.ExecutionInstance = new ExecutionInstance();
+                unexecutedInstance.CopyProperties(_report.ExecutionInstance);
                 using(var db = new ReportsDb())
                 {
                     db.SetExecutionDate(unexecutedInstance.Id);
                 }
             }
             else
-                report.IsOnSchedule = true;
+                _report.IsOnSchedule = true;
         }
     }
 }

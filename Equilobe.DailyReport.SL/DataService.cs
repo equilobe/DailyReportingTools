@@ -12,7 +12,7 @@ namespace Equilobe.DailyReport.SL
 {
     public class DataService
     {
-        public static void SaveSharedSecret(HttpRequestBase request)
+        public void SaveSharedSecret(HttpRequestBase request)
         {
             var bodyText = new System.IO.StreamReader(request.InputStream).ReadToEnd();
             var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
@@ -29,7 +29,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static void DeleteSharedSecret(string baseUrl)
+        public void DeleteSharedSecret(string baseUrl)
         {
             using (var db = new ReportsDb())
             {
@@ -40,7 +40,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static string GetSharedSecret(string baseUrl)
+        public string GetSharedSecret(string baseUrl)
         {
             return new ReportsDb().InstalledInstances
                 .Where(x => x.BaseUrl == baseUrl)
@@ -48,7 +48,7 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
-        public static string GetReportTime(string baseUrl, long projectId)
+        public string GetReportTime(string baseUrl, long projectId)
         {
             return new ReportsDb().ReportSettings
                 .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
@@ -56,7 +56,7 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
-        public static List<string> GetUniqueProjectsKey(string baseUrl)
+        public List<string> GetUniqueProjectsKey(string baseUrl)
         {
             return new ReportsDb().InstalledInstances
                 .Where(installedInstance => installedInstance.BaseUrl == baseUrl)

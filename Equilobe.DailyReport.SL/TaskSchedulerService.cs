@@ -9,11 +9,23 @@ namespace Equilobe.DailyReport.SL
 {
     public class TaskSchedulerService
     {
-        public static bool TryRunReportTask(string id)
+        public string _uniqueProjectKey { get; set; }
+
+        public TaskSchedulerService()
+        {
+
+        }
+
+        public TaskSchedulerService(string uniqueProjectKey)
+        {
+            _uniqueProjectKey = uniqueProjectKey;
+        }
+
+        public bool TryRunReportTask()
         {
             try
             {
-                RunReportTask(id);
+                RunReportTask();
                 return true;
             }
             catch
@@ -22,9 +34,9 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static void RunReportTask(string id)
+        public void RunReportTask()
         {
-            var key = "DRT-" + id;
+            var key = "DRT-" + _uniqueProjectKey;
             using (var ts = new TaskService())
             {
                 var task = ts.AllTasks.Single(t => t.Name == key);
@@ -32,26 +44,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static void RunReportDirectly(string policyName, string draftKey, bool isForced = false)
-        {
-            var basePath = ConfigurationManager.AppSettings["JiraReporterPath"];
-            var command = GetCommand(policyName, draftKey, isForced);
-            Cmd.ExecuteSingleCommand(command, basePath);
-        }
-
-        private static string GetCommand(string policyName, string draftKey, bool isForced = false)
-        {
-            var draftKeyOption = string.Empty;
-            if (isForced)
-                draftKeyOption = " --triggerKey " + draftKey;
-            else
-                draftKeyOption = " --draftKey " + draftKey;
-            var command = "jiraReporter.exe" + " --policy" + @" Policies\" + policyName + ".xml" + draftKeyOption;
-
-            return command;
-        }
-
-        public static void Create(string uniqueProjectKey, string reportTime)
+        public void Create(string reportTime)
         {
             using (TaskService taskService = new TaskService())
             {
@@ -62,18 +55,18 @@ namespace Equilobe.DailyReport.SL
                 });
                 taskDefinition.Actions.Add(new ExecAction(
                     ConfigurationManager.AppSettings["jiraReporterPath"],
-                    "uniqueProjectKey=" + uniqueProjectKey,
+                    "uniqueProjectKey=" + _uniqueProjectKey,
                     ConfigurationManager.AppSettings["reportToolPath"]));
 
-                GetTaskFolder().RegisterTaskDefinition("DRT-" + uniqueProjectKey, taskDefinition);
+                GetTaskFolder().RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition);
             }
         }
 
-        public static void Update(string uniqueProjectKey, string reportTime)
+        public void Update(string reportTime)
         {
             using (TaskService taskService = new TaskService())
             {
-                var taskDefinition = taskService.GetTask(ConfigurationManager.AppSettings["taskSchedulerFolderName"] + "\\DRT-" + uniqueProjectKey).Definition;
+                var taskDefinition = taskService.GetTask(ConfigurationManager.AppSettings["taskSchedulerFolderName"] + "\\DRT-" + _uniqueProjectKey).Definition;
                 taskDefinition.Triggers.Clear();
 
                 if (!string.IsNullOrEmpty(reportTime))
@@ -82,18 +75,18 @@ namespace Equilobe.DailyReport.SL
                         StartBoundary = DateTime.Parse(reportTime)
                     });
 
-                GetTaskFolder().RegisterTaskDefinition("DRT-" + uniqueProjectKey, taskDefinition);
+                GetTaskFolder().RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition);
             }
         }
 
-        public static void Delete(List<string> uniqueProjectsKey)
+        public void Delete(List<string> uniqueProjectsKey)
         {
             var taskFolder = GetTaskFolder();
             uniqueProjectsKey.ForEach(uniqueProjectKey =>
                 taskFolder.DeleteTask("DRT-" + uniqueProjectKey));
         }
 
-        private static TaskFolder GetTaskFolder()
+        private TaskFolder GetTaskFolder()
         {
             using (TaskService taskService = new TaskService())
             {

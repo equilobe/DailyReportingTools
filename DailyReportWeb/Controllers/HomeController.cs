@@ -93,7 +93,7 @@ namespace DailyReportWeb.Controllers
         [HttpPost]
         public ActionResult InstalledCallback()
         {
-            DataService.SaveSharedSecret(Request);
+            new DataService().SaveSharedSecret(Request);
 
             return Content(String.Empty);
         }
@@ -104,8 +104,8 @@ namespace DailyReportWeb.Controllers
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
             var baseUrl = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).BaseUrl;
 
-            DataService.DeleteSharedSecret(baseUrl);
-            TaskSchedulerService.Delete(DataService.GetUniqueProjectsKey(baseUrl));
+            new DataService().DeleteSharedSecret(baseUrl);
+            new TaskSchedulerService().Delete(new DataService().GetUniqueProjectsKey(baseUrl));
 
             return Content(String.Empty);
         }

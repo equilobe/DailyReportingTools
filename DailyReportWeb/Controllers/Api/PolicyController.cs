@@ -17,18 +17,18 @@ namespace DailyReportWeb.Controllers.Api
         public IEnumerable<PolicySummary> Get()
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = DataService.GetSharedSecret(baseUrl);
+            var sharedSecret = new DataService().GetSharedSecret(baseUrl);
 
-            return PolicySummaryService.GetPoliciesSummary(baseUrl, sharedSecret);
+            return new PolicySummaryService(baseUrl, sharedSecret).GetPoliciesSummary();
         }
 
         // GET: api/Policy/5
         public PolicyBuffer Get(long id)
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = DataService.GetSharedSecret(baseUrl);
+            var sharedSecret = new DataService().GetSharedSecret(baseUrl);
 
-            return PolicyService.GetPolicy(baseUrl, sharedSecret, id);
+            return new PolicyService(baseUrl, sharedSecret).GetPolicy(id);
         }
 
         // PUT: api/Policy
@@ -51,7 +51,7 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings.InstalledInstanceId = installedInstance.Id;
                     reportSettings.UniqueProjectKey = ProjectService.GetUniqueProjectKey(policySummary.ProjectKey);
 
-                    TaskSchedulerService.Create(reportSettings.UniqueProjectKey, policySummary.ReportTime);
+                    new TaskSchedulerService(reportSettings.UniqueProjectKey).Create(policySummary.ReportTime);
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace DailyReportWeb.Controllers.Api
                         return;
 
                     reportSettings.ReportTime = policySummary.ReportTime;
-                    TaskSchedulerService.Update(reportSettings.UniqueProjectKey, reportSettings.ReportTime);
+                    new TaskSchedulerService(reportSettings.UniqueProjectKey).Update(reportSettings.ReportTime);
                 }
 
                 db.SaveChanges();
@@ -85,14 +85,14 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings.UniqueProjectKey = ProjectService.GetUniqueProjectKey(updatedPolicy.ProjectKey);
 
                     if (!string.IsNullOrEmpty(reportSettings.ReportTime))
-                        TaskSchedulerService.Create(reportSettings.UniqueProjectKey, reportSettings.ReportTime);
+                        new TaskSchedulerService(reportSettings.UniqueProjectKey).Create(reportSettings.ReportTime);
                 }
                 else
                 {
                     if (reportSettings.ReportTime != updatedPolicy.ReportTime)
                     {
                         reportSettings.ReportTime = updatedPolicy.ReportTime;
-                        TaskSchedulerService.Update(reportSettings.UniqueProjectKey, reportSettings.ReportTime);
+                        new TaskSchedulerService(reportSettings.UniqueProjectKey).Update(reportSettings.ReportTime);
                     }
                 }
 

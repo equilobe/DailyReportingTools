@@ -29,13 +29,14 @@ namespace JiraReporter
             var options = new JiraOptions();                
             new CommandLineParser().ParseArguments(args, options);
 
-            var policy = PolicyService.GetPolicy(options.UniqueProjectKey);
+            var policy = new PolicyService().GetPolicy(options.UniqueProjectKey);
 
             var report = new JiraReport(policy, options);
-            ReportService.SetReportFromDb(report);
+            var reportService = new ReportService(report);
+            reportService.SetReportFromDb();
             report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(report);
 
-            ReportService.SetExecutionInstance(report);
+            reportService.SetExecutionInstance();
 
             var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
@@ -89,10 +90,11 @@ namespace JiraReporter
         {
             if (report.IsIndividualDraft)
             {
+                var reportService = new ReportService(report.UniqueProjectKey);
                 foreach (var author in report.Authors)
                 {
                     var individualReport = ReportGenerator.GetIndividualReport(report, author);
-                    ReportService.SaveIndividualDraftConfirmation(report.UniqueProjectKey, author.IndividualDraftInfo);
+                    reportService.SaveIndividualDraftConfirmation(author.IndividualDraftInfo);
                     var reportProcessor = new IndividualReportProcessor(individualReport);
                     reportProcessor.ProcessReport();
                 }
