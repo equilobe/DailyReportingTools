@@ -1,4 +1,6 @@
-﻿using DailyReportWeb.Helpers;
+﻿using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Services;
 using System;
 using System.Web.Mvc;
@@ -8,44 +10,38 @@ namespace DailyReportWeb.Controllers
     public class ReportController : Controller
     {
         [HttpGet]
-        public ActionResult Send(string id, DateTime date)
+        public ActionResult SendReport(string id, DateTime date)
         {
+            var reportService = new ReportService(id);
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
 
-            var policy = JiraPolicyService.LoadPolicy(id);
-            var policyPath = JiraPolicyService.GetPolicyPath(id);
-
-            if (!policy.CanSendFullDraft())
+            if (!reportService.CanSendFullDraft())
                 return Content("Not all individual drafts were confirmed");
 
-            JiraPolicyService.SetPolicyFinalReport(policy, policyPath);
+            reportService.SetFinalDraftConfirmation();
+            reportService.SetReportExecutionInstance(SendScope.SendFinalDraft);
 
-            if (ReportRunner.TryRunReportTask(id))
+            if (new TaskSchedulerService(id).TryRunReportTask())
                 return Content("Report confirmed. Final report sent");
             else
                 return Content("Error in sending the final report");
         }
 
         [HttpGet]
-        public ActionResult ResendDraft(string id, DateTime date, string draftKey="")
+        public ActionResult SendDraft(string id, DateTime date, string draftKey="")
         {
+            var reportService = new ReportService(id);
+
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend draft for another date");
 
-            var policy = JiraPolicyService.LoadPolicy(id);
-            var policyPath = JiraPolicyService.GetPolicyPath(id);
-
-            if (!policy.CanSendFullDraft(draftKey))
+            if (!reportService.CanSendFullDraft(draftKey))
                 return Content("Cannot send report if not all individual drafts were confirmed");
 
-            if (!string.IsNullOrEmpty(draftKey))
-            {
-                ReportRunner.RunReportDirectly(id, draftKey, true);
-                return Content("Draft report was sent");
-            }
+            reportService.SetReportExecutionInstance(SendScope.SendFinalDraft);
 
-            if (ReportRunner.TryRunReportTask(id))
+            if (new TaskSchedulerService(id).TryRunReportTask())
                 return Content("Draft report was resent");
             else
                 return Content("Error in sending draft report");
@@ -54,19 +50,21 @@ namespace DailyReportWeb.Controllers
         [HttpGet]
         public ActionResult ConfirmIndividualDraft(string id, DateTime date, string draftKey)
         {
+            var reportService = new ReportService(id);
+
             if (date.Date != DateTime.Today)
                 return Content("Cannot confirm report for another date");
 
-            var policyPath = JiraPolicyService.GetPolicyPath(id);
-            var policy = JiraPolicyService.LoadFromFile(policyPath);
+            if (reportService.CheckIndividualConfirmation(draftKey))
+                return Content("This draft is already confirmed");
 
-            var confirm = JiraPolicyService.SetIndividualDraftConfirmation(policy, draftKey, policyPath);
-            if (!confirm)
+            if (!reportService.ConfirmIndividualDraft(draftKey)) 
                 return Content("Error in confirmation");
 
-            if (policy.CanSendFullDraft())
+            if (reportService.CanSendFullDraft(id))
             {
-                if (!ReportRunner.TryRunReportTask(id))
+                reportService.SetReportExecutionInstance(SendScope.SendFinalDraft);
+                if (!new TaskSchedulerService(id).TryRunReportTask())
                     return Content("Report confirmed. Error in sending full draft report");
 
                 return Content("Report confirmed. Full draft sent");
@@ -78,15 +76,17 @@ namespace DailyReportWeb.Controllers
         [HttpGet]
         public ActionResult SendIndividualDraft(string id, DateTime date, string draftKey)
         {
+            var reportService = new ReportService(id);
+
             if (date.Date != DateTime.Today)
                 return Content("Cannot resend report for another date");
 
-            var policy = JiraPolicyService.LoadPolicy(id);
-
-            if (policy.CheckIndividualDraftConfirmation(draftKey))
+            if (reportService.CheckIndividualConfirmation(draftKey))
                 return Content("Draft is already confirmed. Can't resend");
 
-            ReportRunner.RunReportDirectly(id, draftKey);
+            reportService.SetReportExecutionInstance(SendScope.SendIndividualDraft, draftKey);
+            if (!new TaskSchedulerService(id).TryRunReportTask())
+                return Content("Error in sending individual draft");
 
             return Content("Report resent");
         }

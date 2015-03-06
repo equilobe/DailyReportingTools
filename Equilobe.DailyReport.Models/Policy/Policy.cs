@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.Storage
+namespace Equilobe.DailyReport.Models.Policy
 {
-    public class GeneratedProperties
+    public class Policy
     {
+        public string ReportTime { get; set; }
+        public string ReportTitle { get; set; }
+
+        [XmlIgnore]
+        public DateTime ReportTimeDateFormat { get; set; }
+
+        public string Emails { get; set; }
+
+        public SourceControlOptions SourceControlOptions { get; set; }
+
+        [XmlIgnore]
+        public List<string> EmailCollection { get; set; }
+
         public string RootPath { get; set; }
 
         [XmlIgnore]

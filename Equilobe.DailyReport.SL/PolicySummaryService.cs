@@ -9,33 +9,45 @@ namespace Equilobe.DailyReport.SL
 {
     public class PolicySummaryService
     {
-        public static PolicySummary GetPolicySummary(string baseUrl, string sharedSecret, long projectId)
+        public string _baseUrl { get; set; }
+        public string _sharedSecret { get; set; }
+        public JiraRequestContext _requestContext
         {
-            var context = new JiraRequestContext(baseUrl, sharedSecret);
+            get
+            {
+                return new JiraRequestContext(_baseUrl, _sharedSecret);
+            }
+        }
 
-            var projectInfo = new JiraService().GetProjectInfo(context, projectId);
+        public PolicySummaryService(string baseUrl, string sharedSecret)
+        {
+            _baseUrl = _baseUrl;
+            _sharedSecret = sharedSecret;
+        }
+
+        public PolicySummary GetPolicySummary(long projectId)
+        {
+            var projectInfo = new JiraService().GetProjectInfo(_requestContext, projectId);
             return new PolicySummary
             {
-                BaseUrl = baseUrl,
+                BaseUrl = _baseUrl,
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = DbService.GetReportTime(baseUrl, projectInfo.ProjectId)
+                ReportTime = new DataService().GetReportTime(_baseUrl, projectInfo.ProjectId)
             };
         }
 
-        public static List<PolicySummary> GetPoliciesSummary(string baseUrl, string sharedSecret)
+        public List<PolicySummary> GetPoliciesSummary()
         {
-            var context = new JiraRequestContext(baseUrl, sharedSecret);
-
-            return new JiraService().GetProjectsInfo(context)
+            return new JiraService().GetProjectsInfo(_requestContext)
                 .Select(projectInfo => new PolicySummary
                 {
-                    BaseUrl = baseUrl,
+                    BaseUrl = _baseUrl,
                     ProjectId = projectInfo.ProjectId,
                     ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
-                    ReportTime = DbService.GetReportTime(baseUrl, projectInfo.ProjectId)
+                    ReportTime = new DataService().GetReportTime(_baseUrl, projectInfo.ProjectId)
                 })
                 .ToList();
         }

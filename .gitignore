@@ -70,3 +70,4 @@ packages/
 #Policies files
 [Pp]olicies/
 /DailyReportWeb/ConnectionStrings.config
+/JiraReporter/ConnectionStrings.config

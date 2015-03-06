@@ -1,5 +1,6 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
@@ -11,48 +12,58 @@ namespace Equilobe.DailyReport.SL
 {
     public class PolicyService
     {
-        public static string GetJiraBaseUrl(NameValueCollection queryString)
+        public string _baseUrl { get; set; }
+        public string _sharedSecret { get; set; }
+
+        public PolicyService()
+        {
+
+        }
+
+        public PolicyService(string baseUrl, string sharedSecret)
+        {
+            _baseUrl = baseUrl;
+            _sharedSecret = sharedSecret;
+        }
+
+
+        public string GetJiraBaseUrl(NameValueCollection queryString)
         {
             var baserUrl = queryString["xdm_e"] + queryString["cp"];
             return baserUrl;
         }
 
-        public static string GetJiraUsername(NameValueCollection queryString)
+        public string GetJiraUsername(NameValueCollection queryString)
         {
             var userId = queryString["user_id"];
             return userId;
         }
 
-        public static PolicyBuffer GetPolicy(string baseUrl, string sharedSecret, long projectId)
+        public PolicyBuffer GetPolicy(long projectId)
         {
-            var jiraPolicy = GetJiraPolicy(baseUrl, sharedSecret, projectId);
-            var policySummary = PolicySummaryService.GetPolicySummary(baseUrl, sharedSecret, projectId);
-            var policyDetails = GetPolicyDetails(baseUrl, projectId);
+            var jiraPolicy = GetJiraPolicy(projectId);
+            var policySummary = new PolicySummaryService(_baseUrl, _sharedSecret).GetPolicySummary(projectId);
+            var policyDetails = GetPolicyDetails(_baseUrl, projectId);
 
             return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
-        public static JiraPolicy GetJiraPolicy(string baseUrl, string sharedSecret, long projectId)
+        public JiraPolicy GetJiraPolicy(long projectId)
         {
             var context = new JiraRequestContext
             {
-                BaseUrl = baseUrl,
-                SharedSecret = sharedSecret
+                BaseUrl = _baseUrl,
+                SharedSecret = _sharedSecret
             };
 
             var policy = new JiraPolicy
             {
-                BaseUrl = baseUrl,
-                SharedSecret = sharedSecret,
+                BaseUrl = _baseUrl,
+                SharedSecret = _sharedSecret,
                 ProjectId = projectId
             };
 
             var project = new JiraService().GetProject(context, projectId);
-            policy.GeneratedProperties = new JiraGeneratedProperties
-            {
-                ProjectName = project.Name,
-                ProjectKey = project.Key
-            };
 
             policy.UserOptions = new JiraService().GetUsers(context, project.Key)
                 .Select(user => new User
@@ -65,7 +76,7 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public static PolicyDetails GetPolicyDetails(string baseUrl, long projectId)
+        public PolicyDetails GetPolicyDetails(string baseUrl, long projectId)
         {
             using (var db = new ReportsDb())
             {
@@ -78,7 +89,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public static PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policyDetails)
+        public PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policyDetails)
         {
             var policyBuffer = new PolicyBuffer();
             jiraPolicy.CopyProperties(policyBuffer);
@@ -88,9 +99,39 @@ namespace Equilobe.DailyReport.SL
             policyDetails.CopyProperties(policyBuffer);
 
             if (policyBuffer.SourceControlOptions != null)
-                policyBuffer.SourceControlUsernames = SourceControlService.GetContributors(policyBuffer.SourceControlOptions);
+                policyBuffer.SourceControlUsernames = new SourceControlService().GetContributors(policyBuffer.SourceControlOptions);
 
             return policyBuffer;
         }
+
+        public PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+
+                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                    return null;
+
+                var policyBuffer = new PolicyBuffer();
+                reportSettings.CopyProperties<IReportSetting>(policyBuffer);
+
+                if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
+                    Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
+                        .CopyProperties(policyBuffer);
+
+                return policyBuffer;
+            }
+        }
+
+        public JiraPolicy GetPolicy(string uniqueProjectKey)
+        {
+            var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
+            var policy = new JiraPolicy();
+            policyBuffer.CopyProperties(policy);
+            return policy;
+        }
     }
 }
+
+

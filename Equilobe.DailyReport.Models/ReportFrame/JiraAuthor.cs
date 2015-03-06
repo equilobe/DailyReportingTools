@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -14,6 +15,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     {
         public string Name { get; set; }
         public string Username { get; set; }
+        public string UserKey { get; set; }
         public string ShortName { get; set; }
         public string FirstName { get; set; }
         public string Initials { get; set; }
@@ -56,13 +58,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public Timesheet MonthTimesheet { get; set; }
         public Timesheet SprintTimesheet { get; set; }
 
-        public List<CompleteIssue> Issues { get; set; }
-        public List<CompleteIssue> MonthIssues { get; set; }
-        public List<CompleteIssue> SprintIssues { get; set; }
-        public List<CompleteIssue> InProgressTasks { get; set; }
-        public List<CompleteIssue> OpenTasks { get; set; }
-        public List<CompleteIssue> InProgressTasksParents { get; set; }
-        public List<CompleteIssue> OpenTasksParents { get; set; }
+        public List<IssueDetailed> Issues { get; set; }
+        public List<IssueDetailed> MonthIssues { get; set; }
+        public List<IssueDetailed> SprintIssues { get; set; }
+        public List<IssueDetailed> InProgressTasks { get; set; }
+        public List<IssueDetailed> OpenTasks { get; set; }
+        public List<IssueDetailed> InProgressTasksParents { get; set; }
+        public List<IssueDetailed> OpenTasksParents { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
@@ -85,7 +87,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         {
             Name = user.displayName;
             EmailAdress = user.emailAddress;
-            Username = user.key;
+            Username = user.name;
+            UserKey = user.key;
             AvatarLink = user.avatarUrls.Big;
         }
 

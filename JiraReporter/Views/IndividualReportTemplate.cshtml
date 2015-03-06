@@ -3,6 +3,15 @@
     var imgSrc = string.Empty;
 }
 
+@if ((Model.ToDate - Model.FromDate).TotalDays > 1)
+{
+    day = "Day avg.";
+}
+else
+{
+    day = Model.FromDate.DayOfWeek.ToString();
+}
+
 
 <div style="margin-top:20px; font-size:12px">
 

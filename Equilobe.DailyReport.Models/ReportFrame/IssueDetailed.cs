@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
-    public class CompleteIssue
+    public class IssueDetailed
     {
         public string Key { get; set; }
 
@@ -33,7 +33,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool ExceededOriginalEstimate { get; set; }
         public string Type { get; set; }
         public bool IsSubtask { get; set; }
-        public CompleteIssue Parent { get; set; }
+        public IssueDetailed Parent { get; set; }
         public string Label { get; set; }
         public string StringResolutionDate { get; set; }
         public DateTime ResolutionDate { get; set; }
@@ -41,8 +41,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string Updated { get; set; }
         public DateTime UpdatedDate { get; set; }
         public List<Subtask> Subtasks { get; set; }
-        public List<CompleteIssue> SubtasksIssues { get; set; }
-        public List<CompleteIssue> AssigneeSubtasks { get; set; }
+        public List<IssueDetailed> SubtasksIssues { get; set; }
+        public List<IssueDetailed> AssigneeSubtasks { get; set; }
         public bool ExistsInTimesheet { get; set; }
         public DateTime Created { get; set; }
         public List<JiraCommit> Commits { get; set; }
@@ -58,14 +58,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasAssignedSubtasksInProgress { get; set; }
         public bool HasWorkLoggedByAssignee { get; set; }
         public string Summary { get; set; }
-        public List<Entries> Entries { get; set; }
+        public List<Entry> Entries { get; set; }
 
-        public CompleteIssue()
+        public IssueDetailed()
         {
 
         }
 
-        public CompleteIssue(CompleteIssue issue)
+        public IssueDetailed(IssueDetailed issue)
         {
             if (issue.Assignee != null)
                 this.Assignee = issue.Assignee;
@@ -112,7 +112,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             if (issue.AssigneeSubtasks != null)
                 this.AssigneeSubtasks = issue.AssigneeSubtasks;
             else
-                AssigneeSubtasks = new List<CompleteIssue>();
+                AssigneeSubtasks = new List<IssueDetailed>();
             this.Commits = issue.Commits;
             this.PullRequests = issue.PullRequests;
             this.LoggedAuthor = issue.LoggedAuthor;
@@ -127,7 +127,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             this.DisplayStatus = issue.DisplayStatus;
         }
 
-        public CompleteIssue(JiraIssue jiraIssue)
+        public IssueDetailed(JiraIssue jiraIssue)
         {
             Summary = jiraIssue.fields.summary;
             Key = jiraIssue.key;

@@ -284,8 +284,8 @@
                                 <div class="input-group">
                                     <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in policy.sourceControlUsernames"></select>
                                     <span class="input-group-btn">
-                                        <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames.indexOf(sourceControlUsername) != -1 }"><span class="glyphicon glyphicon-plus"></span></a>
-                                        <a role="button" class="btn btn-default" ng-click="removeSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames.indexOf(sourceControlUsername) == -1 }"><span class="glyphicon glyphicon-minus"></span></a>
+                                        <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames != null && user.sourceControlUsernames.indexOf(sourceControlUsername) != -1 }" ng-disabled="sourceControlUsername == null"><span class="glyphicon glyphicon-plus"></span></a>
+                                        <a role="button" class="btn btn-default" ng-click="removeSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames == null || user.sourceControlUsernames.indexOf(sourceControlUsername) == -1 }"><span class="glyphicon glyphicon-minus"></span></a>
                                     </span>
                                 </div>
                             </div>

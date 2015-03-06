@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Storage;
+﻿using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -10,7 +11,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public List<string> Post([FromBody]SourceControlOptions sourceControlOptions)
         {
-            return SourceControlService.GetContributors(sourceControlOptions);
+            return new SourceControlService().GetContributors(sourceControlOptions);
         }
     }
 }

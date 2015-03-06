@@ -18,16 +18,6 @@ namespace Equilobe.DailyReport.BL
             return "rest/api/2/project";
         }
 
-        public static string TimesheetForUser(string fromDate, string toDate, string targetUser)
-        {
-            return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?targetUser={0}&startDate={1}&endDate={2}", targetUser, fromDate, toDate);
-        }
-
-        public static string Timesheet(string fromDate, string toDate)
-        {
-            return string.Format("rest/timesheet-gadget/1.0/raw-timesheet.xml?startDate={0}&endDate={1}", fromDate, toDate);
-        }
-
         public static string User(string userName)
         {
             return string.Format("rest/api/latest/user?username={0}", userName);
@@ -76,6 +66,11 @@ namespace Equilobe.DailyReport.BL
         public static string IssuesInOpenSprints(string project)
         {
             return string.Format("project = '{0}' AND sprint in openSprints()", project);
+        }
+
+        public static string WorkLogs(string author, string fromDate, string endDate)
+        {
+            return string.Format("worklogDate >= '{0}' AND worklogDate <= '{1}' AND worklogAuthor = '{2}'", fromDate, endDate, author);
         }
     }
 }

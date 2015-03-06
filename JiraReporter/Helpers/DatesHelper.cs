@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace JiraReporter.Helpers
 {
@@ -57,7 +58,7 @@ namespace JiraReporter.Helpers
 
         private void SetDates()
         {
-            if (Policy.GeneratedProperties.LastReportSentDate == new DateTime())
+            if (Context.LastReportSentDate == new DateTime())
             {
                 Options.FromDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).AddDays(-1).Date;
                 Options.ToDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date;
@@ -68,7 +69,7 @@ namespace JiraReporter.Helpers
 
         private void SetDatesFromLastSentReport()
         {
-            Options.FromDate = Policy.GeneratedProperties.LastReportSentDate.Date;
+            Options.FromDate = Context.LastReportSentDate.Date;
             Options.ToDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date;
         }
 

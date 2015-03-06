@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Utils;
+using JiraReporter.Helpers;
 
 namespace JiraReporter.Services
 {
@@ -24,10 +25,10 @@ namespace JiraReporter.Services
             if (author.Issues != null)
                 if (author.Issues.Count > 0)
                 {
-                    dayLog.Issues = new List<CompleteIssue>();
+                    dayLog.Issues = new List<IssueDetailed>();
                     foreach (var issue in author.Issues)
                     {
-                        dayLog.Issues.Add(new CompleteIssue(issue));
+                        dayLog.Issues.Add(new IssueDetailed(issue));
                         dayLog.Issues.Last().ExistsInTimesheet = true;
                         IssueAdapter.RemoveWrongEntries(dayLog.Issues.Last(), date, context.OffsetFromUtc);
                         IssueAdapter.TimeSpentFromEntries(dayLog.Issues.Last());

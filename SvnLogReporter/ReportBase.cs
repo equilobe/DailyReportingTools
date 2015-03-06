@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace SourceControlLogReporter
 {
@@ -23,7 +24,7 @@ namespace SourceControlLogReporter
         {
             get
             {
-                return GetLogFilePath(Policy.GeneratedProperties.LogPath, Options.ReportDate);
+                return GetLogFilePath(Policy.LogPath, Options.ReportDate);
             }
         }
 

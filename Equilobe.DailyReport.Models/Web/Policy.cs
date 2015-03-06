@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.Storage;
 using System.Collections.Generic;
 
