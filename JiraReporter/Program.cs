@@ -26,6 +26,7 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
+
             var options = new JiraOptions();                
             new CommandLineParser().ParseArguments(args, options);
 
@@ -38,7 +39,7 @@ namespace JiraReporter
 
             reportService.SetExecutionInstance();
 
-            var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
+            var project = new JiraService(report.JiraRequestContext).GetProject(report.Policy.ProjectId);
             SetProjectInfo(report, project);
             LoadReportDates(report);
 
