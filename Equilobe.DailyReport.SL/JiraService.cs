@@ -10,71 +10,82 @@ namespace Equilobe.DailyReport.SL
 {
     public class JiraService : IJiraService
     {
-        public Project GetProject(IJiraRequestContext context, long id)
+        public JiraRequestContext _jiraRequestContext { get; set; }
+
+        public JiraService()
         {
-            return GetClient(context).GetProject(id);
+
         }
 
-        public List<JiraIssue> GetTimesheetForUser(IJiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser)
+        public JiraService(JiraRequestContext jiraRequestContext)
         {
-            var client = GetClient(context);
+            _jiraRequestContext = jiraRequestContext;
+        }
+        public Project GetProject(long id)
+        {
+            return GetClient(_jiraRequestContext).GetProject(id);
+        }
+
+        public List<JiraIssue> GetTimesheetForUser(DateTime startDate, DateTime endDate, string targetUser)
+        {
+            var client = GetClient(_jiraRequestContext);
 
             return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(targetUser, startDate, endDate);
         }
 
-        public JiraUser GetUser(IJiraRequestContext context, string username)
+        public JiraUser GetUser(string username)
         {
-            return GetClient(context).GetUser(username);
+            return GetClient(_jiraRequestContext).GetUser(username);
         }
 
-        public List<JiraUser> GetUsers(IJiraRequestContext context, string projectKey)
+        public List<JiraUser> GetUsers(string projectKey)
         {
-            return GetClient(context).GetUsers(projectKey);
+            return GetClient(_jiraRequestContext).GetUsers(projectKey);
         }
 
-        public RapidView GetRapidView(IJiraRequestContext context, string id)
+        public RapidView GetRapidView(string id)
         {
-            return GetClient(context).GetRapidView(id);
+            return GetClient(_jiraRequestContext).GetRapidView(id);
         }
 
-        public List<View> GetRapidViews(IJiraRequestContext context)
+        public List<View> GetRapidViews()
         {
-            return GetClient(context).GetRapidViews();
+            return GetClient(_jiraRequestContext).GetRapidViews();
         }
 
-        public SprintReport GetSprintReport(IJiraRequestContext context, string rapidViewId, string sprintId)
+        public SprintReport GetSprintReport(string rapidViewId, string sprintId)
         {
-            return GetClient(context).GetSprintReport(rapidViewId, sprintId);
+            return GetClient(_jiraRequestContext).GetSprintReport(rapidViewId, sprintId);
         }
 
-        public List<Sprint> GetAllSprints(IJiraRequestContext context, string rapidViewId)
+        public List<Sprint> GetAllSprints(string rapidViewId)
         {
-            return GetClient(context).GetAllSprints(rapidViewId);
+            return GetClient(_jiraRequestContext).GetAllSprints(rapidViewId);
         }
 
-        public JiraIssue GetIssue(IJiraRequestContext context, string issueKey)
+        public JiraIssue GetIssue(string issueKey)
         {
-            return GetClient(context).GetIssue(issueKey);
+            return GetClient(_jiraRequestContext).GetIssue(issueKey);
         }
 
-        public JiraIssues GetCompletedIssues(IJiraRequestContext context, DateTime startDate, DateTime endDate)
+        public JiraIssues GetCompletedIssues(DateTime startDate, DateTime endDate)
         {
-            return GetClient(context).GetCompletedIssues(startDate, endDate);
+            return GetClient(_jiraRequestContext).GetCompletedIssues(startDate, endDate);
         }
 
-        public JiraIssues GetSprintTasks(IJiraRequestContext context, string projectKey)
+        public JiraIssues GetSprintTasks(string projectKey)
         {
-            return GetClient(context).GetSprintTasks(projectKey);
+            return GetClient(_jiraRequestContext).GetSprintTasks(projectKey);
         }
 
-        public ProjectInfo GetProjectInfo (IJiraRequestContext context, long id)
+        public ProjectInfo GetProjectInfo (long id)
         {
-            return GetClient(context).GetProjectInfo(id);
+            return GetClient(_jiraRequestContext).GetProjectInfo(id);
         }
 
-        public List<ProjectInfo> GetProjectsInfo(IJiraRequestContext context)
+        public List<ProjectInfo> GetProjectsInfo()
         {
-            return GetClient(context).GetProjectsInfo();
+            return GetClient(_jiraRequestContext).GetProjectsInfo();
         }
 
         public Sprint GetProjectSprintForDate(ProjectDateFilter filter)

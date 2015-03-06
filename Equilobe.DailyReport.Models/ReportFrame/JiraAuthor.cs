@@ -46,6 +46,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
                 return MonthChartPixelWidth.ToString() + "px";
             }
         }
+        public double RemainingChartPixelWidth { get; set; }
+        public string RemainingChartPixelWidthString
+        {
+            get
+            {
+                return RemainingChartPixelWidth.ToString() + "px";
+            }
+        }
 
         public List<IssueDetailed> Issues { get; set; }
         public List<IssueDetailed> MonthIssues { get; set; }

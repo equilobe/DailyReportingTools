@@ -26,7 +26,7 @@ namespace JiraReporter
 
         List<View> GetRapidViewsFromProject()
         {
-            var views = new JiraService().GetRapidViews(Report.JiraRequestContext);
+            var views = new JiraService(Report.JiraRequestContext).GetRapidViews();
             var rapidViews = new List<View>();
             foreach (var view in views)
             {
@@ -43,7 +43,7 @@ namespace JiraReporter
 
         RapidView GetRapidView(string activeViewId)
         {
-            return new JiraService().GetRapidView(Report.JiraRequestContext, activeViewId);
+            return new JiraService(Report.JiraRequestContext).GetRapidView(activeViewId);
         }
 
         public Sprint GetLatestSprint()
@@ -52,7 +52,7 @@ namespace JiraReporter
             var activeView = GetActiveView(projectViews);
             var rapidView = GetRapidView(activeView.id.ToString());
             var rapidViewId = rapidView.rapidViewId.ToString();
-            var sprints = new JiraService().GetAllSprints(Report.JiraRequestContext, rapidViewId);
+            var sprints = new JiraService(Report.JiraRequestContext).GetAllSprints(rapidViewId);
             var sprint = GetCompleteSprint(sprints.Last().id.ToString(), rapidViewId);
             sprint = GetSprintFromReportDates(sprint);
 
@@ -69,7 +69,7 @@ namespace JiraReporter
 
         Sprint GetCompleteSprint(string sprintId, string rapidViewId)
         {
-            var completedSprint = new JiraService().GetSprintReport(Report.JiraRequestContext, rapidViewId, sprintId).sprint; 
+            var completedSprint = new JiraService(Report.JiraRequestContext).GetSprintReport(rapidViewId, sprintId).sprint; 
 
             return completedSprint;
         }
