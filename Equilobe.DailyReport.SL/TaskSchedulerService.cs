@@ -82,8 +82,13 @@ namespace Equilobe.DailyReport.SL
         public void Delete(List<string> uniqueProjectsKey)
         {
             var taskFolder = GetTaskFolder();
+            var tasksNames = taskFolder.AllTasks.Select(qr => qr.Name).ToList();
+
             uniqueProjectsKey.ForEach(uniqueProjectKey =>
-                taskFolder.DeleteTask("DRT-" + uniqueProjectKey));
+            {
+                if (tasksNames.Contains("DRT-" + uniqueProjectKey))
+                    taskFolder.DeleteTask("DRT-" + uniqueProjectKey);
+            });
         }
 
         private TaskFolder GetTaskFolder()

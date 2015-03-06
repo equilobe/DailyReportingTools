@@ -16,6 +16,24 @@ namespace Equilobe.DailyReport.DAL
 
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SerializedPolicy>()
+                .HasRequired(x => x.ReportSettings)
+                .WithOptional(x => x.SerializedPolicy)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<ReportExecutionSummary>()
+                .HasRequired(x => x.ReportSettings)
+                .WithOptional(x => x.ReportExecutionSummary)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<FinalDraftConfirmation>()
+                .HasRequired(x => x.ReportSettings)
+                .WithOptional(x => x.FinalDraftConfirmation)
+                .WillCascadeOnDelete(true);
+        }
+
         public DbSet<ReportSettings> ReportSettings { get; set; }
         public DbSet<InstalledInstance> InstalledInstances { get; set; }
         public DbSet<ReportExecutionSummary> ReportExecutionSummaries { get; set; }
