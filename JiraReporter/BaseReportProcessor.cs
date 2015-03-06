@@ -1,15 +1,11 @@
-﻿using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Models.Storage;
+﻿using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Utils;
-using JiraReporter.Model;
 using JiraReporter.Services;
-using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JiraReporter
 {
