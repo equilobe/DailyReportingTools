@@ -12,7 +12,7 @@ namespace Equilobe.DailyReport.SL
 {
     public class DataService
     {
-        public void SaveSharedSecret(HttpRequestBase request)
+        public void Save(HttpRequestBase request)
         {
             var bodyText = new System.IO.StreamReader(request.InputStream).ReadToEnd();
             var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
@@ -29,7 +29,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void DeleteSharedSecret(string baseUrl)
+        public void Delete(string baseUrl)
         {
             using (var db = new ReportsDb())
             {
