@@ -38,7 +38,7 @@ namespace JiraReporter
 
             reportService.SetExecutionInstance();
 
-            var project = new JiraService().GetProject(report.JiraRequestContext, report.Policy.ProjectId);
+            var project = new JiraService(report.JiraRequestContext).GetProject(report.Policy.ProjectId);
             SetProjectInfo(report, project);
             LoadReportDates(report);
 

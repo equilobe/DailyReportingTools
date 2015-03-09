@@ -29,8 +29,8 @@ namespace Equilobe.DailyReport.SL
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
-            var baserUrl = queryString["xdm_e"] + queryString["cp"];
-            return baserUrl;
+            var baseUrl = queryString["xdm_e"] + queryString["cp"];
+            return baseUrl;
         }
 
         public string GetJiraUsername(NameValueCollection queryString)
@@ -63,9 +63,9 @@ namespace Equilobe.DailyReport.SL
                 ProjectId = projectId
             };
 
-            var project = new JiraService().GetProject(context, projectId);
+            var project = new JiraService(context).GetProject(projectId);
 
-            policy.UserOptions = new JiraService().GetUsers(context, project.Key)
+            policy.UserOptions = new JiraService(context).GetUsers(project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,
