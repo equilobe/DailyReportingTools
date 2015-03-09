@@ -84,7 +84,7 @@ namespace JiraReporter
 
         protected override void SendEmails()
         {
-            Validation.EnsureDirectoryExists(Report.UnsentReportsPath);
+            Validations.EnsureDirectoryExists(Report.UnsentReportsPath);
 
             foreach (var file in Directory.GetFiles(Report.UnsentReportsPath))
             {
@@ -94,7 +94,7 @@ namespace JiraReporter
 
         public override void MoveToSent(string path)
         {
-            Validation.EnsureDirectoryExists(Report.ReportsPath);
+            Validations.EnsureDirectoryExists(Report.ReportsPath);
 
             var newFilePath = Path.Combine(Report.ReportsPath, Path.GetFileName(path));
 

@@ -1,9 +1,11 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -34,6 +36,9 @@ namespace DailyReportWeb.Controllers.Api
         // PUT: api/Policy
         public void Post([FromBody]PolicySummary policySummary)
         {
+            if(!Validations.Time(policySummary.ReportTime))
+                throw new ArgumentException();
+
             using (var db = new ReportsDb())
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == policySummary.BaseUrl);
@@ -69,6 +74,12 @@ namespace DailyReportWeb.Controllers.Api
         // PUT: api/Policy/5
         public void Post(long id, [FromBody]PolicyBuffer updatedPolicy)
         {
+            if (!Validations.Time(updatedPolicy.ReportTime) ||
+                !Validations.Mails(updatedPolicy.DraftEmails) ||
+                !Validations.Mails(updatedPolicy.Emails) ||
+                (updatedPolicy.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedPolicy.SourceControlOptions.Repo)))
+                throw new ArgumentException();
+
             using (var db = new ReportsDb())
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedPolicy.BaseUrl);
