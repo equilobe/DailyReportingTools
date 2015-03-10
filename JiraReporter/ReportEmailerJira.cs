@@ -39,11 +39,27 @@ namespace JiraReporter
 
             MemoryStream ms = new MemoryStream(imgBytes);
             var attachment = new Attachment(ms, id, "image/png");
+            AddAttachmentToMailMessage(mailMessage, attachment, id);
+        }
+
+        public void AddAttachementImageFromDisk(MailMessage mailMessage)
+        {
+            string attachmentRootPath = Environment.CurrentDirectory + @"\Content\Images";
+            foreach(var file in Directory.GetFiles(attachmentRootPath))
+            {
+                var image = Image.FromFile(file);             
+                var attachmentId = Path.GetFileName(file);
+                AddAttachementImage(image, attachmentId, mailMessage);
+            }
+        }
+
+        public void AddAttachmentToMailMessage(MailMessage message, Attachment attachment, string attachmentId)
+        {
             attachment.ContentDisposition.Inline = true;
             attachment.ContentDisposition.DispositionType = DispositionTypeNames.Inline;
-            attachment.ContentId = id;
-            attachment.ContentType.Name = id;
-            mailMessage.Attachments.Add(attachment);
+            attachment.ContentId = attachmentId;
+            attachment.ContentType.Name = attachmentId;
+            message.Attachments.Add(attachment);
         }
 
         public override MailMessage GetMessage(string reportPath)
@@ -73,8 +89,11 @@ namespace JiraReporter
             if (Report.IsIndividualDraft)
                 AddAttachementImage(Author.Image, Author.AvatarId, message);
             else
+            {
                 foreach (var author in Authors)
                     AddAttachementImage(author.Image, author.AvatarId, message);
+                AddAttachementImageFromDisk(message);
+            }
         }
 
         public override string GetReportSubject(string reportPath)

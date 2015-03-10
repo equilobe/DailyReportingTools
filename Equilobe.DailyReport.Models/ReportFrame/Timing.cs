@@ -37,6 +37,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public int TotalRemainingSeconds { get; set; }
         public double TotalRemainingHours { get; set; }
+        public double TotalRemainingAverage { get; set; }
         public string TotalRemainingString { get; set; }
     }
 }

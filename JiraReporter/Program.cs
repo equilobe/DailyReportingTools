@@ -26,6 +26,7 @@ namespace JiraReporter
     {
         static void Main(string[] args)
         {
+
             var options = new JiraOptions();                
             new CommandLineParser().ParseArguments(args, options);
 

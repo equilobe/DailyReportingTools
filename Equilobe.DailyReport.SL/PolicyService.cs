@@ -62,6 +62,7 @@ namespace Equilobe.DailyReport.SL
                 SharedSecret = _sharedSecret,
                 ProjectId = projectId
             };
+            var jiraService = new JiraService(context);
 
             var project = new JiraService(context).GetProject(projectId);
 

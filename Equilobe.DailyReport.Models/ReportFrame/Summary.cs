@@ -41,6 +41,15 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
 
+        public double UnassignedRemainingChartPixelWidth { get; set; }
+        public string UnassignedRemainingChartPixelWidthString
+        {
+            get
+            {
+                return UnassignedRemainingChartPixelWidth.ToString() + "px";
+            }
+        }
+
         public List<Error> Errors { get; set; }
         public List<Error> CompletedWithEstimateErrors { get; set; }
         public List<Error> CompletedWithNoWorkErrors { get; set; }
@@ -68,6 +77,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public readonly int ChartMaxBarWidth = 250;
         public readonly int ChartMaxWidth = 300;
+        public readonly int GuidelinesOptimalNumber = 12;
 
         public string ChartMaxWidthString
         {
