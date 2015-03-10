@@ -37,7 +37,7 @@ namespace JiraReporter.Model
         protected override string GetReportPath()
         {
             string reportPath = Report.ReportsPath;
-            Validation.EnsureDirectoryExists(reportPath);
+            Validations.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, Report.Author.Name + "_" + Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }

@@ -37,7 +37,7 @@ namespace Equilobe.DailyReport.BL.Svn
 
         void ExecuteSvnCommand(string pathToLog)
         {
-            Validation.EnsureDirectoryExists(Path.GetDirectoryName(pathToLog));
+            Validations.EnsureDirectoryExists(Path.GetDirectoryName(pathToLog));
             try
             {
                 var command = GetCommandString(pathToLog);

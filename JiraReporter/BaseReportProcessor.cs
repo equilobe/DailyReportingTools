@@ -42,7 +42,7 @@ namespace JiraReporter
         protected virtual string GetReportPath()
         {
             string reportPath = Report.ReportsPath;
-            Validation.EnsureDirectoryExists(reportPath);
+            Validations.EnsureDirectoryExists(reportPath);
             reportPath = Path.Combine(reportPath, Report.Date.ToString("yyyy-MM-dd") + ".html");
             return reportPath;
         }
@@ -99,7 +99,7 @@ namespace JiraReporter
 
         private static void WriteReport(JiraReport context, string report, string path)
         {
-            Validation.EnsureDirectoryExists(context.LogArchivePath);
+            Validations.EnsureDirectoryExists(context.LogArchivePath);
 
             var archivedFilePath = Path.Combine(context.LogArchivePath, Path.GetFileName(path));
 
@@ -113,7 +113,7 @@ namespace JiraReporter
                 File.WriteAllText(archivedFilePath, report);
             }
 
-            Validation.EnsureDirectoryExists(context.UnsentReportsPath);
+            Validations.EnsureDirectoryExists(context.UnsentReportsPath);
 
             var reportPath = Path.Combine(context.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
 
