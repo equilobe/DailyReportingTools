@@ -163,9 +163,6 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-               // db.ReportSettings.Remove(db.ReportSettings.First());
-             //   db.SaveChanges();
-
                 var reportSettings = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
                 _report.Settings = new ReportSettings();
                 reportSettings.CopyProperties(_report.Settings);
