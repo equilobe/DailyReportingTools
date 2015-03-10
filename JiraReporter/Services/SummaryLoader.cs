@@ -322,7 +322,7 @@ namespace JiraReporter.Services
 
             _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
             _summary.ConfirmationErrors = new List<Error>();
-            var notConfirmed = _report.Settings.IndividualDraftConfirmations.Where(d => d.LastDateConfirmed.Value.Date != DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Date).ToList();
+            var notConfirmed = _report.Settings.IndividualDraftConfirmations.Where(d =>d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Date).ToList();
             foreach (var author in _summary.Authors)
             {
                 var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);
