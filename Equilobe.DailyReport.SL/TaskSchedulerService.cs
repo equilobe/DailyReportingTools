@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Principal;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -58,6 +59,9 @@ namespace Equilobe.DailyReport.SL
                     "uniqueProjectKey=" + _uniqueProjectKey,
                     ConfigurationManager.AppSettings["reportToolPath"]));
 
+                taskDefinition.Principal.UserId = WindowsIdentity.GetCurrent().Name;
+                taskDefinition.Principal.LogonType = TaskLogonType.S4U;
+                
                 GetTaskFolder().RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition);
             }
         }
