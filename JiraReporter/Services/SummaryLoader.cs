@@ -77,7 +77,10 @@ namespace JiraReporter.Services
             SetHealth(_summary.WorkingDays.SprintWorkedDays);
             SetHealthStatuses();
 
+            SetMaxValues();
             SetWidths();
+            SetGuidelinesRate();
+            SetGuidelineWidth();
 
             SetErrors(_sprintTasks);
         }
@@ -365,7 +368,7 @@ namespace JiraReporter.Services
             }
         }
 
-        private int GetWorkSummaryMax()
+        private void SetWorkSummaryMax()
         {
             var max = new List<double>();
             foreach (var author in _summary.Authors)
@@ -375,15 +378,22 @@ namespace JiraReporter.Services
             }
             max.Add(_summary.Timing.UnassignedTasksHoursAverageLeft);
             double maxHours = (double)max.Max();
-            return MathHelpers.RoundToNextEvenInteger(maxHours);
+            _summary.WorkSummaryMaxValue = MathHelpers.RoundToNextEvenInteger(maxHours);
         }
 
-        private int GetStatusMax()
+        private void SetStatusMax()
         {
             var sprintMax = GetSprintMax();
             var monthMax = GetMonthMax();
             var statusMax = Math.Max(sprintMax, monthMax);
-            return MathHelpers.RoundToNextEvenInteger(statusMax);
+            _summary.StatusMaxValue =  MathHelpers.RoundToNextEvenInteger(statusMax);
+        }
+
+        private void SetMaxValues()
+        {
+            SetWorkSummaryMax();
+            SetStatusMax();
+            _summary.TotalMaxValue = Math.Max(_summary.StatusMaxValue, _summary.WorkSummaryMaxValue);
         }
 
         private double GetSprintMax()
@@ -410,12 +420,10 @@ namespace JiraReporter.Services
         private void SetWidths()
         {
             var widthHelper = new WidthHelpers(_summary.ChartMaxBarWidth);
-            var workSummaryMax = GetWorkSummaryMax();
-            widthHelper.SetWorkSummaryChartWidths(_summary, workSummaryMax);
+            widthHelper.SetWorkSummaryChartWidths(_summary, _summary.TotalMaxValue);
 
-            var statusMax = GetStatusMax();
             GetStatusValues();
-            widthHelper.SetStatusChartWidths(statusMax, _summary.SprintWidths, _summary.MonthWidths);
+            widthHelper.SetStatusChartWidths(_summary.TotalMaxValue, _summary.SprintWidths, _summary.MonthWidths);
         }
 
         private void GetStatusValues()
@@ -458,6 +466,21 @@ namespace JiraReporter.Services
                 workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_report);
             }
             return workingDaysInfo;
+        }
+
+        private void SetGuidelinesRate()
+        {
+            var integer = 2;            
+            while (_summary.TotalMaxValue / integer >= _summary.GuidelinesOptimalNumber)
+                integer = integer * 2;
+
+            _summary.GuidelinesCount = _summary.TotalMaxValue / integer;
+            _summary.GuidelinesRate = integer;
+        }
+
+        private void SetGuidelineWidth()
+        {
+            _summary.GuidelineWidth = _summary.ChartMaxBarWidth / _summary.GuidelinesCount - 1;
         }
 
     }
