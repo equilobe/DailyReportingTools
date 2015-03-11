@@ -9,20 +9,11 @@ namespace Equilobe.DailyReport.SL
 {
     public class PolicySummaryService
     {
-        public string _baseUrl { get; set; }
-        public string _sharedSecret { get; set; }
-        public JiraRequestContext _requestContext
-        {
-            get
-            {
-                return new JiraRequestContext(_baseUrl, _sharedSecret);
-            }
-        }
+        public JiraRequestContext _requestContext { get; set; }
 
-        public PolicySummaryService(string baseUrl, string sharedSecret)
+        public PolicySummaryService(JiraRequestContext context)
         {
-            _baseUrl = baseUrl;
-            _sharedSecret = sharedSecret;
+            _requestContext = context;
         }
 
         public PolicySummary GetPolicySummary(long projectId)
@@ -30,11 +21,11 @@ namespace Equilobe.DailyReport.SL
             var projectInfo = new JiraService(_requestContext).GetProjectInfo(projectId);
             return new PolicySummary
             {
-                BaseUrl = _baseUrl,
+                BaseUrl = _requestContext.BaseUrl,
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = new DataService().GetReportTime(_baseUrl, projectInfo.ProjectId)
+                ReportTime = new DataService().GetReportTime(_requestContext.BaseUrl, projectInfo.ProjectId)
             };
         }
 
@@ -43,11 +34,11 @@ namespace Equilobe.DailyReport.SL
             return new JiraService(_requestContext).GetProjectsInfo()
                 .Select(projectInfo => new PolicySummary
                 {
-                    BaseUrl = _baseUrl,
+                    BaseUrl = _requestContext.BaseUrl,
                     ProjectId = projectInfo.ProjectId,
                     ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
-                    ReportTime = new DataService().GetReportTime(_baseUrl, projectInfo.ProjectId)
+                    ReportTime = new DataService().GetReportTime(_requestContext.BaseUrl, projectInfo.ProjectId)
                 })
                 .ToList();
         }

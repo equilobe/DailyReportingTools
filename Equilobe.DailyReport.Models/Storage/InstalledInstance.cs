@@ -10,9 +10,6 @@ namespace Equilobe.DailyReport.Models.Storage
 
         [Required]
         public string BaseUrl { get; set; }
-        [Required]
-        public string ClientKey { get; set; }
-        [Required]
         public string SharedSecret { get; set; }
 
         public virtual ICollection<ReportSettings> ReportSettings { get; set; }
