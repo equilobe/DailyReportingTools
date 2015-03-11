@@ -81,6 +81,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
                 return GuidelineWidth.ToString() + "px";
             }
         }
+
+        public string GuidelineCounterMarginLeft
+        {
+            get
+            {
+                return (GuidelineWidth / 2).ToString() + "px";
+            }
+        }
         public int GuidelinesCount { get; set; }
 
         public int WorkSummaryMaxValue { get; set; }

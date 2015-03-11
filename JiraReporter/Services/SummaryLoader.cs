@@ -480,7 +480,7 @@ namespace JiraReporter.Services
 
         private void SetGuidelineWidth()
         {
-            _summary.GuidelineWidth = _summary.ChartMaxBarWidth / _summary.GuidelinesCount - 1;
+            _summary.GuidelineWidth = _summary.ChartMaxBarWidth / _summary.GuidelinesCount;
         }
 
     }
