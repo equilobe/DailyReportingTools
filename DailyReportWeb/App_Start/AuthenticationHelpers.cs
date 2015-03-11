@@ -106,5 +106,10 @@ namespace DailyReportWeb
         {
             return ((WebPrincipal)webPrincipal).BaseUrl;
         }
+
+        public static string GetUsername(this IPrincipal webPrincipal)
+        {
+            return ((WebPrincipal)webPrincipal).Identity.Name;
+        }
     }
 }

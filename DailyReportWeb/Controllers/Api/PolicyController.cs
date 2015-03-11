@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.SL;
@@ -19,18 +20,34 @@ namespace DailyReportWeb.Controllers.Api
         public IEnumerable<PolicySummary> Get()
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = new DataService().GetSharedSecret(baseUrl);
+            var username = User.GetUsername();
 
-            return new PolicySummaryService(baseUrl, sharedSecret).GetPoliciesSummary();
+            var requestContext = new JiraRequestContext
+            {
+                BaseUrl = baseUrl,
+                Username = username,
+                SharedSecret = new DataService().GetSharedSecret(baseUrl),
+                Password = new DataService().GetPassword(baseUrl, username)
+            };
+
+            return new PolicySummaryService(requestContext).GetPoliciesSummary();
         }
 
         // GET: api/Policy/5
         public PolicyBuffer Get(long id)
         {
             var baseUrl = User.GetBaseUrl();
-            var sharedSecret = new DataService().GetSharedSecret(baseUrl);
+            var username = User.GetUsername();
 
-            return new PolicyService(baseUrl, sharedSecret).GetPolicy(id);
+            var requestContext = new JiraRequestContext
+            {
+                BaseUrl = baseUrl,
+                Username = username,
+                SharedSecret = new DataService().GetSharedSecret(baseUrl),
+                Password = new DataService().GetPassword(baseUrl, username)
+            };
+
+            return new PolicyService(requestContext).GetPolicy(id);
         }
 
         // PUT: api/Policy

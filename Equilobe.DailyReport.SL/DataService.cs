@@ -48,6 +48,16 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
+        public string GetPassword(string baseUrl, string username)
+        {
+            return new ReportsDb().InstalledInstances
+                .Where(installedInstance => installedInstance.BaseUrl == baseUrl)
+                .SelectMany(installedInstance => installedInstance.ReportSettings
+                    .Where(reportSettings => reportSettings.Username == username)
+                    .Select(reportSettings => reportSettings.Password))
+                .FirstOrDefault();
+        }
+
         public string GetReportTime(string baseUrl, long projectId)
         {
             return new ReportsDb().ReportSettings
