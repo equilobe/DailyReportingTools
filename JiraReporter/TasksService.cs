@@ -14,35 +14,44 @@ namespace JiraReporter
 {
     class TasksService
     {
-        public void SetSprintTasks(JiraReport context)
+        public void SetReportTasks(JiraReport context)
         {
-            context.SprintTasks = new SprintTasks();
-            var unfinishedTasks = GetUnfinishedTasks(context);
-            SetUnfinishedTasks(unfinishedTasks, context);
-
+            context.ReportTasks = new SprintTasks();
+            if(context.HasSprint)
+            {
+                var unfinishedTasks = GetUnfinishedTasks(context);
+                SetUnfinishedTasks(unfinishedTasks, context);
+                context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
+                SortTasks(context.ReportTasks);
+                SetUnassignedTasksErrors(context);
+            }
+           
             var completedTasks = GetCompletedTasks(context);
-            SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.SprintTasks);
-            SortTasks(context.SprintTasks);
-            SetSprintTasksErrors(context);
+            SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.ReportTasks);
+            SetCompletedTasksErrors(context);
         }
 
-        private void SetSprintTasksErrors(JiraReport report)
+        private void SetCompletedTasksErrors(JiraReport report)
         {
             int completedErrors = 0;
-            TasksService.SetErrors(report.SprintTasks.UnassignedTasks, report.Policy);
-            foreach (var list in report.SprintTasks.CompletedTasks)
+            foreach (var list in report.ReportTasks.CompletedTasks)
             {
                 TasksService.SetErrors(list.Value, report.Policy);
                 completedErrors += TasksService.GetErrorsCount(list.Value);
             }
-            report.SprintTasks.CompletedTasksErrorCount = completedErrors;
-            report.SprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(report.SprintTasks.UnassignedTasks);
+            report.ReportTasks.CompletedTasksErrorCount = completedErrors;
+        }
+
+        private static void SetUnassignedTasksErrors(JiraReport report)
+        {
+            TasksService.SetErrors(report.ReportTasks.UnassignedTasks, report.Policy);
+            report.ReportTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(report.ReportTasks.UnassignedTasks);
         } 
 
         public List<IssueDetailed> GetCompletedTasks(JiraReport context)
         {
             var completedTasks = new List<IssueDetailed>();
-            var issues = new JiraService(context.JiraRequestContext).GetCompletedIssues(context.ReportDate.AddDays(-6), context.ReportDate);
+            var issues = new JiraService(context.JiraRequestContext).GetCompletedIssues(context.ProjectKey, context.ReportDate.AddDays(-6), context.ReportDate);
             foreach (var jiraIssue in issues.issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
@@ -63,7 +72,7 @@ namespace JiraReporter
 
         public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
         {
-            var tasks = context.SprintTasks;
+            var tasks = context.ReportTasks;
             tasks.InProgressTasks = new List<IssueDetailed>();
             tasks.OpenTasks = new List<IssueDetailed>();
             tasks.UnassignedTasks = new List<IssueDetailed>();

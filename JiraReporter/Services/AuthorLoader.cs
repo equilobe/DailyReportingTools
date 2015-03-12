@@ -22,7 +22,7 @@ namespace JiraReporter.Services
 {
     class AuthorLoader
     {
-        SprintTasks _sprintIssues { get { return _context.SprintTasks; } }
+        SprintTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
         List<JiraCommit> _commits { get { return _context.Commits; } }
         JiraOptions _options { get { return _context.Options; } }
@@ -113,7 +113,7 @@ namespace JiraReporter.Services
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
         {
-            var issues = new JiraService(_context.JiraRequestContext).GetTimesheetForUser(fromDate, toDate, _currentAuthor.Username);
+            var issues = new JiraService(_context.JiraRequestContext).GetTimesheetForUser(_context.ProjectKey, _currentAuthor.Username, fromDate, toDate);
             var issueProcessor = new IssueProcessor(_context);
             var completeIssues = new List<IssueDetailed>();
             foreach (var issue in issues)
@@ -201,15 +201,21 @@ namespace JiraReporter.Services
 
         private void AddCommitIssuesNotInTimesheet()
         {
-            AddCommitIssuesNotInTimesheet(_sprintIssues.UncompletedTasks);
-
-            foreach (var listOfTasks in _sprintIssues.CompletedTasks.Values)
+            foreach (var listOfTasks in _reportTasks.CompletedTasks.Values)
                 AddCommitIssuesNotInTimesheet(listOfTasks);
+
+            if (!_context.HasSprint)
+                return;
+
+            AddCommitIssuesNotInTimesheet(_reportTasks.UncompletedTasks);
         }
 
 
         private void SetUncompletedTasks()
         {
+            if (!_context.HasSprint)
+                return;
+
             SetAuthorInProgressTasks();
             SetAuthorOpenTasks();
         }
@@ -217,7 +223,7 @@ namespace JiraReporter.Services
         private void SetAuthorInProgressTasks()
         {
             _currentAuthor.InProgressTasks = new List<IssueDetailed>();
-            _currentAuthor.InProgressTasks = GetAuthorTasks(_sprintIssues.InProgressTasks);
+            _currentAuthor.InProgressTasks = GetAuthorTasks(_reportTasks.InProgressTasks);
             TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
             if (_currentAuthor.InProgressTasks != null)
@@ -260,6 +266,9 @@ namespace JiraReporter.Services
 
         private void SetAuthorErrors()
         {
+            if (!_context.HasSprint)
+                return;
+
             var inProgressTasksErrors = new List<Error>();
             if (_currentAuthor.InProgressTasks != null && _currentAuthor.InProgressTasks.Count > 0)
                 inProgressTasksErrors = _currentAuthor.InProgressTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
@@ -279,7 +288,7 @@ namespace JiraReporter.Services
         private void SetAuthorOpenTasks()
         {
             _currentAuthor.OpenTasks = new List<IssueDetailed>();
-            _currentAuthor.OpenTasks = GetAuthorTasks(_sprintIssues.OpenTasks);
+            _currentAuthor.OpenTasks = GetAuthorTasks(_reportTasks.OpenTasks);
             TasksService.SetErrors(_currentAuthor.OpenTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
             if (_currentAuthor.OpenTasks != null)
@@ -310,6 +319,9 @@ namespace JiraReporter.Services
 
         private void SetRemainingEstimate()
         {
+            if (!_context.HasSprint)
+                return;
+
             _currentAuthor.Timing.TotalRemainingSeconds = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds + _currentAuthor.Timing.OpenTasksTimeLeftSeconds;
             _currentAuthor.Timing.TotalRemainingHours = _currentAuthor.Timing.TotalRemainingSeconds / 3600;
             _currentAuthor.Timing.TotalRemainingString = _currentAuthor.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
@@ -324,7 +336,7 @@ namespace JiraReporter.Services
 
         private void SetProjectLead(List<JiraAuthor> authors)
         {
-            var lead = authors.Find(a => a.Username == _context.ProjectManager);
+            var lead = authors.Find(a => a.UserKey == _context.ProjectManager);
             if (lead == null)
             {
                 var projectManager = GetProjectLead(_context.ProjectManager);

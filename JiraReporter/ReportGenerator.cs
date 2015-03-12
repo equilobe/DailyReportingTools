@@ -35,7 +35,7 @@ namespace JiraReporter
         {
             context.Sprint = GenerateSprint(context);
 
-            SetSprintReport(context);
+            SetReportTasks(context);
 
             context.Authors = GetReportAuthors(context);
 
@@ -72,7 +72,7 @@ namespace JiraReporter
                 OffsetFromUtc = report.OffsetFromUtc,
                 PullRequests = report.PullRequests,
                 Sprint = report.Sprint,
-                SprintTasks = report.SprintTasks,
+                ReportTasks = report.ReportTasks,
                 Commits = report.Commits,
                 JiraRequestContext = report.JiraRequestContext,
                 ProjectName = report.ProjectName,
@@ -87,16 +87,20 @@ namespace JiraReporter
         }
 
 
-        private static void SetSprintReport(JiraReport report)
+        private static void SetReportTasks(JiraReport report)
         {
             var tasksService = new TasksService();
-            tasksService.SetSprintTasks(report);
+            tasksService.SetReportTasks(report);
         }
 
         public static Sprint GenerateSprint(JiraReport report)
         {
             var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
-            return new JiraService().GetProjectSprintForDate(projectDateFilter);
+            var sprint = new JiraService().GetProjectSprintForDate(projectDateFilter);
+            if (sprint != null)
+                report.HasSprint = true;
+
+            return sprint;
         }
 
         public static Summary LoadSummary(JiraReport report)
