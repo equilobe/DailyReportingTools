@@ -5,9 +5,10 @@
     @for (int i = 0; i < Model.GuidelinesCount; i++)
     {
         <div style="display:inline-block; height:14px; min-height:14px; float:left; margin:0; width:@Model.GuidelineWidthString">
-            <div style="display:block; height:7px; width:@Model.GuidelineWidthString; font-size:9px; text-align:center; margin-left:@Model.GuidelineCounterMarginLeft; margin-bottom:5px; color:gray">@guideNumber</div>
-            <div style="display:block; border-right:1px solid #B8B8B8; border-bottom:1px solid #B8B8B8; height: 7px; float:left; width:@Model.GuidelineWidthString"></div>
+            <div style="height:7px; width:@Model.GuidelineWidthString; font-size:9px; text-align:center; margin-left:@Model.GuidelineCounterMarginLeft; margin-bottom:5px; color:gray">@guideNumber</div>
+            <div style="border-right:1px solid #B8B8B8; border-bottom:1px solid #B8B8B8; height: 7px; margin-bottom:5px; min-width:@Model.GuidelineWidthString; width:@Model.GuidelineWidthString"></div>
         </div>
+        
         guideNumber += Model.GuidelinesRate;
     }
 </div>

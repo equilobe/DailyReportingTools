@@ -474,7 +474,7 @@ namespace JiraReporter.Services
             while (_summary.TotalMaxValue / integer >= _summary.GuidelinesOptimalNumber)
                 integer = integer * 2;
 
-            _summary.GuidelinesCount = _summary.TotalMaxValue / integer;
+            _summary.GuidelinesCount = MathHelpers.RoundToNextEvenInteger(_summary.TotalMaxValue / integer);
             _summary.GuidelinesRate = integer;
         }
 

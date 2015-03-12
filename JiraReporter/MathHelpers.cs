@@ -27,7 +27,7 @@ namespace JiraReporter
         public static int RoundToNextEvenInteger(double number)
         {
             var roundedNumber = Math.Ceiling(number);
-            if (number % 2 != 0)
+            if (roundedNumber % 2 != 0)
                 roundedNumber++;
             return (int)roundedNumber;
         }
