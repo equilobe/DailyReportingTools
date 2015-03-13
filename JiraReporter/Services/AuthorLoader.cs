@@ -120,7 +120,7 @@ namespace JiraReporter.Services
             foreach (var issue in issues)
             {
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
-                fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < _context.FromDate || e.StartDate > _context.ToDate);
+                fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
                 completeIssues.Add(fullIssue);
@@ -242,7 +242,16 @@ namespace JiraReporter.Services
             var hasInProgress = _currentAuthor.InProgressTasks != null && _currentAuthor.InProgressTasks.Count > 0;
             var hasOpenTasks = _currentAuthor.OpenTasks != null && _currentAuthor.OpenTasks.Count > 0;
             var hasDayLogs = _currentAuthor.DayLogs != null && _currentAuthor.DayLogs.Count > 0;
-            if (!hasInProgress && !hasOpenTasks  && !hasDayLogs)
+            var hasIssues = (_currentAuthor.MonthIssues != null && _currentAuthor.MonthIssues.Count > 0)
+                || (_currentAuthor.SprintIssues != null && _currentAuthor.SprintIssues.Count > 0);
+
+            if (hasInProgress || hasOpenTasks)
+                _currentAuthor.HasAssignedIssues = true;
+
+            if (hasDayLogs)
+                _currentAuthor.HasDayLogs = true;
+
+            if (!_currentAuthor.HasDayLogs && !_currentAuthor.HasAssignedIssues && !hasIssues)
                 _currentAuthor.IsEmpty = true;
         }
 

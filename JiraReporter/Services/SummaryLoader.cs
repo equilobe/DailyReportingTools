@@ -77,17 +77,19 @@ namespace JiraReporter.Services
             SetHealthStatuses();
 
             SetWidths();
-            CheckStatus();
+            CheckSummaryCharts();
 
             SetErrors();
         }
 
-        private void CheckStatus()
+        private void CheckSummaryCharts()
         {
             if (_summary.Timing.AverageWorkedMonth > 0 || _policy.AllocatedHoursPerMonth > 0)
                 _summary.HasMonth = true;
             if (_summary.HasMonth == true || _summary.Sprint != null)
                 _summary.HasStatus = true;
+            if (_summary.Authors.Exists(a => !a.IsEmpty))
+                _summary.HasWorkSummary = true;
 
         }
 

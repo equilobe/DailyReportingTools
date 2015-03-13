@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.SL;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Models.Enums;
 
 namespace JiraReporter
 {
@@ -19,31 +20,32 @@ namespace JiraReporter
     {
         public static JiraReport GenerateReport(JiraReport report)
         {
+            SetSourceControlLogs(report);
+
+            report.Sprint = GenerateSprint(report);
+
+            SetReportTasks(report);
+
+            report.Authors = GetReportAuthors(report);
+
+            report.Summary = LoadSummary(report);
+
+            report.Title = JiraReportHelpers.GetReportTitle(report);
+
+            return report;
+        }
+
+        private static void SetSourceControlLogs(JiraReport report)
+        {
             report.PullRequests = new List<JiraPullRequest>();
             report.Commits = new List<JiraCommit>();
 
-            if (report.Policy.SourceControlOptions != null)
+            if (report.Policy.SourceControlOptions != null && report.Policy.SourceControlOptions.Type != SourceControlType.None)
             {
                 var log = SourceControlProcessor.GetSourceControlLog(report);
                 report.PullRequests = SourceControlProcessor.GetPullRequests(log);
                 report.Commits = SourceControlProcessor.GetCommits(log);
             }
-
-            return CompleteReport(report);
-        }
-        private static JiraReport CompleteReport(JiraReport context)
-        {
-            context.Sprint = GenerateSprint(context);
-
-            SetReportTasks(context);
-
-            context.Authors = GetReportAuthors(context);
-
-            context.Summary = LoadSummary(context);
-
-            context.Title = JiraReportHelpers.GetReportTitle(context);
-
-            return context;
         }
 
         private static List<JiraAuthor> GetReportAuthors(JiraReport context)
