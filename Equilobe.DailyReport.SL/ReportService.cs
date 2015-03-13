@@ -55,7 +55,7 @@ namespace Equilobe.DailyReport.SL
                 if (!isForcedByLead && report.ReportExecutionSummary == null)
                     return false;
 
-                if (isForcedByLead || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today)
+                if (isForcedByLead || ( report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today))
                     return true;
 
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
@@ -98,8 +98,9 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == _uniqueProjectKey);
-                if (report == null || report.IndividualDraftConfirmations == null || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today || report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today)
-                    return false;
+                if (report == null || report.IndividualDraftConfirmations == null)
+                    if (VerifyDates(report.ReportExecutionSummary))
+                        return false;
 
                 var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.ReportSettingsId == report.Id).ToList();
                 var draft = individualReports.SingleOrDefault(dr => dr.UniqueUserKey == draftKey);
@@ -110,6 +111,12 @@ namespace Equilobe.DailyReport.SL
                 db.SaveChanges();
                 return true;
             }
+        }
+
+        private static bool VerifyDates(ReportExecutionSummary reportExec)
+        {
+            return (reportExec == null || (reportExec.LastDraftSentDate != null && reportExec.LastDraftSentDate.Value.Date == DateTime.Today)
+                || (reportExec.LastFinalReportSentDate != null && reportExec.LastFinalReportSentDate.Value.Date == DateTime.Today));           
         }
 
         public bool CheckIndividualConfirmation(string draftKey)
