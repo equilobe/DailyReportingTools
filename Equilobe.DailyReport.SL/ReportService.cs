@@ -55,17 +55,22 @@ namespace Equilobe.DailyReport.SL
                 if (!isForcedByLead && report.ReportExecutionSummary == null)
                     return false;
 
-                if (isForcedByLead || ( report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today))
+                if (isForcedByLead || ( report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today))
                     return true;
 
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
                     return false;
 
-                if (individualReports.Exists(r => r.LastDateConfirmed.Value.Date != DateTime.Today))
+                if (ExistsUnconfirmedDraft(individualReports))
                     return false;
 
                 return true;
             }
+        }
+
+        private static bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports)
+        {
+            return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date != DateTime.Today);
         }
 
         private bool IsForcedByLead(string userKey, List<IndividualDraftConfirmation> individualConfirmations)
