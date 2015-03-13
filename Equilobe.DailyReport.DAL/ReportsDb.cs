@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Storage;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Equilobe.DailyReport.DAL
 {
-    public class ReportsDb : DbContext
+	public class ReportsDb : IdentityDbContext<ApplicationUser>
     {
         public ReportsDb()
             : base("name=ReportsDb")
@@ -16,9 +17,16 @@ namespace Equilobe.DailyReport.DAL
 
         }
 
+		public static ReportsDb Create()
+		{
+			return new ReportsDb();
+		}
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SerializedPolicy>()
+			base.OnModelCreating(modelBuilder);
+			
+			modelBuilder.Entity<SerializedPolicy>()
                 .HasRequired(x => x.ReportSettings)
                 .WithOptional(x => x.SerializedPolicy)
                 .WillCascadeOnDelete(true);
