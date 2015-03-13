@@ -43,7 +43,7 @@ namespace JiraReporter
 
             context.Title = JiraReportHelpers.GetReportTitle(context);
 
-            SetButtons(context);
+         //   SetButtons(context);
 
             return context;
         }
