@@ -44,7 +44,7 @@ namespace JiraReporter.Services
 
             SetProjectLead(authors);
             authors.ForEach(SetAuthorAdvancedProperties);
-            authors.RemoveAll(a => a.IsProjectLead == false && AuthorIsEmpty(a));
+            authors.RemoveAll(a => a.IsProjectLead == false && a.IsEmpty);
 
             var individualReportService = new IndividualReportInfoService();
             individualReportService.SetIndividualDraftInfo(authors, _context);
@@ -93,6 +93,7 @@ namespace JiraReporter.Services
             SetImage();
             SetAvatarId();
             SetOverrideEmail();
+            SetAuthorIsEmpty();
         }
 
         private void SetName()
@@ -236,11 +237,13 @@ namespace JiraReporter.Services
         }
 
 
-        private bool AuthorIsEmpty(JiraAuthor author)
+        private void SetAuthorIsEmpty()
         {
-            if (author.InProgressTasks.Count == 0 && author.OpenTasks.Count == 0 && author.DayLogs.Count == 0)
-                return true;
-            return false;
+            var hasInProgress = _currentAuthor.InProgressTasks != null && _currentAuthor.InProgressTasks.Count > 0;
+            var hasOpenTasks = _currentAuthor.OpenTasks != null && _currentAuthor.OpenTasks.Count > 0;
+            var hasDayLogs = _currentAuthor.DayLogs != null && _currentAuthor.DayLogs.Count > 0;
+            if (!hasInProgress && !hasOpenTasks  && !hasDayLogs)
+                _currentAuthor.IsEmpty = true;
         }
 
         private void SetAuthorDayLogs()

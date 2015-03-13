@@ -70,8 +70,6 @@ namespace JiraReporter.Services
 
             SetUnassignedTimming();
 
-            //SetHourRates();
-
             SetHealthColors();
             SetVariances();
 
@@ -79,8 +77,18 @@ namespace JiraReporter.Services
             SetHealthStatuses();
 
             SetWidths();
+            CheckStatus();
 
             SetErrors();
+        }
+
+        private void CheckStatus()
+        {
+            if (_summary.Timing.AverageWorkedMonth > 0 || _policy.AllocatedHoursPerMonth > 0)
+                _summary.HasMonth = true;
+            if (_summary.HasMonth == true || _summary.Sprint != null)
+                _summary.HasStatus = true;
+
         }
 
         private void SetUnassignedTimming()
@@ -233,15 +241,6 @@ namespace JiraReporter.Services
             if (_summary.Timing.AllocatedHoursPerMonth > 0)
                 _summary.Timing.RemainingMonthHours = _summary.Timing.AllocatedHoursPerMonth - _summary.Timing.MonthHoursWorked;
         }
-
-        //private void SetHourRates()
-        //{
-        //    _summary.Timing.HourRateToCompleteMonth = _summary.Timing.RemainingMonthHours / _summary.WorkingDays.MonthWorkingDaysLeft;
-        //    _summary.Timing.HourRateToCompleteMonthString = ((int)_summary.Timing.HourRateToCompleteMonth * 3600).SetTimeFormat8Hour();
-        //    if (_report.HasSprint)
-        //        _summary.Timing.HourRateToCompleteSprint = (double)_summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft;
-        //    _summary.Timing.HourRateToCompleteSprintString = ((int)_summary.Timing.HourRateToCompleteSprint * 3600).SetTimeFormat8Hour();
-        //}
 
         private void SetHealthColors()
         {
@@ -472,6 +471,5 @@ namespace JiraReporter.Services
             }
             return workingDaysInfo;
         }
-
     }
 }
