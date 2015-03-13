@@ -89,7 +89,6 @@
     <Compile Include="IssueAdapter.cs" />
     <Compile Include="IssueProcessor.cs" />
     <Compile Include="Helpers\JiraReportHelpers.cs" />
-    <Compile Include="SprintLoader.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="BaseReportProcessor.cs" />
     <Compile Include="IndividualReportProcessor.cs" />
@@ -110,9 +109,6 @@
     <Compile Include="TasksService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="ConnectionStrings.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
