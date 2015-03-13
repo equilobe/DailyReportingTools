@@ -43,7 +43,25 @@ namespace JiraReporter
 
             context.Title = JiraReportHelpers.GetReportTitle(context);
 
+            SetButtons(context);
+
             return context;
+        }
+
+        private static void SetButtons(JiraReport context)
+        {
+            if(context.IsFinalDraft)
+            {
+                context.ConfirmationButton = new Button(context.SendReportUrl, "Confirm Draft", "#5CB85C");
+                context.ResendButton = new Button(context.SendDraftUrl, "Resend Draft", "#FFF");
+            }
+
+            if(context.IsIndividualDraft)
+            {
+                context.ConfirmationButton = new Button(context.Author.IndividualDraftInfo.ConfirmationDraftUrl, "Confirm Draft", "#5CB85C");
+                context.ResendButton = new Button(context.Author.IndividualDraftInfo.ResendDraftUrl, "Resend Draft", "#FFF");
+                context.ForceButton = new Button(context.Author.IndividualDraftInfo.ForceDraftUrl, "Force Full Draft", "Force Full Draft");
+            }
         }
 
         private static List<JiraAuthor> GetReportAuthors(JiraReport context)
