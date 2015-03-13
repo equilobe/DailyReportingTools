@@ -121,7 +121,7 @@ namespace Equilobe.DailyReport.SL
                     return false;
 
                 var draft = report.IndividualDraftConfirmations.SingleOrDefault(d => d.UniqueUserKey == draftKey);
-                if (draft == null || draft.LastDateConfirmed.Value.Date != DateTime.Today)
+                if (draft == null || draft.LastDateConfirmed == null || draft.LastDateConfirmed.Value.Date != DateTime.Today)
                     return false;
 
                 return true;
@@ -184,7 +184,7 @@ namespace Equilobe.DailyReport.SL
 
         public void SetReportExecutionInstance(SendScope scope, string userKey = "")
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _uniqueProjectKey);
 
@@ -215,7 +215,7 @@ namespace Equilobe.DailyReport.SL
             {
                 _report.ExecutionInstance = new ExecutionInstance();
                 unexecutedInstance.CopyProperties(_report.ExecutionInstance);
-                using(var db = new ReportsDb())
+                using (var db = new ReportsDb())
                 {
                     db.SetExecutionDate(unexecutedInstance.Id);
                 }
