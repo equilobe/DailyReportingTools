@@ -17,6 +17,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public virtual ICollection<ReportSettings> ReportSettings { get; set; }
 
 		[ForeignKey("UserId")]
-		public ApplicationUser User { get; set; }
+		public virtual ApplicationUser User { get; set; }
     }
 }
