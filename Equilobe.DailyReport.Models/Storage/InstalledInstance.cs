@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,7 +12,11 @@ namespace Equilobe.DailyReport.Models.Storage
         [Required]
         public string BaseUrl { get; set; }
         public string SharedSecret { get; set; }
+		public string UserId { get; set; }
 
         public virtual ICollection<ReportSettings> ReportSettings { get; set; }
+
+		[ForeignKey("UserId")]
+		public ApplicationUser User { get; set; }
     }
 }
