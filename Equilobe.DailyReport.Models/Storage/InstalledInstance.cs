@@ -12,11 +12,11 @@ namespace Equilobe.DailyReport.Models.Storage
         [Required]
         public string BaseUrl { get; set; }
         public string SharedSecret { get; set; }
+		[Required]
 		public string UserId { get; set; }
 
         public virtual ICollection<ReportSettings> ReportSettings { get; set; }
 
-		[ForeignKey("UserId")]
 		public virtual ApplicationUser User { get; set; }
     }
 }

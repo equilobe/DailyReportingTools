@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Storage
 {
     public class SerializedPolicy
     {
-        [Key, ForeignKey("ReportSettings")]
+        [Key]
         public long ReportSettingsId { get; set; }
         public string PolicyString { get; set; }
 

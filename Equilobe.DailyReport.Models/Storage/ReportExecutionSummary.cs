@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Storage
 {
     public class ReportExecutionSummary
     {
-        [Key, ForeignKey("ReportSettings")]
+        [Key]
         public long ReportSettingsId { get; set; }
         public DateTime? LastFinalReportSentDate { get; set; }
         public DateTime? LastDraftSentDate { get; set; }

@@ -41,8 +41,7 @@ namespace Equilobe.DailyReport.DAL
                 .WithOptional(x => x.FinalDraftConfirmation)
                 .WillCascadeOnDelete(true);
 
-			modelBuilder.Entity<IdentityUser>().ToTable("Users").Property(p => p.Id).HasColumnName("UserId");
-			modelBuilder.Entity<ApplicationUser>().ToTable("Users").Property(p => p.Id).HasColumnName("UserId");
+			modelBuilder.Entity<ApplicationUser>().ToTable("Users");
 			modelBuilder.Entity<IdentityUserRole>().ToTable("UserRoles");
 			modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
 			modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");
