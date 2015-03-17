@@ -21,7 +21,7 @@ namespace Equilobe.DailyReport.Models.Web
 		public bool RememberMe { get; set; }
 	}
 
-	public class AuthenticationResponse
+	public class AccountResponse
 	{
 		public bool IsValid { get; set; }
 		public string Message { get; set; }

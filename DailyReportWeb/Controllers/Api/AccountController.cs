@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web;
 using Owin;
 using System.Net;
+using System.Linq;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -30,20 +31,29 @@ namespace DailyReportWeb.Controllers.Api
 		}
 
 
-		[AllowAnonymous] 
-		public async Task<HttpResponseMessage> Register(RegisterModel model)
+		[AllowAnonymous]
+		public async Task<AccountResponse> Register(RegisterModel model)
 		{
 			List<string> errors = new List<string>();
-			errors = Check(ModelState);
 
-			if(errors.Count != 0)
-				return Request.CreateResponse(HttpStatusCode.NotAcceptable, errors);
+			if (errors.Count != 0)
+			{
+				return new AccountResponse() { 
+					IsValid= false,
+					ErrorList = errors,
+					Message = "Correct errors first."
+				};
+			}
 
 			var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 			IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
-			if(!result.Succeeded)
-				return Request.CreateResponse(HttpStatusCode.NotAcceptable, result.Errors);
+			if (!result.Succeeded)
+				return new AccountResponse(){
+					IsValid=false,
+					Message = "User could not be created.",
+					ErrorList = result.Errors.ToList()
+				};
 
 			await SignInAsync(user, isPersistent: false);
 			// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -52,23 +62,35 @@ namespace DailyReportWeb.Controllers.Api
 			//var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
 			//await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-			return Request.CreateResponse(HttpStatusCode.OK);
+			return new AccountResponse(){
+				IsValid = true
+			};
 		}
 
 		[AllowAnonymous]
-		public async Task<HttpResponseMessage> Login(LoginModel model)
+		public async Task<AccountResponse> Login(LoginModel model)
 		{
 			List<string> errors = new List<string>();
-			errors = Check(ModelState);
-			if(errors.Count != 0)
-				return Request.CreateResponse(HttpStatusCode.NotAcceptable, errors);
+			if (errors.Count != 0)
+				return new AccountResponse() {
+					IsValid = false,
+					ErrorList = errors,
+					Message = "Correct errors first."
+				};
 
 			var user = await UserManager.FindAsync(model.Email, model.Password);
 			if(user==null)
-				return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Invalid username or password.");
+				return new AccountResponse() {
+					IsValid = false,
+					ErrorList = errors,
+					Message = "Invalid username or password."
+				};
+			 
 
 			await SignInAsync(user, model.RememberMe);
-			return Request.CreateResponse(HttpStatusCode.OK);
+			return new AccountResponse(){
+				IsValid = true
+			};
 		}
 
 		private IAuthenticationManager AuthenticationManager
@@ -85,27 +107,5 @@ namespace DailyReportWeb.Controllers.Api
 			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, await user.GenerateUserIdentityAsync(UserManager));
 		}
 
-		private void AddErrors(IdentityResult result)
-		{
-			foreach (var error in result.Errors)
-			{
-				ModelState.AddModelError("", error);
-			}
-		}
-
-		//Created to remove duplicated error message generation when a bad model is passed to a service.  
-		//This method recieves the ModelState, loops through all the erros, and builds them into a list.
-		//An empty list means no errors.
-		public static List<string> Check(System.Web.Http.ModelBinding.ModelStateDictionary ModelState)
-		{
-			var modelStateErrors = ModelState.Values;
-			List<string> errors = new List<string>();
-			foreach (var s in modelStateErrors)
-				foreach (var e in s.Errors)
-					if (e.ErrorMessage != null && e.ErrorMessage.Trim() != "")
-						errors.Add(e.ErrorMessage);
-
-			return errors;
-		}
     }
 }
