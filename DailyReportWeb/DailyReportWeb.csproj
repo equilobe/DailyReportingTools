@@ -165,7 +165,7 @@
     <Content Include="app\instances.test.js">
       <DependentUpon>instances.html</DependentUpon>
     </Content>
-    <Content Include="app\js\policyEditorApp.js" />
+    <Content Include="app\app.js" />
     <Content Include="app\policy.html" />
     <Content Include="app\policy.js">
       <DependentUpon>policy.html</DependentUpon>
