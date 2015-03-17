@@ -1,11 +1,16 @@
 ﻿using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Utils;
+using JiraReporter.Model;
 using JiraReporter.Services;
+using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace JiraReporter
 {
@@ -25,9 +30,6 @@ namespace JiraReporter
         {
             SaveReport();
             SetEmailCollection(Report.Authors);
-
-            //Policy.EmailCollection = new List<string>();
-            //Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
 
             SendReport();
         }
@@ -86,7 +88,7 @@ namespace JiraReporter
                 Policy.EmailCollection = JiraContextService.GetDraftAddedEmails(Policy);
             if (!Policy.AdvancedOptions.SendDraftToAllUsers && Policy.AdvancedOptions.SendDraftToProjectManager)
                 Policy.EmailCollection.Add(authors.Find(a => a.IsProjectLead).EmailAdress);
-            else
+            if (Policy.AdvancedOptions.SendDraftToAllUsers)
                 AddUsersEmailAdresses(authors);
         }
 
