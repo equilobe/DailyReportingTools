@@ -59,8 +59,7 @@ namespace Equilobe.DailyReport.SL
                     "--uniqueProjectKey=" + _uniqueProjectKey,
                     ConfigurationManager.AppSettings["reportToolPath"]));
 
-                taskDefinition.Principal.UserId = WindowsIdentity.GetCurrent().Name;
-                GetTaskFolder(taskService).RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition, TaskCreation.Create, taskDefinition.Principal.UserId, ConfigurationManager.AppSettings["taskSchedulerPassword"], TaskLogonType.S4U);
+                GetTaskFolder(taskService).RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition, TaskCreation.Create, WindowsIdentity.GetCurrent().Name);
             }
         }
 
@@ -77,8 +76,7 @@ namespace Equilobe.DailyReport.SL
                         StartBoundary = DateTime.Parse(reportTime)
                     });
 
-                taskDefinition.Principal.UserId = WindowsIdentity.GetCurrent().Name;
-                GetTaskFolder(taskService).RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition, TaskCreation.Update, taskDefinition.Principal.UserId, ConfigurationManager.AppSettings["taskSchedulerPassword"], TaskLogonType.S4U);
+                GetTaskFolder(taskService).RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition, TaskCreation.Update, WindowsIdentity.GetCurrent().Name);
             }
         }
 
