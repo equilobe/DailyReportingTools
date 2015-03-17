@@ -55,17 +55,22 @@ namespace Equilobe.DailyReport.SL
                 if (!isForcedByLead && report.ReportExecutionSummary == null)
                     return false;
 
-                if (isForcedByLead || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today)
+                if (isForcedByLead || ( report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today))
                     return true;
 
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
                     return false;
 
-                if (individualReports.Exists(r => r.LastDateConfirmed.Value.Date != DateTime.Today))
+                if (ExistsUnconfirmedDraft(individualReports))
                     return false;
 
                 return true;
             }
+        }
+
+        private static bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports)
+        {
+            return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date != DateTime.Today);
         }
 
         private bool IsForcedByLead(string userKey, List<IndividualDraftConfirmation> individualConfirmations)
@@ -98,8 +103,9 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == _uniqueProjectKey);
-                if (report == null || report.IndividualDraftConfirmations == null || report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today || report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today)
-                    return false;
+                if (report == null || report.IndividualDraftConfirmations == null)
+                    if (VerifyDates(report.ReportExecutionSummary))
+                        return false;
 
                 var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.ReportSettingsId == report.Id).ToList();
                 var draft = individualReports.SingleOrDefault(dr => dr.UniqueUserKey == draftKey);
@@ -112,6 +118,12 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        private static bool VerifyDates(ReportExecutionSummary reportExec)
+        {
+            return (reportExec == null || (reportExec.LastDraftSentDate != null && reportExec.LastDraftSentDate.Value.Date == DateTime.Today)
+                || (reportExec.LastFinalReportSentDate != null && reportExec.LastFinalReportSentDate.Value.Date == DateTime.Today));           
+        }
+
         public bool CheckIndividualConfirmation(string draftKey)
         {
             using (var db = new ReportsDb())
@@ -121,7 +133,7 @@ namespace Equilobe.DailyReport.SL
                     return false;
 
                 var draft = report.IndividualDraftConfirmations.SingleOrDefault(d => d.UniqueUserKey == draftKey);
-                if (draft == null || draft.LastDateConfirmed.Value.Date != DateTime.Today)
+                if (draft == null || draft.LastDateConfirmed == null || draft.LastDateConfirmed.Value.Date != DateTime.Today)
                     return false;
 
                 return true;
@@ -184,7 +196,7 @@ namespace Equilobe.DailyReport.SL
 
         public void SetReportExecutionInstance(SendScope scope, string userKey = "")
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _uniqueProjectKey);
 
@@ -215,7 +227,7 @@ namespace Equilobe.DailyReport.SL
             {
                 _report.ExecutionInstance = new ExecutionInstance();
                 unexecutedInstance.CopyProperties(_report.ExecutionInstance);
-                using(var db = new ReportsDb())
+                using (var db = new ReportsDb())
                 {
                     db.SetExecutionDate(unexecutedInstance.Id);
                 }

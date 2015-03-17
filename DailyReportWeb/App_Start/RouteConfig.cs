@@ -10,7 +10,6 @@ namespace DailyReportWeb
     {
         public static void RegisterRoutes(this RouteCollection routes)
         {
-            
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
@@ -41,12 +40,21 @@ namespace DailyReportWeb
                 }
             );
             routes.MapRoute(
-				name: "setup-policies",
-				url: "setup",
+                name: "setup-policies",
+                url: "setup",
                 defaults: new
                 {
-					controller = "Policy",
-					action = "Index"
+                    controller = "Policy",
+                    action = "Index"
+                }
+            );
+            routes.MapRoute(
+               name: "SPA",
+                url: "home/*",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index"
                 }
             );
             routes.MapRoute(

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Equilobe.DailyReport.Models.Policy
+namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class IndividualDraftInfo
     {

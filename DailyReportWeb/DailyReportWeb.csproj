@@ -177,9 +177,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\PolicyController.cs" />
+    <Compile Include="Controllers\Api\ProjectController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\PolicyController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -188,7 +188,28 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\js\policyEditorApp.js" />
+    <Content Include="app\instances.html" />
+    <Content Include="app\instances.js">
+      <DependentUpon>instances.html</DependentUpon>
+    </Content>
+    <Content Include="app\instances.test.js">
+      <DependentUpon>instances.html</DependentUpon>
+    </Content>
+    <Content Include="app\app.js" />
+    <Content Include="app\policy.html" />
+    <Content Include="app\policy.js">
+      <DependentUpon>policy.html</DependentUpon>
+    </Content>
+    <Content Include="app\policy.test.js">
+      <DependentUpon>policy.html</DependentUpon>
+    </Content>
+    <Content Include="app\projects.html" />
+    <Content Include="app\projects.js">
+      <DependentUpon>projects.html</DependentUpon>
+    </Content>
+    <Content Include="app\projects.test.js">
+      <DependentUpon>projects.html</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
@@ -199,12 +220,16 @@
     <Content Include="Content\Images\manager.png" />
     <Content Include="Content\Images\stakeholders.png" />
     <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-route.js" />
+    <Content Include="Scripts\angular-route.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\main.css" />
     <Content Include="ConnectionStrings.config" />
+    <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="Scripts\angular-route.min.js.map" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -222,10 +247,7 @@
     <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\README_ENU.txt" />
     <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\msvcr90.dll" />
     <None Include="Properties\PublishProfiles\PublishToProduction.pubxml" />
-    <Content Include="Views\Policy\Index.cshtml" />
-    <Content Include="Views\Policy\Details.cshtml" />
-    <Content Include="Scripts\angular.min.js.map" />
-    <Content Include="Views\Policy\_HowItWorks.cshtml" />
+    <Content Include="Views\Shared\_HowItWorks.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

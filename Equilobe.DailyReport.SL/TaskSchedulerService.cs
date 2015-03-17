@@ -47,7 +47,7 @@ namespace Equilobe.DailyReport.SL
 
         public void Create(string reportTime)
         {
-            using (TaskService taskService = new TaskService())
+            using (var taskService = new TaskService())
             {
                 TaskDefinition taskDefinition = taskService.NewTask();
                 taskDefinition.Triggers.Add(new DailyTrigger
@@ -56,19 +56,17 @@ namespace Equilobe.DailyReport.SL
                 });
                 taskDefinition.Actions.Add(new ExecAction(
                     ConfigurationManager.AppSettings["jiraReporterPath"],
-                    "uniqueProjectKey=" + _uniqueProjectKey,
+                    "--uniqueProjectKey=" + _uniqueProjectKey,
                     ConfigurationManager.AppSettings["reportToolPath"]));
 
                 taskDefinition.Principal.UserId = WindowsIdentity.GetCurrent().Name;
-                taskDefinition.Principal.LogonType = TaskLogonType.S4U;
-                
-                GetTaskFolder().RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition);
+                GetTaskFolder(taskService).RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition, TaskCreation.Create, taskDefinition.Principal.UserId, ConfigurationManager.AppSettings["taskSchedulerPassword"], TaskLogonType.S4U);
             }
         }
 
         public void Update(string reportTime)
         {
-            using (TaskService taskService = new TaskService())
+            using (var taskService = new TaskService())
             {
                 var taskDefinition = taskService.GetTask(ConfigurationManager.AppSettings["taskSchedulerFolderName"] + "\\DRT-" + _uniqueProjectKey).Definition;
                 taskDefinition.Triggers.Clear();
@@ -79,36 +77,37 @@ namespace Equilobe.DailyReport.SL
                         StartBoundary = DateTime.Parse(reportTime)
                     });
 
-                GetTaskFolder().RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition);
+                taskDefinition.Principal.UserId = WindowsIdentity.GetCurrent().Name;
+                GetTaskFolder(taskService).RegisterTaskDefinition("DRT-" + _uniqueProjectKey, taskDefinition, TaskCreation.Update, taskDefinition.Principal.UserId, ConfigurationManager.AppSettings["taskSchedulerPassword"], TaskLogonType.S4U);
             }
         }
 
         public void Delete(List<string> uniqueProjectsKey)
         {
-            var taskFolder = GetTaskFolder();
-            var tasksNames = taskFolder.AllTasks.Select(qr => qr.Name).ToList();
-
-            uniqueProjectsKey.ForEach(uniqueProjectKey =>
+            using (var taskService = new TaskService())
             {
-                if (tasksNames.Contains("DRT-" + uniqueProjectKey))
-                    taskFolder.DeleteTask("DRT-" + uniqueProjectKey);
-            });
+                var taskFolder = GetTaskFolder(taskService);
+                var tasksNames = taskFolder.AllTasks.Select(qr => qr.Name).ToList();
+
+                uniqueProjectsKey.ForEach(uniqueProjectKey =>
+                {
+                    if (tasksNames.Contains("DRT-" + uniqueProjectKey))
+                        taskFolder.DeleteTask("DRT-" + uniqueProjectKey);
+                });
+            }
         }
 
-        private TaskFolder GetTaskFolder()
+        private TaskFolder GetTaskFolder(TaskService taskService)
         {
-            using (TaskService taskService = new TaskService())
-            {
-                var taskFolder = taskService.RootFolder
-                    .SubFolders
-                    .Where(qr => qr.Name == ConfigurationManager.AppSettings["taskSchedulerFolderName"])
-                    .SingleOrDefault();
+            var taskFolder = taskService.RootFolder
+                .SubFolders
+                .Where(qr => qr.Name == ConfigurationManager.AppSettings["taskSchedulerFolderName"])
+                .SingleOrDefault();
 
-                if (taskFolder == null)
-                    return taskService.RootFolder.CreateFolder(ConfigurationManager.AppSettings["taskSchedulerFolderName"]);
+            if (taskFolder == null)
+                return taskService.RootFolder.CreateFolder(ConfigurationManager.AppSettings["taskSchedulerFolderName"]);
 
-                return taskFolder;
-            }
+            return taskFolder;
         }
     }
 }

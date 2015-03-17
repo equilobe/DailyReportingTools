@@ -119,7 +119,7 @@ namespace JiraReporter.Services
             foreach (var issue in issues)
             {
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
-                fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < _context.FromDate || e.StartDate > _context.ToDate);
+                fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
                 completeIssues.Add(fullIssue);

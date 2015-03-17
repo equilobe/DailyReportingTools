@@ -64,10 +64,12 @@
     <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="ReportFrame\Button.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
     <Compile Include="Interfaces\IJiraReport.cs" />
+    <Compile Include="ReportFrame\IndividualDraftInfo.cs" />
     <Compile Include="ReportFrame\IssueDetailed.cs" />
     <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
     <Compile Include="Interfaces\ISourceControlContext.cs" />
@@ -110,7 +112,6 @@
     <Compile Include="Storage\ReportExecutionSummary.cs" />
     <Compile Include="Storage\IndividualDraftConfirmation.cs" />
     <Compile Include="Policy\AdvancedOptions.cs" />
-    <Compile Include="Policy\IndividualDraftInfo.cs" />
     <Compile Include="Policy\JiraPolicy.cs" />
     <Compile Include="Policy\Month.cs" />
     <Compile Include="Policy\Policy.cs" />

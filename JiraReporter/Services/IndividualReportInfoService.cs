@@ -67,9 +67,11 @@ namespace JiraReporter.Services
             {
                 UserKey = draftConfirmation.UniqueUserKey,
                 Username = draftConfirmation.Username,
-                IsLead = draftConfirmation.IsProjectLead,
-                LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value
+                IsLead = draftConfirmation.IsProjectLead
             };
+
+            if (draftConfirmation.LastDateConfirmed != null)
+                draft.LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value;
 
             SetIndividualUrls(draft, context);
 

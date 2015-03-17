@@ -1,29 +1,13 @@
-﻿angular.module("policyEditorApp", [])
-    .controller("policyListPage", ['$scope', '$http', function ($scope, $http) {
-        $scope.policyStatus = "loading";
+﻿'use strict';
 
-        $http.get("/api/policy").success(function (list) {
-            $scope.policyList = list;
-
-            $scope.policyStatus = "loaded";
-        });
-
-        $scope.updateReportTime = function ($scope) {
-            if ($scope.reportForm.reportTime.$invalid || $scope.reportForm.reportTime.$pristine)
-                return;
-
-            $http.post("/api/policy", $scope.policy
-            ).success(function () {
-                console.log("success");
-            }).error(function () {
-                console.log("error");
-            });
-        };
+angular.module('app')
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.when('/home/edit/:projectId', { templateUrl: 'app/policy.html', controller: 'PolicyCtrl' });
     }])
-    .controller("policyEditPage", ["$scope", "$http", function ($scope, $http) {
+    .controller("PolicyCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
         $scope.policyStatus = "loading";
 
-        $http.get("/api/policy/" + projectId).success(function (policy) {
+        $http.get("/api/policy/" + $routeParams.projectId).success(function (policy) {
             $scope.user = policy.userOptions ? policy.userOptions[0] : null;
             $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
             $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
@@ -47,7 +31,7 @@
                     $scope.policyStatus = "error";
                     console.log("error");
                 });
-        }
+        };
 
         $scope.updateContributors = function ($scope) {
             $scope.sourceControlStatus = "loading";
@@ -61,14 +45,14 @@
                     $scope.sourceControlStatus = "error";
                     $scope.policy.sourceControlUsernames = null;
                 });
-        }
+        };
 
         $scope.addSourceControlUsername = function ($scope) {
             if ($scope.user.sourceControlUsernames == null)
                 $scope.user.sourceControlUsernames = [];
 
             $scope.user.sourceControlUsernames.push($scope.sourceControlUsername);
-        }
+        };
 
         $scope.removeSourceControlUsername = function ($scope) {
             for (var i = $scope.user.sourceControlUsernames.length - 1; i >= 0; i--)
@@ -76,14 +60,5 @@
                     $scope.user.sourceControlUsernames.splice(i, 1);
                     break;
                 }
-        }
-    }])
-    .directive('ngRepeat', function () {
-        return function ($scope, $element, $attrs) {
-            if ($scope.$last) setTimeout(function () {
-                $(".form-notification").on("click", function () {
-                    $(this).prev().focus();
-                });
-            }, 0);
         };
-    });
+    }]);
