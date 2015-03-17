@@ -117,6 +117,7 @@
     <Compile Include="Policy\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedPolicy.cs" />
+    <Compile Include="Web\AccountModel.cs" />
     <Compile Include="Web\Policy.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />
