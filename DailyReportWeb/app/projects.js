@@ -2,7 +2,7 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/home/list/:instanceId', { templateUrl: 'app/projects.html', controller: 'ProjectCtrl' });
+        $routeProvider.when('/app/list/:instanceId', { templateUrl: 'app/projects.html', controller: 'ProjectCtrl' });
     }])
     .controller("ProjectCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         $scope.status = "loading";

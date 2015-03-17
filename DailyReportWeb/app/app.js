@@ -1,9 +1,10 @@
 ﻿angular
     .module("app", ['ngRoute'])
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode(true);
         $routeProvider
             .when('/', {
-                redirectTo: '/home/list'
+                redirectTo: '/app/list'
             })
             .otherwise({
                 redirectTo: '/'

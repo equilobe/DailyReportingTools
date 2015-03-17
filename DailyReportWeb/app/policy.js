@@ -2,7 +2,7 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/home/edit/:projectId', { templateUrl: 'app/policy.html', controller: 'PolicyCtrl' });
+        $routeProvider.when('/app/edit/:projectId', { templateUrl: 'app/policy.html', controller: 'PolicyCtrl' });
     }])
     .controller("PolicyCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
         $scope.policyStatus = "loading";
