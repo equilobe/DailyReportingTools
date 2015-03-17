@@ -1,6 +1,8 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
@@ -73,6 +75,34 @@ namespace Equilobe.DailyReport.SL
                 .SelectMany(installedInstance => installedInstance.ReportSettings
                 .Select(reportSettings => reportSettings.UniqueProjectKey))
                 .ToList();
+        }
+
+        public List<InstalledInstance> GetInstances(string username)
+        {
+            var installedInstances = new ReportsDb().ReportSettings
+                .Where(reportSettings => reportSettings.Username == username)
+                .Select(reportSettings => reportSettings.InstalledInstance)
+                .Distinct()
+                .ToList();
+
+            var instances = new List<InstalledInstance>();
+            installedInstances.ForEach(installedInstance =>
+                {
+                    instances.Add(new InstalledInstance { 
+                        Id = installedInstance.Id,
+                        BaseUrl = installedInstance.BaseUrl
+                    });
+                });
+
+            return instances;
+        }
+
+        public string GetBaseUrl(long id)
+        {
+            return new ReportsDb().InstalledInstances
+                .Where(installedInstance => installedInstance.Id == id)
+                .Select(installedInstance => installedInstance.BaseUrl)
+                .FirstOrDefault();
         }
     }
 }
