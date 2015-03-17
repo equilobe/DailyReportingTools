@@ -176,6 +176,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\Api\AccountController.cs" />
     <Compile Include="Controllers\Api\PolicyController.cs" />
     <Compile Include="Controllers\Api\ProjectController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
