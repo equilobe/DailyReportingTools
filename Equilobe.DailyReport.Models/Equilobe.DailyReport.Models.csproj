@@ -58,7 +58,6 @@
     <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
-    <Compile Include="ReportFrame\Button.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />

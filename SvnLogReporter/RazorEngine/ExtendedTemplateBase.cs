@@ -14,25 +14,9 @@ namespace SourceControlLogReporter.RazorEngine
     {
         public string Partial<TPartialModel>(string path, TPartialModel model)
         {
-            try
-            {
-                var template = File.ReadAllText(path);
-                var partialViewResult = Razor.Parse(template, model);
-                return partialViewResult;
-            }
-            catch (TemplateCompilationException templateException)
-            {
-                foreach (var error in templateException.Errors)
-                {
-                    Debug.WriteLine(error);
-                }
-                return "Error in partial view compilation";
-            } 
-            catch (NullReferenceException nullException)
-            {
-                Debug.WriteLine(nullException);
-                return "Error in partial view compilation";
-            }
+            var template = File.ReadAllText(path);
+            var partialViewResult = Razor.Parse(template, model);
+            return partialViewResult;
         }
     }
 }
