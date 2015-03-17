@@ -30,8 +30,7 @@ namespace DailyReportWeb.Controllers.Api
 		}
 
 
-		[AllowAnonymous]
-		[Route("Register")]
+		[AllowAnonymous] 
 		public async Task<HttpResponseMessage> Register(RegisterModel model)
 		{
 			List<string> errors = new List<string>();
@@ -53,6 +52,22 @@ namespace DailyReportWeb.Controllers.Api
 			//var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
 			//await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
+			return Request.CreateResponse(HttpStatusCode.OK);
+		}
+
+		[AllowAnonymous]
+		public async Task<HttpResponseMessage> Login(LoginModel model)
+		{
+			List<string> errors = new List<string>();
+			errors = Check(ModelState);
+			if(errors.Count != 0)
+				return Request.CreateResponse(HttpStatusCode.NotAcceptable, errors);
+
+			var user = await UserManager.FindAsync(model.Email, model.Password);
+			if(user==null)
+				return Request.CreateResponse(HttpStatusCode.NotAcceptable, "Invalid username or password.");
+
+			await SignInAsync(user, model.RememberMe);
 			return Request.CreateResponse(HttpStatusCode.OK);
 		}
 
