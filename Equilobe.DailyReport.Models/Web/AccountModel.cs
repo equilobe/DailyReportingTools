@@ -20,4 +20,12 @@ namespace Equilobe.DailyReport.Models.Web
 		public string Password { get; set; }
 		public bool RememberMe { get; set; }
 	}
+
+	public class AuthenticationResponse
+	{
+		public bool IsValid { get; set; }
+		public string Message { get; set; }
+		public List<string> ErrorList { get; set; }
+		public bool HasErrors { get { return ErrorList.Count > 0; } }
+	}
 }
