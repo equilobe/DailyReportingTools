@@ -113,6 +113,9 @@
     <None Include="ConnectionStrings.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="smtp.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Views\button.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -71,5 +71,4 @@ packages/
 [Pp]olicies/
 /DailyReportWeb/ConnectionStrings.config
 /JiraReporter/ConnectionStrings.config
-/DailyReportWeb/Web.config
-/JiraReporter/App.config
+/JiraReporter/smtp.config
