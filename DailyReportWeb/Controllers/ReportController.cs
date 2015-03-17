@@ -1,7 +1,6 @@
 ﻿using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Storage;
-using Equilobe.DailyReport.SL;
 using JiraReporter.Services;
 using System;
 using System.Web.Mvc;

@@ -16,24 +16,6 @@ namespace DailyReportWeb.Controllers.Api
     [Authorize]
     public class PolicyController : ApiController
     {
-        // GET: api/Policy
-        public IEnumerable<PolicySummary> Get()
-        {
-            var baseUrl = User.GetBaseUrl();
-            var username = User.GetUsername();
-
-            var requestContext = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                Username = username,
-                SharedSecret = new DataService().GetSharedSecret(baseUrl),
-                Password = new DataService().GetPassword(baseUrl, username)
-            };
-
-            return new PolicySummaryService(requestContext).GetPoliciesSummary();
-        }
-
-        // GET: api/Policy/5
         public PolicyBuffer Get(long id)
         {
             var baseUrl = User.GetBaseUrl();
