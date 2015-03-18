@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.DAL
 {
-    public static class ReportsDbExtensions
+    public static class ReportExecutionMethods
     {
-        public static void SetExecutionDate(this ReportsDb db, long id)
+        public static void SetExecutionInstanceDate(this ReportsDb db, long id)
         {
             var reportExecutionInstance = db.ReportExecutionInstances.Single(e => e.Id == id);
             reportExecutionInstance.DateExecuted = DateTime.Now;
-
-            db.SaveChanges();
         }
     }
 }

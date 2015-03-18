@@ -4,41 +4,40 @@ using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.Models.Web;
 using System.Collections.Generic;
 using System.Linq;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace Equilobe.DailyReport.SL
 {
-    public class PolicySummaryService
+    public class PolicySummaryService : IPolicySummaryService
     {
-        public JiraRequestContext _requestContext { get; set; }
+        public IJiraRequestContextService JiraRequestContextService { get; set; }
+        public IJiraService JiraService { get; set; }
+        public IDataService DataService { get; set; }
 
-        public PolicySummaryService(JiraRequestContext context)
-        {
-            _requestContext = context;
-        }
 
         public PolicySummary GetPolicySummary(long projectId)
         {
-            var projectInfo = new JiraService(_requestContext).GetProjectInfo(projectId);
+            var projectInfo = new JiraService().GetProjectInfo(projectId);
             return new PolicySummary
             {
-                BaseUrl = _requestContext.BaseUrl,
+                BaseUrl = JiraRequestContextService.Context.BaseUrl,
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = new DataService().GetReportTime(_requestContext.BaseUrl, projectInfo.ProjectId)
+                ReportTime = DataService.GetReportTime(JiraRequestContextService.Context.BaseUrl, projectInfo.ProjectId)
             };
         }
 
         public List<PolicySummary> GetPoliciesSummary()
         {
-            return new JiraService(_requestContext).GetProjectsInfo()
+            return JiraService.GetProjectsInfo()
                 .Select(projectInfo => new PolicySummary
                 {
-                    BaseUrl = _requestContext.BaseUrl,
+                    BaseUrl = JiraRequestContextService.Context.BaseUrl,
                     ProjectId = projectInfo.ProjectId,
                     ProjectKey = projectInfo.ProjectKey,
                     ProjectName = projectInfo.ProjectName,
-                    ReportTime = new DataService().GetReportTime(_requestContext.BaseUrl, projectInfo.ProjectId)
+                    ReportTime = DataService.GetReportTime(JiraRequestContextService.Context.BaseUrl, projectInfo.ProjectId)
                 })
                 .ToList();
         }

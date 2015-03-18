@@ -49,9 +49,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="General\ItemContext.cs" />
+    <Compile Include="General\ItemListContext.cs" />
+    <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
+    <Compile Include="Interfaces\IJiraRequestContextService.cs" />
+    <Compile Include="Interfaces\IPolicyService.cs" />
+    <Compile Include="Interfaces\IPolicySummaryService.cs" />
+    <Compile Include="Interfaces\IReportExecutionService.cs" />
+    <Compile Include="Interfaces\ISourceControlService.cs" />
+    <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="ReportExecution\ExecutionContext.cs" />
+    <Compile Include="General\SimpleResult.cs" />
+    <Compile Include="ReportExecution\UserConfirmationContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
@@ -103,6 +115,9 @@
     <Compile Include="Policy\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedPolicy.cs" />
+    <Compile Include="TaskScheduling\ProjectListContext.cs" />
+    <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
+    <Compile Include="TaskScheduling\ProjectContext.cs" />
     <Compile Include="Web\Policy.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />

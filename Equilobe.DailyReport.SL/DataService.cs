@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Equilobe.DailyReport.SL
 {
-    public class DataService
+    public class DataService : IDataService
     {
         public void SaveInstance(InstalledInstance instanceData)
         {
@@ -101,5 +101,28 @@ namespace Equilobe.DailyReport.SL
                 .Select(installedInstance => installedInstance.BaseUrl)
                 .FirstOrDefault();
         }
+
+
+        public void SetReportFromDb(JiraReport _report)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
+                _report.Settings = new ReportSettings();
+                reportSettings.CopyTo<ReportSettings>(_report.Settings);
+                if (reportSettings.ReportExecutionSummary != null)
+                {
+                    if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
+                        _report.LastDraftSentDate = reportSettings.ReportExecutionSummary.LastDraftSentDate.Value;
+                    if (reportSettings.ReportExecutionSummary.LastFinalReportSentDate != null)
+                        _report.LastReportSentDate = reportSettings.ReportExecutionSummary.LastFinalReportSentDate.Value;
+                }
+
+                if (reportSettings.FinalDraftConfirmation != null)
+                    if (reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
+                        _report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
+            }
+        }
+
     }
 }

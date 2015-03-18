@@ -51,9 +51,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.2\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
-    <Reference Include="JWT">
-      <HintPath>..\packages\JWT.1.3.2\lib\3.5\JWT.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -296,10 +293,6 @@
     <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">
       <Project>{7a42dd16-07e8-46a6-9083-47f342b644e5}</Project>
       <Name>Equilobe.DailyReport.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JiraReporter\JiraReporter.csproj">
-      <Project>{d1e02075-5930-4ae3-a552-bf3fae984aa9}</Project>
-      <Name>JiraReporter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SvnLogReporter\SourceControlLogReporter.csproj">
       <Project>{ca27b3c4-9045-4fc4-bbcc-2b33a02f54c4}</Project>

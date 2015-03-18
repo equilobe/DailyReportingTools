@@ -30,7 +30,7 @@ namespace JiraReporter.Services
             var individualDraft = new IndividualDraftInfo
             {
                 Username = author.Username,
-                UserKey = RandomGenerator.GetRandomString(),
+                UserKey = RandomString.Get(),
                 IsLead = author.IsProjectLead
             };
             SetIndividualUrls(individualDraft, context);

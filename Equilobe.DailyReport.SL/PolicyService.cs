@@ -7,21 +7,16 @@ using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using System.Collections.Specialized;
 using System.Linq;
+using System;
 
 namespace Equilobe.DailyReport.SL
 {
-    public class PolicyService
+    public class PolicyService : IPolicyService
     {
-        public JiraRequestContext _requestContext { get; set; }
-
-        public PolicyService()
-        {
-        }
-
-        public PolicyService(JiraRequestContext context)
-        {
-            _requestContext = context;
-        }
+        public IJiraRequestContextService JiraRequestContextService { get; set; }
+        public IPolicySummaryService PolicySummaryService { get; set; }
+        public ISourceControlService SourceControlService { get; set; }
+        public IJiraService JiraService { get; set; }
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
@@ -38,17 +33,17 @@ namespace Equilobe.DailyReport.SL
         public PolicyBuffer GetPolicy(long projectId)
         {
             var jiraPolicy = GetJiraPolicy(projectId);
-            var policySummary = new PolicySummaryService(_requestContext).GetPolicySummary(projectId);
-            var policyDetails = GetPolicyDetails(_requestContext.BaseUrl, projectId);
+            var policySummary = PolicySummaryService.GetPolicySummary(projectId);
+            var policyDetails = GetPolicyDetails(JiraRequestContextService.Context.BaseUrl, projectId);
 
             return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
         public JiraPolicy GetJiraPolicy(long projectId)
         {
-            var project = new JiraService(_requestContext).GetProject(projectId);
+            var project = JiraService.GetProject(projectId);
 
-            var options = new JiraService(_requestContext).GetUsers(project.Key)
+            var options = JiraService.GetUsers(project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,
@@ -58,10 +53,10 @@ namespace Equilobe.DailyReport.SL
 
             return new JiraPolicy
             {
-                BaseUrl = _requestContext.BaseUrl,
-                SharedSecret = _requestContext.SharedSecret,
-                Username = _requestContext.Username,
-                Password = _requestContext.Password,
+                BaseUrl = JiraRequestContextService.Context.BaseUrl,
+                SharedSecret = JiraRequestContextService.Context.SharedSecret,
+                Username = JiraRequestContextService.Context.Username,
+                Password = JiraRequestContextService.Context.Password,
                 ProjectId = projectId,
                 UserOptions = options
             };
@@ -83,14 +78,14 @@ namespace Equilobe.DailyReport.SL
         public PolicyBuffer SyncPolicy(JiraPolicy jiraPolicy, PolicySummary policySummary, PolicyDetails policyDetails)
         {
             var policyBuffer = new PolicyBuffer();
-            jiraPolicy.CopyProperties(policyBuffer);
+            jiraPolicy.CopyPropertiesOnObjects(policyBuffer);
 
-            policySummary.CopyProperties(policyBuffer);
+            policySummary.CopyPropertiesOnObjects(policyBuffer);
 
-            policyDetails.CopyProperties(policyBuffer);
+            policyDetails.CopyPropertiesOnObjects(policyBuffer);
 
             if (policyBuffer.SourceControlOptions != null)
-                policyBuffer.SourceControlUsernames = new SourceControlService().GetContributors(policyBuffer.SourceControlOptions);
+                policyBuffer.SourceControlUsernames = SourceControlService.GetContributors(policyBuffer.SourceControlOptions);
 
             return policyBuffer;
         }
@@ -105,11 +100,11 @@ namespace Equilobe.DailyReport.SL
                     return null;
 
                 var policyBuffer = new PolicyBuffer();
-                reportSettings.CopyProperties<IReportSetting>(policyBuffer);
+                reportSettings.CopyTo<IReportSetting>(policyBuffer);
 
                 if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
                     Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
-                        .CopyProperties(policyBuffer);
+                        .CopyPropertiesOnObjects(policyBuffer);
 
                 return policyBuffer;
             }
@@ -119,7 +114,7 @@ namespace Equilobe.DailyReport.SL
         {
             var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
             var policy = new JiraPolicy();
-            policyBuffer.CopyProperties(policy);
+            policyBuffer.CopyPropertiesOnObjects(policy);
             return policy;
         }
     }

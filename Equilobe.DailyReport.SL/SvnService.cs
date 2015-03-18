@@ -12,7 +12,7 @@ namespace Equilobe.DailyReport.SL
 {
     public class SvnService
     {
-        public SvnClient GetSvnClient(ISourceControlContext context)
+        private SvnClient GetSvnClient(ISourceControlContext context)
         {
             return new SvnClient(context);
         }
