@@ -39,7 +39,7 @@ namespace DailyReportWeb.Controllers.Api
 			if (errors.Count != 0)
 			{
 				return new AccountResponse() { 
-					IsValid= false,
+					Success= false,
 					ErrorList = errors,
 					Message = "Correct errors first."
 				};
@@ -50,7 +50,7 @@ namespace DailyReportWeb.Controllers.Api
 
 			if (!result.Succeeded)
 				return new AccountResponse(){
-					IsValid=false,
+					Success=false,
 					Message = "User could not be created.",
 					ErrorList = result.Errors.ToList()
 				};
@@ -63,7 +63,7 @@ namespace DailyReportWeb.Controllers.Api
 			//await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
 			return new AccountResponse(){
-				IsValid = true
+				Success = true
 			};
 		}
 
@@ -73,7 +73,7 @@ namespace DailyReportWeb.Controllers.Api
 			List<string> errors = new List<string>();
 			if (errors.Count != 0)
 				return new AccountResponse() {
-					IsValid = false,
+					Success = false,
 					ErrorList = errors,
 					Message = "Correct errors first."
 				};
@@ -81,7 +81,7 @@ namespace DailyReportWeb.Controllers.Api
 			var user = await UserManager.FindAsync(model.Email, model.Password);
 			if(user==null)
 				return new AccountResponse() {
-					IsValid = false,
+					Success = false,
 					ErrorList = errors,
 					Message = "Invalid username or password."
 				};
@@ -89,7 +89,15 @@ namespace DailyReportWeb.Controllers.Api
 
 			await SignInAsync(user, model.RememberMe);
 			return new AccountResponse(){
-				IsValid = true
+				Success = true
+			};
+		}
+
+		public AccountResponse LogOff()
+		{
+			AuthenticationManager.SignOut();
+			return new AccountResponse(){
+				Success = true
 			};
 		}
 

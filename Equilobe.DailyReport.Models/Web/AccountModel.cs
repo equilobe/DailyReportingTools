@@ -23,7 +23,7 @@ namespace Equilobe.DailyReport.Models.Web
 
 	public class AccountResponse
 	{
-		public bool IsValid { get; set; }
+		public bool Success { get; set; }
 		public string Message { get; set; }
 		public List<string> ErrorList { get; set; }
 		public bool HasErrors
