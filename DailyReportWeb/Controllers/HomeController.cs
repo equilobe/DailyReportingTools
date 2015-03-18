@@ -14,11 +14,12 @@ namespace DailyReportWeb.Controllers
     {
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public IDataService DataService { get; set; }
+        public IPolicyService PolicyService { get; set; }
 
         public ActionResult Index()
         {
-            AuthenticationHelpers.SetAuthCookie(new PolicyService().GetJiraUsername(Request.QueryString),
-                                                new PolicyService().GetJiraBaseUrl(Request.QueryString));
+            AuthenticationHelpers.SetAuthCookie(PolicyService.GetJiraUsername(Request.QueryString),
+                                                PolicyService.GetJiraBaseUrl(Request.QueryString));
 
             ViewBag.Time = Validations.TIME;
             ViewBag.Time = Validations.TIME;

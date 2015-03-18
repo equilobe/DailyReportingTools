@@ -17,7 +17,7 @@ namespace Equilobe.DailyReport.SL
 
         public PolicySummary GetPolicySummary(long projectId)
         {
-            var projectInfo = new JiraService().GetProjectInfo(projectId);
+            var projectInfo = JiraService.GetProjectInfo(projectId);
             return new PolicySummary
             {
                 BaseUrl = JiraRequestContextService.Context.BaseUrl,

@@ -21,6 +21,8 @@ namespace JiraReporter
     class JiraReportMainFlowProcessor
     {
         public IDataService DataService { get; set; }
+        public IJiraService JiraService { get; set; }
+        public IPolicyService PolicyService { get; set; }
 
         public void Execute(string[] args)
         {
@@ -29,7 +31,7 @@ namespace JiraReporter
             var options = new JiraOptions();
             new CommandLineParser().ParseArguments(args, options);
 
-            var policy = new PolicyService().GetPolicy(options.UniqueProjectKey);
+            var policy = PolicyService.GetPolicy(options.UniqueProjectKey);
 
             var report = new JiraReport(policy, options);
             DataService.SetReportFromDb(report);
@@ -38,7 +40,7 @@ namespace JiraReporter
             SetExecutionInstance(report);
 
 
-            var project = new JiraService().GetProject(report.Policy.ProjectId);
+            var project = JiraService.GetProject(report.Policy.ProjectId);
             SetProjectInfo(report, project);
             LoadReportDates(report);
 
@@ -100,7 +102,7 @@ namespace JiraReporter
         {
             SetTemplateGlobal();
 
-            var report = ReportGenerator.GenerateReport(context);
+            var report = new ReportGenerator().GenerateReport(context);
 
             ProcessAndSendReport(report);
         }
@@ -112,7 +114,7 @@ namespace JiraReporter
                 var reportService = new ReportExecutionService();
                 foreach (var author in report.Authors)
                 {
-                    var individualReport = ReportGenerator.GetIndividualReport(report, author);
+                    var individualReport = new ReportGenerator().GetIndividualReport(report, author);
                     var context = new UserConfirmationContext
                     {
                         Id = report.UniqueProjectKey,

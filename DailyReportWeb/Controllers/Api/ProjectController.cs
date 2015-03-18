@@ -16,6 +16,7 @@ namespace DailyReportWeb.Controllers.Api
     public class ProjectController : ApiController
     {
         public IDataService DataService { get; set; }
+        public IPolicySummaryService PolicySummaryService { get; set; }
 
         public List<InstalledInstance> Get()
         {
@@ -36,7 +37,7 @@ namespace DailyReportWeb.Controllers.Api
                 Password = DataService.GetPassword(baseUrl, username)
             };
 
-            return new PolicySummaryService().GetPoliciesSummary();
+            return PolicySummaryService.GetPoliciesSummary();
         }
     }
 }

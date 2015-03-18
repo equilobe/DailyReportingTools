@@ -18,6 +18,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         JiraIssue GetIssue(string issueKey);
         JiraIssues GetCompletedIssues(DateTime startDate, DateTime endDate);
         JiraIssues GetSprintTasks(string projectKey);
+        ProjectInfo GetProjectInfo(long id);
         List<ProjectInfo> GetProjectsInfo();
         Sprint GetProjectSprintForDate(ProjectDateFilter filter);
     }

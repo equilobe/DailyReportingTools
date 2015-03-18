@@ -45,7 +45,7 @@
     <Compile Include="CommandLineText.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="Ensure.cs" />
-    <Compile Include="RandomGenerator.cs" />
+    <Compile Include="RandomString.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

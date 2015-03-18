@@ -17,11 +17,14 @@ using System.Drawing;
 using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.Models.Policy;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter.Services
 {
     class AuthorLoader
     {
+        IJiraService JiraService { get; set; }
+
         SprintTasks _sprintIssues { get { return _context.SprintTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
         List<JiraCommit> _commits { get { return _context.Commits; } }
@@ -37,7 +40,7 @@ namespace JiraReporter.Services
 
         public List<JiraAuthor> GetAuthors()
         {
-            var authors = new JiraService().GetUsers(_context.ProjectKey)
+            var authors = JiraService.GetUsers(_context.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
@@ -56,7 +59,7 @@ namespace JiraReporter.Services
         {
             var draftInfoService = new IndividualReportInfoService();
             var draft = draftInfoService.GetIndividualDraftInfo(context);
-            var user = new JiraService().GetUser(draft.Username);
+            var user = JiraService.GetUser(draft.Username);
             var author = new JiraAuthor(user);
             SetAuthorAdvancedProperties(author);
             author.IndividualDraftInfo = draft;
@@ -113,7 +116,7 @@ namespace JiraReporter.Services
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
         {
-            var issues = new JiraService().GetTimesheetForUser(fromDate, toDate, _currentAuthor.Username);
+            var issues = JiraService.GetTimesheetForUser(fromDate, toDate, _currentAuthor.Username);
             var issueProcessor = new IssueProcessor(_context);
             var completeIssues = new List<IssueDetailed>();
             foreach (var issue in issues)
@@ -336,7 +339,7 @@ namespace JiraReporter.Services
 
         private JiraAuthor GetProjectLead(string username)
         {
-            var lead = new JiraService().GetUser(username);
+            var lead = JiraService.GetUser(username);
             var projectManager = new JiraAuthor(lead);
             projectManager.IsProjectLead = true;
 

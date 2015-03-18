@@ -14,12 +14,16 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace SourceControlLogReporter
 {
     public class GitHubReport : ReportBase
     {
-        public GitHubReport(Policy p, Options o):base(p,o)
+        public IGitHubService GitHubService { get; set; }
+
+        public GitHubReport(Policy p, Options o)
+            : base(p, o)
         {
 
         }
@@ -32,7 +36,7 @@ namespace SourceControlLogReporter
         public override Log CreateLog()
         {
             var context = new SourceControlContext { SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate };
-            return new GitHubService().GetLog(context);
+            return GitHubService.GetLog(context);
         }
 
         protected override void AddPullRequests(Report report, Log log)

@@ -18,6 +18,7 @@ namespace DailyReportWeb.Controllers.Api
     public class PolicyController : ApiController
     {
         public IDataService DataService { get; set; }
+        public IPolicyService PolicyService { get; set; }
 
         public PolicyBuffer Get(long id)
         {
@@ -32,7 +33,7 @@ namespace DailyReportWeb.Controllers.Api
                 Password = DataService.GetPassword(baseUrl, username)
             };
 
-            return new PolicyService().GetPolicy(id);
+            return PolicyService.GetPolicy(id);
         }
 
         // PUT: api/Policy
