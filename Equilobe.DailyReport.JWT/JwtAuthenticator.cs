@@ -8,20 +8,22 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
-namespace Equilobe.DailyReport.BL.Jira
+namespace Equilobe.DailyReport.JWT
 {
     public class JwtAuthenticator : IAuthenticator
     {
         private string _sharedSecret;
+        private string _addonKey;
 
-        public JwtAuthenticator(string sharedSecret)
+        public JwtAuthenticator(string sharedSecret, string addonKey)
         {
             _sharedSecret = sharedSecret;
+            _addonKey = addonKey;
         }
 
         public void Authenticate(IRestClient client, IRestRequest request)
         {
-            var jwtToken = CreateJwt(ConfigurationManager.AppSettings["addonKey"], _sharedSecret, request.Resource, request.Method.ToString());
+            var jwtToken = CreateJwt(_addonKey, _sharedSecret, request.Resource, request.Method.ToString());
             request.AddParameter("Authorization", "JWT " + jwtToken, ParameterType.HttpHeader);
         }
 
@@ -104,68 +106,6 @@ namespace Equilobe.DailyReport.BL.Jira
                 escaped.Replace(charToEscape.ToString(), Uri.HexEscape(charToEscape));
 
             return escaped.ToString();
-        }
-    }
-
-    public class EncodedJwtToken
-    {
-        public EncodedJwtToken(string sharedSecret, string jwtToken)
-        {
-            SharedSecret = sharedSecret;
-            JwtTokenString = jwtToken;
-        }
-
-        public string SharedSecret { get; set; }
-        public string JwtTokenString { get; set; }
-
-        public DecodedJwtToken Decode()
-        {
-            return new DecodedJwtToken(SharedSecret)
-            {
-                Claims = JsonWebToken.DecodeToObject(JwtTokenString, SharedSecret) as IDictionary<string, object>
-            };
-        }
-    }
-
-    public class DecodedJwtToken
-    {
-        public DecodedJwtToken(string sharedSecret)
-        {
-            SharedSecret = sharedSecret;
-            Claims = new Dictionary<string, object>();
-        }
-
-        public string SharedSecret { get; set; }
-        public IDictionary<string, object> Claims { get; set; }
-
-        public EncodedJwtToken Encode()
-        {
-            return new EncodedJwtToken(SharedSecret, JsonWebToken.Encode(Claims, SharedSecret, JwtHashAlgorithm.HS256));
-        }
-
-        public void ValidateToken(HttpRequestBase request)
-        {
-            ValidateTokenHasNotExpired();
-            ValidateQueryStringHash(request);
-        }
-
-        private void ValidateTokenHasNotExpired()
-        {
-            var expiresAt = Convert.ToInt64(Claims["exp"]);
-
-            var now = DateTime.UtcNow.Millisecond / 1000L;
-
-            if (expiresAt < now)
-                throw new Exception("JWT Token Expired");
-        }
-
-        private void ValidateQueryStringHash(HttpRequestBase request)
-        {
-            var qsh = JwtAuthenticator.CalculateHash(request.Url.PathAndQuery, request.HttpMethod);
-            var requestQsh = Claims["qsh"] as string;
-
-            if (qsh != requestQsh)
-                throw new Exception("QSH Does not match.");
         }
     }
 }

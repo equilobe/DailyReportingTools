@@ -93,7 +93,9 @@ namespace DailyReportWeb.Controllers
         [HttpPost]
         public ActionResult InstalledCallback()
         {
-            new DataService().Save(Request);
+            var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
+            var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
+            new DataService().SaveInstance(instanceData);
 
             return Content(String.Empty);
         }
@@ -105,7 +107,7 @@ namespace DailyReportWeb.Controllers
             var baseUrl = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).BaseUrl;
 
             new TaskSchedulerService().Delete(new DataService().GetUniqueProjectsKey(baseUrl));
-            new DataService().Delete(baseUrl);
+            new DataService().DeleteInstance(baseUrl);
 
             return Content(String.Empty);
         }

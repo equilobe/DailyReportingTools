@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JWT">
-      <HintPath>..\packages\JWT.1.3.2\lib\3.5\JWT.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -66,8 +63,6 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -96,6 +91,10 @@
     <ProjectReference Include="..\Equilobe.DailyReport.DAL\Equilobe.DailyReport.DAL.csproj">
       <Project>{7bad124b-c59f-45f6-8111-136b2ea61c3a}</Project>
       <Name>Equilobe.DailyReport.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.JWT\Equilobe.DailyReport.JWT.csproj">
+      <Project>{dde5a302-b23c-455b-be7c-1ae89f23a9aa}</Project>
+      <Name>Equilobe.DailyReport.JWT</Name>
     </ProjectReference>
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>
