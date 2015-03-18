@@ -155,6 +155,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Helpers\JwtAuthenticationAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +280,10 @@
     <ProjectReference Include="..\Equilobe.DailyReport.DAL\Equilobe.DailyReport.DAL.csproj">
       <Project>{7bad124b-c59f-45f6-8111-136b2ea61c3a}</Project>
       <Name>Equilobe.DailyReport.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Equilobe.DailyReport.JWT\Equilobe.DailyReport.JWT.csproj">
+      <Project>{dde5a302-b23c-455b-be7c-1ae89f23a9aa}</Project>
+      <Name>Equilobe.DailyReport.JWT</Name>
     </ProjectReference>
     <ProjectReference Include="..\Equilobe.DailyReport.Models\Equilobe.DailyReport.Models.csproj">
       <Project>{06861cac-eef1-4461-92d9-8d097928211e}</Project>

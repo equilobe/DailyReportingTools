@@ -97,9 +97,9 @@ namespace Equilobe.DailyReport.SL
         private JiraClient GetClient(IJiraRequestContext context)
         {
             if (!string.IsNullOrEmpty(context.SharedSecret))
-                return new JiraClient(context.BaseUrl, context.SharedSecret);
+                return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, "addonKey");
             else
-                return new JiraClient(context.BaseUrl, context.Username, context.Password);
+                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.Username, context.Password);
         }
     }
 }

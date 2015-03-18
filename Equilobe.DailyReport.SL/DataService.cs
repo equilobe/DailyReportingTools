@@ -7,18 +7,15 @@ using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace Equilobe.DailyReport.SL
 {
     public class DataService
     {
-        public void Save(HttpRequestBase request)
+        public void SaveInstance(InstalledInstance instanceData)
         {
-            var bodyText = new System.IO.StreamReader(request.InputStream).ReadToEnd();
-            var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
-
             using (var db = new ReportsDb())
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == instanceData.BaseUrl);
@@ -31,7 +28,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void Delete(string baseUrl)
+        public void DeleteInstance(string baseUrl)
         {
             using (var db = new ReportsDb())
             {
