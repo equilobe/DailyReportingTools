@@ -5,6 +5,12 @@ using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Web
 {
+    public class Instance : IInstance
+    {
+        public long Id { get; set; }
+        public string BaseUrl { get; set; }
+    }
+
     public class PolicySummary : IReportSetting
     {
         public string BaseUrl { get; set; }

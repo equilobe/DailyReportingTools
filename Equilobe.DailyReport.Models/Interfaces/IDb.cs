@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
+    public interface IInstance
+    {
+        long Id { get; set; }
+        string BaseUrl { get; set; }
+    }
+
     public interface IReportSetting
     {
         string BaseUrl { get; set; }

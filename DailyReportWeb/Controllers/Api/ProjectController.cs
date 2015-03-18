@@ -30,15 +30,12 @@ namespace DailyReportWeb.Controllers.Api
 			}
 		}
 
-        public List<InstalledInstance> Get()
+        public List<Instance> Get()
         {
 			string userId = User.Identity.GetUserId();
-			
 			var currentUser = UserManager.FindById(userId);
-			return currentUser.InstalledInstances.ToList();
 
-			//var username = User.GetUsername();
-			//return new DataService().GetInstances(username);
+			return new DataService().GetInstances(currentUser);
         }
 
         public IEnumerable<PolicySummary> Get(long id)
