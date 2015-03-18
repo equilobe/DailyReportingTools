@@ -26,6 +26,14 @@ namespace Equilobe.DailyReport.Models.Web
 		public bool IsValid { get; set; }
 		public string Message { get; set; }
 		public List<string> ErrorList { get; set; }
-		public bool HasErrors { get { return ErrorList.Count > 0; } }
+		public bool HasErrors
+		{
+			get
+			{
+				if (ErrorList == null)
+					return false;
+				return ErrorList.Count > 0;
+			}
+		}
 	}
 }
