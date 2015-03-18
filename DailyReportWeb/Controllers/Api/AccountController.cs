@@ -11,6 +11,7 @@ using System.Web;
 using Owin;
 using System.Net;
 using System.Linq;
+using System.Web.Routing; 
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -55,17 +56,41 @@ namespace DailyReportWeb.Controllers.Api
 					ErrorList = result.Errors.ToList()
 				};
 
-			await SignInAsync(user, isPersistent: false);
 			// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-			// Send an email with this link
-			//string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-			//var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-			//await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+			string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            var newRouteValues = new RouteValueDictionary(new { userId = user.Id, code = code });
+            newRouteValues.Add("httproute", true);
+            System.Web.Mvc.UrlHelper urlHelper = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext, RouteTable.Routes);
+            string callbackUrl = urlHelper.Action(
+                "ConfirmEmail",
+                "Account",
+                newRouteValues,
+                HttpContext.Current.Request.Url.Scheme
+                );
+
+			await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
 			return new AccountResponse(){
 				Success = true
 			};
 		}
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<AccountResponse> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+                return new AccountResponse() { Success = false };
+
+            IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
+            if (!result.Succeeded)
+                return new AccountResponse() { 
+                    Success = false, 
+                    ErrorList = result.Errors.ToList() 
+                };
+
+            return new AccountResponse() { Success = true };
+        }
 
 		[AllowAnonymous]
 		public async Task<AccountResponse> Login(LoginModel model)
