@@ -7,9 +7,11 @@ angular.module('app')
     .controller("InstanceCtrl", ['$scope', '$http', function ($scope, $http) {
         $scope.status = "loading";
 
-        $http.get("/api/project").success(function (list) {
-            $scope.instances = list;
-
-            $scope.status = "loaded";
-        });
+        $http.get("/api/project")
+            .success(function (list) {
+                $scope.instances = list;
+            })
+            .finally(function () {
+                $scope.status = "loaded";
+            });
     }]);

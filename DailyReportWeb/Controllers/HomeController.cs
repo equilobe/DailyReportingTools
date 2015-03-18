@@ -12,16 +12,6 @@ namespace DailyReportWeb.Controllers
     {
         public ActionResult Index()
         {
-			//AuthenticationHelpers.SetAuthCookie(new PolicyService().GetJiraUsername(Request.QueryString),
-			//									new PolicyService().GetJiraBaseUrl(Request.QueryString));
-
-            ViewBag.Time = Validations.TIME;
-            ViewBag.Time = Validations.TIME;
-            ViewBag.Mail = Validations.MAIL;
-            ViewBag.Mails = Validations.MAILS;
-            ViewBag.Digits = Validations.DIGITS;
-            ViewBag.Days = Validations.DAYS;
-            ViewBag.Url = Validations.URL;
             return View();
         }
 

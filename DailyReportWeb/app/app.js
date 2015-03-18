@@ -1,7 +1,18 @@
 ﻿angular
     .module("app", ['ngRoute'])
-    .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+    .config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
+
+        $httpProvider.interceptors.push(['$q', '$location', function ($q, $location) {
+            return {
+                'responseError': function (response) {
+                    if (response.status === 401)
+                        $location.url('/app/signin');
+                    return $q.reject(response);
+                }
+            };
+        }]);
+
         $routeProvider
             .when('/', {
                 redirectTo: '/app/list'

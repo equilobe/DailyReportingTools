@@ -26,7 +26,6 @@ namespace DailyReportWeb
 			app.UseCookieAuthentication(new CookieAuthenticationOptions
 			{
 				AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-				LoginPath = new PathString("/Account/Login"),
 				Provider = new CookieAuthenticationProvider
 				{
 					OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
@@ -36,7 +35,6 @@ namespace DailyReportWeb
 			});
 
 			app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-
 		}
 	}
 }
