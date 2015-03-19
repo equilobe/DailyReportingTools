@@ -11,8 +11,10 @@ angular.module('app')
 
             $http.post("/api/account/register", $scope.signUpForm)
                 .success(function (response) {
-                    if (response.success)
+                    if (response.success) {
                         $scope.status = "success";
+                        $scope.message = response.message;
+                    }
                     else {
                         $scope.message = response.message;
                         $scope.status = "error";

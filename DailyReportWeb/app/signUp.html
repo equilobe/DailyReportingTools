@@ -102,7 +102,7 @@
             </button>
             <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
             <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && signUpForm.$pristine"></span>
+            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && signUpForm.$pristine">{{message}}</span>
             <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && signUpForm.$pristine">{{message}}</span>
         </div>
     </div>
