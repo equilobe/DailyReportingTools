@@ -12,7 +12,7 @@
     <title>
         Daily Report
     </title>
-    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     @Styles.Render("~/Content/maincss")
     @*@Html.IncludeConnectJs()*@
     <script src="~/Scripts/angular.min.js"></script>
@@ -23,16 +23,28 @@
     <script src="~/app/instances.js"></script>
     <script src="~/app/projects.js"></script>
     <script src="~/app/policy.js"></script>
+    <script>
+        var isAuth = @this.Context.User.Identity.IsAuthenticated.ToString().ToLower();
+    </script>
 </head>
 
-<body>
+<body ng-controller="AppCtrl">
+    <div id="jumbo">
+        <div class="container">
+            <a ng-href="/app/list" class="btn btn-default" ng-show="isAuth">Instances</a>
+            <div class="pull-right">
+                <a ng-href="/app/signup" class="btn btn-default" ng-show="!isAuth">Sign Up</a>
+                <a ng-href="/app/signin" class="btn btn-default" ng-show="!isAuth">Sign In</a>
+                <button class="btn" ng-click="signOut(this)" ng-show="isAuth">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
     <div ng-view></div>
 
     @Html.Partial("_HowItWorks")
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
-    </script>
-    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js">
-    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </body>
 </html>
