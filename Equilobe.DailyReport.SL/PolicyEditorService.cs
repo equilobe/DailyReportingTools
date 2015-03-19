@@ -11,7 +11,7 @@ using System;
 
 namespace Equilobe.DailyReport.SL
 {
-    public class PolicyService : IPolicyService
+    public class PolicyEditorService : IPolicyEditorService
     {
         public IJiraRequestContextService JiraRequestContextService { get; set; }
         public IPolicySummaryService PolicySummaryService { get; set; }
@@ -32,14 +32,14 @@ namespace Equilobe.DailyReport.SL
 
         public PolicyBuffer GetPolicy(long projectId)
         {
-            var jiraPolicy = GetJiraPolicy(projectId);
+            var jiraPolicy = CreateNewJiraPolicyForProject(projectId);
             var policySummary = PolicySummaryService.GetPolicySummary(projectId);
             var policyDetails = GetPolicyDetails(JiraRequestContextService.Context.BaseUrl, projectId);
 
             return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
-        public JiraPolicy GetJiraPolicy(long projectId)
+        public JiraPolicy CreateNewJiraPolicyForProject(long projectId)
         {
             var project = JiraService.GetProject(projectId);
 
@@ -90,33 +90,7 @@ namespace Equilobe.DailyReport.SL
             return policyBuffer;
         }
 
-        public PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
-        {
-            using (var db = new ReportsDb())
-            {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
-
-                if (reportSettings == null || reportSettings.SerializedPolicy == null)
-                    return null;
-
-                var policyBuffer = new PolicyBuffer();
-                reportSettings.CopyTo<IReportSetting>(policyBuffer);
-
-                if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
-                    Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
-                        .CopyPropertiesOnObjects(policyBuffer);
-
-                return policyBuffer;
-            }
-        }
-
-        public JiraPolicy GetPolicy(string uniqueProjectKey)
-        {
-            var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
-            var policy = new JiraPolicy();
-            policyBuffer.CopyPropertiesOnObjects(policy);
-            return policy;
-        }
+      
     }
 }
 

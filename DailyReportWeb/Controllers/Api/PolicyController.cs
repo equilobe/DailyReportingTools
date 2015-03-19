@@ -18,7 +18,8 @@ namespace DailyReportWeb.Controllers.Api
     public class PolicyController : ApiController
     {
         public IDataService DataService { get; set; }
-        public IPolicyService PolicyService { get; set; }
+        public IPolicyEditorService PolicyService { get; set; }
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public PolicyBuffer Get(long id)
         {
@@ -68,7 +69,7 @@ namespace DailyReportWeb.Controllers.Api
 
                     
 
-                    new TaskSchedulerService().CreateTask(context);
+                    TaskSchedulerService.CreateTask(context);
                 }
                 else
                 {
@@ -77,7 +78,7 @@ namespace DailyReportWeb.Controllers.Api
 
                     reportSettings.ReportTime = policySummary.ReportTime;
 
-                    new TaskSchedulerService().UpdateTask(context);
+                    TaskSchedulerService.UpdateTask(context);
                 }
 
                 db.SaveChanges();
@@ -116,14 +117,14 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings.UniqueProjectKey = RandomString.Get(updatedPolicy.ProjectKey);
 
                     if (!string.IsNullOrEmpty(reportSettings.ReportTime))
-                        new TaskSchedulerService().CreateTask(context);
+                        TaskSchedulerService.CreateTask(context);
                 }
                 else
                 {
                     if (reportSettings.ReportTime != updatedPolicy.ReportTime)
                     {
                         reportSettings.ReportTime = updatedPolicy.ReportTime;
-                        new TaskSchedulerService().UpdateTask(context);
+                        TaskSchedulerService.UpdateTask(context);
                     }
                 }
 

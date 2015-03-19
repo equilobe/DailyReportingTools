@@ -14,11 +14,14 @@ using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace SourceControlLogReporter
 {
     public class SvnReport : ReportBase
     {
+        public ISvnService SvnService { get; set; }
+
         public SvnReport(Policy p, Options o):base(p,o)
         {
 
@@ -32,7 +35,7 @@ namespace SourceControlLogReporter
         public override Log CreateLog()
         {
             var context = new SourceControlContext{SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate};
-            var log = new SvnService().GetLog(context, PathToLog);
+            var log = SvnService.GetLog(context, PathToLog);
             return log;
         }
     }

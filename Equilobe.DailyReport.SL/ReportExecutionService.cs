@@ -18,7 +18,7 @@ namespace Equilobe.DailyReport.SL
 {
     public class ReportExecutionService : IReportExecutionService
     {
-        ITaskSchedulerService TaskSchedulerService { get; set; }
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public SimpleResult SendReport(ExecutionContext context)
         {            

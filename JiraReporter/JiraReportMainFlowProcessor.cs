@@ -21,21 +21,23 @@ namespace JiraReporter
     class JiraReportMainFlowProcessor
     {
         public IDataService DataService { get; set; }
+        public IJiraRequestContextService JiraRequestContextService { get; set; }
         public IJiraService JiraService { get; set; }
-        public IPolicyService PolicyService { get; set; }
+        public IPolicyEditorService PolicyService { get; set; }
+        public IReportExecutionService ReportExecutionService { get; set; }
+        public IReportGeneratorService ReportGeneratorService { get; set; }
 
         public void Execute(string[] args)
         {
-            DependencyInjection.Init();
-
             var options = new JiraOptions();
             new CommandLineParser().ParseArguments(args, options);
 
-            var policy = PolicyService.GetPolicy(options.UniqueProjectKey);
-
+            var policy = DataService.GetPolicy(options.UniqueProjectKey);
             var report = new JiraReport(policy, options);
             DataService.SetReportFromDb(report);
             report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(report);
+
+            JiraRequestContextService.Context = report.JiraRequestContext;
 
             SetExecutionInstance(report);
 
@@ -59,14 +61,14 @@ namespace JiraReporter
             return execInstance;
         }
 
-        public void SetExecutionInstance(JiraReport _report)
+        void SetExecutionInstance(JiraReport _report)
         {
             var unexecutedInstance = GetUnexecutedInstance(_report.Settings);
             if (unexecutedInstance != null)
             {
                 _report.ExecutionInstance = new ExecutionInstance();
                 unexecutedInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);
-                new ReportExecutionService().MarkExecutionInstanceAsExecuted(new ItemContext { Id = unexecutedInstance.Id });
+                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext { Id = unexecutedInstance.Id });
             }
             else
                 _report.IsOnSchedule = true;
@@ -102,7 +104,7 @@ namespace JiraReporter
         {
             SetTemplateGlobal();
 
-            var report = new ReportGenerator().GenerateReport(context);
+            var report = ReportGeneratorService.GenerateReport(context);
 
             ProcessAndSendReport(report);
         }
@@ -111,17 +113,16 @@ namespace JiraReporter
         {
             if (report.IsIndividualDraft)
             {
-                var reportService = new ReportExecutionService();
                 foreach (var author in report.Authors)
                 {
-                    var individualReport = new ReportGenerator().GetIndividualReport(report, author);
+                    var individualReport = ReportGeneratorService.GetIndividualReport(report, author);
                     var context = new UserConfirmationContext
                     {
                         Id = report.UniqueProjectKey,
                         DraftKey = author.IndividualDraftInfo.UserKey,
                         Info = author.IndividualDraftInfo,
                     };
-                    reportService.SaveIndividualDraftConfirmation(context);
+                    ReportExecutionService.SaveIndividualDraftConfirmation(context);
                     var reportProcessor = new IndividualReportProcessor(individualReport);
                     reportProcessor.ProcessReport();
                 }

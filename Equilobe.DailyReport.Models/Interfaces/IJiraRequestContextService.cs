@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IJiraRequestContextService
+    public interface IJiraRequestContextService : IService
     {
-        JiraRequestContext Context { get; }
+        JiraRequestContext Context { get; set; }
     }
 }

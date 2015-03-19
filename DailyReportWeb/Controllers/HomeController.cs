@@ -14,7 +14,7 @@ namespace DailyReportWeb.Controllers
     {
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public IDataService DataService { get; set; }
-        public IPolicyService PolicyService { get; set; }
+        public IPolicyEditorService PolicyService { get; set; }
 
         public ActionResult Index()
         {

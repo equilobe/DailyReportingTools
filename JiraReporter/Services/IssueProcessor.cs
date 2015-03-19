@@ -17,7 +17,7 @@ namespace JiraReporter
 {
     class IssueProcessor
     {
-        IJiraService JiraService { get; set; }
+        public IJiraService JiraService { get; set; }
 
         JiraPolicy _policy
         {

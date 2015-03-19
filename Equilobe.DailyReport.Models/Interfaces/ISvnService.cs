@@ -1,7 +1,6 @@
-﻿
-namespace Equilobe.DailyReport.Models.Interfaces
+﻿namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface ISvnService
+    public interface ISvnService : IService
     {
         Log GetLog(ISourceControlContext context, string pathToLog);
     }

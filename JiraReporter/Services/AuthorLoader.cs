@@ -23,7 +23,7 @@ namespace JiraReporter.Services
 {
     class AuthorLoader
     {
-        IJiraService JiraService { get; set; }
+        public IJiraService JiraService { get; set; }
 
         SprintTasks _sprintIssues { get { return _context.SprintTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
@@ -117,7 +117,7 @@ namespace JiraReporter.Services
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
         {
             var issues = JiraService.GetTimesheetForUser(fromDate, toDate, _currentAuthor.Username);
-            var issueProcessor = new IssueProcessor(_context);
+            var issueProcessor = new IssueProcessor(_context) { JiraService = JiraService };
             var completeIssues = new List<IssueDetailed>();
             foreach (var issue in issues)
             {
@@ -221,14 +221,14 @@ namespace JiraReporter.Services
         {
             _currentAuthor.InProgressTasks = new List<IssueDetailed>();
             _currentAuthor.InProgressTasks = GetAuthorTasks(_sprintIssues.InProgressTasks);
-            TasksService.SetErrors(_currentAuthor.InProgressTasks, _policy);
+            TaskLoader.SetErrors(_currentAuthor.InProgressTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
             if (_currentAuthor.InProgressTasks != null)
             {
                 _currentAuthor.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.InProgressTasks);
                 _currentAuthor.Timing.InProgressTasksTimeLeftString = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds.SetTimeFormat8Hour();
             }
-            _currentAuthor.InProgressTasksParents = TasksService.GetParentTasks(_currentAuthor.InProgressTasks, _currentAuthor);
+            _currentAuthor.InProgressTasksParents = TaskLoader.GetParentTasks(_currentAuthor.InProgressTasks, _currentAuthor);
             _currentAuthor.InProgressTasksParents = _currentAuthor.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 
@@ -283,14 +283,14 @@ namespace JiraReporter.Services
         {
             _currentAuthor.OpenTasks = new List<IssueDetailed>();
             _currentAuthor.OpenTasks = GetAuthorTasks(_sprintIssues.OpenTasks);
-            TasksService.SetErrors(_currentAuthor.OpenTasks, _policy);
+            TaskLoader.SetErrors(_currentAuthor.OpenTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
             if (_currentAuthor.OpenTasks != null)
             {
                 _currentAuthor.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.OpenTasks);
                 _currentAuthor.Timing.OpenTasksTimeLeftString = _currentAuthor.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
             }
-            _currentAuthor.OpenTasksParents = TasksService.GetParentTasks(_currentAuthor.OpenTasks, _currentAuthor);
+            _currentAuthor.OpenTasksParents = TaskLoader.GetParentTasks(_currentAuthor.OpenTasks, _currentAuthor);
             _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
         }
 

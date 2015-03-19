@@ -54,7 +54,7 @@
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Interfaces\IJiraRequestContextService.cs" />
-    <Compile Include="Interfaces\IPolicyService.cs" />
+    <Compile Include="Interfaces\IPolicyEditorService.cs" />
     <Compile Include="Interfaces\IPolicySummaryService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
@@ -70,7 +70,7 @@
     <Compile Include="Interfaces\IJiraReport.cs" />
     <Compile Include="ReportFrame\IndividualDraftInfo.cs" />
     <Compile Include="ReportFrame\IssueDetailed.cs" />
-    <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
+    <Compile Include="Interfaces\ICredentials.cs" />
     <Compile Include="Interfaces\ISourceControlContext.cs" />
     <Compile Include="ReportFrame\ExecutionInstance.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />

@@ -5,7 +5,7 @@ using Equilobe.DailyReport.Models.Jira.Filters;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IJiraService
+    public interface IJiraService : IService
     {
         Project GetProject(long id);
         List<JiraIssue> GetTimesheetForUser(DateTime startDate, DateTime endDate, string targetUser);

@@ -13,10 +13,10 @@ using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.SL;
 using JiraReporter.Helpers;
 using Equilobe.DailyReport.Models.Interfaces;
-
+using Autofac;
 namespace JiraReporter
 {
-    class ReportGenerator
+    class ReportGeneratorService : IReportGeneratorService
     {
         public IJiraService JiraService { get; set; }
 
@@ -52,7 +52,7 @@ namespace JiraReporter
         private List<JiraAuthor> GetReportAuthors(JiraReport context)
         {
             var authors = new List<JiraAuthor>();
-            var authorLoader = new AuthorLoader(context);
+            var authorLoader = new AuthorLoader(context) { JiraService = JiraService };
             if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey))
             {
                 var author = authorLoader.CreateAuthorByKey(context);
@@ -92,17 +92,17 @@ namespace JiraReporter
 
         private void SetSprintReport(JiraReport report)
         {
-            var tasksService = new TasksService();
+            var tasksService = new TaskLoader() { JiraService = JiraService };
             tasksService.SetSprintTasks(report);
         }
 
-        public Sprint GenerateSprint(JiraReport report)
+        Sprint GenerateSprint(JiraReport report)
         {
             var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
             return JiraService.GetProjectSprintForDate(projectDateFilter);
         }
 
-        public Summary LoadSummary(JiraReport report)
+        Summary LoadSummary(JiraReport report)
         {
             var summaryLoader = new SummaryLoader(report);
             return summaryLoader.LoadSummary();

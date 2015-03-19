@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
@@ -124,5 +125,32 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+
+                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                    return null;
+
+                var policyBuffer = new PolicyBuffer();
+                reportSettings.CopyTo<IReportSetting>(policyBuffer);
+
+                if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
+                    Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
+                        .CopyPropertiesOnObjects(policyBuffer);
+
+                return policyBuffer;
+            }
+        }
+
+        public JiraPolicy GetPolicy(string uniqueProjectKey)
+        {
+            var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
+            var policy = new JiraPolicy();
+            policyBuffer.CopyPropertiesOnObjects(policy);
+            return policy;
+        }
     }
 }

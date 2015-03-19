@@ -25,6 +25,31 @@ namespace JiraReporter.Services
             }
         }
 
+        public IndividualDraftInfo GetIndividualDraftInfo(JiraReport context)
+        {
+            var draftConfirmation = new IndividualDraftConfirmation();
+
+            using (var db = new ReportsDb())
+            {
+                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.UniqueProjectKey);
+                draftConfirmation = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.UniqueUserKey == context.ExecutionInstance.UniqueUserKey);
+            }
+
+            var draft = new IndividualDraftInfo
+            {
+                UserKey = draftConfirmation.UniqueUserKey,
+                Username = draftConfirmation.Username,
+                IsLead = draftConfirmation.IsProjectLead
+            };
+
+            if (draftConfirmation.LastDateConfirmed != null)
+                draft.LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value;
+
+            SetIndividualUrls(draft, context);
+
+            return draft;
+        }
+
         private IndividualDraftInfo GenerateIndividualDraftInfo(JiraAuthor author, JiraReport context)
         {
             var individualDraft = new IndividualDraftInfo
@@ -46,36 +71,11 @@ namespace JiraReporter.Services
                 individualDraft.ForceDraftUrl = GetUrl(individualDraft, context.SendDraftUrl);
         }
 
-        private static Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
+        private Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
         {
             var url = string.Format("draftKey={0}", individualDraft.UserKey);
 
             return new Uri(baseUrl + "&" + url);
-        }
-
-        public IndividualDraftInfo GetIndividualDraftInfo(JiraReport context)
-        {
-            var draftConfirmation= new IndividualDraftConfirmation();
-
-            using(var db = new ReportsDb())
-            {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.UniqueProjectKey);
-                draftConfirmation = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.UniqueUserKey == context.ExecutionInstance.UniqueUserKey);
-            }
-
-            var draft = new IndividualDraftInfo
-            {
-                UserKey = draftConfirmation.UniqueUserKey,
-                Username = draftConfirmation.Username,
-                IsLead = draftConfirmation.IsProjectLead
-            };
-
-            if (draftConfirmation.LastDateConfirmed != null)
-                draft.LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value;
-
-            SetIndividualUrls(draft, context);
-
-            return draft;
         }
     }
 }

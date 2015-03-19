@@ -8,7 +8,7 @@ namespace DailyReportWeb.Controllers
     public class ReportController : Controller
     {
 
-        IReportExecutionService ReportExecutionService { get; set; }
+        public IReportExecutionService ReportExecutionService { get; set; }
 
         [HttpGet]
         public ActionResult SendReport(ExecutionContext context)

@@ -11,9 +11,9 @@ using System.Text;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.Interfaces;
 
-namespace JiraReporter
+namespace JiraReporter.Services
 {
-    class TasksService
+    class TaskLoader
     {
         public IJiraService JiraService { get; set; }
 
@@ -32,17 +32,17 @@ namespace JiraReporter
         private void SetSprintTasksErrors(JiraReport report)
         {
             int completedErrors = 0;
-            TasksService.SetErrors(report.SprintTasks.UnassignedTasks, report.Policy);
+            TaskLoader.SetErrors(report.SprintTasks.UnassignedTasks, report.Policy);
             foreach (var list in report.SprintTasks.CompletedTasks)
             {
-                TasksService.SetErrors(list.Value, report.Policy);
-                completedErrors += TasksService.GetErrorsCount(list.Value);
+                TaskLoader.SetErrors(list.Value, report.Policy);
+                completedErrors += TaskLoader.GetErrorsCount(list.Value);
             }
             report.SprintTasks.CompletedTasksErrorCount = completedErrors;
-            report.SprintTasks.UnassignedTasksErrorCount = TasksService.GetErrorsCount(report.SprintTasks.UnassignedTasks);
+            report.SprintTasks.UnassignedTasksErrorCount = TaskLoader.GetErrorsCount(report.SprintTasks.UnassignedTasks);
         } 
 
-        public List<IssueDetailed> GetCompletedTasks(JiraReport context)
+        List<IssueDetailed> GetCompletedTasks(JiraReport context)
         {
             var completedTasks = new List<IssueDetailed>();
             var issues = JiraService.GetCompletedIssues(context.ReportDate.AddDays(-6), context.ReportDate);
@@ -59,12 +59,12 @@ namespace JiraReporter
             return completedTasks;
         }
 
-        public JiraIssues GetUnfinishedTasks(JiraReport context)
+        JiraIssues GetUnfinishedTasks(JiraReport context)
         {
             return JiraService.GetSprintTasks(context.ProjectKey);
         }
 
-        public void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
+        void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
         {
             var tasks = context.SprintTasks;
             tasks.InProgressTasks = new List<IssueDetailed>();
@@ -88,17 +88,17 @@ namespace JiraReporter
             }
         }
 
-        private static IssueDetailed GetCompleteIssue(JiraReport context, JiraIssue jiraIssue)
+        private IssueDetailed GetCompleteIssue(JiraReport context, JiraIssue jiraIssue)
         {
             var issue = new IssueDetailed(jiraIssue);
-            var issueProcessor = new IssueProcessor(context);
+            var issueProcessor = new IssueProcessor(context) { JiraService = JiraService };
 
             issueProcessor.SetIssue(issue, jiraIssue);
             IssueAdapter.SetIssueErrors(issue, context.Policy);
             return issue;
         }
 
-        public IEnumerable<IGrouping<string, IssueDetailed>> GroupCompletedTasks(List<IssueDetailed> completedTasks, JiraReport context)
+        IEnumerable<IGrouping<string, IssueDetailed>> GroupCompletedTasks(List<IssueDetailed> completedTasks, JiraReport context)
         {
             var tasks = from task in completedTasks
                         group task by task.CompletedTimeAgo into newGroup
@@ -108,7 +108,7 @@ namespace JiraReporter
             return tasks;
         }
 
-        public void SetCompletedTasks(IEnumerable<IGrouping<string, IssueDetailed>> tasks, SprintTasks sprintTasks)
+        void SetCompletedTasks(IEnumerable<IGrouping<string, IssueDetailed>> tasks, SprintTasks sprintTasks)
         {
             var completedTasks = new Dictionary<string, List<IssueDetailed>>();
             var issues = new List<IssueDetailed>();
@@ -120,7 +120,7 @@ namespace JiraReporter
             sprintTasks.CompletedTasks = completedTasks;
         }
 
-        public void SortTasks(SprintTasks sprintTasks)
+        void SortTasks(SprintTasks sprintTasks)
         {
             if (sprintTasks.InProgressTasks != null)
                 sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
@@ -128,6 +128,17 @@ namespace JiraReporter
                 sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.UnassignedTasks != null)
                 sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
+        }
+
+
+        #region Stataic Helpers
+        static IssueDetailed CreateParent(IssueDetailed task, JiraAuthor author)
+        {
+            var parent = new IssueDetailed(task.Parent);
+            foreach (var subtask in parent.SubtasksIssues)
+                IssueAdapter.SetLoggedAuthor(subtask, author.Name);
+            parent.AssigneeSubtasks = new List<IssueDetailed>();
+            return parent;
         }
 
         public static List<IssueDetailed> GetParentTasks(List<IssueDetailed> tasks, JiraAuthor author)
@@ -162,15 +173,6 @@ namespace JiraReporter
             return parentTasks;
         }
 
-        private static IssueDetailed CreateParent(IssueDetailed task, JiraAuthor author)
-        {
-            var parent = new IssueDetailed(task.Parent);
-            foreach (var subtask in parent.SubtasksIssues)
-                IssueAdapter.SetLoggedAuthor(subtask, author.Name);
-            parent.AssigneeSubtasks = new List<IssueDetailed>();
-            return parent;
-        }
-
         public static void SetErrors(List<IssueDetailed> tasks, JiraPolicy policy)
         {
             if (tasks != null && tasks.Count > 0)
@@ -178,7 +180,7 @@ namespace JiraReporter
                     IssueAdapter.SetIssueErrors(task, policy);
         }
 
-        public static int GetErrorsCount(List<IssueDetailed> tasks)
+        static int GetErrorsCount(List<IssueDetailed> tasks)
         {
             if (tasks != null)
                 return tasks.Sum(t => t.ErrorsCount);
@@ -190,5 +192,7 @@ namespace JiraReporter
         {
             return tasks.Where(t => t.Assignee == authorName).Sum(i => i.TotalRemainingSeconds);
         }
+
+        #endregion
     }
 }

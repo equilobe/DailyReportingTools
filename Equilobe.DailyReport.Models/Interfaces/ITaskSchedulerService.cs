@@ -3,7 +3,7 @@ using Equilobe.DailyReport.Models.TaskScheduling;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface ITaskSchedulerService
+    public interface ITaskSchedulerService : IService
     {
         void CreateTask(ScheduledTaskContext context);
         void DeleteMultipleTasks(ProjectListContext context);

@@ -3,7 +3,7 @@ using Equilobe.DailyReport.Models.ReportExecution;
 using System;
 namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IReportExecutionService
+    public interface IReportExecutionService : IService
     {
         SimpleResult SendReport(ExecutionContext context);
         SimpleResult SendDraft(ExecutionContext context);
