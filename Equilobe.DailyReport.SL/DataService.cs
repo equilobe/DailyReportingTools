@@ -120,7 +120,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        PolicyBuffer GetPolicyBufferFromDb(string uniqueProjectKey)
+        FullReportSettings GetPolicyBufferFromDb(string uniqueProjectKey)
         {
             using (var db = new ReportsDb())
             {
@@ -129,11 +129,11 @@ namespace Equilobe.DailyReport.SL
                 if (reportSettings == null || reportSettings.SerializedPolicy == null)
                     return null;
 
-                var policyBuffer = new PolicyBuffer();
-                reportSettings.CopyTo<IReportSetting>(policyBuffer);
+                var policyBuffer = new FullReportSettings();
+                reportSettings.CopyTo<IReportSettings>(policyBuffer);
 
                 if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
-                    Deserialization.XmlDeserialize<PolicyDetails>(reportSettings.SerializedPolicy.PolicyString)
+                    Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedPolicy.PolicyString)
                         .CopyPropertiesOnObjects(policyBuffer);
 
                 return policyBuffer;

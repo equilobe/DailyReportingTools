@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Equilobe.DailyReport.Models.Jira.Filters;
+using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
@@ -19,7 +20,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         JiraIssues GetCompletedIssues(DateTime startDate, DateTime endDate);
         JiraIssues GetSprintTasks(string projectKey);
         ProjectInfo GetProjectInfo(long id);
-        List<ProjectInfo> GetProjectsInfo();
+        List<ProjectInfo> GetProjectsInfo(JiraRequestContext context);
         Sprint GetProjectSprintForDate(ProjectDateFilter filter);
     }
 }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Web;
+using System;
+using System.Collections.Generic;
 namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IPolicySummaryService : IService
     {
-        System.Collections.Generic.List<Equilobe.DailyReport.Models.Web.PolicySummary> GetPoliciesSummary();
-        Equilobe.DailyReport.Models.Web.PolicySummary GetPolicySummary(long projectId);
+        List<ReportSettingsSummary> GetPoliciesSummary(ItemContext context);
+        ReportSettingsSummary GetPolicySummary(ItemContext context);
     }
 }

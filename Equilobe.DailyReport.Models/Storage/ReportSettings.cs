@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class ReportSettings : IReportSetting
+    public class ReportSettings : IReportSettings
     {
         public long Id { get; set; }
         public long InstalledInstanceId { get; set; }

@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
+using Equilobe.DailyReport.Models;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -21,24 +23,13 @@ namespace DailyReportWeb.Controllers.Api
         public IPolicyEditorService PolicyService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
 
-        public PolicyBuffer Get(long id)
+        public FullReportSettings Get(ItemContext context)
         {
-            var baseUrl = User.GetBaseUrl();
-            var username = User.GetUsername();
-
-            var requestContext = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                Username = username,
-                SharedSecret = DataService.GetSharedSecret(baseUrl),
-                Password = DataService.GetPassword(baseUrl, username)
-            };
-
-            return PolicyService.GetPolicy(id);
+            return PolicyService.GetPolicy(context);
         }
 
         // PUT: api/Policy
-        public void Post([FromBody]PolicySummary policySummary)
+        public void Post([FromBody]ReportSettingsSummary policySummary)
         {
             if(!Validations.Time(policySummary.ReportTime))
                 throw new ArgumentException();
@@ -86,7 +77,7 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // PUT: api/Policy/5
-        public void Post(long id, [FromBody]PolicyBuffer updatedPolicy)
+        public void Post(long id, [FromBody]FullReportSettings updatedPolicy)
         {
             if (!Validations.Time(updatedPolicy.ReportTime) ||
                 !Validations.Mails(updatedPolicy.DraftEmails) ||
@@ -111,7 +102,7 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
 
-                    updatedPolicy.CopyTo<IReportSetting>(reportSettings);
+                    updatedPolicy.CopyTo<IReportSettings>(reportSettings);
 
                     reportSettings.InstalledInstanceId = installedInstance.Id;
                     reportSettings.UniqueProjectKey = RandomString.Get(updatedPolicy.ProjectKey);
@@ -128,7 +119,7 @@ namespace DailyReportWeb.Controllers.Api
                     }
                 }
 
-                var policy = new PolicyDetails();
+                var policy = new ReportPolicy();
                 updatedPolicy.CopyTo<ISerializedPolicy>(policy);
 
                 if (reportSettings.SerializedPolicy == null)

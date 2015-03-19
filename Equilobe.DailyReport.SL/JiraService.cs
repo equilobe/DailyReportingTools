@@ -75,9 +75,9 @@ namespace Equilobe.DailyReport.SL
             return GetClient(JiraRequestContextService.Context).GetProjectInfo(id);
         }
 
-        public List<ProjectInfo> GetProjectsInfo()
+        public List<ProjectInfo> GetProjectsInfo(JiraRequestContext context)
         {
-            return GetClient(JiraRequestContextService.Context).GetProjectsInfo();
+            return GetClient(context).GetProjectsInfo();
         }
 
         public Sprint GetProjectSprintForDate(ProjectDateFilter filter)

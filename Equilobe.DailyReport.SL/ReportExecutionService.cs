@@ -127,7 +127,7 @@ namespace Equilobe.DailyReport.SL
                 if (report.SerializedPolicy == null)
                     return false;
 
-                var policy = Deserialization.XmlDeserialize<PolicyDetails>(report.SerializedPolicy.PolicyString);
+                var policy = Deserialization.XmlDeserialize<ReportPolicy>(report.SerializedPolicy.PolicyString);
 
                 if (report == null || policy.AdvancedOptions.NoDraft)
                     return false;
@@ -204,7 +204,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
+                var report = db.GetReportSettingsByUniqueProjectKey(context.Id);
 
                 if (report.ReportExecutionInstances == null)
                     report.ReportExecutionInstances = new List<ReportExecutionInstance>();

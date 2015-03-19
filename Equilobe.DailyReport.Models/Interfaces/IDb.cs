@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string BaseUrl { get; set; }
     }
 
-    public interface IReportSetting
+    public interface IReportSettings
     {
         string BaseUrl { get; set; }
         long ProjectId { get; set; }

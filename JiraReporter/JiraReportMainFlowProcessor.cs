@@ -68,7 +68,7 @@ namespace JiraReporter
             {
                 _report.ExecutionInstance = new ExecutionInstance();
                 unexecutedInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);
-                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext { Id = unexecutedInstance.Id });
+                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext (unexecutedInstance.Id));
             }
             else
                 _report.IsOnSchedule = true;

@@ -12,6 +12,7 @@ using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using System.Web;
 using Microsoft.AspNet.Identity.Owin;
+using Equilobe.DailyReport.Models;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -40,21 +41,10 @@ namespace DailyReportWeb.Controllers.Api
 
 			return new DataService().GetInstances(currentUser);
         }
-
-        public IEnumerable<PolicySummary> Get(long id)
-        {
-            var username = User.GetUsername();
-            var baseUrl = DataService.GetBaseUrl(id);
-
-            var requestContext = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                Username = username,
-                SharedSecret = DataService.GetSharedSecret(baseUrl),
-                Password = DataService.GetPassword(baseUrl, username)
-            };
-
-            return PolicySummaryService.GetPoliciesSummary();
+        
+        public IEnumerable<ReportSettingsSummary> Get(long id)
+        {           
+            return PolicySummaryService.GetPoliciesSummary(new ItemContext(id));
         }
     }
 }
