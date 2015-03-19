@@ -9,6 +9,8 @@ namespace DailyReportWeb
     {
         protected void Application_Start()
         {
+            DependencyInjection.Init();
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configuration.InitApiRoutes();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
