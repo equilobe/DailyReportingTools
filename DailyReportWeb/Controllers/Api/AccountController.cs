@@ -71,7 +71,8 @@ namespace DailyReportWeb.Controllers.Api
 			await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
 			return new AccountResponse(){
-				Success = true
+				Success = true,
+                Message = "A message has been sent to your mail. Please confirm the account."
 			};
 		}
 
@@ -104,13 +105,19 @@ namespace DailyReportWeb.Controllers.Api
 				};
 
 			var user = await UserManager.FindAsync(model.Email, model.Password);
+
+            if(!await UserManager.IsEmailConfirmedAsync(user.Id))
+                return new AccountResponse(){
+                    Success = false,
+                    Message = "Account has not been activated yet. Please check the mail and proceed with account confirmation."
+                };
+
 			if(user==null)
 				return new AccountResponse() {
 					Success = false,
 					ErrorList = errors,
 					Message = "Invalid username or password."
 				};
-			 
 
 			await SignInAsync(user, model.RememberMe);
 			return new AccountResponse(){
