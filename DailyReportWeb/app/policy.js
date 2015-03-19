@@ -2,22 +2,28 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/edit/:projectId', { templateUrl: 'app/policy.html', controller: 'PolicyCtrl' });
+        $routeProvider.when('/app/edit/:projectId', {
+            templateUrl: 'app/policy.html',
+            controller: 'PolicyCtrl'
+        });
     }])
     .controller("PolicyCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
         $scope.policyStatus = "loading";
 
-        $http.get("/api/policy/" + $routeParams.projectId).success(function (policy) {
-            $scope.user = policy.userOptions ? policy.userOptions[0] : null;
-            $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
-            $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
+        $http.get("/api/policy/" + $routeParams.projectId)
+            .success(function (policy) {
+                $scope.user = policy.userOptions ? policy.userOptions[0] : null;
+                $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
+                $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
 
-            if (!policy.sourceControlOptions)
-                policy.sourceControlOptions = { type: "None" };
+                if (!policy.sourceControlOptions)
+                    policy.sourceControlOptions = { type: "None" };
 
-            $scope.policy = policy;
-            $scope.policyStatus = "loaded";
-        });
+                $scope.policy = policy;
+            })
+            .finally(function () {
+                $scope.status = "loaded";
+            });
 
         $scope.updatePolicy = function ($scope) {
             $scope.policyStatus = 'saving';

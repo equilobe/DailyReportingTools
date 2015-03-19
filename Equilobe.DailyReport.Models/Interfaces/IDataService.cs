@@ -6,7 +6,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
     {
         void DeleteInstance(string baseUrl);
         string GetBaseUrl(long id);
-        System.Collections.Generic.List<Equilobe.DailyReport.Models.Storage.InstalledInstance> GetInstances(string username);
         string GetPassword(string baseUrl, string username);
         string GetReportTime(string baseUrl, long projectId);
         string GetSharedSecret(string baseUrl);

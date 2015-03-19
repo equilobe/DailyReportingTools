@@ -9,6 +9,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
+using System.Web;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -17,11 +20,25 @@ namespace DailyReportWeb.Controllers.Api
     {
         public IDataService DataService { get; set; }
         public IPolicySummaryService PolicySummaryService { get; set; }
-
-        public List<InstalledInstance> Get()
+		private ApplicationUserManager _userManager;
+		public ApplicationUserManager UserManager
         {
-            var username = User.GetUsername();
-            return DataService.GetInstances(username);
+			get
+			{
+				return _userManager ?? HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        }
+			private set
+			{
+				_userManager = value;
+			}
+		}
+
+        public List<Instance> Get()
+        {
+			string userId = User.Identity.GetUserId();
+			var currentUser = UserManager.FindById(userId);
+
+			return new DataService().GetInstances(currentUser);
         }
 
         public IEnumerable<PolicySummary> Get(long id)

@@ -75,18 +75,14 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
         }
 
-        public List<InstalledInstance> GetInstances(string username)
+        public List<Instance> GetInstances(ApplicationUser user)
         {
-            var installedInstances = new ReportsDb().ReportSettings
-                .Where(reportSettings => reportSettings.Username == username)
-                .Select(reportSettings => reportSettings.InstalledInstance)
-                .Distinct()
-                .ToList();
+            var installedInstances = user.InstalledInstances.ToList();
+            var instances = new List<Instance>();
 
-            var instances = new List<InstalledInstance>();
             installedInstances.ForEach(installedInstance =>
                 {
-                    instances.Add(new InstalledInstance { 
+                    instances.Add(new Instance { 
                         Id = installedInstance.Id,
                         BaseUrl = installedInstance.BaseUrl
                     });
@@ -102,7 +98,6 @@ namespace Equilobe.DailyReport.SL
                 .Select(installedInstance => installedInstance.BaseUrl)
                 .FirstOrDefault();
         }
-
 
         public void SetReportFromDb(JiraReport _report)
         {

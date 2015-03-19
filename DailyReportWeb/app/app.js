@@ -1,7 +1,18 @@
 ﻿angular
-    .module("app", ['ngRoute'])
-    .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+    .module("app", ['ngRoute', 'ng-breadcrumbs'])
+    .config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
+
+        $httpProvider.interceptors.push(['$q', '$location', function ($q, $location) {
+            return {
+                'responseError': function (response) {
+                    if (response.status === 401)
+                        $location.url('/app/signin');
+                    return $q.reject(response);
+                }
+            };
+        }]);
+
         $routeProvider
             .when('/', {
                 redirectTo: '/app/list'
@@ -9,6 +20,21 @@
             .otherwise({
                 redirectTo: '/'
             });
+    }])
+    .controller("AppCtrl", ['$scope', '$http', '$location', 'breadcrumbs', function ($scope, $http, $location, breadcrumbs) {
+        $scope.isAuth = isAuth;
+        $scope.breadcrumbs = breadcrumbs;
+
+        $scope.signOut = function ($scope) {
+            $http.post("/api/account/logout")
+                .success(function () {
+                    $scope.isAuth = false;
+                    $location.path('/app/signin');
+                })
+                .error(function () {
+                    $scope.status = "error";
+                });
+        };
     }])
     .directive('ngRepeat', function () {
         return function ($scope, $element, $attrs) {

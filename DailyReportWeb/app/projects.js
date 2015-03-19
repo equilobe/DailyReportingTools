@@ -2,16 +2,22 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/list/:instanceId', { templateUrl: 'app/projects.html', controller: 'ProjectCtrl' });
+        $routeProvider.when('/app/list/:instanceId', {
+            label: 'Projects',
+            templateUrl: 'app/projects.html',
+            controller: 'ProjectCtrl'
+        });
     }])
     .controller("ProjectCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         $scope.status = "loading";
 
-        $http.get("/api/project/" + $routeParams.instanceId).success(function (list) {
-            $scope.projects = list;
-
-            $scope.status = "loaded";
-        });
+        $http.get("/api/project/" + $routeParams.instanceId)
+            .success(function (list) {
+                $scope.projects = list;
+            })
+            .finally(function () {
+                $scope.status = "loaded";
+            });
 
         $scope.updateReportTime = function ($scope) {
             if ($scope.reportForm.reportTime.$invalid || $scope.reportForm.reportTime.$pristine)

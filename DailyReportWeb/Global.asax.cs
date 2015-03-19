@@ -18,9 +18,9 @@ namespace DailyReportWeb
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
-        {
-            AuthenticationHelpers.SetUser();
-        }
+		//protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
+		//{
+		//	AuthenticationHelpers.SetUser();
+		//}
     }
 }
