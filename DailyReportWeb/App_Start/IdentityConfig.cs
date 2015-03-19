@@ -62,6 +62,7 @@ namespace DailyReportWeb
 			var mail = new MailMessage(credential.UserName, message.Destination);
 			mail.Subject = message.Subject;
 			mail.Body = message.Body;
+            mail.IsBodyHtml = true;
 
 			return client.SendMailAsync(mail);
 		}
