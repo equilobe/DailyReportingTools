@@ -118,7 +118,7 @@ namespace DailyReportWeb.Controllers.Api
 			};
 		}
 
-		public AccountResponse LogOff()
+		public AccountResponse Logout()
 		{
 			AuthenticationManager.SignOut();
 			return new AccountResponse(){

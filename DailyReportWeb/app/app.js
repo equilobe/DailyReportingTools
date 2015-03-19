@@ -21,6 +21,20 @@
                 redirectTo: '/'
             });
     }])
+    .controller("AppCtrl", ['$scope', '$http', '$location', function ($scope, $http, $location) {
+        $scope.isAuth = isAuth;
+
+        $scope.signOut = function ($scope) {
+            $http.post("/api/account/logout")
+                .success(function () {
+                    $scope.isAuth = false;
+                    $location.path('/app/signin');
+                })
+                .error(function () {
+                    $scope.status = "error";
+                });
+        };
+    }])
     .directive('ngRepeat', function () {
         return function ($scope, $element, $attrs) {
             if ($scope.$last) setTimeout(function () {
