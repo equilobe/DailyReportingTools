@@ -116,7 +116,9 @@ namespace JiraReporter.Services
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
         {
-            var issues = JiraService.GetTimesheetForUser(_context.JiraRequestContext, _context.ProjectKey, _currentAuthor.Username, fromDate, toDate);
+            var timesheetContext = GetTimesheetContext(fromDate, toDate);
+
+            var issues = JiraService.GetTimesheetForUser(timesheetContext);
             var issueProcessor = new IssueProcessor(_context) { JiraService = JiraService };
             var completeIssues = new List<IssueDetailed>();
             foreach (var issue in issues)
@@ -129,6 +131,19 @@ namespace JiraReporter.Services
             }
 
             return completeIssues;
+        }
+
+        private TimesheetContext GetTimesheetContext(DateTime fromDate, DateTime toDate)
+        {
+            var timesheetContext = new TimesheetContext
+            {
+                RequestContext = _context.JiraRequestContext,
+                ProjectKey = _context.ProjectKey,
+                TargetUser = _currentAuthor.Username,
+                StartDate = fromDate,
+                EndDate = toDate
+            };
+            return timesheetContext;
         }
 
         private void OrderIssues()
@@ -166,7 +181,7 @@ namespace JiraReporter.Services
             if (!_policy.Users.ContainsKey(_currentAuthor.UserKey))
                 return new List<JiraCommit>();
 
-            return _policy.Users[_currentAuthor.Username]
+            return _policy.Users[_currentAuthor.UserKey]
                     .SelectMany(sourceControlUser => _commits.FindAll(commit => commit.Entry.Author == sourceControlUser))
                     .ToList();
         }

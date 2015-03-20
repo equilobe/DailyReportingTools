@@ -23,6 +23,7 @@ namespace JiraReporter
             var builder = new ContainerBuilder();
 
             builder.RegisterServicesFromAssembly<JiraService>();
+            builder.RegisterServicesFromAssembly<ReportGeneratorService>();
 
             builder.RegisterType<JiraReportMainFlowProcessor>().AsSelf().PropertiesAutowired();
             builder.RegisterType<GitHubReportSourceControl>().AsSelf().PropertiesAutowired();
