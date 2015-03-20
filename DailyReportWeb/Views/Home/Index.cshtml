@@ -27,6 +27,7 @@
     <script src="~/app/confirmEmail.js"></script>
     <script>
         var isAuth = @this.Context.User.Identity.IsAuthenticated.ToString().ToLower();
+        var regex = @Html.Raw(Json.Encode(@Model));
     </script>
 </head>
 

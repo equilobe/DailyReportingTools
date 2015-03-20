@@ -21,29 +21,30 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>
-                                Email:
+                                Email
                             </label>
-                            <div>
-                                <input type="text" class="form-control" placeholder="user@email.com" ng-model="signInForm.email" />
+                            <div ng-form="emailForm">
+                                <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="signInForm.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
+                                <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label>
-                                Password:
+                                Password
                             </label>
                             <div>
-                                <input type="text" class="form-control" placeholder="" ng-model="signInForm.password" />
+                                <input type="text" class="form-control" placeholder="Daily Report password" required ng-model="signInForm.password" />
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <div class="form-group">
                             <label></label>
                             <label class="checkbox">
                                 <input type="checkbox" ng-model="signInForm.rememberMe" />
-                                Remember Me
+                                Remember
                             </label>
                         </div>
                     </div>

@@ -18,7 +18,7 @@ namespace DailyReportWeb.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View(new RegexValidation());
         }
 
         public ActionResult About()

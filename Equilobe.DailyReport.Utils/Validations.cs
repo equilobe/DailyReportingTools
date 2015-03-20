@@ -8,14 +8,19 @@ using System.Text.RegularExpressions;
 
 namespace Equilobe.DailyReport.Utils
 {
+    public class RegexValidation
+    {
+        public string Time = @"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"; // 00:00 - 23:59
+        public string Mail = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; // single mail
+        public string Mails = @"^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$"; // multiple mail, delimited by , or ; or space
+        public string Digits = @"^[0-9]*$"; // 0-9*...
+        public string Days = @"^([1-9]|(1|2)[0-9]|3[0,1])?(\s([1-9]|(1|2)[0-9]|3[0,1]))*$"; // 1-31
+        public string Url = @"^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$";
+    }
+
     public static class Validations
     {
-        public const string TIME = @"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"; // 00:00 - 23:59
-        public const string MAIL = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; // single mail
-        public const string MAILS = @"^((\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)\s*[;]{0,1}\s*)+$"; // multiple mail, delimited by , or ; or space
-        public const string DIGITS = @"^[0-9]*$"; // 0-9*...
-        public const string DAYS = @"^([1-9]|(1|2)[0-9]|3[0,1])?(\s([1-9]|(1|2)[0-9]|3[0,1]))*$"; // 1-31
-        public const string URL = @"^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$";
+        public static RegexValidation regex = new RegexValidation();
 
         public static void EnsureDirectoryExists(string path)
         {
@@ -30,7 +35,7 @@ namespace Equilobe.DailyReport.Utils
             if (string.IsNullOrEmpty(time))
                 return true;
 
-            Regex regexTime = new Regex(TIME);
+            Regex regexTime = new Regex(regex.Time);
             return regexTime.IsMatch(time);
         }
 
@@ -39,7 +44,7 @@ namespace Equilobe.DailyReport.Utils
             if (string.IsNullOrEmpty(mail))
                 return true;
 
-            Regex regexMail = new Regex(MAIL);
+            Regex regexMail = new Regex(regex.Mail);
             return regexMail.IsMatch(mail);
         }
 
@@ -48,7 +53,7 @@ namespace Equilobe.DailyReport.Utils
             if (string.IsNullOrEmpty(mails))
                 return true;
 
-            Regex regexMails = new Regex(MAILS);
+            Regex regexMails = new Regex(regex.Mails);
             return regexMails.IsMatch(mails);
         }
 
@@ -57,7 +62,7 @@ namespace Equilobe.DailyReport.Utils
             if (string.IsNullOrEmpty(digits))
                 return true;
 
-            Regex regexDigits = new Regex(DIGITS);
+            Regex regexDigits = new Regex(regex.Digits);
             return regexDigits.IsMatch(digits);
         }
 
@@ -66,7 +71,7 @@ namespace Equilobe.DailyReport.Utils
             if (string.IsNullOrEmpty(days))
                 return true;
 
-            Regex regexDays = new Regex(DAYS);
+            Regex regexDays = new Regex(regex.Days);
             return regexDays.IsMatch(days);
         }
 
@@ -75,7 +80,7 @@ namespace Equilobe.DailyReport.Utils
             if (string.IsNullOrEmpty(url))
                 return true;
 
-            Regex regexUrl = new Regex(URL);
+            Regex regexUrl = new Regex(regex.Url);
             return regexUrl.IsMatch(url);
         }
     }

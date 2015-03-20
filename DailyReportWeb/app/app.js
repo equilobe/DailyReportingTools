@@ -25,6 +25,13 @@
         $scope.isAuth = isAuth;
         $scope.breadcrumbs = breadcrumbs;
 
+        (function jsRegex() {
+            for (var key in regex)
+                regex[key] = new RegExp(regex[key]);
+
+            $scope.regex = regex;
+        })();
+
         $scope.signOut = function ($scope) {
             $http.post("/api/account/logout")
                 .success(function () {
