@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Equilobe.DailyReport.Models.ReportFrame;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class ReportSettings
+    public class ReportSettings : IReportSettings
     {
         public long Id { get; set; }
         public long InstalledInstanceId { get; set; }

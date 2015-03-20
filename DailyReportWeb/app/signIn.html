@@ -1,0 +1,65 @@
+﻿<div id="jumbo" class="jumbotron">
+    <div class="container">
+        <h1>
+            Daily Report
+        </h1>
+        <p class="help-block">
+            Use this page to sign into app.
+        </p>
+    </div>
+</div>
+<form name="signInForm">
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>
+                    Daily Report
+                </h4>
+            </div>
+            <div class="panel-body" ng-form="dailyReportForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Email:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="user@email.com" ng-model="signInForm.email" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Password:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="" ng-model="signInForm.password" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label></label>
+                            <label class="checkbox">
+                                <input type="checkbox" ng-model="signInForm.rememberMe" />
+                                Remember Me
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <button class="btn btn-success" ng-disabled="signInForm.$invalid || signInForm.$pristine && status != 'error'" ng-click="signIn(this)">
+                Sign In
+            </button>
+
+            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="signInForm.$dirty"></span>
+            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'checking'"></span>
+            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && signInForm.$pristine"></span>
+            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && signInForm.$pristine">{{message}}</span>
+        </div>
+    </div>
+</form>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceControlLogReporter", "SvnLogReporter\SourceControlLogReporter.csproj", "{CA27B3C4-9045-4FC4-BBCC-2B33A02F54C4}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Equilobe.DailyReport.SL", "Equilobe.DailyReport.SL\Equilobe.DailyReport.SL.csproj", "{E884AC10-285D-4012-882E-7CFA035549E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Equilobe.DailyReport.Utils", "Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj", "{7A42DD16-07E8-46A6-9083-47F342B644E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Equilobe.DailyReport.JWT", "Equilobe.DailyReport.JWT\Equilobe.DailyReport.JWT.csproj", "{DDE5A302-B23C-455B-BE7C-1AE89F23A9AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{7A42DD16-07E8-46A6-9083-47F342B644E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A42DD16-07E8-46A6-9083-47F342B644E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A42DD16-07E8-46A6-9083-47F342B644E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE5A302-B23C-455B-BE7C-1AE89F23A9AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE5A302-B23C-455B-BE7C-1AE89F23A9AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE5A302-B23C-455B-BE7C-1AE89F23A9AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE5A302-B23C-455B-BE7C-1AE89F23A9AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -205,62 +205,21 @@
 
     @if (Model.IsFinalDraft)
     {
-        <div>
-            <table style="margin-top:50px; width:500px; height:150px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
+            <table style="margin-top:50px; width:250px; height:50px;">
                 <tbody>
                     <tr>
-                        <td>
-                            <h3 style="margin-left:10px; margin-bottom:5px; color:#468847;">Project Manager Only!</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="100px" height="40px">
+                        <td width="100px" height="40px" title="This will confirm the draft for ALL users and send the final report &#013; Only click the button after: &#013; - errors have been corrected &#013; - everyone has logged their work &#013; - sprint scope has been adjusted (if necessary)" style="display:inline-block; padding:0px; line-height:40px;">
                             @Partial("Views/confirmationButton.cshtml", Model.SendReportUrl)
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#468847; font-weight:bold; margin:5px 0px 7px 10px">This will confirm the draft for ALL users and send the final report</p>
+                        <td width="30px" height="40px" style="display:inline-block;font-size:12px; line-height:40px;padding:0px; text-align:center">
+                            or
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#808080; margin:0px 0px 0px 10px">Only click the button after:</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#808080; margin:0px 0px 0px 10px">- errors have been corrected</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#808080; margin:0px 0px 0px 10px">- everyone has logged their work</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#808080; margin:0px 0px 0px 10px">- sprint scope has been adjusted (if necessary)</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="100px" height="40px">
-                            @Partial("Views/resendDraftButton.cshtml", Model.SendDraftUrl)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#808080; margin:5px 0px 5px 10px">If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.</p>
+                        <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
+                            <a style="color:#0000FF; font-weight:bold; text-decoration:none; font-size:12px; line-height:40px" href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
     }
 
 </div>

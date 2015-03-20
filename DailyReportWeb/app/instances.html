@@ -1,0 +1,46 @@
+﻿<div id="jumbo" class="jumbotron">
+    <div class="container">
+        <h1>
+            Daily Report Setup
+        </h1>
+        <p class="help-block">
+            Use this page to configure all options for the daily report.
+        </p>
+    </div>
+</div>
+
+<div class="table">
+    <div class="container" ng-if="status == 'loading'">
+        <h3>
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+        </h3>
+    </div>
+    <div class="container" ng-if="status == 'loaded' && !instances.length">
+        <h1>
+            <span class="alert-danger">
+                No instances available
+            </span>
+        </h1>
+        <p class="help-block">
+            Daily Report tool is unable to find any instance.
+        </p>
+    </div>
+    <div class="container" ng-if="status == 'loaded' && instances.length">
+        <div class="row">
+            <label class="col-sm-10 col-md-10">
+                Instance name
+            </label>
+            <label class="col-sm-2 col-md-2">
+                Options
+            </label>
+        </div>
+        <div class="row project" ng-repeat="instance in instances">
+            <div class="col-sm-10 col-md-10">
+                {{instance.baseUrl}}
+            </div>
+            <div class="col-sm-2 col-md-2">
+                <a ng-href="/app/list/{{instance.id}}" class="btn btn-default">Details</a>
+            </div>
+        </div>
+    </div>
+</div>

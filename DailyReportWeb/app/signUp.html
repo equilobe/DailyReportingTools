@@ -1,0 +1,108 @@
+﻿<div id="jumbo" class="jumbotron">
+    <div class="container">
+        <h1>
+            Daily Report
+        </h1>
+        <p class="help-block">
+            Use this page to create account.
+        </p>
+    </div>
+</div>
+<form name="signUpForm">
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>
+                    Daily Report
+                </h4>
+            </div>
+            <div class="panel-body" ng-form="dailyReportForm">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Email:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="user@email.com" ng-model="signUpForm.email" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>
+                                Password:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="" ng-model="signUpForm.password" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>
+                    JIRA
+                </h4>
+            </div>
+            <div class="panel-body" ng-form="dailyReportForm">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Instance Url:
+                            </label>
+                            <div ng-form="jiraUrlForm">
+                                <input name="jiraUrl" type="text" class="form-control" placeholder="" ng-model="signUpForm.baseUrl" />
+                                <span class="form-notification" ng-show="jiraUrlForm.jiraUrl.$error.pattern && !jiraUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>
+                                Timezone:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="" ng-model="signUpForm.timezoneId" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Username:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="your JIRA username" ng-model="signUpForm.jiraUsername" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>
+                                Password:
+                            </label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="" ng-model="signUpForm.jiraPassword" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <button class="btn btn-success" ng-disabled="signUpForm.$invalid || signUpForm.$pristine && status != 'error'" ng-click="signUp(this)">
+                Sign Up
+            </button>
+            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
+            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
+            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && signUpForm.$pristine">{{message}}</span>
+            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && signUpForm.$pristine">{{message}}</span>
+        </div>
+    </div>
+</form>

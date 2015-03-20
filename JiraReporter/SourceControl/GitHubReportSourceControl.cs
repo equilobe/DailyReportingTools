@@ -12,6 +12,7 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter.SourceControl
 {
@@ -34,7 +35,7 @@ namespace JiraReporter.SourceControl
         public override Log CreateLog()
         {
             var context = new SourceControlContext { SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate };
-            var log = new GitHubService().GetLog(context);
+            var log = GitHubService.GetLog(context);
             return log;
         }
     }

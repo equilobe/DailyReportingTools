@@ -25,13 +25,15 @@ namespace Equilobe.DailyReport.SL
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
-            var baseUrl = queryString["xdm_e"] + queryString["cp"];
+        //    var baseUrl = queryString["xdm_e"] + queryString["cp"];
+            var baseUrl = "https://equilobe.atlassian.net";
             return baseUrl;
         }
 
         public string GetJiraUsername(NameValueCollection queryString)
         {
-            var userId = queryString["user_id"];
+         //   var userId = queryString["user_id"];
+            var userId = "sebastian.dumitrascu";
             return userId;
         }
 

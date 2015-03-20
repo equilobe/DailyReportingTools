@@ -17,11 +17,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public int UnassignedTasksSecondsLeft { get; set; }
         public string UnassignedTasksTimeLeftString { get; set; }
 
-        //public double HourRateToCompleteSprint { get; set; }
-        //public string HourRateToCompleteSprintString { get; set; }
-        //public double HourRateToCompleteMonth { get; set; }
-        //public string HourRateToCompleteMonthString { get; set; }
-
         public double AllocatedHoursPerDay { get; set; }
         public double AllocatedHoursPerMonth { get; set; }
 

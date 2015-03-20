@@ -3,6 +3,7 @@ using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
@@ -10,51 +11,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
+using Equilobe.DailyReport.Models;
 
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
     public class PolicyController : ApiController
     {
-        // GET: api/Policy
-        public IEnumerable<PolicySummary> Get()
+        public IDataService DataService { get; set; }
+        public IPolicyEditorService PolicyService { get; set; }
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
+
+        public FullReportSettings Get(ItemContext context)
         {
-            var baseUrl = User.GetBaseUrl();
-            var username = User.GetUsername();
-
-            var requestContext = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                Username = username,
-                SharedSecret = new DataService().GetSharedSecret(baseUrl),
-                Password = new DataService().GetPassword(baseUrl, username)
-            };
-
-            return new PolicySummaryService(requestContext).GetPoliciesSummary();
-        }
-
-        // GET: api/Policy/5
-        public PolicyBuffer Get(long id)
-        {
-            var baseUrl = User.GetBaseUrl();
-            var username = User.GetUsername();
-
-            var requestContext = new JiraRequestContext
-            {
-                BaseUrl = baseUrl,
-                Username = username,
-                SharedSecret = new DataService().GetSharedSecret(baseUrl),
-                Password = new DataService().GetPassword(baseUrl, username)
-            };
-
-            return new PolicyService(requestContext).GetPolicy(id);
+            return PolicyService.GetPolicy(context);
         }
 
         // PUT: api/Policy
-        public void Post([FromBody]PolicySummary policySummary)
+        public void Post([FromBody]ReportSettingsSummary policySummary)
         {
             if(!Validations.Time(policySummary.ReportTime))
                 throw new ArgumentException();
+
+
+            var context = new ScheduledTaskContext
+            {
+                ReportTime = policySummary.ReportTime,
+                UniqueProjectKey = policySummary.UniqueProjectKey
+            };
 
             using (var db = new ReportsDb())
             {
@@ -69,11 +54,13 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
 
-                    policySummary.CopyProperties(reportSettings);
+                    policySummary.CopyPropertiesOnObjects(reportSettings);
                     reportSettings.InstalledInstanceId = installedInstance.Id;
-                    reportSettings.UniqueProjectKey = ProjectService.GetUniqueProjectKey(policySummary.ProjectKey);
+                    reportSettings.UniqueProjectKey = RandomString.Get(policySummary.ProjectKey);
 
-                    new TaskSchedulerService(reportSettings.UniqueProjectKey).Create(policySummary.ReportTime);
+                    
+
+                    TaskSchedulerService.CreateTask(context);
                 }
                 else
                 {
@@ -81,7 +68,8 @@ namespace DailyReportWeb.Controllers.Api
                         return;
 
                     reportSettings.ReportTime = policySummary.ReportTime;
-                    new TaskSchedulerService(reportSettings.UniqueProjectKey).Update(reportSettings.ReportTime);
+
+                    TaskSchedulerService.UpdateTask(context);
                 }
 
                 db.SaveChanges();
@@ -89,13 +77,20 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // PUT: api/Policy/5
-        public void Post(long id, [FromBody]PolicyBuffer updatedPolicy)
+        public void Post(long id, [FromBody]FullReportSettings updatedPolicy)
         {
             if (!Validations.Time(updatedPolicy.ReportTime) ||
                 !Validations.Mails(updatedPolicy.DraftEmails) ||
                 !Validations.Mails(updatedPolicy.Emails) ||
                 (updatedPolicy.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedPolicy.SourceControlOptions.Repo)))
                 throw new ArgumentException();
+
+
+            var context = new ScheduledTaskContext
+            {
+                ReportTime = updatedPolicy.ReportTime,
+                UniqueProjectKey = updatedPolicy.UniqueProjectKey
+            };
 
             using (var db = new ReportsDb())
             {
@@ -107,25 +102,25 @@ namespace DailyReportWeb.Controllers.Api
                     reportSettings = new ReportSettings();
                     db.ReportSettings.Add(reportSettings);
 
-                    updatedPolicy.CopyProperties<IReportSetting>(reportSettings);
+                    updatedPolicy.CopyTo<IReportSettings>(reportSettings);
 
                     reportSettings.InstalledInstanceId = installedInstance.Id;
-                    reportSettings.UniqueProjectKey = ProjectService.GetUniqueProjectKey(updatedPolicy.ProjectKey);
+                    reportSettings.UniqueProjectKey = RandomString.Get(updatedPolicy.ProjectKey);
 
                     if (!string.IsNullOrEmpty(reportSettings.ReportTime))
-                        new TaskSchedulerService(reportSettings.UniqueProjectKey).Create(reportSettings.ReportTime);
+                        TaskSchedulerService.CreateTask(context);
                 }
                 else
                 {
                     if (reportSettings.ReportTime != updatedPolicy.ReportTime)
                     {
                         reportSettings.ReportTime = updatedPolicy.ReportTime;
-                        new TaskSchedulerService(reportSettings.UniqueProjectKey).Update(reportSettings.ReportTime);
+                        TaskSchedulerService.UpdateTask(context);
                     }
                 }
 
-                var policy = new PolicyDetails();
-                updatedPolicy.CopyProperties<ISerializedPolicy>(policy);
+                var policy = new ReportPolicy();
+                updatedPolicy.CopyTo<ISerializedPolicy>(policy);
 
                 if (reportSettings.SerializedPolicy == null)
                     reportSettings.SerializedPolicy = new SerializedPolicy();

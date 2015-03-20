@@ -9,6 +9,8 @@ namespace DailyReportWeb
     {
         protected void Application_Start()
         {
+            DependencyInjection.Init();
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configuration.InitApiRoutes();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -16,9 +18,9 @@ namespace DailyReportWeb
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
-        {
-            AuthenticationHelpers.SetUser();
-        }
+		//protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
+		//{
+		//	AuthenticationHelpers.SetUser();
+		//}
     }
 }
