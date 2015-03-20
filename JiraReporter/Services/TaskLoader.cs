@@ -53,8 +53,10 @@ namespace JiraReporter.Services
 
         public List<IssueDetailed> GetCompletedTasks(JiraReport context)
         {
+            var issuesContext = GetIssuesContext(context);
+
             var completedTasks = new List<IssueDetailed>();
-            var issues = JiraService.GetCompletedIssues(context.JiraRequestContext, context.ProjectKey, context.ReportDate.AddDays(-6), context.ReportDate);
+            var issues = JiraService.GetCompletedIssues(issuesContext);
             foreach (var jiraIssue in issues.issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
@@ -140,7 +142,7 @@ namespace JiraReporter.Services
         }
 
 
-        #region Stataic Helpers
+        #region Static Helpers
         static IssueDetailed CreateParent(IssueDetailed task, JiraAuthor author)
         {
             var parent = new IssueDetailed(task.Parent);
@@ -148,6 +150,18 @@ namespace JiraReporter.Services
                 IssueAdapter.SetLoggedAuthor(subtask, author.Name);
             parent.AssigneeSubtasks = new List<IssueDetailed>();
             return parent;
+        }
+
+        private static IssuesContext GetIssuesContext(JiraReport context)
+        {
+            var issuesContext = new IssuesContext
+            {
+                RequestContext = context.JiraRequestContext,
+                ProjectKey = context.ProjectKey,
+                StartDate = context.ReportDate.AddDays(-6),
+                EndDate = context.ReportDate
+            };
+            return issuesContext;
         }
 
         public static List<IssueDetailed> GetParentTasks(List<IssueDetailed> tasks, JiraAuthor author)

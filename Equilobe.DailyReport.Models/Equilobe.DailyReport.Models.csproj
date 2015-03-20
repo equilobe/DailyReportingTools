@@ -81,6 +81,7 @@
     <Compile Include="Interfaces\ICredentials.cs" />
     <Compile Include="Interfaces\ISourceControlContext.cs" />
     <Compile Include="ReportFrame\ExecutionInstance.cs" />
+    <Compile Include="ReportFrame\IssuesContext.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="ReportFrame\SprintTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
+    <Compile Include="ReportFrame\TimesheetContext.cs" />
     <Compile Include="ReportFrame\Timing.cs" />
     <Compile Include="ReportFrame\TimingDetailed.cs" />
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
