@@ -35,6 +35,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasMonth { get; set; }
         public bool HasStatus { get; set; }
         public bool HasWorkSummary { get; set; }
+        public bool HasSprint { get; set; }
 
         public int MonthEstimatedPixelWidth { get; set; }
         public string MonthEstimatedPixelWidthString
@@ -42,6 +43,15 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             get
             {
                 return MonthEstimatedPixelWidth.ToString() + "px";
+            }
+        }
+
+        public double UnassignedRemainingChartPixelWidth { get; set; }
+        public string UnassignedRemainingChartPixelWidthString
+        {
+            get
+            {
+                return UnassignedRemainingChartPixelWidth.ToString() + "px";
             }
         }
 
@@ -72,6 +82,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public readonly int ChartMaxBarWidth = 250;
         public readonly int ChartMaxWidth = 300;
+        public readonly int GuidelinesOptimalNumber = 12;
 
         public string ChartMaxWidthString
         {

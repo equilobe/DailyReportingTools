@@ -25,15 +25,11 @@ namespace Equilobe.DailyReport.SL
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
-        //    var baseUrl = queryString["xdm_e"] + queryString["cp"];
-            var baseUrl = "https://equilobe.atlassian.net";
-            return baseUrl;
         }
 
         public string GetJiraUsername(NameValueCollection queryString)
         {
-         //   var userId = queryString["user_id"];
-            var userId = "sebastian.dumitrascu";
+            var userId = queryString["user_id"];
             return userId;
         }
 
@@ -50,7 +46,17 @@ namespace Equilobe.DailyReport.SL
         {
             var project = new JiraService(_requestContext).GetProject(projectId);
 
-            var options = new JiraService(_requestContext).GetUsers(project.Key)
+            var policy = new JiraPolicy
+            {
+                BaseUrl = _baseUrl,
+                SharedSecret = _sharedSecret,
+                ProjectId = projectId
+            };
+            var jiraService = new JiraService(context);
+
+            var project = jiraService.GetProject(projectId);
+
+            policy.UserOptions = jiraService.GetUsers(project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,

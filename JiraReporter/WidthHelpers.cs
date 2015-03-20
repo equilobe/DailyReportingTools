@@ -18,9 +18,15 @@ namespace JiraReporter
             ChartMaxBarWidth = chartMaxBarWidth;
         }
 
-        public void SetWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax)
+        public void SetWorkSummaryChartWidths(Summary summary, int workSummaryMax)
         {
-            SetAuthorsWorkSummaryChartWidths(authors, workSummaryMax);
+            SetAuthorsWorkSummaryChartWidths(summary.Authors, workSummaryMax);
+            SetRemainingUnassignedWidths(summary, workSummaryMax);
+        }
+
+        private void SetRemainingUnassignedWidths(Summary summary, int workSummaryMax)
+        {
+            summary.UnassignedRemainingChartPixelWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, workSummaryMax, summary.Timing.UnassignedTasksHoursAverageLeft);
         }
 
         private void SetAuthorsWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax)

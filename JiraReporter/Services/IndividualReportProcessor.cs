@@ -22,8 +22,6 @@ namespace JiraReporter.Model
         {
             SaveReport();
             JiraContextService.SetIndividualEmail(Report.Author.EmailAdress, Policy);
-            //Policy.EmailCollection = new List<string>();
-           // Policy.EmailCollection.Add("sebastian.dumitrascu@equilobe.com");
             SendReport();
         }
 

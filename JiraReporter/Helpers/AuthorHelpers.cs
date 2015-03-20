@@ -64,11 +64,17 @@ namespace JiraReporter.Helpers
             TimingHelpers.SetAverageWorkStringFormat(author.Timing);
         }
 
+        public static void SetAuthorAverageRemainig(JiraAuthor author, int sprintWorkingDaysLeft)
+        {
+            author.Timing.TotalRemainingAverage = author.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
+            author.Timing.TotalRemainingString = author.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
+        }
+
         public static double GetAuthorMaxAverage(JiraAuthor author)
         {
             var max = Math.Max(author.Timing.AverageWorked, author.Timing.AverageWorkedSprint);
             max = Math.Max(max, author.Timing.AverageWorkedMonth);
-            return max;
+            return Math.Max(max, author.Timing.TotalRemainingAverage * 3600);
         }
 
         public static void SetAuthorWorkSummaryWidths(JiraAuthor author, int maxWidth, int maxValue)
@@ -76,6 +82,7 @@ namespace JiraReporter.Helpers
             author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedSprint / 3600));
             author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedMonth / 3600));
             author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.Timing.AverageWorked / 3600));
+            author.RemainingChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, author.Timing.TotalRemainingAverage);
         }
     }
 }
