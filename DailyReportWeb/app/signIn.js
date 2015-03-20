@@ -2,7 +2,10 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/signin', { templateUrl: 'app/signIn.html', controller: 'SignInCtrl' });
+        $routeProvider.when('/app/signin', {
+            templateUrl: 'app/signIn.html',
+            controller: 'SignInCtrl'
+        });
     }])
     .controller("SignInCtrl", ['$scope', '$http', '$location', function ($scope, $http, $location) {
         $scope.signIn = function ($scope) {

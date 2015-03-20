@@ -17,6 +17,7 @@
     @*@Html.IncludeConnectJs()*@
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/angular-route.min.js"></script>
+    <script src="~/Scripts/ng-breadcrumbs.js"></script>
     <script src="~/app/app.js"></script>
     <script src="~/app/signUp.js"></script>
     <script src="~/app/signIn.js"></script>
@@ -32,11 +33,25 @@
 <body ng-controller="AppCtrl">
     <div id="jumbo">
         <div class="container">
-            <a ng-href="/app/list" class="btn btn-default" ng-show="isAuth">Instances</a>
-            <div class="pull-right">
-                <a ng-href="/app/signup" class="btn btn-default" ng-show="!isAuth">Sign Up</a>
-                <a ng-href="/app/signin" class="btn btn-default" ng-show="!isAuth">Sign In</a>
-                <button class="btn" ng-click="signOut(this)" ng-show="isAuth">Sign Out</button>
+            <div class="row" ng-show="!isAuth">
+                <div class="col-md-10 col-sm-9"></div>
+                <div class="col-md-2 col-sm-3">
+                    <a class="btn btn-default btn-sm" ng-href="app/signup">Sign Up</a>
+                    <a class="btn btn-default btn-sm pull-right" ng-href="app/signin">Sign In</a>
+                </div>
+            </div>
+            <div class="row" ng-show="isAuth">
+                <div class="col-md-11 col-sm-10">
+                    <ol class="breadcrumb relative">
+                        <li ng-repeat="breadcrumb in breadcrumbs.get() track by breadcrumb.path" ng-class="{ active: $last }">
+                            <a ng-if="!$last" ng-href="{{breadcrumb.path}}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
+                            <span ng-if="$last" ng-bind="breadcrumb.label"></span>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-1 col-sm-2">
+                    <button class="btn btn-default btn-sm pull-right" ng-click="signOut(this)">Sign Out</button>
+                </div>
             </div>
         </div>
     </div>
