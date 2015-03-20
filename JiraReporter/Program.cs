@@ -14,5 +14,5 @@ namespace JiraReporter
             mainFlow.Execute(args);
         }
 
-        }
-        }
+    }
+}
