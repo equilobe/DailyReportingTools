@@ -74,7 +74,8 @@ namespace JiraReporter
                 AddAttachementImage(Author.Image, Author.AvatarId, message);
             else
                 foreach (var author in Authors)
-                    AddAttachementImage(author.Image, author.AvatarId, message);
+                    if(!author.IsEmpty)
+                        AddAttachementImage(author.Image, author.AvatarId, message);
         }
 
         public override string GetReportSubject(string reportPath)

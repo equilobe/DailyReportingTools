@@ -27,10 +27,11 @@
         {
             foreach (var author in Model.Authors)
             {
-                if (author.DayLogs.Count > 0 || author.InProgressTasks.Count > 0 || author.OpenTasks.Count > 0)
+                @if (author.HasDayLogs || author.HasAssignedIssues)
                 {
                     <div style="margin-top:40px;">
-                        <h1 style="color:black; line-height:1.4em">@author.Name</h1>
+                        <h1 style="color:black; line-height:1.4em; margin-bottom:0px">@author.Name</h1>
+
                         @if (author.DayLogs.Count > 0)
                         {
                             foreach (var dayLog in author.DayLogs)
@@ -83,110 +84,112 @@
                                 }
                             }
                         }
-
-                        @if (author.InProgressTasks.Count > 0)
+                        @if (Model.HasSprint)
                         {
-                            <div style="margin-top:20px; line-height:1.4em;">
-                                <b style="color:sienna; font-size:16px;">In Progress</b>
+                            @if (author.InProgressTasks.Count > 0)
+                            {
+                                <div style="margin-top:20px; line-height:1.4em;">
+                                    <b style="color:sienna; font-size:16px;">In Progress</b>
 
-                                @if (author.Timing.InProgressTasksTimeLeftSeconds == 0)
-                                {
-                                    <span style="color:red; font-size:12px;"> &#x25cf; @author.Timing.InProgressTasksTimeLeftString left</span>
-                                }
-                                else
-                                {
-                                    <span style="color:sienna; font-size:12px;"> &#x25cf; @author.Timing.InProgressTasksTimeLeftString left</span>
-                                }
-                                <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                                    <tbody>
-                                        @foreach (var task in author.InProgressTasksParents)
-                                        {
-                                            if (task.Assignee == author.Name)
+                                    @if (author.Timing.InProgressTasksTimeLeftSeconds == 0)
+                                    {
+                                        <span style="color:red; font-size:12px;"> &#x25cf; @author.Timing.InProgressTasksTimeLeftString left</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:sienna; font-size:12px;"> &#x25cf; @author.Timing.InProgressTasksTimeLeftString left</span>
+                                    }
+                                    <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+                                        <tbody>
+                                            @foreach (var task in author.InProgressTasksParents)
                                             {
-                                                @Partial("Views/uncompletedTask.cshtml", task)
-                                                if (task.SubtasksIssues != null)
+                                                if (task.Assignee == author.Name)
                                                 {
-                                                    if (task.SubtasksIssues.Count > 0)
+                                                    @Partial("Views/uncompletedTask.cshtml", task)
+                                                    if (task.SubtasksIssues != null)
                                                     {
-                                                        foreach (var subtask in task.SubtasksIssues)
+                                                        if (task.SubtasksIssues.Count > 0)
                                                         {
-                                                            @Partial("Views/subtasks.cshtml", subtask)
+                                                            foreach (var subtask in task.SubtasksIssues)
+                                                            {
+                                                                @Partial("Views/subtasks.cshtml", subtask)
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                @Partial("Views/parentTask.cshtml", task)
-                                                foreach (var subtask in task.AssigneeSubtasks)
+                                                else
                                                 {
-                                                    @Partial("Views/subtasks.cshtml", subtask)
-                                                }
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        }
-
-                        @if (author.OpenTasks.Count > 0)
-                        {
-                            <div style="line-height:1.4em; color:sienna; margin-top:20px;">
-                                <b style="font-size: 16px; color: sienna">Upcoming </b>
-                                @if (author.Timing.OpenTasksTimeLeftSeconds != 0)
-                                {
-                                    <span style="color: sienna; font-size:12px;"> &#x25cf; @author.Timing.OpenTasksTimeLeftString left</span>
-                                }
-                                else
-                                {
-                                    <span style="color:red; font-size:12px;">&#x25cf; @author.Timing.OpenTasksTimeLeftString left</span>
-                                }
-                                <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                                    <tbody>
-                                        @foreach (var task in author.OpenTasksParents)
-                                        {
-                                            if (task.Assignee == author.Name)
-                                            {
-                                                @Partial("Views/uncompletedTask.cshtml", task)
-                                                if (task.SubtasksIssues != null)
-                                                {
-                                                    if (task.SubtasksIssues.Count > 0)
+                                                    @Partial("Views/parentTask.cshtml", task)
+                                                    foreach (var subtask in task.AssigneeSubtasks)
                                                     {
-                                                        foreach (var subtask in task.SubtasksIssues)
-                                                        {
-                                                            @Partial("Views/subtasks.cshtml", subtask)
-                                                        }
+                                                        @Partial("Views/subtasks.cshtml", subtask)
                                                     }
                                                 }
                                             }
-                                            else
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+
+                            @if (author.OpenTasks.Count > 0)
+                            {
+                                <div style="line-height:1.4em; color:sienna; margin-top:20px;">
+                                    <b style="font-size: 16px; color: sienna">Upcoming </b>
+                                    @if (author.Timing.OpenTasksTimeLeftSeconds != 0)
+                                    {
+                                        <span style="color: sienna; font-size:12px;"> &#x25cf; @author.Timing.OpenTasksTimeLeftString left</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:red; font-size:12px;">&#x25cf; @author.Timing.OpenTasksTimeLeftString left</span>
+                                    }
+                                    <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+                                        <tbody>
+                                            @foreach (var task in author.OpenTasksParents)
                                             {
-                                                @Partial("Views/parentTask.cshtml", task)
-                                                foreach (var subtask in task.AssigneeSubtasks)
+                                                if (task.Assignee == author.Name)
                                                 {
-                                                    @Partial("Views/subtasks.cshtml", subtask)
+                                                    @Partial("Views/uncompletedTask.cshtml", task)
+                                                    if (task.SubtasksIssues != null)
+                                                    {
+                                                        if (task.SubtasksIssues.Count > 0)
+                                                        {
+                                                            foreach (var subtask in task.SubtasksIssues)
+                                                            {
+                                                                @Partial("Views/subtasks.cshtml", subtask)
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @Partial("Views/parentTask.cshtml", task)
+                                                    foreach (var subtask in task.AssigneeSubtasks)
+                                                    {
+                                                        @Partial("Views/subtasks.cshtml", subtask)
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                    </tbody>
-                                </table>
-
-                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
                         }
                     </div>
                 }
+
             }
         }
     </div>
 
-    @if (Model.Summary.UnassignedTasksCount > 0)
+    @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
     {
         <div style="margin-top:60px; line-height:1.4em;">
             <h1 style="color:black">Unassigned </h1>
             <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                 <tbody>
-                    @foreach (var task in Model.SprintTasks.UnassignedTasks)
+                    @foreach (var task in Model.ReportTasks.UnassignedTasks)
                     {
                         if (task.IsSubtask == false)
                         {
@@ -198,8 +201,8 @@
         </div>
     }
 
-    @Partial("Views/completedTasks.cshtml", Model.SprintTasks)
-   
+    @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
+
     @if (Model.IsFinalDraft)
     {
             <table style="margin-top:50px; width:250px; height:50px;">
@@ -214,7 +217,7 @@
                         <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
                             <a style="color:#0000FF; font-weight:bold; text-decoration:none; font-size:12px; line-height:40px" href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
                         </td>
-                    </tr>                   
+                    </tr>
                 </tbody>
             </table>
     }

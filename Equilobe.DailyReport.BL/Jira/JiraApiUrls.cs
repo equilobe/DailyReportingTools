@@ -58,9 +58,9 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/api/2/search?jql={0}", jql);
         }
 
-        public static string ResolvedIssues(string fromDate, string endDate)
+        public static string ResolvedIssues(string projectKey, string fromDate, string endDate)
         {
-            return string.Format("statusCategory = 'Done' AND resolved >= '{0}' AND resolved <= '{1}'", fromDate, endDate);
+            return string.Format("statusCategory = 'Done' AND resolved >= '{0}' AND resolved <= '{1}' AND project={2}", fromDate, endDate, projectKey);
         }
 
         public static string IssuesInOpenSprints(string project)
@@ -68,9 +68,9 @@ namespace Equilobe.DailyReport.BL
             return string.Format("project = '{0}' AND sprint in openSprints()", project);
         }
 
-        public static string WorkLogs(string author, string fromDate, string endDate)
+        public static string WorkLogs(string projectKey, string author, string fromDate, string endDate)
         {
-            return string.Format("worklogDate >= '{0}' AND worklogDate <= '{1}' AND worklogAuthor = '{2}'", fromDate, endDate, author);
+            return string.Format("project = {0} AND worklogAuthor = '{1}' AND worklogDate >= '{2}' AND worklogDate <= '{3}'", projectKey, author, fromDate, endDate);
         }
     }
 }

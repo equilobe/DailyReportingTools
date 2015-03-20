@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.SL;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Autofac;
 namespace JiraReporter
@@ -22,31 +23,32 @@ namespace JiraReporter
 
         public JiraReport GenerateReport(JiraReport report)
         {
+            SetSourceControlLogs(report);
+
+            report.Sprint = GenerateSprint(report);
+
+            SetReportTasks(report);
+
+            report.Authors = GetReportAuthors(report);
+
+            report.Summary = LoadSummary(report);
+
+            report.Title = JiraReportHelpers.GetReportTitle(report);
+
+            return report;
+        }
+
+        private static void SetSourceControlLogs(JiraReport report)
+        {
             report.PullRequests = new List<JiraPullRequest>();
             report.Commits = new List<JiraCommit>();
 
-            if (report.Policy.SourceControlOptions != null)
+            if (report.Policy.SourceControlOptions != null && report.Policy.SourceControlOptions.Type != SourceControlType.None)
             {
                 var log = SourceControlProcessor.GetSourceControlLog(report);
                 report.PullRequests = SourceControlProcessor.GetPullRequests(log);
                 report.Commits = SourceControlProcessor.GetCommits(log);
             }
-
-            return CompleteReport(report);
-        }
-        private JiraReport CompleteReport(JiraReport context)
-        {
-            context.Sprint = GenerateSprint(context);
-
-            SetSprintReport(context);
-
-            context.Authors = GetReportAuthors(context);
-
-            context.Summary = LoadSummary(context);
-
-            context.Title = JiraReportHelpers.GetReportTitle(context);
-
-            return context;
         }
 
         private List<JiraAuthor> GetReportAuthors(JiraReport context)
@@ -75,7 +77,7 @@ namespace JiraReporter
                 OffsetFromUtc = report.OffsetFromUtc,
                 PullRequests = report.PullRequests,
                 Sprint = report.Sprint,
-                SprintTasks = report.SprintTasks,
+                ReportTasks = report.ReportTasks,
                 Commits = report.Commits,
                 JiraRequestContext = report.JiraRequestContext,
                 ProjectName = report.ProjectName,
@@ -90,16 +92,20 @@ namespace JiraReporter
         }
 
 
-        private void SetSprintReport(JiraReport report)
+        private void SetReportTasks(JiraReport report)
         {
             var tasksService = new TaskLoader() { JiraService = JiraService };
-            tasksService.SetSprintTasks(report);
+            tasksService.SetReportTasks(report);
         }
 
         Sprint GenerateSprint(JiraReport report)
         {
             var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
-            return JiraService.GetProjectSprintForDate(projectDateFilter);
+            var sprint = JiraService.GetProjectSprintForDate(projectDateFilter);
+            if (sprint != null)
+                report.HasSprint = true;
+
+            return sprint;
         }
 
         Summary LoadSummary(JiraReport report)

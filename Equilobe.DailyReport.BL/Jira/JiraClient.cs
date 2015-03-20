@@ -126,9 +126,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraIssue>(request);
         }
 
-        public JiraIssues GetCompletedIssues(DateTime startDate, DateTime endDate)
+        public JiraIssues GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
         {
-            var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
+            var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(projectKey, TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
 
             return ResolveJiraRequest<JiraIssues>(request);
         }
@@ -159,9 +159,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
-        public List<JiraBasicIssue> GetWorklogs(string author, string fromDate, string toDate)
+        public List<JiraBasicIssue> GetWorklogs(string projectKey, string author, string fromDate, string toDate)
         {
-            var request = GetIssuesByJql(JiraApiUrls.WorkLogs(author, fromDate, toDate));
+            var request = GetIssuesByJql(JiraApiUrls.WorkLogs(projectKey, author, fromDate, toDate));
 
             return ResolveRequest<JiraBasicIssues>(request).issues;
         }
