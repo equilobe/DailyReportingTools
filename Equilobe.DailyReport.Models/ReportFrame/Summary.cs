@@ -35,6 +35,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasMonth { get; set; }
         public bool HasStatus { get; set; }
         public bool HasWorkSummary { get; set; }
+        public bool HasSprint { get; set; }
 
         public int MonthEstimatedPixelWidth { get; set; }
         public string MonthEstimatedPixelWidthString

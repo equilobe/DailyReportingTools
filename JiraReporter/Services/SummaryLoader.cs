@@ -49,7 +49,10 @@ namespace JiraReporter.Services
             _summary.Sprint = _sprint;
             _summary.UnrelatedPullRequests = _pullRequests.FindAll(p => p.TaskSynced == false);
             if (_report.HasSprint)
-            _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
+            {
+                _summary.HasSprint = true;
+                _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
+            }
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
             _summary.IsFinalDraft = _report.IsFinalDraft;
@@ -97,6 +100,7 @@ namespace JiraReporter.Services
         {
             if (!_report.HasSprint)
                 return;
+
             _summary.Timing.OpenUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
             _summary.Timing.OpenUnassignedTasksTimeLeftString = _summary.Timing.OpenUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.InProgressUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);

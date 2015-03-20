@@ -3,6 +3,8 @@
     var imgSrc = string.Empty;
     var display = string.Empty;
     var visibility = string.Empty;
+    var sprintDisplay = string.Empty;
+    var sprintVisibility = string.Empty;
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
@@ -12,6 +14,7 @@ else
 {
     day = Model.FromDate.DayOfWeek.ToString();
 }
+
 @if (Model.Errors != null && Model.Errors.Count > 0)
 {
     <div style="margin-top:20px">
@@ -27,7 +30,7 @@ else
                                             <a style="text-decoration:none;border-radius:10px;width:17px; height:16px; line-height:16px; font-size:11px; font-family: Segoe UI Symbol, Arial;color:white;padding:1px 1px 1px 1px;background-color:#D9534F; display:inline-block; margin-right:4px;">
                                                 &#10006;
                                             </a>
-                                        @*</th>*@
+                                        </th>
                                         <td>
                                             <b style="color:#D9534F; font-size:14px;">Report Errors</b>
                                         </td>
@@ -140,9 +143,9 @@ else
     </div>
     <table cellspacing="0" style="margin-top:20px">
         <tbody>
-                @if (Model.Sprint != null)
-                {
-                <tr>
+            @if (Model.HasSprint)
+            {
+                <tr style="@sprintDisplay; sprintVisibility">
                     <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid grey; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                         <img src="cid:sprint_48.png" />
                         <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
@@ -178,11 +181,13 @@ else
                         }
                     </td>
                 </tr>
-                 <tr>
-                     <td width="75px" height="20px"></td>
-                     <td width="15px" height="20px"></td>
-                 </tr>
-                }
+                <tr>
+                    <td width="75px" height="20px"></td>
+                    <td width="15px" height="20px"></td>
+                </tr>
+
+            }
+               
                 @if (Model.HasMonth)
                 {
                 <tr>
@@ -242,7 +247,6 @@ else
             </span>
     </div>
     <table cellspacing="0" style="margin-top:20px">
-        <tbody>
             @foreach (var author in Model.Authors)
             {
                 imgSrc = "cid:" + author.AvatarId;
@@ -275,41 +279,13 @@ else
                                 <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.AverageWorkedMonthString</div>
                             </div>
                         }
-}
-
                         @if (author.Timing.TotalRemainingSeconds > 0)
-{
-@if (Model.Sprint != null)
-{
-    <div style="margin-top:20px">
-        <table style="border: 1px solid #DDD; border-collapse:collapse; min-width:400px">
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px;">Remaining summary</b>
-                </th>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px;">In Progress</b>
-                </th>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px;">Upcoming</b>
-                </th>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px;">Both</b>
-                </th>
-            </tr>
-            <tr>
-                <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px;">TOTAL</b>
-                </td>
-                <td colspan="1" style="padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    @if (Model.Timing.InProgressTasksTimeLeftSeconds > 0)
-                    {
+                        {
                             <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:0px">
                                 <div style="display:inline-block; background-color:#337AB7; width:@author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
                                 <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@author.Timing.TotalRemainingString</div>
                             </div>
                         }
-
                     </td>
                 </tr>
                 <tr>
@@ -317,6 +293,7 @@ else
                     <td width="15px" height="20px"></td>
                 </tr>
             }
+         
             @if (Model.Timing.UnassignedTasksSecondsLeft == 0)
             {
                 display = "display:none !important";
@@ -334,7 +311,6 @@ else
                     </div>
                 </td>
             </tr>
-        </tbody>
     </table>
     </div>
 }
