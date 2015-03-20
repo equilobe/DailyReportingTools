@@ -23,9 +23,9 @@ namespace DailyReportWeb.Controllers.Api
         public IPolicyEditorService PolicyService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
 
-        public FullReportSettings Get(ItemContext context)
+        public FullReportSettings Get(long id)
         {
-            return PolicyService.GetPolicy(context);
+            return PolicyService.GetPolicy(new ItemContext(id));
         }
 
         // PUT: api/Policy

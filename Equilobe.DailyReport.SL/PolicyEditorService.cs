@@ -32,27 +32,26 @@ namespace Equilobe.DailyReport.SL
 
         public FullReportSettings GetPolicy(ItemContext context)
         {
-
+            ReportSettings reportSettings;
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.Single(r => r.Id == context.Id);
-                // var reportPolicy = reportSettings.SerializedPolicy.GetReportPolicy();                
+                reportSettings = db.ReportSettings.Single(r => r.Id == context.Id);
             }
 
-            //var jiraPolicy = CreateNewJiraPolicyForProject(context, projectId);
-            //var policySummary = PolicySummaryService.GetPolicySummary(projectId);
-            //var policyDetails = GetPolicyDetails(context.BaseUrl, projectId);
+            var jiraPolicy = GetJiraPolicy(reportSettings);
+            var policySummary = PolicySummaryService.GetPolicySummary(context);
+            var policyDetails = GetPolicyDetails(reportSettings.BaseUrl, reportSettings.ProjectId);
 
-            //return SyncPolicy(jiraPolicy, policySummary, policyDetails);
-
-            return null;
+            return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
-        JiraPolicy CreateNewJiraPolicyForProject(JiraRequestContext context, long projectId)
+        JiraPolicy GetJiraPolicy(ReportSettings reportSettings)
         {
-            var project = JiraService.GetProject(context, projectId);
+            var jiraContext = new JiraRequestContext(reportSettings.BaseUrl, reportSettings.Username, reportSettings.Password);
 
-            var options = JiraService.GetUsers(context, project.Key)
+            var project = JiraService.GetProject(jiraContext, reportSettings.ProjectId);
+
+            var options = JiraService.GetUsers(jiraContext, project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,
@@ -62,11 +61,10 @@ namespace Equilobe.DailyReport.SL
 
             return new JiraPolicy
             {
-                BaseUrl = context.BaseUrl,
-                SharedSecret = context.SharedSecret,
-                Username = context.Username,
-                Password = context.Password,
-                ProjectId = projectId,
+                BaseUrl = reportSettings.BaseUrl,
+                Username = reportSettings.Username,
+                Password = reportSettings.Password,
+                ProjectId = reportSettings.ProjectId,
                 UserOptions = options
             };
         }
