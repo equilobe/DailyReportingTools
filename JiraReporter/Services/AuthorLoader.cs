@@ -163,7 +163,7 @@ namespace JiraReporter.Services
             if (_policy.SourceControlOptions == null)
                 return new List<JiraCommit>();
 
-            if (!_policy.Users.ContainsKey(_currentAuthor.Username))
+            if (!_policy.Users.ContainsKey(_currentAuthor.UserKey))
                 return new List<JiraCommit>();
 
             return _policy.Users[_currentAuthor.Username]

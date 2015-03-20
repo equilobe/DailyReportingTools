@@ -23,6 +23,7 @@ namespace SourceControlLogReporter
             try
             {
                 SetGlobalSettings();
+                DependencyInjection.Init();
                 ExecuteReporter(args);
             }
             catch (ArgumentException ae)

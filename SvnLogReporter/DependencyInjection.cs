@@ -1,41 +1,34 @@
-﻿using Autofac;
-using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.SL;
-using JiraReporter.Services;
-using JiraReporter.SourceControl;
-using SourceControlLogReporter;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
+using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.SL;
 
-namespace JiraReporter
+namespace SourceControlLogReporter
 {
     static class DependencyInjection
     {
-
         public static IContainer Container { get; private set; }
 
         public static void Init()
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterServicesFromAssembly<JiraService>();
-            builder.RegisterServicesFromAssembly<JiraRequestContextService>();
+            builder.RegisterServicesFromAssembly<GitHubService>();
 
-            builder.RegisterType<JiraReportMainFlowProcessor>().AsSelf().PropertiesAutowired();
-            builder.RegisterType<GitHubReportSourceControl>().AsSelf().PropertiesAutowired();
-            builder.RegisterType<SvnReportSourceControl>().AsSelf().PropertiesAutowired();
+            builder.RegisterType<GitHubReport>().AsSelf().PropertiesAutowired();
+            builder.RegisterType<SvnReport>().AsSelf().PropertiesAutowired();
 
             Container = builder.Build();
         }
 
         public static void RegisterServicesFromAssembly<TAssemblyType>(this ContainerBuilder builder)
-        {               
+        {
             var types = typeof(TAssemblyType).Assembly.GetTypes()
-                            .Where(t=> t.IsClass && !t.IsAbstract)
+                            .Where(t => t.IsClass && !t.IsAbstract)
                             .Where(t => t.IsAssignableTo<IService>())
                             .ToArray();
 
