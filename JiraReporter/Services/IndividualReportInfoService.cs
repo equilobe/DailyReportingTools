@@ -25,39 +25,11 @@ namespace JiraReporter.Services
             }
         }
 
-        private IndividualDraftInfo GenerateIndividualDraftInfo(JiraAuthor author, JiraReport context)
-        {
-            var individualDraft = new IndividualDraftInfo
-            {
-                Username = author.Username,
-                UserKey = RandomGenerator.GetRandomString(),
-                IsLead = author.IsProjectLead
-            };
-            SetIndividualUrls(individualDraft, context);
-
-            return individualDraft;
-        }
-
-        private void SetIndividualUrls(IndividualDraftInfo individualDraft, JiraReport context)
-        {
-            individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, context.IndividualDraftConfirmationUrl);
-            individualDraft.ResendDraftUrl = GetUrl(individualDraft, context.SendIndividualDraftUrl);
-            if (individualDraft.IsLead)
-                individualDraft.ForceDraftUrl = GetUrl(individualDraft, context.SendDraftUrl);
-        }
-
-        private static Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
-        {
-            var url = string.Format("draftKey={0}", individualDraft.UserKey);
-
-            return new Uri(baseUrl + "&" + url);
-        }
-
         public IndividualDraftInfo GetIndividualDraftInfo(JiraReport context)
         {
-            var draftConfirmation= new IndividualDraftConfirmation();
+            var draftConfirmation = new IndividualDraftConfirmation();
 
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.UniqueProjectKey);
                 draftConfirmation = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.UniqueUserKey == context.ExecutionInstance.UniqueUserKey);
@@ -76,6 +48,34 @@ namespace JiraReporter.Services
             SetIndividualUrls(draft, context);
 
             return draft;
+        }
+
+        private IndividualDraftInfo GenerateIndividualDraftInfo(JiraAuthor author, JiraReport context)
+        {
+            var individualDraft = new IndividualDraftInfo
+            {
+                Username = author.Username,
+                UserKey = RandomString.Get(),
+                IsLead = author.IsProjectLead
+            };
+            SetIndividualUrls(individualDraft, context);
+
+            return individualDraft;
+        }
+
+        private void SetIndividualUrls(IndividualDraftInfo individualDraft, JiraReport context)
+        {
+            individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, context.IndividualDraftConfirmationUrl);
+            individualDraft.ResendDraftUrl = GetUrl(individualDraft, context.SendIndividualDraftUrl);
+            if (individualDraft.IsLead)
+                individualDraft.ForceDraftUrl = GetUrl(individualDraft, context.SendDraftUrl);
+        }
+
+        private Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
+        {
+            var url = string.Format("draftKey={0}", individualDraft.UserKey);
+
+            return new Uri(baseUrl + "&" + url);
         }
     }
 }

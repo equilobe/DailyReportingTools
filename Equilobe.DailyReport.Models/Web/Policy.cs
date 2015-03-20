@@ -11,8 +11,9 @@ namespace Equilobe.DailyReport.Models.Web
         public string BaseUrl { get; set; }
     }
 
-    public class PolicySummary : IReportSetting
+    public class ReportSettingsSummary : IReportSettings
     {
+        public long Id { get; set; }
         public string BaseUrl { get; set; }
         public long ProjectId { get; set; }
         public string ProjectKey { get; set; }
@@ -21,7 +22,7 @@ namespace Equilobe.DailyReport.Models.Web
         public string ReportTime { get; set; }
     }
 
-    public class PolicyDetails : ISerializedPolicy
+    public class ReportPolicy : ISerializedPolicy
     {
         public string DraftEmails { get; set; }
         public string Emails { get; set; }
@@ -33,7 +34,7 @@ namespace Equilobe.DailyReport.Models.Web
         public AdvancedOptions AdvancedOptions { get; set; }
     }
 
-    public class PolicyBuffer : IReportSetting, ISerializedPolicy
+    public class FullReportSettings : IReportSettings, ISerializedPolicy
     {
         public string BaseUrl { get; set; }
         public long ProjectId { get; set; }

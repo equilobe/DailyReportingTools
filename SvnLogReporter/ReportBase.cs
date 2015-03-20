@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.Models.Policy;
+using Autofac;
 
 namespace SourceControlLogReporter
 {
@@ -46,7 +47,9 @@ namespace SourceControlLogReporter
 
         public static T Create<T>(Policy p, Options o) where T : ReportBase
         {
-            return Activator.CreateInstance(typeof(T), p, o) as T;
+            var policyParam = new TypedParameter(typeof(Policy), p);
+            var optionsParam = new TypedParameter(typeof(Options), o);
+            return DependencyInjection.Container.Resolve<T>(policyParam, optionsParam);
         }
 
         public virtual string TryGenerateReport()

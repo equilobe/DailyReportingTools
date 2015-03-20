@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Autofac;
 
 namespace JiraReporter.SourceControl
 {
@@ -36,7 +37,9 @@ namespace JiraReporter.SourceControl
 
         public static T Create<T>(JiraReport report) where T : ReportBase
         {
-            return Activator.CreateInstance(typeof(T), report) as T;
+            var sourceControlProcessor = DependencyInjection.Container.Resolve<T>(new TypedParameter(typeof(JiraReport), report));
+
+            return sourceControlProcessor;
         }
     }
 }

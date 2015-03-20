@@ -1,4 +1,6 @@
-﻿using Equilobe.DailyReport.Models.Storage;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
@@ -10,6 +12,10 @@ namespace DailyReportWeb.Controllers
 {
     public class HomeController : Controller
     {
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IDataService DataService { get; set; }
+        public IPolicyEditorService PolicyService { get; set; }
+
         public ActionResult Index()
         {
             return View();
@@ -95,7 +101,7 @@ namespace DailyReportWeb.Controllers
         {
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
             var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
-            new DataService().SaveInstance(instanceData);
+            DataService.SaveInstance(instanceData);
 
             return Content(String.Empty);
         }
@@ -106,8 +112,13 @@ namespace DailyReportWeb.Controllers
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
             var baseUrl = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).BaseUrl;
 
-            new TaskSchedulerService().Delete(new DataService().GetUniqueProjectsKey(baseUrl));
-            new DataService().DeleteInstance(baseUrl);
+            var projectKeys = DataService.GetUniqueProjectsKey(baseUrl);
+
+            TaskSchedulerService.DeleteMultipleTasks( new ProjectListContext
+            {
+                UniqueProjectKeys = projectKeys
+            });
+            DataService.DeleteInstance(baseUrl);
 
             return Content(String.Empty);
         }

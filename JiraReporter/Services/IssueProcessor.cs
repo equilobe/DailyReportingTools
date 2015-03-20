@@ -11,11 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter
 {
     class IssueProcessor
     {
+        public IJiraService JiraService { get; set; }
+
         JiraPolicy _policy
         {
             get
@@ -39,7 +42,7 @@ namespace JiraReporter
             foreach (var issue in issues)
             {
                 var jiraIssue = new JiraIssue();
-                jiraIssue = new JiraService(_context.JiraRequestContext).GetIssue(issue.Key);
+                jiraIssue = JiraService.GetIssue(_context.JiraRequestContext, issue.Key);
                 SetIssue(issue, jiraIssue);
             }
         }
@@ -161,7 +164,7 @@ namespace JiraReporter
         private void SetParent(JiraIssue jiraIssue)
         {
             _currentIssue.Parent = new IssueDetailed { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
-            var parent = new JiraService(_context.JiraRequestContext).GetIssue(_currentIssue.Parent.Key);
+            var parent = JiraService.GetIssue(_context.JiraRequestContext, _currentIssue.Parent.Key);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
 
@@ -171,7 +174,7 @@ namespace JiraReporter
             issue.SubtasksIssues = new List<IssueDetailed>();
             foreach (var task in issue.Subtasks)
             {
-                jiraIssue = new JiraService(_context.JiraRequestContext).GetIssue(task.key);
+                jiraIssue = JiraService.GetIssue(_context.JiraRequestContext, task.key);
                 issue.SubtasksIssues.Add(new IssueDetailed(jiraIssue));
                 SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
             }

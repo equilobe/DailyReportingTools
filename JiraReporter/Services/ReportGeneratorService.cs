@@ -12,12 +12,15 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.SL;
 using JiraReporter.Helpers;
-
+using Equilobe.DailyReport.Models.Interfaces;
+using Autofac;
 namespace JiraReporter
 {
-    class ReportGenerator
+    class ReportGeneratorService : IReportGeneratorService
     {
-        public static JiraReport GenerateReport(JiraReport report)
+        public IJiraService JiraService { get; set; }
+
+        public JiraReport GenerateReport(JiraReport report)
         {
             report.PullRequests = new List<JiraPullRequest>();
             report.Commits = new List<JiraCommit>();
@@ -31,7 +34,7 @@ namespace JiraReporter
 
             return CompleteReport(report);
         }
-        private static JiraReport CompleteReport(JiraReport context)
+        private JiraReport CompleteReport(JiraReport context)
         {
             context.Sprint = GenerateSprint(context);
 
@@ -46,10 +49,10 @@ namespace JiraReporter
             return context;
         }
 
-        private static List<JiraAuthor> GetReportAuthors(JiraReport context)
+        private List<JiraAuthor> GetReportAuthors(JiraReport context)
         {
             var authors = new List<JiraAuthor>();
-            var authorLoader = new AuthorLoader(context);
+            var authorLoader = new AuthorLoader(context) { JiraService = JiraService };
             if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey))
             {
                 var author = authorLoader.CreateAuthorByKey(context);
@@ -63,7 +66,7 @@ namespace JiraReporter
             return authors;
         }
 
-        public static JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
+        public JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
         {
             var individualReport = new JiraReport(report.Policy, report.Options)
             {
@@ -87,19 +90,19 @@ namespace JiraReporter
         }
 
 
-        private static void SetSprintReport(JiraReport report)
+        private void SetSprintReport(JiraReport report)
         {
-            var tasksService = new TasksService();
+            var tasksService = new TaskLoader() { JiraService = JiraService };
             tasksService.SetSprintTasks(report);
         }
 
-        public static Sprint GenerateSprint(JiraReport report)
+        Sprint GenerateSprint(JiraReport report)
         {
             var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
-            return new JiraService().GetProjectSprintForDate(projectDateFilter);
+            return JiraService.GetProjectSprintForDate(projectDateFilter);
         }
 
-        public static Summary LoadSummary(JiraReport report)
+        Summary LoadSummary(JiraReport report)
         {
             var summaryLoader = new SummaryLoader(report);
             return summaryLoader.LoadSummary();

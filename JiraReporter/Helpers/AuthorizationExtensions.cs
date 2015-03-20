@@ -7,9 +7,9 @@ using System.Configuration;
 using System.Net;
 using System.Text;
 
-namespace Equilobe.DailyReport.SL
+namespace JiraReporter.Helpers
 {
-    public static class AuthService
+    public static class AuthorizationExtensions
     {
         public static void Authorize(this WebClient client, JiraPolicy policy, string relativeUrl)
         {
@@ -19,7 +19,7 @@ namespace Equilobe.DailyReport.SL
                 client.Headers.Add("Authorization", "Basic " + CreateBasic(policy.Username, policy.Password));
         }
 
-        public static string CreateBasic(string username, string password)
+        static string CreateBasic(string username, string password)
         {
             var byteString = UTF8Encoding.UTF8.GetBytes(string.Format("{0}:{1}", username, password));
             return Convert.ToBase64String(byteString);
