@@ -30,11 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Octokit">
       <HintPath>..\libs\Octokit.dll</HintPath>
@@ -55,17 +55,33 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="General\ItemContext.cs" />
+    <Compile Include="General\ItemListContext.cs" />
+    <Compile Include="General\UserContext.cs" />
+    <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
+    <Compile Include="Interfaces\IPolicyEditorService.cs" />
+    <Compile Include="Interfaces\IPolicySummaryService.cs" />
+    <Compile Include="Interfaces\IReportExecutionService.cs" />
+    <Compile Include="Interfaces\ISourceControlService.cs" />
+    <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="ReportExecution\ExecutionContext.cs" />
+    <Compile Include="General\SimpleResult.cs" />
+    <Compile Include="ReportExecution\UserConfirmationContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
     <Compile Include="Interfaces\IJiraReport.cs" />
+    <Compile Include="ReportFrame\IndividualDraftInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ReportFrame\IssueDetailed.cs" />
-    <Compile Include="Interfaces\ISourceControlRequestContext.cs" />
+    <Compile Include="Interfaces\ICredentials.cs" />
     <Compile Include="Interfaces\ISourceControlContext.cs" />
     <Compile Include="ReportFrame\ExecutionInstance.cs" />
+    <Compile Include="ReportFrame\IssuesContext.cs" />
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
@@ -77,6 +93,7 @@
     <Compile Include="ReportFrame\SprintTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
+    <Compile Include="ReportFrame\TimesheetContext.cs" />
     <Compile Include="ReportFrame\Timing.cs" />
     <Compile Include="ReportFrame\TimingDetailed.cs" />
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
@@ -99,16 +116,20 @@
     <Compile Include="SourceControl\SourceControlContext.cs" />
     <Compile Include="Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
+    <Compile Include="Storage\IdentityModel.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />
     <Compile Include="Storage\IndividualDraftConfirmation.cs" />
     <Compile Include="Policy\AdvancedOptions.cs" />
-    <Compile Include="Policy\IndividualDraftInfo.cs" />
     <Compile Include="Policy\JiraPolicy.cs" />
     <Compile Include="Policy\Month.cs" />
     <Compile Include="Policy\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedPolicy.cs" />
+    <Compile Include="Web\AccountModel.cs" />
+    <Compile Include="TaskScheduling\ProjectListContext.cs" />
+    <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
+    <Compile Include="TaskScheduling\ProjectContext.cs" />
     <Compile Include="Web\Policy.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />
@@ -124,7 +145,9 @@
     <Compile Include="Web\WebPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.Utils\Equilobe.DailyReport.Utils.csproj">

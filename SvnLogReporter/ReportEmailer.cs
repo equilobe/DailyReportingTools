@@ -37,7 +37,7 @@ namespace SourceControlLogReporter
             if (options.NoEmail)
                 return;
 
-            Validation.EnsureDirectoryExists(policy.UnsentReportsPath);
+            Validations.EnsureDirectoryExists(policy.UnsentReportsPath);
 
             foreach (var file in Directory.GetFiles(policy.UnsentReportsPath))
             {
@@ -111,7 +111,7 @@ namespace SourceControlLogReporter
 
         public virtual void MoveToSent(string path)
         {
-            Validation.EnsureDirectoryExists(policy.ReportsPath);
+            Validations.EnsureDirectoryExists(policy.ReportsPath);
 
             var newFilePath = Path.Combine(policy.ReportsPath, Path.GetFileName(path));
 

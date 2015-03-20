@@ -12,51 +12,39 @@ namespace Equilobe.DailyReport.SL
 {
     public class PolicyService
     {
-        public string _baseUrl { get; set; }
-        public string _sharedSecret { get; set; }
+        public JiraRequestContext _requestContext { get; set; }
 
         public PolicyService()
         {
-
         }
 
-        public PolicyService(string baseUrl, string sharedSecret)
+        public PolicyService(JiraRequestContext context)
         {
-            _baseUrl = baseUrl;
-            _sharedSecret = sharedSecret;
+            _requestContext = context;
         }
-
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
-            //var baseUrl = queryString["xdm_e"] + queryString["cp"];
-            var baseUrl = "http://192.168.17.5:2990/jira";
-            return baseUrl;
         }
 
         public string GetJiraUsername(NameValueCollection queryString)
         {
-            //var userId = queryString["user_id"];
-            var userId = "admin";
+            var userId = queryString["user_id"];
             return userId;
         }
 
         public PolicyBuffer GetPolicy(long projectId)
         {
             var jiraPolicy = GetJiraPolicy(projectId);
-            var policySummary = new PolicySummaryService(_baseUrl, _sharedSecret).GetPolicySummary(projectId);
-            var policyDetails = GetPolicyDetails(_baseUrl, projectId);
+            var policySummary = new PolicySummaryService(_requestContext).GetPolicySummary(projectId);
+            var policyDetails = GetPolicyDetails(_requestContext.BaseUrl, projectId);
 
             return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
         public JiraPolicy GetJiraPolicy(long projectId)
         {
-            var context = new JiraRequestContext
-            {
-                BaseUrl = _baseUrl,
-                SharedSecret = _sharedSecret
-            };
+            var project = new JiraService(_requestContext).GetProject(projectId);
 
             var policy = new JiraPolicy
             {
@@ -76,7 +64,15 @@ namespace Equilobe.DailyReport.SL
                 })
                 .ToList();
 
-            return policy;
+            return new JiraPolicy
+            {
+                BaseUrl = _requestContext.BaseUrl,
+                SharedSecret = _requestContext.SharedSecret,
+                Username = _requestContext.Username,
+                Password = _requestContext.Password,
+                ProjectId = projectId,
+                UserOptions = options
+            };
         }
 
         public PolicyDetails GetPolicyDetails(string baseUrl, long projectId)

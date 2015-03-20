@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Storage
 {
     public class FinalDraftConfirmation
     {
-        [Key, ForeignKey("ReportSettings")]
+        [Key]
         public long ReportSettingsId { get; set; }
         public DateTime? LastFinalDraftConfirmationDate { get; set; }
 

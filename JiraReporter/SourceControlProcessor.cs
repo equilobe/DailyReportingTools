@@ -26,8 +26,8 @@ namespace JiraReporter
             if (report.Policy.SourceControlOptions.Type == SourceControlType.None)
                 return new Log();
 
-            var processors = SourceControlProcessor.Processors[report.Policy.SourceControlOptions.Type](report);
-            var log = processors.CreateLog();
+            var processor = SourceControlProcessor.Processors[report.Policy.SourceControlOptions.Type](report);
+            var log = processor.CreateLog();
             return log;
         }
 

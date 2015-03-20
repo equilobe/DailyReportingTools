@@ -10,9 +10,44 @@ namespace DailyReportWeb
     {
         public static void RegisterRoutes(this RouteCollection routes)
         {
-            
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // Uncomment this line if JIRA plugin will be supported.
+            //routes.RegisterJiraRoutes();
+
+            routes.MapRoute(
+                name: "SPA-entrypoint",
+                url: "",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index"
+                }
+            );
+
+            routes.MapRoute(
+               name: "SPA",
+                url: "app/{*anyOtherUrlSegment}",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index"
+                }
+            );
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Index",
+                    id = UrlParameter.Optional
+                }
+            );
+        }
+
+        private static void RegisterJiraRoutes(this RouteCollection routes)
+        {
             routes.MapRoute(
                 name: "descriptor",
                 url: "atlassian-connect",
@@ -40,29 +75,16 @@ namespace DailyReportWeb
                     action = "UninstalledCallback"
                 }
             );
-            routes.MapRoute(
-				name: "setup-policies",
-				url: "setup",
-                defaults: new
-                {
-					controller = "Policy",
-					action = "Index"
-                }
-            );
-            routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new
-                {
-                    controller = "Home",
-                    action = "Index",
-                    id = UrlParameter.Optional
-                }
-            );
         }
 
         public static HttpConfiguration InitApiRoutes(this HttpConfiguration config)
         {
+			config.Routes.MapHttpRoute(
+				name: "Account",
+				routeTemplate: "api/account/{action}",
+				defaults: new { controller = "Account" }
+			);
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

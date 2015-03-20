@@ -22,7 +22,7 @@ namespace SourceControlLogReporter
 
         public static void WriteReport(Policy p, string report, string path)
         {
-            Validation.EnsureDirectoryExists(p.LogArchivePath);
+            Validations.EnsureDirectoryExists(p.LogArchivePath);
 
             var archivedFilePath = Path.Combine(p.LogArchivePath, Path.GetFileName(path));
 
@@ -36,7 +36,7 @@ namespace SourceControlLogReporter
                 File.WriteAllText(archivedFilePath, report);
             }
 
-            Validation.EnsureDirectoryExists(p.UnsentReportsPath);
+            Validations.EnsureDirectoryExists(p.UnsentReportsPath);
 
             var reportPath = Path.Combine(p.UnsentReportsPath, Path.GetFileNameWithoutExtension(path) + ".html");
 

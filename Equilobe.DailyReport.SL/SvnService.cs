@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.SL
 {
-    public class SvnService
+    public class SvnService : ISvnService
     {
-        public SvnClient GetSvnClient(ISourceControlContext context)
+        private SvnClient GetSvnClient(ISourceControlContext context)
         {
             return new SvnClient(context);
         }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.SourceControl;
 using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.Models.Policy;
+using Autofac;
 
 namespace SourceControlLogReporter
 {
@@ -28,15 +29,15 @@ namespace SourceControlLogReporter
             }
         }
 
-        public string GetLogFilePath(string logPath,DateTime reportDate)
+        public string GetLogFilePath(string logPath, DateTime reportDate)
         {
             return Path.Combine(logPath, reportDate.ToString("yyyy-MM-dd") + ".xml");
         }
 
         protected ReportBase(Policy p, Options o)
         {
-           Policy = p;
-           Options = o;
+            Policy = p;
+            Options = o;
         }
 
         public ReportBase()
@@ -46,14 +47,16 @@ namespace SourceControlLogReporter
 
         public static T Create<T>(Policy p, Options o) where T : ReportBase
         {
-            return Activator.CreateInstance(typeof(T), p, o) as T;
+            var policyParam = new TypedParameter(typeof(Policy), p);
+            var optionsParam = new TypedParameter(typeof(Options), o);
+            return DependencyInjection.Container.Resolve<T>(policyParam, optionsParam);
         }
 
         public virtual string TryGenerateReport()
         {
             try
             {
-               return GenerateReport();
+                return GenerateReport();
             }
             catch (SvnNotAvailableException)
             {
@@ -70,9 +73,9 @@ namespace SourceControlLogReporter
         }
 
         public string GenerateReport()
-        {            
+        {
             var log = CreateLog();
-            return GetReportContent(log);                      
+            return GetReportContent(log);
         }
 
         protected string GetReportContent(Log log)
@@ -89,53 +92,42 @@ namespace SourceControlLogReporter
             return reportContent;
         }
 
-        public static string ProcessReport <T>(T report, string viewPath)
+        public static string ProcessReport<T>(T report, string viewPath)
         {
-            try
-            {
-                string template = File.ReadAllText(viewPath);
-                return Razor.Parse(template, report);
-            }
-            catch (TemplateCompilationException templateException)
-            {
-                foreach (var error in templateException.Errors)
-                {
-                    Debug.WriteLine(error);
-                }
-                return "Error in template compilation";
-            }
-        }           
+            string template = File.ReadAllText(viewPath);
+            return Razor.Parse(template, report);
+        }
 
         protected List<Report> GetReports(Log log)
         {
-                var reports = new List<Report>();
-                var dayLogs = GetDayLogs(log, Options.ReportDates);
-                var report = new Report();
-                foreach (var dayLog in dayLogs)
-                {
-                    if (dayLog.LogEntries.Count > 0)
-                        report = LogProcessor.GetReport(dayLog.LogEntries);
-                    else
-                        report = new Report { ReportDate = dayLog.Date, Title = Policy.ReportTitle };
-                    report.ReportDate = dayLog.Date;
-                    reports.Add(report);
-                }
-                reports = reports.OrderBy(r => r.ReportDate).ToList();
-                return reports;            
+            var reports = new List<Report>();
+            var dayLogs = GetDayLogs(log, Options.ReportDates);
+            var report = new Report();
+            foreach (var dayLog in dayLogs)
+            {
+                if (dayLog.LogEntries.Count > 0)
+                    report = LogProcessor.GetReport(dayLog.LogEntries);
+                else
+                    report = new Report { ReportDate = dayLog.Date, Title = Policy.ReportTitle };
+                report.ReportDate = dayLog.Date;
+                reports.Add(report);
+            }
+            reports = reports.OrderBy(r => r.ReportDate).ToList();
+            return reports;
         }
 
         protected virtual void AddPullRequests(Report report, Log log)
         {
             report.PullRequests = null;
         }
-        protected List<DayLog> GetDayLogs (Log log, List<DateTime> dates)
+        protected List<DayLog> GetDayLogs(Log log, List<DateTime> dates)
         {
             var dayLogs = new List<DayLog>();
-            foreach(var date in dates)
+            foreach (var date in dates)
                 dayLogs.Add(new DayLog { Date = date, LogEntries = log.Entries.FindAll(e => e.Date >= date && e.Date < date.AddDays(1)) });
             return dayLogs;
         }
 
-        public abstract Log CreateLog();        
+        public abstract Log CreateLog();
     }
 }

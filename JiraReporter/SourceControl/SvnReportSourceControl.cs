@@ -17,9 +17,9 @@ namespace JiraReporter.SourceControl
     class SvnReportSourceControl : SvnReport
     {
         JiraReport Context { get; set; }
-        JiraPolicy Policy { get { return Context.Policy; } }
-        JiraOptions Options { get { return Context.Options; } }
-        public string PathToLog
+        new JiraPolicy Policy { get { return Context.Policy; } }
+        new JiraOptions Options { get { return Context.Options; } }
+        public new string PathToLog
         {
             get
             {
@@ -35,7 +35,7 @@ namespace JiraReporter.SourceControl
         public override Log CreateLog()
         {
             var context = new SourceControlContext{SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate};
-            var log = new SvnService().GetLog(context, PathToLog);
+            var log = SvnService.GetLog(context, PathToLog);
             return log;
         }
     }
