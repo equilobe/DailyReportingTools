@@ -15,11 +15,11 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetProject(id);
         }
 
-        public List<JiraIssue> GetTimesheetForUser(JiraRequestContext context, DateTime startDate, DateTime endDate, string targetUser)
+        public List<JiraIssue> GetTimesheetForUser(JiraRequestContext context, string projectKey, string targetUser, DateTime startDate, DateTime endDate)
         {
             var client = GetClient(context);
 
-            return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(targetUser, startDate, endDate);
+            return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(projectKey, targetUser, startDate, endDate);
         }
 
         public JiraUser GetUser(JiraRequestContext context, string username)
@@ -57,9 +57,9 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetIssue(issueKey);
         }
 
-        public JiraIssues GetCompletedIssues(JiraRequestContext context,DateTime startDate, DateTime endDate)
+        public JiraIssues GetCompletedIssues(JiraRequestContext context, string projectKey, DateTime startDate, DateTime endDate)
         {
-            return GetClient(context).GetCompletedIssues(startDate, endDate);
+            return GetClient(context).GetCompletedIssues(projectKey, startDate, endDate);
         }
 
         public JiraIssues GetSprintTasks(JiraRequestContext context,string projectKey)

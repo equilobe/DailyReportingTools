@@ -49,6 +49,9 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var projectViews = GetRapidViewsFromProject();
             var activeView = GetActiveView(projectViews);
+            if (activeView == null)
+                return null;
+
             var rapidView = GetRapidView(activeView.id.ToString());
             var rapidViewId = rapidView.rapidViewId.ToString();
             var sprints = Client.GetAllSprints(rapidViewId);

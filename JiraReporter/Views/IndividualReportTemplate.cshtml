@@ -56,222 +56,236 @@ else
                 </tbody>
             </table>
         }
-
-        <div style="margin-top:50px">
-            <h3 style="margin-top:15px; color:black">Work summary</h3>
-            <div style="margin-top:20px">
-                <span style="margin-left:5px">
-                    <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
-                </span>
-                <span style="margin-left:5px">
-                    <a style="width:10px; height:10px; background-color:#337AB7; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
-                </span>
-                <span style="margin-left:5px">
-                    <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
-                </span>
-            </div>
-            <table cellspacing="0" style="margin-top:20px">
-                <tbody>
-                    @{
-                        imgSrc = "cid:" + Model.Author.AvatarId;
+        @if (!Model.Author.IsEmpty)
+        {
+            <div style="margin-top:50px">
+                <h3 style="margin-top:15px; color:black">Work summary</h3>
+                <div style="margin-top:20px">
+                    <span style="margin-left:5px">
+                        <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
+                    </span>
+                    @if (Model.HasSprint)
+                    {
+                        <span style="margin-left:5px">
+                            <a style="width:10px; height:10px; background-color:#337AB7; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
+                        </span>
                     }
-                    <tr>
-                        <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" />@*@Model.Author.FirstName*@</td>
-                        <td style="padding:0px; padding-bottom:5px">
-                            <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                <div style="display:inline-block; background-color:#5CB85C; width:@Model.Author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedString</div>
-                            </div>
+                    <span style="margin-left:5px">
+                        <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
+                    </span>
+                </div>
+                <table cellspacing="0" style="margin-top:20px">
+                    <tbody>
+                        @{
+                             imgSrc = "cid:" + Model.Author.AvatarId;
+                        }
+                        <tr>
+                            <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" /></td>
+                            <td style="padding:0px; padding-bottom:5px">
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                    <div style="display:inline-block; background-color:#5CB85C; width:@Model.Author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                    <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedString</div>
+                                </div>
+                                @if (Model.HasSprint)
+                                {
                             <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                 <div style="display:inline-block; background-color:#337AB7; width:@Model.Author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
                                 <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedSprintString</div>
                             </div>
-                            <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                <div style="display:inline-block; background-color:#F0AD4E; width:@Model.Author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Author.Timing.AverageWorkedMonthString</div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                                }
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                    <div style="display:inline-block; background-color:#F0AD4E; width:@Model.Author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                    <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Author.Timing.AverageWorkedMonthString</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+
     </div>
 
     <div style="margin-top:40px; line-height:1.4em">
-        @if (Model.Author.DayLogs.Count > 0 || Model.Author.InProgressTasks.Count > 0 || Model.Author.OpenTasks.Count > 0)
+
+        @if (Model.Author.IsEmpty)
         {
-            <div style="margin-top:40px;">
-                @if (Model.Author.DayLogs.Count > 0)
-                {
-                    foreach (var dayLog in Model.Author.DayLogs)
+            <h3 style="color:orange">There is no logged work or assigned issues</h3>
+        }
+
+        @if (Model.Author.HasDayLogs)
+        {
+            foreach (var dayLog in Model.Author.DayLogs)
+            {
+                <div style="margin-top:15px; line-height:1.4em">
+                    @Partial("Views/workedHeader.cshtml", dayLog)
+                    @if (dayLog.Issues != null)
                     {
-                        <div style="margin-top:15px; line-height:1.4em">
-                            @Partial("Views/workedHeader.cshtml", dayLog)
-                            @if (dayLog.Issues != null)
-                            {
-                                if (dayLog.Issues.Count > 0)
-                                {
-                                    <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                                        <tbody>
-                                            @foreach (var issue in dayLog.Issues)
+                        if (dayLog.Issues.Count > 0)
+                        {
+                            <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+                                <tbody>
+                                    @foreach (var issue in dayLog.Issues)
+                                    {
+                                        if (issue.AssigneeSubtasks != null)
+                                        {
+                                            if (issue.AssigneeSubtasks.Count > 0)
                                             {
-                                                if (issue.AssigneeSubtasks != null)
+                                                if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.Author.Name)
                                                 {
-                                                    if (issue.AssigneeSubtasks.Count > 0)
-                                                    {
-                                                        if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.Author.Name)
-                                                        {
-                                                            @Partial("Views/workedTask.cshtml", issue)
-                                                        }
-                                                        else
-                                                        {
-                                                            @Partial("Views/parentTask.cshtml", issue)
-                                                        }
-                                                        foreach (var subtask in issue.AssigneeSubtasks)
-                                                        {
-                                                            @Partial("Views/workedTask.cshtml", subtask)
-                                                        }
-                                                    }
+                                                    @Partial("Views/workedTask.cshtml", issue)
                                                 }
-                                                if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
+                                                else
                                                 {
-                                                    if (issue.IsSubtask == false)
-                                                    {
-                                                        @Partial("Views/workedTask.cshtml", issue)
-                                                    }
+                                                    @Partial("Views/parentTask.cshtml", issue)
+                                                }
+                                                foreach (var subtask in issue.AssigneeSubtasks)
+                                                {
+                                                    @Partial("Views/workedTask.cshtml", subtask)
                                                 }
                                             }
-                                        </tbody>
-                                    </table>
-                                }
-                            }
-                        </div>
-
-                        if (dayLog.UnsyncedCommits.Count > 0)
-                        {
-                            @Partial("Views/unrelatedCommits.cshtml", dayLog.UnsyncedCommits)
+                                        }
+                                        if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
+                                        {
+                                            if (issue.IsSubtask == false)
+                                            {
+                                                @Partial("Views/workedTask.cshtml", issue)
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
                         }
                     }
-                }
+                </div>
 
-                @if (Model.Author.InProgressTasks.Count > 0)
+                if (dayLog.UnsyncedCommits.Count > 0)
                 {
-                    <div style="margin-top:20px; line-height:1.4em;">
-                        <b style="color:sienna; font-size:16px;">In Progress</b>
-
-                        @if (Model.Author.Timing.InProgressTasksTimeLeftSeconds == 0)
-                        {
-                            <span style="color:red; font-size:12px;"> &#x25cf; @Model.Author.Timing.InProgressTasksTimeLeftString left</span>
-                        }
-                        else
-                        {
-                            <span style="color:sienna; font-size:12px;"> &#x25cf; @Model.Author.Timing.InProgressTasksTimeLeftString left</span>
-                        }
-                        <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                            <tbody>
-                                @foreach (var task in Model.Author.InProgressTasksParents)
-                                {
-                                    if (task.Assignee == Model.Author.Name)
-                                    {
-                                        @Partial("Views/uncompletedTask.cshtml", task)
-                                        if (task.SubtasksIssues != null)
-                                        {
-                                            if (task.SubtasksIssues.Count > 0)
-                                            {
-                                                foreach (var subtask in task.SubtasksIssues)
-                                                {
-                                                    @Partial("Views/subtasks.cshtml", subtask)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @Partial("Views/parentTask.cshtml", task)
-                                        foreach (var subtask in task.AssigneeSubtasks)
-                                        {
-                                            @Partial("Views/subtasks.cshtml", subtask)
-                                        }
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    @Partial("Views/unrelatedCommits.cshtml", dayLog.UnsyncedCommits)
                 }
-
-                @if (Model.Author.OpenTasks.Count > 0)
-                {
-                    <div style="line-height:1.4em; color:sienna; margin-top:20px;">
-                        <b style="font-size: 16px; color: sienna">Upcoming </b>
-                        @if (Model.Author.Timing.OpenTasksTimeLeftSeconds != 0)
-                        {
-                            <span style="color: sienna; font-size:12px;"> &#x25cf; @Model.Author.Timing.OpenTasksTimeLeftString left</span>
-                        }
-                        else
-                        {
-                            <span style="color:red; font-size:12px;">&#x25cf; @Model.Author.Timing.OpenTasksTimeLeftString left</span>
-                        }
-                        <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                            <tbody>
-                                @foreach (var task in Model.Author.OpenTasksParents)
-                                {
-                                    if (task.Assignee == Model.Author.Name)
-                                    {
-                                        @Partial("Views/uncompletedTask.cshtml", task)
-                                        if (task.SubtasksIssues != null)
-                                        {
-                                            if (task.SubtasksIssues.Count > 0)
-                                            {
-                                                foreach (var subtask in task.SubtasksIssues)
-                                                {
-                                                    @Partial("Views/subtasks.cshtml", subtask)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @Partial("Views/parentTask.cshtml", task)
-                                        foreach (var subtask in task.AssigneeSubtasks)
-                                        {
-                                            @Partial("Views/subtasks.cshtml", subtask)
-                                        }
-                                    }
-                                }
-
-                            </tbody>
-                        </table>
-
-                    </div>
-                }
-            </div>
+            }
         }
+
+        @if (Model.HasSprint)
+        {
+            if (Model.Author.InProgressTasks.Count > 0)
+            {
+                <div style="margin-top:20px; line-height:1.4em;">
+                    <b style="color:sienna; font-size:16px;">In Progress</b>
+
+                    @if (Model.Author.Timing.InProgressTasksTimeLeftSeconds == 0)
+                    {
+                        <span style="color:red; font-size:12px;"> &#x25cf; @Model.Author.Timing.InProgressTasksTimeLeftString left</span>
+                    }
+                    else
+                    {
+                        <span style="color:sienna; font-size:12px;"> &#x25cf; @Model.Author.Timing.InProgressTasksTimeLeftString left</span>
+                    }
+                    <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+                        <tbody>
+                            @foreach (var task in Model.Author.InProgressTasksParents)
+                            {
+                                if (task.Assignee == Model.Author.Name)
+                                {
+                                    @Partial("Views/uncompletedTask.cshtml", task)
+                                    if (task.SubtasksIssues != null)
+                                    {
+                                        if (task.SubtasksIssues.Count > 0)
+                                        {
+                                            foreach (var subtask in task.SubtasksIssues)
+                                            {
+                                                @Partial("Views/subtasks.cshtml", subtask)
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @Partial("Views/parentTask.cshtml", task)
+                                    foreach (var subtask in task.AssigneeSubtasks)
+                                    {
+                                        @Partial("Views/subtasks.cshtml", subtask)
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            if (Model.Author.OpenTasks.Count > 0)
+            {
+                <div style="line-height:1.4em; color:sienna; margin-top:20px;">
+                    <b style="font-size: 16px; color: sienna">Upcoming </b>
+                    @if (Model.Author.Timing.OpenTasksTimeLeftSeconds != 0)
+                    {
+                        <span style="color: sienna; font-size:12px;"> &#x25cf; @Model.Author.Timing.OpenTasksTimeLeftString left</span>
+                    }
+                    else
+                    {
+                        <span style="color:red; font-size:12px;">&#x25cf; @Model.Author.Timing.OpenTasksTimeLeftString left</span>
+                    }
+                    <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+                        <tbody>
+                            @foreach (var task in Model.Author.OpenTasksParents)
+                            {
+                                if (task.Assignee == Model.Author.Name)
+                                {
+                                    @Partial("Views/uncompletedTask.cshtml", task)
+                                    if (task.SubtasksIssues != null)
+                                    {
+                                        if (task.SubtasksIssues.Count > 0)
+                                        {
+                                            foreach (var subtask in task.SubtasksIssues)
+                                            {
+                                                @Partial("Views/subtasks.cshtml", subtask)
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @Partial("Views/parentTask.cshtml", task)
+                                    foreach (var subtask in task.AssigneeSubtasks)
+                                    {
+                                        @Partial("Views/subtasks.cshtml", subtask)
+                                    }
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+            }
+        }
+        
     </div>
 
     <table style="margin-top:50px; width:250px; height:50px;">
-        <tbody>
-            <tr>
+            <tbody>
+                <tr>
                 <td width="100px" height="40px" style="display:inline-block; padding:0px; line-height:40px;" title="This will confirm the draft ONLY for this particular user and send the draft report to the project manager &#013; Only click the button after: &#013; - errors have been corrected &#013; - all work has been logged">
-                    @Partial("Views/confirmationButton.cshtml", Model.Author.IndividualDraftInfo.ConfirmationDraftUrl)
-                </td>
+                        @Partial("Views/confirmationButton.cshtml", Model.Author.IndividualDraftInfo.ConfirmationDraftUrl)
+                    </td>
 
                 <td width="30px" height="40px" style="display:inline-block;font-size:12px; line-height:40px;padding:0px; text-align:center">
                     or
-                </td>
+                    </td>
                 <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
                     <a style="color:#0000FF; font-weight:bold; text-decoration:none; font-size:12px; line-height:40px" href="@Model.Author.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
-                </td>
-            </tr>
+                    </td>
+                </tr>
         </tbody>
     </table>
 
-    @if (Model.Author.IsProjectLead == true)
-    {
+                @if (Model.Author.IsProjectLead == true)
+                {
         <div>
             <hr style="width:250px; margin-left:0px" />
             <span style="font-size:12px; color:black;">
                 If not everyone from your team has confirmed their report, you can also <a style="color:#0000FF; font-weight:bold; text-decoration:none;" href="@Model.Author.IndividualDraftInfo.ForceDraftUrl">force the full draft</a>.
             </span>
         </div>
-    }
+                }
 </div>

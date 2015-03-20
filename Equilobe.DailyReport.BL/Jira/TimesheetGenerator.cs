@@ -18,9 +18,9 @@ namespace Equilobe.DailyReport.BL.Jira
             Client = client;
         }
 
-        public List<JiraIssue> GetTimesheetIssuesForAuthor(string author, DateTime fromDate, DateTime toDate)
+        public List<JiraIssue> GetTimesheetIssuesForAuthor(string projectKey, string author, DateTime fromDate, DateTime toDate)
         {
-            var updatedIssues = Client.GetWorklogs(author, fromDate.ToString("yyyy/MM/dd"), toDate.ToString("yyyy/MM/dd"));
+            var updatedIssues = Client.GetWorklogs(projectKey, author, fromDate.ToString("yyyy/MM/dd"), toDate.ToString("yyyy/MM/dd"));
             var timesheetIssues = updatedIssues
                 .Select(issue => Client.GetIssue(issue.key))
                 .ToList();
