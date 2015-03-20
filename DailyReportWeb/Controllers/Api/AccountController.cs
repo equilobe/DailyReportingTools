@@ -57,9 +57,9 @@ namespace DailyReportWeb.Controllers.Api
 				};
 
 			// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-			string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-            var enc = HttpUtility.HtmlEncode(code);
-            var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}", Request.GetUrlHelper().Request.RequestUri.GetLeftPart(System.UriPartial.Authority), user.Id, enc);
+            string code = HttpUtility.UrlEncode(await UserManager.GenerateEmailConfirmationTokenAsync(user.Id));
+            
+            var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}", Request.GetUrlHelper().Request.RequestUri.GetLeftPart(System.UriPartial.Authority), user.Id, code);
 
 			await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
@@ -74,7 +74,7 @@ namespace DailyReportWeb.Controllers.Api
         public async Task<AccountResponse> ConfirmEmail([FromBody]EmailConfirmation emailConfirmation)
         {
             string userId = emailConfirmation.userId;
-            string code = emailConfirmation.code;
+            string code = HttpUtility.UrlDecode(emailConfirmation.code);
             if (userId == null || code == null)
                 return new AccountResponse() { Success = false };
 
