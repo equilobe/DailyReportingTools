@@ -50,9 +50,9 @@ namespace Equilobe.DailyReport.SL
 
         JiraPolicy CreateNewJiraPolicyForProject(JiraRequestContext context, long projectId)
         {
-            var project = JiraService.GetProject(projectId);
+            var project = JiraService.GetProject(context, projectId);
 
-            var options = JiraService.GetUsers(project.Key)
+            var options = JiraService.GetUsers(context, project.Key)
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,

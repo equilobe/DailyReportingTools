@@ -2,7 +2,6 @@
 using Autofac.Integration.Mvc;
 using Autofac.Integration.Owin;
 using Autofac.Integration.WebApi;
-using DailyReportWeb.Services;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.SL;
 using System;
@@ -24,8 +23,7 @@ namespace DailyReportWeb
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterServicesFromAssembly<JiraService>();
-            builder.RegisterServicesFromAssembly<JiraRequestContextService>();            
+            builder.RegisterServicesFromAssembly<JiraService>();            
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly)
                    .PropertiesAutowired();

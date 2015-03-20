@@ -21,7 +21,20 @@ namespace Equilobe.DailyReport.SL
         {
             // TODO (Vlad): refactor - send report settings id (form our DB) instead of jira project id
 
-            var projectInfo = JiraService.GetProjectInfo(context.Id);
+            var instance = GetInstanceWithReportSettings(context);
+
+            if (instance.UserId != context.UserId)
+                throw new SecurityException();
+
+            var jiraRequestContext = new JiraRequestContext
+            {
+                BaseUrl = instance.BaseUrl,
+                Password = instance.ReportSettings.First().Password,
+                Username = instance.ReportSettings.First().Username
+            };
+            
+
+            var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, context.Id);
             return new ReportSettingsSummary
             {
                 //BaseUrl = JiraRequestContextService.Context.BaseUrl,

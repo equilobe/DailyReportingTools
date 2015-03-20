@@ -45,7 +45,7 @@ namespace JiraReporter.Services
         List<IssueDetailed> GetCompletedTasks(JiraReport context)
         {
             var completedTasks = new List<IssueDetailed>();
-            var issues = JiraService.GetCompletedIssues(context.ReportDate.AddDays(-6), context.ReportDate);
+            var issues = JiraService.GetCompletedIssues(context.JiraRequestContext, context.ReportDate.AddDays(-6), context.ReportDate);
             foreach (var jiraIssue in issues.issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
@@ -61,7 +61,7 @@ namespace JiraReporter.Services
 
         JiraIssues GetUnfinishedTasks(JiraReport context)
         {
-            return JiraService.GetSprintTasks(context.ProjectKey);
+            return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey);
         }
 
         void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)

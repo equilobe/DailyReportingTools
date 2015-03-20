@@ -21,7 +21,6 @@ namespace JiraReporter
     class JiraReportMainFlowProcessor
     {
         public IDataService DataService { get; set; }
-        public IJiraRequestContextService JiraRequestContextService { get; set; }
         public IJiraService JiraService { get; set; }
         public IPolicyEditorService PolicyService { get; set; }
         public IReportExecutionService ReportExecutionService { get; set; }
@@ -37,12 +36,10 @@ namespace JiraReporter
             DataService.SetReportFromDb(report);
             report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(report);
 
-            JiraRequestContextService.Context = report.JiraRequestContext;
-
             SetExecutionInstance(report);
 
 
-            var project = JiraService.GetProject(report.Policy.ProjectId);
+            var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
             LoadReportDates(report);
 

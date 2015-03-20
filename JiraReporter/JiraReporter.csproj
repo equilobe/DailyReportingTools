@@ -107,7 +107,6 @@
     <Compile Include="Services\IndividualReportProcessor.cs" />
     <Compile Include="MonthlyOptionsHelpers.cs" />
     <Compile Include="Services\JiraContextService.cs" />
-    <Compile Include="Services\JiraRequestContextService.cs" />
     <Compile Include="Services\ReportEmailerJira.cs" />
     <Compile Include="SourceControl\GitHubReportSourceControl.cs" />
     <Compile Include="SourceControl\ReportBaseSourceControl.cs" />
