@@ -8,10 +8,19 @@ angular.module('app')
         });
     }])
     .controller("SignUpCtrl", ['$scope', '$http', function ($scope, $http) {
+        $http.get("/api/Timezone")
+            .success(function (list) {
+                $scope.timeZoneList = list
+            })
+            .error(function () {
+                $scope.status = "error";
+            });
+
+
         $scope.signUp = function ($scope) {
             $scope.status = "saving";
             $scope.signUpForm.$setPristine();
-
+            $scope.signUpForm.timezoneId = $scope.signUpForm.timezoneId.id;
             $http.post("/api/account/register", $scope.signUpForm)
                 .success(function (response) {
                     if (response.success) {

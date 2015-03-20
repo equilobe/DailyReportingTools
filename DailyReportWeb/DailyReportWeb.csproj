@@ -198,6 +198,7 @@
     <Compile Include="Controllers\Api\PolicyController.cs" />
     <Compile Include="Controllers\Api\ProjectController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
+    <Compile Include="Controllers\Api\TimezoneController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="DependencyInjection.cs" />
@@ -217,7 +218,7 @@
     <Content Include="app\instances.test.js">
       <DependentUpon>instances.html</DependentUpon>
     </Content>
-	<Content Include="app\confirmEmail.html" />
+    <Content Include="app\confirmEmail.html" />
     <Content Include="app\confirmEmail.js">
       <DependentUpon>confirmEmail.html</DependentUpon>
     </Content>

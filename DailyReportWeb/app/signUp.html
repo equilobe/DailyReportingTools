@@ -67,7 +67,7 @@
                                 Timezone:
                             </label>
                             <div>
-                                <input type="text" class="form-control" placeholder="" ng-model="signUpForm.timezoneId" />
+                                <select class="form-control" ng-model="signUpForm.timezoneId" ng-options="timeZone.name for timeZone in timeZoneList track by timeZone.id"></select>
                             </div>
                         </div>
                     </div>
