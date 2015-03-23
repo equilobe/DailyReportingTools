@@ -16,9 +16,23 @@
         </h3>
     </div>
     <div class="container" ng-if="status == 'loaded' && isConfirmed">
-        <p>You have successfully confirmed your account. You can now sign in.</p>
+        <h1>
+            <span class="alert-success">
+                Confirm successful
+            </span>
+        </h1>
+        <p class="help-block">
+            Your account was activated. You can now sign in.
+        </p>
     </div>
     <div class="container" ng-if="status == 'loaded' && !isConfirmed">
-        <p>Something went wrong. Please try again later.</p>
+        <h1>
+            <span class="alert-danger">
+                Confirm not successful
+            </span>
+        </h1>
+        <p class="help-block">
+            Something went wrong. Please try again later.
+        </p>
     </div>
 </div>
