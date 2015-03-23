@@ -53,7 +53,7 @@
     <Compile Include="SVNNotAvailableException.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimeFormattingExtensions.cs" />
-    <Compile Include="UriExtensions.cs" />
+    <Compile Include="UrlExtensions.cs" />
     <Compile Include="ValidateNotNullAttribute.cs" />
     <Compile Include="Validations.cs" />
   </ItemGroup>

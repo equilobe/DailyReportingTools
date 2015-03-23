@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Equilobe.DailyReport.Utils
+namespace System.Net.Http
 {
-    public class UriExtensions
+    public class UrlExtensions
     {
         public static string GetHostUrl(string url)
         {

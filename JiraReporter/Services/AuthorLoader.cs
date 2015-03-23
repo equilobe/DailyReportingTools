@@ -1,23 +1,16 @@
-﻿using JiraReporter.Model;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.ReportFrame;
+using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Net.Http;
 using System.Text.RegularExpressions;
-using RestSharp;
-using Equilobe.DailyReport.Models.Storage;
-using Equilobe.DailyReport.Models.ReportFrame;
-using JiraReporter.Services;
-using Equilobe.DailyReport.Models.Jira;
-using Equilobe.DailyReport.SL;
-using System.Drawing;
-using Equilobe.DailyReport.Utils;
-using Equilobe.DailyReport.Models.Policy;
-using JiraReporter.Helpers;
-using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter.Services
 {
@@ -388,7 +381,7 @@ namespace JiraReporter.Services
         {
             var webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "image/png");
-            webClient.Authorize(policy, UriExtensions.GetRelativeUrl(url));
+            webClient.Authorize(policy, UrlExtensions.GetRelativeUrl(url));
 
             var imageData = webClient.DownloadData(url);
 

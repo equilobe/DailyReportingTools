@@ -6,6 +6,7 @@ using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Configuration;
+using System.Net.Http;
 using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
@@ -43,7 +44,7 @@ namespace DailyReportWeb.Controllers
                 name = "Daily Report Tool",
                 description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
                 key = ConfigurationManager.AppSettings["addonKey"],
-                baseUrl = UriExtensions.GetHostUrl(Request.Url.OriginalString),
+                baseUrl = UrlExtensions.GetHostUrl(Request.Url.OriginalString),
                 vendor = new
                 {
                     name = "Equilobe Software",
@@ -51,8 +52,8 @@ namespace DailyReportWeb.Controllers
                 },
                 links = new
                 {
-                    self = UriExtensions.GetHostUrl(Request.Url.OriginalString) + "/howto",
-                    documentation = UriExtensions.GetHostUrl(Request.Url.OriginalString) + "/docs"
+                    self = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/howto",
+                    documentation = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/docs"
                 },
                 apiVersion = 1,
                 authentication = new

@@ -9,12 +9,12 @@ namespace Equilobe.DailyReport.Models.Storage
     {
         public long Id { get; set; }
         [Required]
-        public string UserId { get; set; }
-        [Required]
         public string BaseUrl { get; set; }
+        public string TimeZone { get; set; }
         public string SharedSecret { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string UserId { get; set; }
+        public string JiraUsername { get; set; }
+        public string JiraPassword { get; set; }
 		
 
         public virtual ICollection<ReportSettings> ReportSettings { get; set; }

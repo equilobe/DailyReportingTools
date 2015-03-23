@@ -47,7 +47,7 @@ namespace Equilobe.DailyReport.SL
 
             var instance = reportSettings.InstalledInstance;
 
-            var jiraContext = new JiraRequestContext(instance.BaseUrl, instance.Username, instance.Password);
+            var jiraContext = new JiraRequestContext(instance.BaseUrl, instance.JiraUsername, instance.JiraPassword);
 
             var project = JiraService.GetProject(jiraContext, reportSettings.ProjectId);
 
@@ -62,8 +62,8 @@ namespace Equilobe.DailyReport.SL
             return new JiraPolicy
             {
                 BaseUrl = instance.BaseUrl,
-                Username = instance.Username,
-                Password = instance.Password,
+                Username = instance.JiraUsername,
+                Password = instance.JiraPassword,
                 ProjectId = reportSettings.ProjectId,
                 UserOptions = options
             };
