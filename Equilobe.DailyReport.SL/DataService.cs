@@ -51,10 +51,8 @@ namespace Equilobe.DailyReport.SL
         public string GetPassword(string baseUrl, string username)
         {
             return new ReportsDb().InstalledInstances
-                .Where(installedInstance => installedInstance.BaseUrl == baseUrl)
-                .SelectMany(installedInstance => installedInstance.ReportSettings
-                    .Where(reportSettings => reportSettings.Username == username)
-                    .Select(reportSettings => reportSettings.Password))
+                .Where(ii => ii.BaseUrl == baseUrl && ii.Username == username)
+                .Select(ii => ii.Password)
                 .FirstOrDefault();
         }
 

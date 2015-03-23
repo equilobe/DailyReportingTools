@@ -27,10 +27,10 @@ namespace JiraReporter.Helpers
 
         public static JiraRequestContext GetJiraRequestContext(JiraReport report)
         {
-            report.Policy.Username = report.Settings.Username;
-            report.Policy.Password = report.Settings.Password;
+            report.Policy.Username = report.Settings.InstalledInstance.Username;
+            report.Policy.Password = report.Settings.InstalledInstance.Password;
 
-            return new JiraRequestContext(report.Policy.BaseUrl, report.Settings.Username, report.Settings.Password);
+            return new JiraRequestContext(report.Policy.BaseUrl, report.Settings.InstalledInstance.Username, report.Settings.InstalledInstance.Password);
         }
     }
 }

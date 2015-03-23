@@ -20,7 +20,9 @@ namespace Equilobe.DailyReport.SL
         {
             var reportSettings = new ReportsDb().ReportSettings
                          .Where(rs => rs.Id == context.Id)
-                         .Single();
+                         .SingleOrDefault();
+            if (reportSettings == null)
+                return null;
 
             var instance = reportSettings.InstalledInstance;
 
@@ -29,9 +31,9 @@ namespace Equilobe.DailyReport.SL
 
             var jiraRequestContext = new JiraRequestContext
             {
-                BaseUrl = reportSettings.BaseUrl,
-                Password = reportSettings.Password,
-                Username = reportSettings.Username
+                BaseUrl = instance.BaseUrl,
+                Password = instance.Password,
+                Username = instance.Username
             };
 
             var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, reportSettings.ProjectId);
@@ -52,16 +54,14 @@ namespace Equilobe.DailyReport.SL
                          .Where(i => i.Id == context.Id)
                          .Single();
 
-            var reportSettings = instance.ReportSettings.First();
-
             if (instance.UserId != context.UserId)
                 throw new SecurityException();
 
             var jiraRequestContext = new JiraRequestContext
             {
-                BaseUrl = reportSettings.BaseUrl,
-                Password = reportSettings.Password,
-                Username = reportSettings.Username
+                BaseUrl = instance.BaseUrl,
+                Password = instance.Password,
+                Username = instance.Username
             };
 
             return JiraService.GetProjectsInfo(jiraRequestContext)

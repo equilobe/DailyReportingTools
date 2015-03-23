@@ -32,22 +32,22 @@ namespace Equilobe.DailyReport.SL
 
         public FullReportSettings GetPolicy(ItemContext context)
         {
-            ReportSettings reportSettings;
-            using (var db = new ReportsDb())
-            {
-                reportSettings = db.ReportSettings.Single(r => r.Id == context.Id);
-            }
-
-            var jiraPolicy = GetJiraPolicy(reportSettings);
+            var jiraPolicy = GetJiraPolicy(context);
             var policySummary = PolicySummaryService.GetPolicySummary(context);
-            var policyDetails = GetPolicyDetails(reportSettings.BaseUrl, reportSettings.ProjectId);
+            var policyDetails = GetPolicyDetails(context);
 
             return SyncPolicy(jiraPolicy, policySummary, policyDetails);
         }
 
-        JiraPolicy GetJiraPolicy(ReportSettings reportSettings)
+        public JiraPolicy GetJiraPolicy(ItemContext context)
         {
-            var jiraContext = new JiraRequestContext(reportSettings.BaseUrl, reportSettings.Username, reportSettings.Password);
+            var reportSettings = new ReportsDb().ReportSettings.SingleOrDefault(r => r.Id == context.Id);
+            if (reportSettings == null)
+                return null;
+
+            var instance = reportSettings.InstalledInstance;
+
+            var jiraContext = new JiraRequestContext(instance.BaseUrl, instance.Username, instance.Password);
 
             var project = JiraService.GetProject(jiraContext, reportSettings.ProjectId);
 
@@ -61,20 +61,19 @@ namespace Equilobe.DailyReport.SL
 
             return new JiraPolicy
             {
-                BaseUrl = reportSettings.BaseUrl,
-                Username = reportSettings.Username,
-                Password = reportSettings.Password,
+                BaseUrl = instance.BaseUrl,
+                Username = instance.Username,
+                Password = instance.Password,
                 ProjectId = reportSettings.ProjectId,
                 UserOptions = options
             };
         }
 
-        public ReportPolicy GetPolicyDetails(string baseUrl, long projectId)
+        public ReportPolicy GetPolicyDetails(ItemContext context)
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl);
-
+                var reportSettings = db.ReportSettings.SingleOrDefault(r => r.Id == context.Id);
                 if (reportSettings == null || reportSettings.SerializedPolicy == null)
                     return null;
 
@@ -96,8 +95,6 @@ namespace Equilobe.DailyReport.SL
 
             return policyBuffer;
         }
-
-      
     }
 }
 
