@@ -84,6 +84,7 @@
     <Compile Include="SourceControlService.cs" />
     <Compile Include="SvnService.cs" />
     <Compile Include="TaskSchedulerService.cs" />
+    <Compile Include="TimeZoneService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">
