@@ -53,6 +53,11 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/api/2/issue/{0}", key);
         }
 
+        public static string IssueWorklogs(string key)
+        {
+            return string.Format("rest/api/2/issue/{0}/worklog", key);
+        }
+
         public static string Search(string jql)
         {
             return string.Format("rest/api/2/search?jql={0}", jql);

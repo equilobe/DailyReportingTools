@@ -47,6 +47,7 @@ namespace Equilobe.DailyReport.SL
             if (!CanSendFullDraft(context))
                 return SimpleResult.Error("Cannot send report if not all individual drafts were confirmed");
 
+            context.Scope = SendScope.SendFinalDraft;
             SetReportExecutionInstance(context);
 
             if (TryRunReport(context))
