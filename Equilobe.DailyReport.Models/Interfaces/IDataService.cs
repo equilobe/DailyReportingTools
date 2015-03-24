@@ -1,16 +1,21 @@
 ﻿using Equilobe.DailyReport.Models.Policy;
-using System;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Web;
+using System.Collections.Generic;
+
 namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IDataService : IService
     {
+        void SaveInstance(InstalledInstance instanceData);
+        void SaveInstance(RegisterModel modelData);
         void DeleteInstance(string baseUrl);
+        List<Instance> GetInstances(ApplicationUser user);
         string GetBaseUrl(long id);
+        string GetSharedSecret(string baseUrl);
         string GetPassword(string baseUrl, string username);
         string GetReportTime(string baseUrl, long projectId);
-        string GetSharedSecret(string baseUrl);
         System.Collections.Generic.List<string> GetUniqueProjectsKey(string baseUrl);
-        void SaveInstance(Equilobe.DailyReport.Models.Storage.InstalledInstance instanceData);
         void SetReportFromDb(Equilobe.DailyReport.Models.ReportFrame.JiraReport report);
         JiraPolicy GetPolicy(string uniqueProjectKey);
     }

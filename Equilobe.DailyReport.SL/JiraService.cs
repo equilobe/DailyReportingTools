@@ -88,7 +88,7 @@ namespace Equilobe.DailyReport.SL
             if (!string.IsNullOrEmpty(context.SharedSecret))
                 return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, "addonKey");
             else
-                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.Username, context.Password);
+                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, context.JiraPassword);
         }
     }
 }

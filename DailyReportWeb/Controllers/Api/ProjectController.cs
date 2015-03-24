@@ -39,10 +39,10 @@ namespace DailyReportWeb.Controllers.Api
 			string userId = User.Identity.GetUserId();
 			var currentUser = UserManager.FindById(userId);
 
-			return new DataService().GetInstances(currentUser);
+			return DataService.GetInstances(currentUser);
         }
         
-        public IEnumerable<ReportSettingsSummary> Get(long id)
+        public List<ReportSettingsSummary> Get(long id)
         {           
             return PolicySummaryService.GetPoliciesSummary(new ItemContext(id));
         }

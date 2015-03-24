@@ -63,6 +63,8 @@ namespace DailyReportWeb.Controllers.Api
                     ErrorList = result.Errors.ToList()
                 };
 
+            DataService.SaveInstance(model);
+
             // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
             string code = HttpUtility.UrlEncode(await UserManager.GenerateEmailConfirmationTokenAsync(user.Id));
             var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}",
@@ -71,11 +73,6 @@ namespace DailyReportWeb.Controllers.Api
                                              code);
 
             await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-            var instanceData = new InstalledInstance();
-            model.CopyPropertiesOnObjects(instanceData);
-            instanceData.UserId = user.Id;
-            DataService.SaveInstance(instanceData);
 
             return new AccountResponse()
             {

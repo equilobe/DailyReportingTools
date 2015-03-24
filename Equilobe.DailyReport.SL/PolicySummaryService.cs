@@ -1,13 +1,13 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models;
 using System.Security;
-using Equilobe.DailyReport.Models.Storage;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -19,78 +19,67 @@ namespace Equilobe.DailyReport.SL
         public ReportSettingsSummary GetPolicySummary(ItemContext context)
         {
             var reportSettings = new ReportsDb().ReportSettings
-                         .Where(rs => rs.Id == context.Id)
-                         .SingleOrDefault();
-            if (reportSettings == null)
-                return null;
+                                                .Where(rs => rs.Id == context.Id)
+                                                .Single();
 
             var instance = reportSettings.InstalledInstance;
-
             if (instance.UserId != context.UserId)
                 throw new SecurityException();
 
-            var jiraRequestContext = new JiraRequestContext
-            {
-                BaseUrl = instance.BaseUrl,
-                Password = instance.JiraPassword,
-                Username = instance.JiraUsername
-            };
+            var jiraRequestContext = new JiraRequestContext();
+            instance.CopyPropertiesOnObjects(jiraRequestContext);
 
             var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, reportSettings.ProjectId);
             return new ReportSettingsSummary
             {
-                Id = GetProjectId(instance, projectInfo.ProjectId),
+                Id = context.Id,
                 BaseUrl = instance.BaseUrl,
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = GetProjectReportTime(instance, projectInfo.ProjectId)
+                ReportTime = GetReportSettingsReportTime(instance, projectInfo.ProjectId)
             };
         }
 
         public List<ReportSettingsSummary> GetPoliciesSummary(ItemContext context)
         {
             var instance = new ReportsDb().InstalledInstances
-                         .Where(i => i.Id == context.Id)
-                         .Single();
+                                          .Where(i => i.Id == context.Id)
+                                          .Single();
 
             if (instance.UserId != context.UserId)
                 throw new SecurityException();
 
-            var jiraRequestContext = new JiraRequestContext
-            {
-                BaseUrl = instance.BaseUrl,
-                Password = instance.JiraPassword,
-                Username = instance.JiraUsername
-            };
+            var jiraRequestContext = new JiraRequestContext();
+            instance.CopyPropertiesOnObjects(jiraRequestContext);
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
-                    .Select(projectInfo => new ReportSettingsSummary
-                    {
-                        Id = GetProjectId(instance, projectInfo.ProjectId),
-                        BaseUrl = instance.BaseUrl,
-                        ProjectId = projectInfo.ProjectId,
-                        ProjectKey = projectInfo.ProjectKey,
-                        ProjectName = projectInfo.ProjectName,
-                        ReportTime = GetProjectReportTime(instance, projectInfo.ProjectId)
-                    })
-                    .ToList();
+                              .Select(projectInfo => new ReportSettingsSummary
+                              {
+                                  Id = GetReportSettingsId(instance, projectInfo.ProjectId),
+                                  BaseUrl = instance.BaseUrl,
+                                  ProjectId = projectInfo.ProjectId,
+                                  ProjectKey = projectInfo.ProjectKey,
+                                  ProjectName = projectInfo.ProjectName,
+                                  ReportTime = GetReportSettingsReportTime(instance, projectInfo.ProjectId)
+                              })
+                              .ToList();
         }
 
-        private static long GetProjectId(InstalledInstance instance, long projectId)
+        private static long GetReportSettingsId(InstalledInstance instance, long projectId)
         {
             return instance.ReportSettings
-                     .Where(r => r.ProjectId == projectId)
-                     .Select(r => r.Id)
-                     .SingleOrDefault();
+                           .Where(r => r.ProjectId == projectId)
+                           .Select(r => r.Id)
+                           .SingleOrDefault();
         }
 
-        private static string GetProjectReportTime(InstalledInstance instance, long projectId)
+        private static string GetReportSettingsReportTime(InstalledInstance instance, long projectId)
         {
             return instance.ReportSettings
-                     .Where(r => r.ProjectId == projectId)
-                     .Select(r => r.ReportTime)
-                     .SingleOrDefault();
+                           .Where(r => r.ProjectId == projectId)
+                           .Select(r => r.ReportTime)
+                           .SingleOrDefault();
         }
     }
 }

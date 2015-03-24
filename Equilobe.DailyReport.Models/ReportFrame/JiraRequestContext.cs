@@ -6,9 +6,9 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     {
         public string BaseUrl { get; set; }
 
-        public string Username { get; set; }
+        public string JiraUsername { get; set; }
 
-        public string Password { get; set; }
+        public string JiraPassword { get; set; }
 
         public string SharedSecret { get; set; }
 
@@ -26,8 +26,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public JiraRequestContext(string baseUrl, string username, string password)
         {
             BaseUrl = baseUrl;
-            Username = username;
-            Password = password;
+            JiraUsername = username;
+            JiraPassword = password;
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         string BaseUrl { get; }
         string SharedSecret { get; }
-        string Username { get; }
-        string Password { get; }
+        string JiraUsername { get; }
+        string JiraPassword { get; }
     }
 }

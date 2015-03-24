@@ -29,6 +29,22 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void SaveInstance(RegisterModel modelData)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instanceData = new InstalledInstance();
+                modelData.CopyPropertiesOnObjects(instanceData);
+                instanceData.UserId = db.Users.Where(u => u.Email == modelData.Email)
+                                              .Select(u => u.Id)
+                                              .Single();
+
+                db.InstalledInstances.Add(instanceData);
+
+                db.SaveChanges();
+            }
+        }
+
         public void DeleteInstance(string baseUrl)
         {
             using (var db = new ReportsDb())
