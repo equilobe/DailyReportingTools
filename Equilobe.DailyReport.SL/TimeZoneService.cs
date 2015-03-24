@@ -13,6 +13,21 @@ namespace Equilobe.DailyReport.SL
     {
         private static string TimeZoneMappingFileName = "TimeZoneMappings.xml";
 
+        public List<Equilobe.DailyReport.Models.Web.TimeZone> GetSystemTimeZones()
+        {
+            var timeZoneList = new List<Equilobe.DailyReport.Models.Web.TimeZone>();
+            TimeZoneInfo.GetSystemTimeZones()
+                        .ToList()
+                        .ForEach(tz => timeZoneList.Add(new Equilobe.DailyReport.Models.Web.TimeZone()
+                        {
+                            Id = tz.Id,
+                            Name = tz.DisplayName,
+                            UtcOffset = tz.BaseUtcOffset.TotalMinutes
+                        }));
+
+            return timeZoneList;
+        }
+
         public string GetWindowsTimeZoneIdByIanaTimeZone (string ianaTimeZone)
         {
             string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();

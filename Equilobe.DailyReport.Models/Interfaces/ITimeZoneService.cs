@@ -14,5 +14,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         /// <param name="ianaTimeZone"></param>
         /// <returns>SystemTimeZoneId</returns>
         string GetWindowsTimeZoneIdByIanaTimeZone(string ianaTimeZone);
+
+        public List<Equilobe.DailyReport.Models.Web.TimeZone> GetSystemTimeZones();
     }
 }

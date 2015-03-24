@@ -14,17 +14,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public List<Equilobe.DailyReport.Models.Web.TimeZone> Get()
         {
-            var timeZoneList = new List<Equilobe.DailyReport.Models.Web.TimeZone>();
-            TimeZoneInfo.GetSystemTimeZones()
-                        .ToList()
-                        .ForEach(tz => timeZoneList.Add(new Equilobe.DailyReport.Models.Web.TimeZone()
-                        {
-                            Id = tz.Id,
-                            Name = tz.DisplayName,
-                            UtcOffset = tz.BaseUtcOffset.TotalMinutes
-                        }));
-
-            return timeZoneList;
+            return TimeZoneService.GetSystemTimeZones();
         }
 
         /// <summary>
