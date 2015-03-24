@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace JiraReporter
 {
-    public class WidthHelpers
+    public class SummaryWidthLoader
     {
         public int ChartMaxBarWidth { get; set; }
 
-        public WidthHelpers(int chartMaxBarWidth)
+        public SummaryWidthLoader(int chartMaxBarWidth)
         {
             ChartMaxBarWidth = chartMaxBarWidth;
         }

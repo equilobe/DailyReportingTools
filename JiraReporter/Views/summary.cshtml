@@ -244,7 +244,7 @@ else
                         <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                         </div>
                     }
-                    @if (Model.Policy.AllocatedHoursPerMonth > 0)
+                    @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                             <div style="display:inline-block; background-color:#337AB7; width: @Model.MonthWidths.RemainingWidthString; height:14px; float:left; margin:0"></div>

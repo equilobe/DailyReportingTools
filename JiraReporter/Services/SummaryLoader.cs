@@ -442,7 +442,7 @@ namespace JiraReporter.Services
 
         private void SetWidths()
         {
-            var widthHelper = new WidthHelpers(_summary.ChartMaxBarWidth);
+            var widthHelper = new SummaryWidthLoader(_summary.ChartMaxBarWidth);
             widthHelper.SetWorkSummaryChartWidths(_summary, _summary.TotalMaxValue);
 
             GetStatusValues();
@@ -496,13 +496,13 @@ namespace JiraReporter.Services
             while (_summary.TotalMaxValue / integer >= _summary.GuidelinesOptimalNumber)
                 integer = integer * 2;
 
-            _summary.GuidelinesCount = MathHelpers.RoundToNextEvenInteger(_summary.TotalMaxValue / integer);
+            _summary.GuidelinesCount = _summary.TotalMaxValue / integer;
             _summary.GuidelinesRate = integer;
         }
 
         private void SetGuidelineWidth()
         {
-            _summary.GuidelineWidth = _summary.ChartMaxBarWidth / _summary.GuidelinesCount;
+            _summary.GuidelineWidth = MathHelpers.RuleOfThree(_summary.ChartMaxBarWidth, _summary.TotalMaxValue, _summary.GuidelinesRate);
         }
 
     }

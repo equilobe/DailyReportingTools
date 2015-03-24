@@ -107,7 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ReportGeneratorService.cs" />
     <Compile Include="SourceControlProcessor.cs" />
-    <Compile Include="WidthHelpers.cs" />
+    <Compile Include="SummaryWidthLoader.cs" />
     <Compile Include="SummaryHelpers.cs" />
     <Compile Include="Services\SummaryLoader.cs" />
     <Compile Include="Services\TaskLoader.cs" />
