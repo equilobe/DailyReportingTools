@@ -77,6 +77,9 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool IsEmpty { get; set; }
         public bool HasAssignedIssues { get; set; }
         public bool HasDayLogs { get; set; }
+        public int MaxHourValue { get; set; }
+
+        public SummaryGuidelineInfo GuidelineInfo { get; set; }
 
         public JiraAuthor()
         {
