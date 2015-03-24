@@ -20,7 +20,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             UniqueProjectKey = Options.UniqueProjectKey;
         }
 
-        public ReportSettings Settings { get; set; }
+        public BasicSettings Settings { get; set; }
 
         private TimeSpan? _offsetFromUtc;
         public TimeSpan OffsetFromUtc

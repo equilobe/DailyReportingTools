@@ -31,7 +31,7 @@ namespace JiraReporter.Services
 
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.UniqueProjectKey);
+                var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.UniqueProjectKey);
                 draftConfirmation = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.UniqueUserKey == context.ExecutionInstance.UniqueUserKey);
             }
 

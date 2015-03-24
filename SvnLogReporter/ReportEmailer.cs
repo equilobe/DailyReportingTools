@@ -79,10 +79,10 @@ namespace SourceControlLogReporter
             smtp.Send(message);
             MoveToSent(reportPath);
 
-            UpdateReportSettings();
+            UpdateBasicSettings();
         }
 
-        protected virtual void UpdateReportSettings()
+        protected virtual void UpdateBasicSettings()
         {
             return;
         }

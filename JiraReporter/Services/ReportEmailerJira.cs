@@ -122,11 +122,11 @@ namespace JiraReporter
             File.Delete(path);
         }
 
-        protected override void UpdateReportSettings()
+        protected override void UpdateBasicSettings()
         {
             using(var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == Report.UniqueProjectKey);
+                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == Report.UniqueProjectKey);
 
                 if (report.ReportExecutionSummary == null)
                     report.ReportExecutionSummary = new ReportExecutionSummary();

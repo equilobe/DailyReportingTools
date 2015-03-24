@@ -15,9 +15,9 @@ namespace Equilobe.DailyReport.DAL
             reportExecutionInstance.DateExecuted = DateTime.Now;
         }
 
-        public static ReportSettings GetReportSettingsByUniqueProjectKey(this ReportsDb db, string uniqueProjectKey)
+        public static BasicSettings GetBasicSettingsByUniqueProjectKey(this ReportsDb db, string uniqueProjectKey)
         {
-            return db.ReportSettings.Single(r => r.UniqueProjectKey == uniqueProjectKey);
+            return db.BasicSettings.Single(r => r.UniqueProjectKey == uniqueProjectKey);
         }
     }
 }

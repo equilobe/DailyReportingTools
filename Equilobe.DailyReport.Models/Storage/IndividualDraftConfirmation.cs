@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Storage
     public class IndividualDraftConfirmation
     {
         public long Id { get; set; }
-        public long ReportSettingsId { get; set; }
+        public long BasicSettingsId { get; set; }
 
         [Required]
         public string Username { get; set; }
@@ -20,6 +20,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public DateTime? LastDateConfirmed { get; set; }
         public bool IsProjectLead { get; set; }
 
-        public virtual ReportSettings ReportSettings { get; set; }
+        public virtual BasicSettings BasicSettings { get; set; }
     }
 }

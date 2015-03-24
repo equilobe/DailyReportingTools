@@ -26,18 +26,18 @@ namespace Equilobe.DailyReport.DAL
         {
 			base.OnModelCreating(modelBuilder);
 			
-			modelBuilder.Entity<SerializedPolicy>()
-                .HasRequired(x => x.ReportSettings)
-                .WithOptional(x => x.SerializedPolicy)
+			modelBuilder.Entity<SerializedAdvancedSettings>()
+                .HasRequired(x => x.BasicSettings)
+                .WithOptional(x => x.SerializedAdvancedSettings)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<ReportExecutionSummary>()
-                .HasRequired(x => x.ReportSettings)
+                .HasRequired(x => x.BasicSettings)
                 .WithOptional(x => x.ReportExecutionSummary)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<FinalDraftConfirmation>()
-                .HasRequired(x => x.ReportSettings)
+                .HasRequired(x => x.BasicSettings)
                 .WithOptional(x => x.FinalDraftConfirmation)
                 .WillCascadeOnDelete(true);
 
@@ -49,12 +49,12 @@ namespace Equilobe.DailyReport.DAL
 
         }
 
-        public DbSet<ReportSettings> ReportSettings { get; set; }
+        public DbSet<BasicSettings> BasicSettings { get; set; }
         public DbSet<InstalledInstance> InstalledInstances { get; set; }
         public DbSet<ReportExecutionSummary> ReportExecutionSummaries { get; set; }
         public DbSet<ReportExecutionInstance> ReportExecutionInstances { get; set; }
         public DbSet<FinalDraftConfirmation> FinalDraftConfirmations { get; set; }
         public DbSet<IndividualDraftConfirmation> IndividualDraftConfirmations { get; set; }
-        public DbSet<SerializedPolicy> SerializedPolicies { get; set; }
+        public DbSet<SerializedAdvancedSettings> SerializedAdvancedSettings { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Equilobe.DailyReport.SL
 
         public ReportSettingsSummary GetPolicySummary(ItemContext context)
         {
-            var reportSettings = new ReportsDb().ReportSettings
+            var reportSettings = new ReportsDb().BasicSettings
                                                 .Where(rs => rs.Id == context.Id)
                                                 .Single();
 
@@ -37,7 +37,7 @@ namespace Equilobe.DailyReport.SL
                 ProjectId = projectInfo.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = GetReportSettingsReportTime(instance, projectInfo.ProjectId)
+                ReportTime = GetReportTime(instance, projectInfo.ProjectId)
             };
         }
 
@@ -56,27 +56,27 @@ namespace Equilobe.DailyReport.SL
             return JiraService.GetProjectsInfo(jiraRequestContext)
                               .Select(projectInfo => new ReportSettingsSummary
                               {
-                                  Id = GetReportSettingsId(instance, projectInfo.ProjectId),
+                                  Id = GetBasicSettingsId(instance, projectInfo.ProjectId),
                                   BaseUrl = instance.BaseUrl,
                                   ProjectId = projectInfo.ProjectId,
                                   ProjectKey = projectInfo.ProjectKey,
                                   ProjectName = projectInfo.ProjectName,
-                                  ReportTime = GetReportSettingsReportTime(instance, projectInfo.ProjectId)
+                                  ReportTime = GetReportTime(instance, projectInfo.ProjectId)
                               })
                               .ToList();
         }
 
-        private static long GetReportSettingsId(InstalledInstance instance, long projectId)
+        private static long GetBasicSettingsId(InstalledInstance instance, long projectId)
         {
-            return instance.ReportSettings
+            return instance.BasicSettings
                            .Where(r => r.ProjectId == projectId)
                            .Select(r => r.Id)
                            .SingleOrDefault();
         }
 
-        private static string GetReportSettingsReportTime(InstalledInstance instance, long projectId)
+        private static string GetReportTime(InstalledInstance instance, long projectId)
         {
-            return instance.ReportSettings
+            return instance.BasicSettings
                            .Where(r => r.ProjectId == projectId)
                            .Select(r => r.ReportTime)
                            .SingleOrDefault();

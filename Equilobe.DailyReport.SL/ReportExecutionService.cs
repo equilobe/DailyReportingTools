@@ -101,7 +101,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
                 if (report.IndividualDraftConfirmations == null)
                     report.IndividualDraftConfirmations = new List<IndividualDraftConfirmation>();
                 var individualDraft = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.Username == context.Info.Username);
@@ -120,14 +120,14 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 var individualReports = report.IndividualDraftConfirmations.ToList();
                 var isForcedByLead = IsForcedByLead(context.DraftKey, individualReports);
 
-                if (report.SerializedPolicy == null)
+                if (report.SerializedAdvancedSettings == null)
                     return false;
 
-                var policy = Deserialization.XmlDeserialize<ReportPolicy>(report.SerializedPolicy.PolicyString);
+                var policy = Deserialization.XmlDeserialize<ReportPolicy>(report.SerializedAdvancedSettings.PolicyString);
 
                 if (report == null || policy.AdvancedOptions.NoDraft)
                     return false;
@@ -155,7 +155,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
                 if (report.FinalDraftConfirmation == null)
                     report.FinalDraftConfirmation = new FinalDraftConfirmation();
                 report.FinalDraftConfirmation.LastFinalDraftConfirmationDate = DateTime.Today;
@@ -168,12 +168,12 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 if (report == null || report.IndividualDraftConfirmations == null)
                     if (VerifyDates(report.ReportExecutionSummary))
                         return false;
 
-                var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.ReportSettingsId == report.Id).ToList();
+                var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.BasicSettingsId == report.Id).ToList();
                 var draft = individualReports.SingleOrDefault(dr => dr.UniqueUserKey == context.DraftKey);
                 if (draft == null)
                     return false;
@@ -188,7 +188,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 if (report.IndividualDraftConfirmations == null)
                     return false;
 
@@ -204,7 +204,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var report = db.GetReportSettingsByUniqueProjectKey(context.Id);
+                var report = db.GetBasicSettingsByUniqueProjectKey(context.Id);
 
                 if (report.ReportExecutionInstances == null)
                     report.ReportExecutionInstances = new List<ReportExecutionInstance>();

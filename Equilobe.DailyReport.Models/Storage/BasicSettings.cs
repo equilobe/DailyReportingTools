@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class ReportSettings : IReportSettings
+    public class BasicSettings : IBasicSettings
     {
         public long Id { get; set; }
         public long InstalledInstanceId { get; set; }
@@ -23,7 +23,7 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public virtual InstalledInstance InstalledInstance { get; set; }
         public virtual ReportExecutionSummary ReportExecutionSummary { get; set; }
-        public virtual SerializedPolicy SerializedPolicy { get; set; }
+        public virtual SerializedAdvancedSettings SerializedAdvancedSettings { get; set; }
         public virtual FinalDraftConfirmation FinalDraftConfirmation { get; set; }
 
         public virtual ICollection<IndividualDraftConfirmation> IndividualDraftConfirmations { get; set; }

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class SerializedPolicy
+    public class SerializedAdvancedSettings
     {
         [Key]
-        public long ReportSettingsId { get; set; }
+        public long BasicSettingsId { get; set; }
         public string PolicyString { get; set; }
 
-        public virtual ReportSettings ReportSettings { get; set; }
+        public virtual BasicSettings BasicSettings { get; set; }
     }
 }

@@ -11,9 +11,9 @@ namespace Equilobe.DailyReport.Models.Storage
     public class FinalDraftConfirmation
     {
         [Key]
-        public long ReportSettingsId { get; set; }
+        public long BasicSettingsId { get; set; }
         public DateTime? LastFinalDraftConfirmationDate { get; set; }
 
-        public virtual ReportSettings ReportSettings { get; set; }
+        public virtual BasicSettings BasicSettings { get; set; }
     }
 }

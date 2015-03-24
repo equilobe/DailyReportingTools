@@ -52,7 +52,7 @@ namespace JiraReporter
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
-        ReportExecutionInstance GetUnexecutedInstance(ReportSettings report)
+        ReportExecutionInstance GetUnexecutedInstance(BasicSettings report)
         {
             var execInstance = report.ReportExecutionInstances.Where(qr => qr.DateExecuted == null).FirstOrDefault();
             return execInstance;

@@ -41,7 +41,7 @@ namespace Equilobe.DailyReport.SL
 
         public JiraPolicy GetJiraPolicy(ItemContext context)
         {
-            var reportSettings = new ReportsDb().ReportSettings.SingleOrDefault(r => r.Id == context.Id);
+            var reportSettings = new ReportsDb().BasicSettings.SingleOrDefault(r => r.Id == context.Id);
             if (reportSettings == null)
                 return null;
 
@@ -73,11 +73,11 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(r => r.Id == context.Id);
-                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                var reportSettings = db.BasicSettings.SingleOrDefault(r => r.Id == context.Id);
+                if (reportSettings == null || reportSettings.SerializedAdvancedSettings == null)
                     return null;
 
-                return Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedPolicy.PolicyString);
+                return Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedAdvancedSettings.PolicyString);
             }
         }
 

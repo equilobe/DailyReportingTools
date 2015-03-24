@@ -10,12 +10,12 @@ namespace Equilobe.DailyReport.Models.Storage
     public class ReportExecutionInstance 
     {
         public long Id { get; set; }
-        public long ReportSettingsId { get; set; }
+        public long BasicSettingsId { get; set; }
         public SendScope Scope { get; set; }
         public string UniqueUserKey { get; set; }
         public DateTime DateAdded { get; set; }
         public DateTime? DateExecuted { get; set; }
 
-        public virtual ReportSettings ReportSettings { get; set; }
+        public virtual BasicSettings BasicSettings { get; set; }
     }
 }

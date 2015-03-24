@@ -45,14 +45,14 @@ namespace DailyReportWeb.Controllers.Api
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == policySummary.BaseUrl);
 
-                var reportSettings = installedInstance.ReportSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId);
+                var reportSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId);
                 if (reportSettings == null)
                 {
                     if (string.IsNullOrEmpty(policySummary.ReportTime))
                         return;
 
-                    reportSettings = new ReportSettings();
-                    db.ReportSettings.Add(reportSettings);
+                    reportSettings = new BasicSettings();
+                    db.BasicSettings.Add(reportSettings);
 
                     policySummary.CopyPropertiesOnObjects(reportSettings);
                     reportSettings.InstalledInstanceId = installedInstance.Id;
@@ -96,13 +96,13 @@ namespace DailyReportWeb.Controllers.Api
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedPolicy.BaseUrl);
 
-                var reportSettings = installedInstance.ReportSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId);
+                var reportSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId);
                 if (reportSettings == null)
                 {
-                    reportSettings = new ReportSettings();
-                    db.ReportSettings.Add(reportSettings);
+                    reportSettings = new BasicSettings();
+                    db.BasicSettings.Add(reportSettings);
 
-                    updatedPolicy.CopyTo<IReportSettings>(reportSettings);
+                    updatedPolicy.CopyTo<IBasicSettings>(reportSettings);
 
                     reportSettings.InstalledInstanceId = installedInstance.Id;
                     reportSettings.UniqueProjectKey = RandomString.Get(updatedPolicy.ProjectKey);
@@ -120,12 +120,12 @@ namespace DailyReportWeb.Controllers.Api
                 }
 
                 var policy = new ReportPolicy();
-                updatedPolicy.CopyTo<ISerializedPolicy>(policy);
+                updatedPolicy.CopyTo<IAdvancedSettings>(policy);
 
-                if (reportSettings.SerializedPolicy == null)
-                    reportSettings.SerializedPolicy = new SerializedPolicy();
+                if (reportSettings.SerializedAdvancedSettings == null)
+                    reportSettings.SerializedAdvancedSettings = new SerializedAdvancedSettings();
 
-                reportSettings.SerializedPolicy.PolicyString = Serialization.XmlSerialize(policy);
+                reportSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(policy);
 
                 db.SaveChanges();
             }

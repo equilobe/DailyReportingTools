@@ -10,14 +10,14 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string BaseUrl { get; set; }
     }
 
-    public interface IReportSettings
+    public interface IBasicSettings
     {
         string BaseUrl { get; set; }
         long ProjectId { get; set; }
         string ReportTime { get; set; }
     }
 
-    public interface ISerializedPolicy
+    public interface IAdvancedSettings
     {
         string DraftEmails { get; set; }
         string Emails { get; set; }

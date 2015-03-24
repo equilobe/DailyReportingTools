@@ -74,7 +74,7 @@ namespace Equilobe.DailyReport.SL
 
         public string GetReportTime(string baseUrl, long projectId)
         {
-            return new ReportsDb().ReportSettings
+            return new ReportsDb().BasicSettings
                 .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
                 .Select(qr => qr.ReportTime)
                 .FirstOrDefault();
@@ -84,7 +84,7 @@ namespace Equilobe.DailyReport.SL
         {
             return new ReportsDb().InstalledInstances
                 .Where(installedInstance => installedInstance.BaseUrl == baseUrl)
-                .SelectMany(installedInstance => installedInstance.ReportSettings
+                .SelectMany(installedInstance => installedInstance.BasicSettings
                 .Select(reportSettings => reportSettings.UniqueProjectKey))
                 .ToList();
         }
@@ -117,9 +117,9 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
-                _report.Settings = new ReportSettings();
-                reportSettings.CopyTo<ReportSettings>(_report.Settings);
+                var reportSettings = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
+                _report.Settings = new BasicSettings();
+                reportSettings.CopyTo<BasicSettings>(_report.Settings);
                 if (reportSettings.ReportExecutionSummary != null)
                 {
                     if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
@@ -138,16 +138,16 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.ReportSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
+                var reportSettings = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == uniqueProjectKey);
 
-                if (reportSettings == null || reportSettings.SerializedPolicy == null)
+                if (reportSettings == null || reportSettings.SerializedAdvancedSettings == null)
                     return null;
 
                 var policyBuffer = new FullReportSettings();
-                reportSettings.CopyTo<IReportSettings>(policyBuffer);
+                reportSettings.CopyTo<IBasicSettings>(policyBuffer);
 
-                if (!string.IsNullOrEmpty(reportSettings.SerializedPolicy.PolicyString))
-                    Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedPolicy.PolicyString)
+                if (!string.IsNullOrEmpty(reportSettings.SerializedAdvancedSettings.PolicyString))
+                    Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedAdvancedSettings.PolicyString)
                         .CopyPropertiesOnObjects(policyBuffer);
 
                 return policyBuffer;
