@@ -229,6 +229,9 @@
     <Content Include="app\projects.test.js">
       <DependentUpon>projects.html</DependentUpon>
     </Content>
+    <Content Include="App_Data\TimeZoneMappings.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="config\readme.txt" />
     <Content Include="app\signUp.html" />
     <Content Include="app\signUp.js">
@@ -321,7 +324,6 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Services\" />
     <Folder Include="Views\Report\" />
   </ItemGroup>
