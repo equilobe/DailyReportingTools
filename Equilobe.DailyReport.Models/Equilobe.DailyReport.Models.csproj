@@ -125,7 +125,7 @@
     <Compile Include="Policy\Month.cs" />
     <Compile Include="Policy\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
-    <Compile Include="Storage\SerializedPolicy.cs" />
+    <Compile Include="Storage\SerializedAdvancedSettings.cs" />
     <Compile Include="Web\AccountModel.cs" />
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
@@ -141,7 +141,7 @@
     <Compile Include="SourceControl\LogEntry.cs" />
     <Compile Include="SourceControl\Options.cs" />
     <Compile Include="SourceControl\Report.cs" />
-    <Compile Include="Storage\ReportSettings.cs" />
+    <Compile Include="Storage\BasicSettings.cs" />
     <Compile Include="Web\TimeZone.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,9 @@ namespace Equilobe.DailyReport.SL
         {
             var reportSettings = new ReportsDb().BasicSettings
                                                 .Where(rs => rs.Id == context.Id)
-                                                .Single();
+                                                .SingleOrDefault();
+            if (reportSettings == null)
+                return null;
 
             var instance = reportSettings.InstalledInstance;
             if (instance.UserId != context.UserId)
