@@ -40,7 +40,7 @@ namespace JiraReporter.Services
             IssueAdapter.RemoveWrongIssues(dayLog.Issues);
 
             if (dayLog.Issues != null)
-                dayLog.Issues = TasksService.GetParentTasks(dayLog.Issues, author);
+                dayLog.Issues = TaskLoader.GetParentTasks(dayLog.Issues, author);
             dayLog.UnsyncedCommits = new List<JiraCommit>(dayLog.Commits.FindAll(c => c.TaskSynced == false));
             dayLog.TimeLogged = dayLog.TimeSpent.SetTimeFormat();
 

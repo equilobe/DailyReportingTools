@@ -69,5 +69,6 @@ packages/
 
 #Policies files
 [Pp]olicies/
-/DailyReportWeb/ConnectionStrings.config
-/JiraReporter/ConnectionStrings.config
+
+#Config files
+**/[Cc]onfig/*.config

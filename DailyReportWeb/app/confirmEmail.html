@@ -1,0 +1,38 @@
+﻿<div id="jumbo" class="jumbotron">
+    <div class="container">
+        <h1>
+            Daily Report
+        </h1>
+        <p class="help-block">
+            Use this page to confirm the email upon registration
+        </p>
+    </div>
+</div>
+
+<div>
+    <div class="container" ng-if="status == 'loading'">
+        <h3>
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+        </h3>
+    </div>
+    <div class="container" ng-if="status == 'loaded' && isConfirmed">
+        <h1>
+            <span class="alert-success">
+                Confirm successful
+            </span>
+        </h1>
+        <p class="help-block">
+            Your account was activated. You can now sign in.
+        </p>
+    </div>
+    <div class="container" ng-if="status == 'loaded' && !isConfirmed">
+        <h1>
+            <span class="alert-danger">
+                Confirm not successful
+            </span>
+        </h1>
+        <p class="help-block">
+            Something went wrong. Please try again later.
+        </p>
+    </div>
+</div>

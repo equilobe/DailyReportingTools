@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
-    public interface IGitHubService
+    public interface IGitHubService : IService
     {
         List<GitHubCommit> GetBranchCommits(ICredentials context, string repositoryOwner, string repositoryName, string sinceDate, string untilDate, string branch);
         List<GitHubCommit> GetAllCommits(ICredentials context, string owner, string name, string sinceDate, string untilDate);

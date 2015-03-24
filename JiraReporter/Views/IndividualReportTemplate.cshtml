@@ -56,16 +56,20 @@ else
                 </tbody>
             </table>
         }
-
+        @if (!Model.Author.IsEmpty)
+        {
         <div style="margin-top:50px">
             <h3 style="margin-top:15px; color:black">Work summary</h3>
             <div style="margin-top:20px">
                 <span style="margin-left:5px">
                     <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
                 </span>
+                    @if (Model.HasSprint)
+                    {
                 <span style="margin-left:5px">
                     <a style="width:10px; height:10px; background-color:#F60; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
                 </span>
+                    }
                 <span style="margin-left:5px">
                     <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
                 </span>
@@ -79,7 +83,7 @@ else
                         imgSrc = "cid:" + Model.Author.AvatarId;
                     }
                     <tr>
-                        <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" />@*@Model.Author.FirstName*@</td>
+                            <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" /></td>
                         <td style="padding:0px; padding-bottom:5px">
                             @Partial("Views/guidelines.cshtml", Model.Summary)
                             @if (Model.Author.Timing.TotalTimeSeconds > 0)
@@ -135,13 +139,18 @@ else
                 </tbody>
             </table>
         </div>
+        }
+
     </div>
 
     <div style="margin-top:40px; line-height:1.4em">
-        @if (Model.Author.DayLogs.Count > 0 || Model.Author.InProgressTasks.Count > 0 || Model.Author.OpenTasks.Count > 0)
+
+        @if (Model.Author.IsEmpty)
         {
-            <div style="margin-top:40px;">
-                @if (Model.Author.DayLogs.Count > 0)
+            <h3 style="color:orange">There is no logged work or assigned issues</h3>
+        }
+
+        @if (Model.Author.HasDayLogs)
                 {
                     foreach (var dayLog in Model.Author.DayLogs)
                     {
@@ -194,8 +203,10 @@ else
                     }
                 }
 
-                @if (Model.Author.InProgressTasks.Count > 0)
+        @if (Model.HasSprint)
                 {
+            if (Model.Author.InProgressTasks.Count > 0)
+            {
                     <div style="margin-top:20px; line-height:1.4em;">
                         <b style="color:sienna; font-size:16px;">In Progress</b>
 
@@ -239,7 +250,7 @@ else
                     </div>
                 }
 
-                @if (Model.Author.OpenTasks.Count > 0)
+            if (Model.Author.OpenTasks.Count > 0)
                 {
                     <div style="line-height:1.4em; color:sienna; margin-top:20px;">
                         <b style="font-size: 16px; color: sienna">Upcoming </b>
@@ -284,72 +295,34 @@ else
 
                     </div>
                 }
-            </div>
         }
+
     </div>
 
-    <div>
-        <table style="margin-top:50px; width:500px; height:200px; border:1px solid; border-color:#D6E9C6; background-color:#DFF0D8">
+    <table style="margin-top:50px; width:250px; height:50px;">
             <tbody>
                 <tr>
-                    <td width="100px" height="40px">
+                <td width="100px" height="40px" style="display:inline-block; padding:0px; line-height:40px;" title="This will confirm the draft ONLY for this particular user and send the draft report to the project manager &#013; Only click the button after: &#013; - errors have been corrected &#013; - all work has been logged">
                         @Partial("Views/confirmationButton.cshtml", Model.Author.IndividualDraftInfo.ConfirmationDraftUrl)
                     </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="color:#468847; font-weight:bold; margin:5px 0px 7px 10px">This will confirm the draft ONLY for this particular user and send the draft report to the project manager</p>
+
+                <td width="30px" height="40px" style="display:inline-block;font-size:12px; line-height:40px;padding:0px; text-align:center">
+                    or
+                    </td>
+                <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
+                    <a style="color:#0000FF; font-weight:bold; text-decoration:none; font-size:12px; line-height:40px" href="@Model.Author.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <p style="color:#808080; margin:0px 0px 0px 10px">Only click the button after:</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="color:#808080; margin:0px 0px 0px 10px">- errors have been corrected</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="color:#808080; margin:0px 0px 0px 10px">- all work has been logged</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td width="100px" height="40px">
-                        @Partial("Views/resendDraftButton.cshtml", Model.Author.IndividualDraftInfo.ResendDraftUrl)
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="color:#808080; margin:5px 0px 5px 10px">If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.</p>
-                    </td>
-                </tr>
+        </tbody>
+    </table>
+
                 @if (Model.Author.IsProjectLead == true)
                 {
-                    <tr>
-                        <td>
-                            <hr style="border:0; border-top:1px solid #CCC; margin:20px 10px 20px 10px" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            @Partial("Views/forceDraftButton.cshtml", Model.Author.IndividualDraftInfo.ForceDraftUrl)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p style="color:#808080; margin:5px 0px 5px 10px">Press this button to force sending full draft</p>
-                        </td>
-                    </tr>
+                <div>
+                    <hr style="width:250px; margin-left:0px" />
+                    <span style="font-size:12px; color:black;">
+                        If not everyone from your team has confirmed their report, you can also <a style="color:#0000FF; font-weight:bold; text-decoration:none;" href="@Model.Author.IndividualDraftInfo.ForceDraftUrl">force the full draft</a>.
+                    </span>
+                </div>
                 }
-            </tbody>
-        </table>
-    </div>
 </div>

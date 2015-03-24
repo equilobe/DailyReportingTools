@@ -1,18 +1,25 @@
-﻿using Equilobe.DailyReport.Models.Storage;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Configuration;
+using System.Net.Http;
 using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
     public class HomeController : Controller
     {
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IDataService DataService { get; set; }
+        public IPolicyEditorService PolicyService { get; set; }
+
         public ActionResult Index()
         {
-            return View();
+            return View(new RegexValidation());
         }
 
         public ActionResult About()
@@ -37,7 +44,7 @@ namespace DailyReportWeb.Controllers
                 name = "Daily Report Tool",
                 description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
                 key = ConfigurationManager.AppSettings["addonKey"],
-                baseUrl = UriExtensions.GetHostUrl(Request.Url.OriginalString),
+                baseUrl = UrlExtensions.GetHostUrl(Request.Url.OriginalString),
                 vendor = new
                 {
                     name = "Equilobe Software",
@@ -45,8 +52,8 @@ namespace DailyReportWeb.Controllers
                 },
                 links = new
                 {
-                    self = UriExtensions.GetHostUrl(Request.Url.OriginalString) + "/howto",
-                    documentation = UriExtensions.GetHostUrl(Request.Url.OriginalString) + "/docs"
+                    self = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/howto",
+                    documentation = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/docs"
                 },
                 apiVersion = 1,
                 authentication = new
@@ -93,7 +100,9 @@ namespace DailyReportWeb.Controllers
         [HttpPost]
         public ActionResult InstalledCallback()
         {
-            new DataService().Save(Request);
+            var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
+            var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
+            DataService.SaveInstance(instanceData);
 
             return Content(String.Empty);
         }
@@ -104,8 +113,13 @@ namespace DailyReportWeb.Controllers
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
             var baseUrl = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).BaseUrl;
 
-            new TaskSchedulerService().Delete(new DataService().GetUniqueProjectsKey(baseUrl));
-            new DataService().Delete(baseUrl);
+            var projectKeys = DataService.GetUniqueProjectsKey(baseUrl);
+
+            TaskSchedulerService.DeleteMultipleTasks( new ProjectListContext
+            {
+                UniqueProjectKeys = projectKeys
+            });
+            DataService.DeleteInstance(baseUrl);
 
             return Content(String.Empty);
         }

@@ -91,17 +91,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _summary = value; }
         }
 
-        private Sprint _sprint;
-        public Sprint Sprint
-        {
-            get
-            {
-                if (_sprint == null)
-                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
-                return _sprint;
-            }
-            set { _sprint = value; }
-        }
+        public Sprint Sprint { get; set; }
 
         private List<JiraCommit> _commits;
         public List<JiraCommit> Commits
@@ -115,16 +105,16 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         }
 
 
-        private SprintTasks _sprintTasks;
-        public SprintTasks SprintTasks
+        private SprintTasks _reportTasks;
+        public SprintTasks ReportTasks
         {
             get
             {
-                if (_sprintTasks == null)
+                if (_reportTasks == null)
                     throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
-                return _sprintTasks;
+                return _reportTasks;
             }
-            set { _sprintTasks = value; }
+            set { _reportTasks = value; }
         }
 
         private List<JiraPullRequest> _pullRequests;
@@ -194,5 +184,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
 
         public bool IsOnSchedule { get; set; }
+        public bool HasSprint { get; set; }
     }
 }

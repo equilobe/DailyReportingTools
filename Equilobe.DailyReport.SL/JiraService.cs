@@ -10,82 +10,71 @@ namespace Equilobe.DailyReport.SL
 {
     public class JiraService : IJiraService
     {
-        public JiraRequestContext _jiraRequestContext { get; set; }
-
-        public JiraService()
+        public Project GetProject(JiraRequestContext context, long id)
         {
-
+            return GetClient(context).GetProject(id);
         }
 
-        public JiraService(JiraRequestContext jiraRequestContext)
+        public List<JiraIssue> GetTimesheetForUser(TimesheetContext context)
         {
-            _jiraRequestContext = jiraRequestContext;
-        }
-        public Project GetProject(long id)
-        {
-            return GetClient(_jiraRequestContext).GetProject(id);
+            var client = GetClient(context.RequestContext);
+
+            return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(context.ProjectKey, context.TargetUser, context.StartDate, context.EndDate);
         }
 
-        public List<JiraIssue> GetTimesheetForUser(DateTime startDate, DateTime endDate, string targetUser)
+        public JiraUser GetUser(JiraRequestContext context, string username)
         {
-            var client = GetClient(_jiraRequestContext);
-
-            return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(targetUser, startDate, endDate);
+            return GetClient(context).GetUser(username);
         }
 
-        public JiraUser GetUser(string username)
+        public List<JiraUser> GetUsers(JiraRequestContext context, string projectKey)
         {
-            return GetClient(_jiraRequestContext).GetUser(username);
+            return GetClient(context).GetUsers(projectKey);
         }
 
-        public List<JiraUser> GetUsers(string projectKey)
+        public RapidView GetRapidView(JiraRequestContext context, string id)
         {
-            return GetClient(_jiraRequestContext).GetUsers(projectKey);
+            return GetClient(context).GetRapidView(id);
         }
 
-        public RapidView GetRapidView(string id)
+        public List<View> GetRapidViews(JiraRequestContext context)
         {
-            return GetClient(_jiraRequestContext).GetRapidView(id);
+            return GetClient(context).GetRapidViews();
         }
 
-        public List<View> GetRapidViews()
+        public SprintReport GetSprintReport(JiraRequestContext context,string rapidViewId, string sprintId)
         {
-            return GetClient(_jiraRequestContext).GetRapidViews();
+            return GetClient(context).GetSprintReport(rapidViewId, sprintId);
         }
 
-        public SprintReport GetSprintReport(string rapidViewId, string sprintId)
+        public List<Sprint> GetAllSprints(JiraRequestContext context,string rapidViewId)
         {
-            return GetClient(_jiraRequestContext).GetSprintReport(rapidViewId, sprintId);
+            return GetClient(context).GetAllSprints(rapidViewId);
         }
 
-        public List<Sprint> GetAllSprints(string rapidViewId)
+        public JiraIssue GetIssue(JiraRequestContext context,string issueKey)
         {
-            return GetClient(_jiraRequestContext).GetAllSprints(rapidViewId);
+            return GetClient(context).GetIssue(issueKey);
         }
 
-        public JiraIssue GetIssue(string issueKey)
+        public JiraIssues GetCompletedIssues(IssuesContext context)
         {
-            return GetClient(_jiraRequestContext).GetIssue(issueKey);
+            return GetClient(context.RequestContext).GetCompletedIssues(context.ProjectKey, context.StartDate, context.EndDate);
         }
 
-        public JiraIssues GetCompletedIssues(DateTime startDate, DateTime endDate)
+        public JiraIssues GetSprintTasks(JiraRequestContext context,string projectKey)
         {
-            return GetClient(_jiraRequestContext).GetCompletedIssues(startDate, endDate);
+            return GetClient(context).GetSprintTasks(projectKey);
         }
 
-        public JiraIssues GetSprintTasks(string projectKey)
+        public ProjectInfo GetProjectInfo (JiraRequestContext context,long id)
         {
-            return GetClient(_jiraRequestContext).GetSprintTasks(projectKey);
+            return GetClient(context).GetProjectInfo(id);
         }
 
-        public ProjectInfo GetProjectInfo (long id)
+        public List<ProjectInfo> GetProjectsInfo(JiraRequestContext context)
         {
-            return GetClient(_jiraRequestContext).GetProjectInfo(id);
-        }
-
-        public List<ProjectInfo> GetProjectsInfo()
-        {
-            return GetClient(_jiraRequestContext).GetProjectsInfo();
+            return GetClient(context).GetProjectsInfo();
         }
 
         public Sprint GetProjectSprintForDate(ProjectDateFilter filter)
@@ -97,9 +86,9 @@ namespace Equilobe.DailyReport.SL
         private JiraClient GetClient(IJiraRequestContext context)
         {
             if (!string.IsNullOrEmpty(context.SharedSecret))
-                return new JiraClient(context.BaseUrl, context.SharedSecret);
+                return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, "addonKey");
             else
-                return new JiraClient(context.BaseUrl, context.Username, context.Password);
+                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.Username, context.Password);
         }
     }
 }

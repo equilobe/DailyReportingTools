@@ -74,6 +74,9 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public Image Image { get; set; }
         public IndividualDraftInfo IndividualDraftInfo { get; set; }
         public bool IsProjectLead { get; set; }
+        public bool IsEmpty { get; set; }
+        public bool HasAssignedIssues { get; set; }
+        public bool HasDayLogs { get; set; }
 
         public JiraAuthor()
         {

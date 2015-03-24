@@ -31,7 +31,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<JiraPullRequest> PullRequests { get; set; }
         public List<JiraPullRequest> UnrelatedPullRequests { get; set; }
         public Sprint Sprint { get; set; }
-       
+
+        public bool HasMonth { get; set; }
+        public bool HasStatus { get; set; }
+        public bool HasWorkSummary { get; set; }
+        public bool HasSprint { get; set; }
+
         public int MonthEstimatedPixelWidth { get; set; }
         public string MonthEstimatedPixelWidthString
         {
@@ -108,6 +113,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             {
                 return ChartMaxWidth.ToString() + "px";
             }
-        }   
+        }
     }
 }

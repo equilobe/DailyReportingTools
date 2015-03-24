@@ -18,7 +18,7 @@ namespace JiraReporter.Services
     class SummaryLoader
     {
         public List<JiraAuthor> _authors { get { return _report.Authors; } }
-        public SprintTasks _sprintTasks { get { return _report.SprintTasks; } }
+        public SprintTasks _sprintTasks { get { return _report.ReportTasks; } }
         public List<JiraPullRequest> _pullRequests { get { return _report.PullRequests; } }
         public JiraPolicy _policy { get { return _report.Policy; } }
         public JiraOptions _options { get { return _report.Options; } }
@@ -48,48 +48,65 @@ namespace JiraReporter.Services
             _summary.PullRequests = _pullRequests;
             _summary.Sprint = _sprint;
             _summary.UnrelatedPullRequests = _pullRequests.FindAll(p => p.TaskSynced == false);
+            if (_report.HasSprint)
+            {
+                _summary.HasSprint = true;
             _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
+            }
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
             _summary.IsFinalDraft = _report.IsFinalDraft;
 
-            SetDates(_options);
+            SetDates();
             SetReportDate();
             SetAllocatedTime();
 
             SetTimeWorked();
             SetMonthEstimatedValue();
-            SetSpringEstimatedValue();
-            SetAverageTimeWorkedPerDay(_summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.ReportWorkingDays);
-            SetSummaryTasksTimeLeft(_sprintTasks);
+            SetSprintEstimatedValue();
+            SetAverageTimeWorkedPerDay();
+            SetSummaryTasksTimeLeft();
             SetRemainingMonthlyHours();
-            SetAverageRemainingTimePerDay(_summary.WorkingDays.MonthWorkingDays, _summary.WorkingDays.SprintWorkingDaysLeft);
+            SetAverageRemainingTimePerDay();
 
-            GetTasksCount(_sprintTasks);
+            GetTasksCount();
 
             SetUnassignedTimming();
 
-            SetHourRates(_summary.WorkingDays.MonthWorkingDaysLeft, _summary.WorkingDays.SprintWorkingDaysLeft);
-
             SetHealthColors();
-            SetVariances(_summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.MonthWorkingDays);
+            SetVariances();
 
-            SetHealth(_summary.WorkingDays.SprintWorkedDays);
+            SetHealth();
             SetHealthStatuses();
 
             SetMaxValues();
             SetWidths();
+            CheckSummaryCharts();
             SetGuidelinesRate();
             SetGuidelineWidth();
 
-            SetErrors(_sprintTasks);
+            SetErrors();
+        }
+
+        private void CheckSummaryCharts()
+        {
+            if (_summary.Timing.AverageWorkedMonth > 0 || _policy.AllocatedHoursPerMonth > 0)
+                _summary.HasMonth = true;
+            if (_summary.HasMonth == true || _summary.Sprint != null)
+                _summary.HasStatus = true;
+            if (_summary.Authors.Exists(a => !a.IsEmpty))
+                _summary.HasWorkSummary = true;
+
         }
 
         private void SetUnassignedTimming()
         {
-            _summary.Timing.OpenUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
+            if (!_report.HasSprint)
+                return;
+
+            _summary.Timing.OpenUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
             _summary.Timing.OpenUnassignedTasksTimeLeftString = _summary.Timing.OpenUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
-            _summary.Timing.InProgressUnassignedTasksSecondsLeft = TasksService.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
+            _summary.Timing.InProgressUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
             _summary.Timing.InProgressUnassignedTasksTimeLeftString = _summary.Timing.InProgressUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
             _summary.Timing.UnassignedTasksHoursAverageLeft = ((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600) / _summary.WorkingDays.SprintWorkingDaysLeft;
@@ -104,18 +121,21 @@ namespace JiraReporter.Services
                 _summary.ReportDate = _options.FromDate.ToString("m") + " - " + _options.ToDate.AddDays(-1).ToString("m");
         }
 
-        private void GetTasksCount(SprintTasks sprintTasks)
+        private void GetTasksCount()
         {
-            _summary.InProgressUnassignedCount = sprintTasks.InProgressTasks.Count(tasks => tasks.Assignee == null);
-            _summary.OpenUnassignedCount = sprintTasks.OpenTasks.Count(tasks => tasks.Assignee == null);
-            _summary.InProgressTasksCount = sprintTasks.InProgressTasks.Count;
-            _summary.OpenTasksCount = sprintTasks.OpenTasks.Count;
+            if (!_report.HasSprint)
+                return;
+
+            _summary.InProgressUnassignedCount = _report.ReportTasks.InProgressTasks.Count(tasks => tasks.Assignee == null);
+            _summary.OpenUnassignedCount = _report.ReportTasks.OpenTasks.Count(tasks => tasks.Assignee == null);
+            _summary.InProgressTasksCount = _report.ReportTasks.InProgressTasks.Count;
+            _summary.OpenTasksCount = _report.ReportTasks.OpenTasks.Count;
         }
 
-        private void SetDates(JiraOptions options)
+        private void SetDates()
         {
-            _summary.FromDate = options.FromDate;
-            _summary.ToDate = options.ToDate;
+            _summary.FromDate = _options.FromDate;
+            _summary.ToDate = _options.ToDate;
         }
 
         private void SetAllocatedTime()
@@ -144,39 +164,39 @@ namespace JiraReporter.Services
         {
             _summary.Timing.TotalTimeSeconds = _summary.Authors.Sum(a => a.Timing.TotalTimeSeconds);
             _summary.Timing.MonthHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.MonthSecondsWorked) / 3600;  
-            if (_sprint != null)
+            if (_report.HasSprint)
                 _summary.Timing.SprintHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.SprintSecondsWorked) / 3600; 
         }
 
-        private void SetAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
+        private void SetAverageTimeWorkedPerDay()
         {
-            SetTotalAverageTimeWorkedPerDay(monthWorkedDays, sprintWorkedDays, reportWorkingDays);
+            SetTotalAverageTimeWorkedPerDay();
             SetAuthorsAverageTiming();
         }
 
-        private void SetTotalAverageTimeWorkedPerDay(int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
+        private void SetTotalAverageTimeWorkedPerDay()
         {
-            if (monthWorkedDays > 0)
-                _summary.Timing.AverageWorkedMonth = (_summary.Timing.MonthHoursWorked * 3600) / monthWorkedDays;
-            if (sprintWorkedDays > 0)
-                _summary.Timing.AverageWorkedSprint = (_summary.Timing.SprintHoursWorked * 3600) / sprintWorkedDays;
-            if (reportWorkingDays > 0)
-                _summary.Timing.AverageWorked = (double)_summary.Timing.TotalTimeSeconds / reportWorkingDays;
+            if (_summary.WorkingDays.MonthWorkedDays > 0)
+                _summary.Timing.AverageWorkedMonth = (_summary.Timing.MonthHoursWorked * 3600) / _summary.WorkingDays.MonthWorkedDays;
+            if (_report.HasSprint)
+                _summary.Timing.AverageWorkedSprint = (_summary.Timing.SprintHoursWorked * 3600) / _summary.WorkingDays.SprintWorkedDays;
+            if (_summary.WorkingDays.ReportWorkingDays > 0)
+                _summary.Timing.AverageWorked = (double)_summary.Timing.TotalTimeSeconds / _summary.WorkingDays.ReportWorkingDays;
 
             TimingHelpers.SetAverageWorkStringFormat(_summary.Timing);
         }
 
-        private void SetAverageRemainingTimePerDay(int monthRemainingDays, int sprintRemainingDays)
+        private void SetAverageRemainingTimePerDay()
         {
-            if (monthRemainingDays == 0)
+            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0)
                 _summary.Timing.RemainingMonthAverage = 0;
             else
-                _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / monthRemainingDays;
+                _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / _summary.WorkingDays.MonthWorkingDaysLeft;
 
-            if (sprintRemainingDays == 0)
+            if (!_report.HasSprint)
                 _summary.Timing.RemainingSprintAverage = 0;
             else
-                _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / sprintRemainingDays;
+                _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / _summary.WorkingDays.SprintWorkingDaysLeft;
 
             TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
         }
@@ -190,8 +210,11 @@ namespace JiraReporter.Services
             _summary.Timing.MonthAverageEstimatedString = hours.RoundDoubleOneDecimal();
         }
 
-        private void SetSpringEstimatedValue()
+        private void SetSprintEstimatedValue()
         {
+            if (!_report.HasSprint)
+                return;
+
             _summary.Timing.SprintAverageEstimate = _summary.Timing.AllocatedHoursPerDay * 3600;
             _summary.Timing.SprintAverageEstimateString = _summary.Timing.AllocatedHoursPerDay.RoundDoubleOneDecimal();
         }
@@ -205,15 +228,18 @@ namespace JiraReporter.Services
             }
         }
 
-        private void SetSummaryTasksTimeLeft(SprintTasks tasks)
+        private void SetSummaryTasksTimeLeft()
         {
+            if (!_report.HasSprint)
+                return;
+
             _summary.Timing.InProgressTasksTimeLeftSeconds = 0;
             _summary.Timing.OpenTasksTimeLeftSeconds = 0;
 
-            if (tasks.InProgressTasks != null)
-                _summary.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.InProgressTasks);
-            if (tasks.OpenTasks != null)
-                _summary.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(tasks.OpenTasks);
+            if (_report.ReportTasks.InProgressTasks != null)
+                _summary.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_report.ReportTasks.InProgressTasks);
+            if (_report.ReportTasks.OpenTasks != null)
+                _summary.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_report.ReportTasks.OpenTasks);
 
             _summary.Timing.InProgressTasksTimeLeftString = _summary.Timing.InProgressTasksTimeLeftSeconds.SetTimeFormat8Hour();
             _summary.Timing.OpenTasksTimeLeftString = _summary.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
@@ -229,15 +255,6 @@ namespace JiraReporter.Services
                 _summary.Timing.RemainingMonthHours = _summary.Timing.AllocatedHoursPerMonth - _summary.Timing.MonthHoursWorked;
         }
 
-        private void SetHourRates(int monthWorkingDaysLeft, int sprintWorkingDaysLeft)
-        {
-            _summary.Timing.HourRateToCompleteMonth = _summary.Timing.RemainingMonthHours / monthWorkingDaysLeft;
-            _summary.Timing.HourRateToCompleteMonthString = ((int)_summary.Timing.HourRateToCompleteMonth * 3600).SetTimeFormat8Hour();
-            if (sprintWorkingDaysLeft > 0)
-                _summary.Timing.HourRateToCompleteSprint = (double)_summary.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
-            _summary.Timing.HourRateToCompleteSprintString = ((int)_summary.Timing.HourRateToCompleteSprint * 3600).SetTimeFormat8Hour();
-        }
-
         private void SetHealthColors()
         {
             _summary.HealthColors = new Dictionary<Health, string>();
@@ -247,7 +264,7 @@ namespace JiraReporter.Services
             _summary.HealthColors.Add(Health.None, "#FFFFFF");
         }
 
-        private void SetHealth(int sprintWorkedDays)
+        private void SetHealth()
         {
             var healthInspector = new HealthInspector(_report);
             _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions), _summary.Timing.TotalTimeHours);
@@ -258,8 +275,8 @@ namespace JiraReporter.Services
             }
             else
             {
-                _summary.DayHealth = healthInspector.GetDayHealth(_summary.Timing.AllocatedHoursPerDay, _summary.Timing.HourRateToCompleteSprint);
-                _summary.SprintHealth = healthInspector.GetSprintHealth(sprintWorkedDays, _summary.Timing.AllocatedHoursPerDay, _summary.Timing.SprintHoursWorked);
+                _summary.DayHealth = healthInspector.GetDayHealth(_summary.Timing.AllocatedHoursPerDay, _summary.Timing.RemainingSprintAverage);
+                _summary.SprintHealth = healthInspector.GetSprintHealth(_summary.WorkingDays.SprintWorkedDays, _summary.Timing.AllocatedHoursPerDay, _summary.Timing.SprintHoursWorked);
             }
 
 
@@ -278,42 +295,48 @@ namespace JiraReporter.Services
             _summary.MonthHourRateVariance = MathHelpers.GetVariance(workedPerDay, averageFromAllocatedHours);
         }
 
-        public void SetVariances(int sprintWorkedDays, int monthWorkedDays, int monthWorkingDays)
+        public void SetVariances()
         {
-            if (sprintWorkedDays > 0)
-                SetSprintVariance(sprintWorkedDays);
+            if (_report.HasSprint)
+                SetSprintVariance(_summary.WorkingDays.SprintWorkedDays);
             if (_summary.Timing.AllocatedHoursPerMonth > 0)
-                SetMonthVariance(monthWorkedDays, monthWorkingDays);
+                SetMonthVariance(_summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.MonthWorkingDays);
         }
 
         private void SetHealthStatuses()
         {
+            if (_report.HasSprint)
             _summary.SprintStatus = HealthInspector.GetSprintStatus(_summary.SprintHealth, _summary.SprintHourRateVariance);
             _summary.MonthStatus = HealthInspector.GetMonthStatus(_summary.MonthHealth, _summary.MonthHourRateVariance);
         }
 
-        private void SetErrors(SprintTasks tasks)
+        private void SetErrors()
         {
             SetAuthorsWithErrors();
             SetAuthorsNotConfirmed();
-            GetCompletedTasksErrors(tasks);
-            GetUnassignedErrors(tasks);
+            GetCompletedTasksErrors();
+            GetUnassignedErrors();
             GetAllErrors();
         }
 
         private void GetAllErrors()
         {
             var errors = new List<Error>();
+            if (_summary.CompletedWithNoWorkErrors != null)
+                errors = errors.Concat(_summary.CompletedWithNoWorkErrors).ToList();
+            if (_summary.ConfirmationErrors != null)
+                errors = errors.Concat(_summary.ConfirmationErrors).ToList();
+
+            if(_report.HasSprint)
+            {
             if (_summary.AuthorsWithErrors != null)
                 errors = _summary.AuthorsWithErrors.SelectMany(e => e.Errors).ToList();
             if (_summary.CompletedWithEstimateErrors != null)
                 errors = errors.Concat(_summary.CompletedWithEstimateErrors).ToList();
-            if (_summary.CompletedWithNoWorkErrors != null)
-                errors = errors.Concat(_summary.CompletedWithNoWorkErrors).ToList();
             if (_summary.UnassignedErrors != null)
                 errors = errors.Concat(_summary.UnassignedErrors).ToList();
-            if (_summary.ConfirmationErrors != null)
-                errors = errors.Concat(_summary.ConfirmationErrors).ToList();
+            }
+
             _summary.Errors = errors;
         }
 
@@ -342,12 +365,12 @@ namespace JiraReporter.Services
             }
         }
 
-        private void GetCompletedTasksErrors(SprintTasks tasks)
+        private void GetCompletedTasksErrors()
         {
             _summary.CompletedWithEstimateErrors = new List<Error>();
             _summary.CompletedWithNoWorkErrors = new List<Error>();
-            if (tasks.CompletedTasks != null)
-                foreach (var completedTasks in tasks.CompletedTasks.Values)
+            if (_report.ReportTasks.CompletedTasks != null)
+                foreach (var completedTasks in _report.ReportTasks.CompletedTasks.Values)
                 {
                     var tasksWithErrors = completedTasks.Where(t => t.ErrorsCount > 0);
                     var errorsWithEstimate = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasRemaining)).ToList();
@@ -357,13 +380,13 @@ namespace JiraReporter.Services
                 }
         }
 
-        private void GetUnassignedErrors(SprintTasks tasks)
+        private void GetUnassignedErrors()
         {
             _summary.UnassignedErrors = new List<Error>();
-            if (tasks.UnassignedTasks != null && tasks.UnassignedTasks.Count > 0)
+            if (_report.ReportTasks.UnassignedTasks != null && _report.ReportTasks.UnassignedTasks.Count > 0)
             {
                 var errors = new List<Error>();
-                errors = tasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                errors = _report.ReportTasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
                 _summary.UnassignedErrors = _summary.UnassignedErrors.Concat(errors).ToList();
             }
         }
@@ -467,7 +490,6 @@ namespace JiraReporter.Services
             }
             return workingDaysInfo;
         }
-
         private void SetGuidelinesRate()
         {
             var integer = 2;            

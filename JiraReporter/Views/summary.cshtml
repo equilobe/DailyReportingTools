@@ -3,6 +3,8 @@
     var imgSrc = string.Empty;
     var display = string.Empty;
     var visibility = string.Empty;
+    var sprintDisplay = string.Empty;
+    var sprintVisibility = string.Empty;
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
@@ -12,6 +14,7 @@ else
 {
     day = Model.FromDate.DayOfWeek.ToString();
 }
+
 @if (Model.Errors != null && Model.Errors.Count > 0)
 {
     <div style="margin-top:20px">
@@ -101,6 +104,7 @@ else
         </table>
     </div>
 }
+
 <div style="margin-top:10px">
     <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px">
         <tbody>
@@ -119,6 +123,8 @@ else
     </table>
 </div>
 
+@if (Model.HasStatus)
+{
 <div style="margin-top:50px">
     <h3 style="margin-top:15px; color:black">Status (h / day)</h3>
     <div style="margin-top:20px;">
@@ -137,7 +143,9 @@ else
     </div>
     <table cellspacing="0" style="margin-top:20px">
         <tbody>
-            <tr>
+            @if (Model.HasSprint)
+            {
+                <tr style="@sprintDisplay; sprintVisibility">
                 <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                     <img src="cid:sprint_48.png" />
                     <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
@@ -198,6 +206,11 @@ else
                 <td width="75px" height="20px"></td>
                 <td width="15px" height="20px"></td>
             </tr>
+
+            }
+               
+                @if (Model.HasMonth)
+                {
             <tr>
                 <td style="width:75px; height:55px; max-width:55px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                     <img src="cid:calendar_month_48.png" />
@@ -245,19 +258,26 @@ else
                     }
                 </td>
             </tr>
+                }
         </tbody>
     </table>
 </div>
+}
 
+@if (Model.HasWorkSummary)
+{
 <div style="margin-top:50px">
     <h3 style="margin-top:15px; color:black">Work summary / person (h / day)</h3>
     <div style="margin-top:20px">
         <span style="margin-left:5px">
             <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
         </span>
+            @if (Model.Sprint != null)
+            {
         <span style="margin-left:5px">
             <a style="width:10px; height:10px; background-color:#F60; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
         </span>
+            }
         <span style="margin-left:5px">
             <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
         </span>
@@ -266,7 +286,6 @@ else
         </span>
     </div>
     <table cellspacing="0" style="margin-top:20px">
-        <tbody>
             @foreach (var author in Model.Authors)
             {
                 imgSrc = "cid:" + author.AvatarId;
@@ -335,6 +354,7 @@ else
                     <td width="15px" height="20px"></td>
                 </tr>
             }
+         
             @if (Model.Timing.UnassignedTasksSecondsLeft == 0)
             {
                 display = "display:none !important";
@@ -359,6 +379,6 @@ else
                     </div>
                 </td>
             </tr>
-        </tbody>
     </table>
-</div>
+    </div>
+}
