@@ -127,9 +127,6 @@
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Views\button.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Views\confirmationButton.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
