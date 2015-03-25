@@ -30,18 +30,17 @@ namespace Equilobe.DailyReport.SL
 
         public string GetWindowsTimeZoneIdByIanaTimeZone (string ianaTimeZone)
         {
-            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-            var mapFilePath = Path.Combine(path, TimeZoneMappingFileName);
-
-            XmlDocument timeZoneMap = GetTimeZoneMapXml(mapFilePath);
+            XmlDocument timeZoneMap = GetTimeZoneMapXml();
             XmlNode mapZoneNode = timeZoneMap.SelectSingleNode(String.Format("//mapZone[@type='{0}']", ianaTimeZone));
-            return mapZoneNode == null ? String.Empty : mapZoneNode.Attributes["other"].Value.Trim();
+            return mapZoneNode == null ? null : mapZoneNode.Attributes["other"].Value.Trim();
         }
 
-        private static XmlDocument GetTimeZoneMapXml(string mapPath)
+        private static XmlDocument GetTimeZoneMapXml()
         {
+            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+            var mapFilePath = Path.Combine(path, TimeZoneMappingFileName);
             XmlDocument doc = new XmlDocument();
-            doc.Load(mapPath);
+            doc.Load(mapFilePath);
             return doc;
         }
     }
