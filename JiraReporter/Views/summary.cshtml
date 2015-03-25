@@ -151,7 +151,7 @@ else
                     <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
                 </td>
                 <td style="padding:0px; padding-bottom:10px; height:75px">
-                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfo)
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
                     @if (Model.Timing.AverageWorked > 0)
                     {
                         <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
@@ -217,7 +217,7 @@ else
                     <span style="color:black; display:inline-block; padding-top:5px">Month</span>
                 </td>
                 <td style="padding:0px; padding-bottom:10px; height:55px;">
-                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfo)
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
                     <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                     </div>
                     @if (Model.Policy.AllocatedHoursPerMonth > 0)
@@ -295,7 +295,7 @@ else
                         <span style="color:black; display:inline-block; padding-top:5px">@author.ShortName</span>
                     </td>
                     <td style="padding:0px; padding-bottom:10px; height:55px">
-                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfo)
+                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
                         @if (author.Timing.TotalTimeSeconds > 0)
                         {
                             <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
@@ -366,7 +366,7 @@ else
                     <span style="color:black; display:inline-block; padding-top:5px">Unassigned</span>
                 </td>
                 <td style="padding:0px; padding-bottom:10px; height:55px">
-                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfo)
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
                     <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                     </div>
                     <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">

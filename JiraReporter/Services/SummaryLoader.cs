@@ -95,7 +95,6 @@ namespace JiraReporter.Services
                 _summary.HasStatus = true;
             if (_summary.Authors.Exists(a => !a.IsEmpty))
                 _summary.HasWorkSummary = true;
-
         }
 
         private void SetUnassignedTimming()
@@ -416,7 +415,6 @@ namespace JiraReporter.Services
         {
             SetWorkSummaryMax();
             SetStatusMax();
-            _summary.TotalMaxValue = Math.Max(_summary.StatusMaxValue, _summary.WorkSummaryMaxValue);
         }
 
         private double GetSprintMax()
@@ -443,10 +441,10 @@ namespace JiraReporter.Services
         private void SetWidths()
         {
             var widthHelper = new SummaryWidthLoader(_summary.ChartMaxBarWidth);
-            widthHelper.SetWorkSummaryChartWidths(_summary, _summary.TotalMaxValue, _report.IsIndividualDraft);
+            widthHelper.SetWorkSummaryChartWidths(_summary, _summary.WorkSummaryMaxValue, _report.IsIndividualDraft);
 
             GetStatusValues();
-            widthHelper.SetStatusChartWidths(_summary.TotalMaxValue, _summary.SprintWidths, _summary.MonthWidths);
+            widthHelper.SetStatusChartWidths(_summary.StatusMaxValue, _summary.SprintWidths, _summary.MonthWidths);
         }
 
         private void GetStatusValues()
@@ -496,15 +494,26 @@ namespace JiraReporter.Services
             if (_report.IsIndividualDraft)
                 SetGuidelinesForAuthors();
             else
-                SetGeneralGuidelines();
+            {
+                SetStatusGuidelines();
+                SetWorkSummaryGuidelines();
+            }
         }
 
-        private void SetGeneralGuidelines()
+        private void SetStatusGuidelines()
         {
-            _summary.GuidelineInfo = new SummaryGuidelineInfo();
-            _summary.GuidelineInfo.GuidelinesRate = GetGuidelinesRate(_summary.TotalMaxValue);
-            _summary.GuidelineInfo.GuidelinesCount = _summary.TotalMaxValue / _summary.GuidelineInfo.GuidelinesRate;
-            _summary.GuidelineInfo.GuidelineWidth = GetGuidelineWidth(_summary.TotalMaxValue, _summary.GuidelineInfo.GuidelinesRate);
+            _summary.GuidelineInfoStatus = new SummaryGuidelineInfo();
+            _summary.GuidelineInfoStatus.GuidelinesRate = GetGuidelinesRate(_summary.StatusMaxValue);
+            _summary.GuidelineInfoStatus.GuidelinesCount = _summary.StatusMaxValue / _summary.GuidelineInfoStatus.GuidelinesRate;
+            _summary.GuidelineInfoStatus.GuidelineWidth = GetGuidelineWidth(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
+        }
+
+        private void SetWorkSummaryGuidelines()
+        {
+            _summary.GuidelineInfoWorkSummary = new SummaryGuidelineInfo();
+            _summary.GuidelineInfoWorkSummary.GuidelinesRate = GetGuidelinesRate(_summary.WorkSummaryMaxValue);
+            _summary.GuidelineInfoWorkSummary.GuidelinesCount = _summary.WorkSummaryMaxValue / _summary.GuidelineInfoWorkSummary.GuidelinesRate;
+            _summary.GuidelineInfoWorkSummary.GuidelineWidth = GetGuidelineWidth(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
         }
 
         private void SetGuidelinesForAuthors()
@@ -520,7 +529,7 @@ namespace JiraReporter.Services
 
         private int GetGuidelinesRate(int maxValue)
         {
-            var integer = 1;
+            var integer = 2;
             while (maxValue / integer >= _summary.GuidelinesOptimalNumber)
                 integer = integer * 2;
             return integer;
