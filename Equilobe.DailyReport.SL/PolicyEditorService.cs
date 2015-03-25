@@ -50,7 +50,6 @@ namespace Equilobe.DailyReport.SL
             var instance = reportSettings.InstalledInstance;
             var jiraContext = new JiraRequestContext();
             instance.CopyPropertiesOnObjects(jiraContext);
-            jiraContext.JiraPassword = AesEncryptamajig.Decrypt(jiraContext.JiraPassword, DataService.GetEncriptedKey());
 
             var project = JiraService.GetProject(jiraContext, reportSettings.ProjectId);
 

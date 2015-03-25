@@ -20,6 +20,7 @@ namespace JiraReporter
     class ReportGeneratorService : IReportGeneratorService
     {
         public IJiraService JiraService { get; set; }
+        public IEncryptionService EncryptionService { get; set; }
 
         public JiraReport GenerateReport(JiraReport report)
         {
@@ -54,7 +55,7 @@ namespace JiraReporter
         private List<JiraAuthor> GetReportAuthors(JiraReport context)
         {
             var authors = new List<JiraAuthor>();
-            var authorLoader = new AuthorLoader(context) { JiraService = JiraService };
+            var authorLoader = new AuthorLoader(context) { JiraService = JiraService, EncryptionService = EncryptionService };
             if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey))
             {
                 var author = authorLoader.CreateAuthorByKey(context);

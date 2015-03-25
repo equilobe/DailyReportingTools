@@ -13,7 +13,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<Instance> GetInstances(ApplicationUser user);
         string GetBaseUrl(long id);
         string GetSharedSecret(string baseUrl);
-        string GetEncriptedKey();
         string GetPassword(string baseUrl, string username);
         string GetReportTime(string baseUrl, long projectId);
         System.Collections.Generic.List<string> GetUniqueProjectsKey(string baseUrl);

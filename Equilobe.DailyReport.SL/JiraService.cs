@@ -10,6 +10,8 @@ namespace Equilobe.DailyReport.SL
 {
     public class JiraService : IJiraService
     {
+        public IEncryptionService EncrytionService { get; set; }
+
         public Project GetProject(JiraRequestContext context, long id)
         {
             return GetClient(context).GetProject(id);
@@ -88,7 +90,10 @@ namespace Equilobe.DailyReport.SL
             if (!string.IsNullOrEmpty(context.SharedSecret))
                 return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, "addonKey");
             else
-                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, context.JiraPassword);
+            {
+                var password = EncrytionService.Decrypt(context.JiraPassword);
+                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, password);
+            }        
         }
     }
 }

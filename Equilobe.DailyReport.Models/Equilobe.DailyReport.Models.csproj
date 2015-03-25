@@ -60,6 +60,7 @@
     <Compile Include="General\UserContext.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
+    <Compile Include="Interfaces\IEncryptionService.cs" />
     <Compile Include="Interfaces\IPolicyEditorService.cs" />
     <Compile Include="Interfaces\IPolicySummaryService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />

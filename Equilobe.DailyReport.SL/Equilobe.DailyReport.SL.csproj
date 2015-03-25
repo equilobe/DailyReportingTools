@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataService.cs" />
+    <Compile Include="EncryptionService.cs" />
     <Compile Include="GitHubService.cs" />
     <Compile Include="JiraService.cs" />
     <Compile Include="PolicyEditorService.cs" />

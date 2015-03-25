@@ -18,6 +18,8 @@ namespace Equilobe.DailyReport.SL
 {
     public class DataService : IDataService
     {
+        public IEncryptionService EncryptionService { get; set; }
+
         public void SaveInstance(InstalledInstance instanceData)
         {
             using (var db = new ReportsDb())
@@ -37,7 +39,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var instanceData = new InstalledInstance();
-                modelData.JiraPassword = AesEncryptamajig.Encrypt(modelData.JiraPassword, GetEncriptedKey());
+                modelData.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
                 modelData.CopyPropertiesOnObjects(instanceData);
                 instanceData.UserId = db.Users.Where(u => u.Email == modelData.Email)
                                               .Select(u => u.Id)
@@ -70,19 +72,10 @@ namespace Equilobe.DailyReport.SL
 
         public string GetPassword(string baseUrl, string username)
         {
-            var encryptedPass = new ReportsDb().InstalledInstances
+            return new ReportsDb().InstalledInstances
                 .Where(ii => ii.BaseUrl == baseUrl && ii.JiraUsername == username)
                 .Select(ii => ii.JiraPassword)
                 .FirstOrDefault();
-
-            return AesEncryptamajig.Decrypt(encryptedPass, GetEncriptedKey());
-        }
-
-        public string GetEncriptedKey()
-        {
-            var byteKey = Convert.FromBase64String(ConfigurationManager.AppSettings["encKey"]);
-            var encKey = Encoding.UTF8.GetString(byteKey);
-            return encKey;
         }
 
         public string GetReportTime(string baseUrl, long projectId)
