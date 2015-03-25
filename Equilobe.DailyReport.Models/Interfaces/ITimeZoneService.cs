@@ -13,7 +13,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         /// </summary>
         /// <param name="ianaTimeZone"></param>
         /// <returns>SystemTimeZoneId</returns>
-        string GetWindowsTimeZoneIdByIanaTimeZone (ItemContext<string> itemContext)
+        string GetWindowsTimeZoneIdByIanaTimeZone(ItemContext<string> itemContext);
 
         List<Equilobe.DailyReport.Models.TimeZone.TimeZone> GetSystemTimeZones();
     }
