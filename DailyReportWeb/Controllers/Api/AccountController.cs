@@ -38,6 +38,7 @@ namespace DailyReportWeb.Controllers.Api
         public async Task<AccountResponse> Register(RegisterModel model)
         {
             if (!Validations.Mail(model.Email) ||
+                !Validations.Password(model.Password) ||
                 !Validations.Url(model.BaseUrl))
                 throw new ArgumentException();
 

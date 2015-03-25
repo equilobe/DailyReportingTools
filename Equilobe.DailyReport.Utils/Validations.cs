@@ -16,6 +16,7 @@ namespace Equilobe.DailyReport.Utils
         public string Digits = @"^[0-9]*$"; // 0-9*...
         public string Days = @"^([1-9]|(1|2)[0-9]|3[0,1])?(\s([1-9]|(1|2)[0-9]|3[0,1]))*$"; // 1-31
         public string Url = @"^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?$";
+        public string Password = @"^.{8,}$";
     }
 
     public static class Validations
@@ -82,6 +83,15 @@ namespace Equilobe.DailyReport.Utils
 
             Regex regexUrl = new Regex(regex.Url);
             return regexUrl.IsMatch(url);
+        }
+
+        public static bool Password(this string password)
+        {
+            if (string.IsNullOrEmpty(password))
+                return true;
+
+            Regex regexPassword = new Regex(regex.Password);
+            return regexPassword.IsMatch(password);
         }
     }
 }
