@@ -13,12 +13,12 @@ namespace Equilobe.DailyReport.SL
     {
         private static string TimeZoneMappingFileName = "TimeZoneMappings.xml";
 
-        public List<Equilobe.DailyReport.Models.Web.TimeZone> GetSystemTimeZones()
+        public List<Equilobe.DailyReport.Models.TimeZone.TimeZone> GetSystemTimeZones()
         {
-            var timeZoneList = new List<Equilobe.DailyReport.Models.Web.TimeZone>();
+            var timeZoneList = new List<Equilobe.DailyReport.Models.TimeZone.TimeZone>();
             TimeZoneInfo.GetSystemTimeZones()
                         .ToList()
-                        .ForEach(tz => timeZoneList.Add(new Equilobe.DailyReport.Models.Web.TimeZone()
+                        .ForEach(tz => timeZoneList.Add(new Equilobe.DailyReport.Models.TimeZone.TimeZone()
                         {
                             Id = tz.Id,
                             Name = tz.DisplayName,

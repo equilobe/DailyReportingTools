@@ -12,7 +12,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public ITimeZoneService TimeZoneService { get; set; }
 
-        public List<Equilobe.DailyReport.Models.Web.TimeZone> Get()
+        public List<Equilobe.DailyReport.Models.TimeZone.TimeZone> Get()
         {
             return TimeZoneService.GetSystemTimeZones();
         }
@@ -22,10 +22,10 @@ namespace DailyReportWeb.Controllers.Api
         /// <param name="id">The id is the IANA time zone returned from the ajax call made to freegeoip.net. 
         /// NOTE: the id has all of the slashes ('/') replaced by '-'</param>
         /// <returns></returns>
-        public Equilobe.DailyReport.Models.Web.TimeZones Get(string id)
+        public Equilobe.DailyReport.Models.TimeZone.TimeZones Get(string id)
         {
-            id = id.Replace('-', '/'); 
-            return new Equilobe.DailyReport.Models.Web.TimeZones()
+            id = id.Replace('-', '/');
+            return new Equilobe.DailyReport.Models.TimeZone.TimeZones()
             {
                 TimeZoneList = Get(),
                 SuggestedTimeZone = TimeZoneService.GetWindowsTimeZoneIdByIanaTimeZone(id)
