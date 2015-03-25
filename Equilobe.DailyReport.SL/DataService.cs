@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿using Encryptamajig;
+using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -8,8 +9,10 @@ using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -34,6 +37,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var instanceData = new InstalledInstance();
+                modelData.JiraPassword = AesEncryptamajig.Encrypt(modelData.JiraPassword, GetEncriptedKey());
                 modelData.CopyPropertiesOnObjects(instanceData);
                 instanceData.UserId = db.Users.Where(u => u.Email == modelData.Email)
                                               .Select(u => u.Id)
@@ -66,10 +70,19 @@ namespace Equilobe.DailyReport.SL
 
         public string GetPassword(string baseUrl, string username)
         {
-            return new ReportsDb().InstalledInstances
+            var encryptedPass = new ReportsDb().InstalledInstances
                 .Where(ii => ii.BaseUrl == baseUrl && ii.JiraUsername == username)
                 .Select(ii => ii.JiraPassword)
                 .FirstOrDefault();
+
+            return AesEncryptamajig.Decrypt(encryptedPass, GetEncriptedKey());
+        }
+
+        public string GetEncriptedKey()
+        {
+            var byteKey = Convert.FromBase64String(ConfigurationManager.AppSettings["encKey"]);
+            var encKey = Encoding.UTF8.GetString(byteKey);
+            return encKey;
         }
 
         public string GetReportTime(string baseUrl, long projectId)

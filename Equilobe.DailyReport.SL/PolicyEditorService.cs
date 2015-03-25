@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System;
 using Equilobe.DailyReport.Models;
+using Encryptamajig;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -17,6 +18,7 @@ namespace Equilobe.DailyReport.SL
         public IPolicySummaryService PolicySummaryService { get; set; }
         public ISourceControlService SourceControlService { get; set; }
         public IJiraService JiraService { get; set; }
+        public IDataService DataService { get; set; }
 
         public string GetJiraBaseUrl(NameValueCollection queryString)
         {
@@ -46,8 +48,9 @@ namespace Equilobe.DailyReport.SL
                 return null;
 
             var instance = reportSettings.InstalledInstance;
-
-            var jiraContext = new JiraRequestContext(instance.BaseUrl, instance.JiraUsername, instance.JiraPassword);
+            var jiraContext = new JiraRequestContext();
+            instance.CopyPropertiesOnObjects(jiraContext);
+            jiraContext.JiraPassword = AesEncryptamajig.Decrypt(jiraContext.JiraPassword, DataService.GetEncriptedKey());
 
             var project = JiraService.GetProject(jiraContext, reportSettings.ProjectId);
 
@@ -61,9 +64,9 @@ namespace Equilobe.DailyReport.SL
 
             return new JiraPolicy
             {
-                BaseUrl = instance.BaseUrl,
-                Username = instance.JiraUsername,
-                Password = instance.JiraPassword,
+                BaseUrl = jiraContext.BaseUrl,
+                Username = jiraContext.JiraUsername,
+                Password = jiraContext.JiraPassword,
                 ProjectId = reportSettings.ProjectId,
                 UserOptions = options
             };

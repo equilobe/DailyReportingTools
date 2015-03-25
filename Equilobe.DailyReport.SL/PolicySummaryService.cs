@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿using Encryptamajig;
+using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -30,6 +31,7 @@ namespace Equilobe.DailyReport.SL
 
             var jiraRequestContext = new JiraRequestContext();
             instance.CopyPropertiesOnObjects(jiraRequestContext);
+            jiraRequestContext.JiraPassword = AesEncryptamajig.Decrypt(jiraRequestContext.JiraPassword, DataService.GetEncriptedKey());
 
             var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, reportSettings.ProjectId);
             return new ReportSettingsSummary
@@ -54,6 +56,7 @@ namespace Equilobe.DailyReport.SL
 
             var jiraRequestContext = new JiraRequestContext();
             instance.CopyPropertiesOnObjects(jiraRequestContext);
+            jiraRequestContext.JiraPassword = AesEncryptamajig.Decrypt(jiraRequestContext.JiraPassword, DataService.GetEncriptedKey());
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
                               .Select(projectInfo => new ReportSettingsSummary
