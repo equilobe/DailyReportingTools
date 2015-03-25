@@ -51,7 +51,7 @@ namespace JiraReporter.Services
             if (_report.HasSprint)
             {
                 _summary.HasSprint = true;
-            _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
+                _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
             }
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
@@ -82,8 +82,7 @@ namespace JiraReporter.Services
             SetMaxValues();
             SetWidths();
             CheckSummaryCharts();
-            SetGuidelinesRate();
-            SetGuidelineWidth();
+            SetGuidelines();
 
             SetErrors();
         }
@@ -163,9 +162,9 @@ namespace JiraReporter.Services
         private void SetTimeWorked()
         {
             _summary.Timing.TotalTimeSeconds = _summary.Authors.Sum(a => a.Timing.TotalTimeSeconds);
-            _summary.Timing.MonthHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.MonthSecondsWorked) / 3600;  
+            _summary.Timing.MonthHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.MonthSecondsWorked) / 3600;
             if (_report.HasSprint)
-                _summary.Timing.SprintHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.SprintSecondsWorked) / 3600; 
+                _summary.Timing.SprintHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.SprintSecondsWorked) / 3600;
         }
 
         private void SetAverageTimeWorkedPerDay()
@@ -306,7 +305,7 @@ namespace JiraReporter.Services
         private void SetHealthStatuses()
         {
             if (_report.HasSprint)
-            _summary.SprintStatus = HealthInspector.GetSprintStatus(_summary.SprintHealth, _summary.SprintHourRateVariance);
+                _summary.SprintStatus = HealthInspector.GetSprintStatus(_summary.SprintHealth, _summary.SprintHourRateVariance);
             _summary.MonthStatus = HealthInspector.GetMonthStatus(_summary.MonthHealth, _summary.MonthHourRateVariance);
         }
 
@@ -327,14 +326,14 @@ namespace JiraReporter.Services
             if (_summary.ConfirmationErrors != null)
                 errors = errors.Concat(_summary.ConfirmationErrors).ToList();
 
-            if(_report.HasSprint)
+            if (_report.HasSprint)
             {
-            if (_summary.AuthorsWithErrors != null)
-                errors = _summary.AuthorsWithErrors.SelectMany(e => e.Errors).ToList();
-            if (_summary.CompletedWithEstimateErrors != null)
-                errors = errors.Concat(_summary.CompletedWithEstimateErrors).ToList();
-            if (_summary.UnassignedErrors != null)
-                errors = errors.Concat(_summary.UnassignedErrors).ToList();
+                if (_summary.AuthorsWithErrors != null)
+                    errors = _summary.AuthorsWithErrors.SelectMany(e => e.Errors).ToList();
+                if (_summary.CompletedWithEstimateErrors != null)
+                    errors = errors.Concat(_summary.CompletedWithEstimateErrors).ToList();
+                if (_summary.UnassignedErrors != null)
+                    errors = errors.Concat(_summary.UnassignedErrors).ToList();
             }
 
             _summary.Errors = errors;
@@ -353,7 +352,7 @@ namespace JiraReporter.Services
 
             _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
             _summary.ConfirmationErrors = new List<Error>();
-            var notConfirmed = _report.Settings.IndividualDraftConfirmations.Where(d =>d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Date).ToList();
+            var notConfirmed = _report.Settings.IndividualDraftConfirmations.Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Date).ToList();
             foreach (var author in _summary.Authors)
             {
                 var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);
@@ -397,6 +396,7 @@ namespace JiraReporter.Services
             foreach (var author in _summary.Authors)
             {
                 var maxFromAuthor = AuthorHelpers.GetAuthorMaxAverage(author) / 3600;
+                author.MaxHourValue = MathHelpers.RoundToNextEvenInteger(maxFromAuthor);
                 max.Add(maxFromAuthor);
             }
             max.Add(_summary.Timing.UnassignedTasksHoursAverageLeft);
@@ -409,7 +409,7 @@ namespace JiraReporter.Services
             var sprintMax = GetSprintMax();
             var monthMax = GetMonthMax();
             var statusMax = Math.Max(sprintMax, monthMax);
-            _summary.StatusMaxValue =  MathHelpers.RoundToNextEvenInteger(statusMax);
+            _summary.StatusMaxValue = MathHelpers.RoundToNextEvenInteger(statusMax);
         }
 
         private void SetMaxValues()
@@ -443,7 +443,7 @@ namespace JiraReporter.Services
         private void SetWidths()
         {
             var widthHelper = new SummaryWidthLoader(_summary.ChartMaxBarWidth);
-            widthHelper.SetWorkSummaryChartWidths(_summary, _summary.TotalMaxValue);
+            widthHelper.SetWorkSummaryChartWidths(_summary, _summary.TotalMaxValue, _report.IsIndividualDraft);
 
             GetStatusValues();
             widthHelper.SetStatusChartWidths(_summary.TotalMaxValue, _summary.SprintWidths, _summary.MonthWidths);
@@ -490,19 +490,45 @@ namespace JiraReporter.Services
             }
             return workingDaysInfo;
         }
-        private void SetGuidelinesRate()
-        {
-            var integer = 2;            
-            while (_summary.TotalMaxValue / integer >= _summary.GuidelinesOptimalNumber)
-                integer = integer * 2;
 
-            _summary.GuidelinesCount = _summary.TotalMaxValue / integer;
-            _summary.GuidelinesRate = integer;
+        private void SetGuidelines()
+        {
+            if (_report.IsIndividualDraft)
+                SetGuidelinesForAuthors();
+            else
+                SetGeneralGuidelines();
         }
 
-        private void SetGuidelineWidth()
+        private void SetGeneralGuidelines()
         {
-            _summary.GuidelineWidth = MathHelpers.RuleOfThree(_summary.ChartMaxBarWidth, _summary.TotalMaxValue, _summary.GuidelinesRate);
+            _summary.GuidelineInfo = new SummaryGuidelineInfo();
+            _summary.GuidelineInfo.GuidelinesRate = GetGuidelinesRate(_summary.TotalMaxValue);
+            _summary.GuidelineInfo.GuidelinesCount = _summary.TotalMaxValue / _summary.GuidelineInfo.GuidelinesRate;
+            _summary.GuidelineInfo.GuidelineWidth = GetGuidelineWidth(_summary.TotalMaxValue, _summary.GuidelineInfo.GuidelinesRate);
+        }
+
+        private void SetGuidelinesForAuthors()
+        {
+            foreach (var author in _summary.Authors)
+            {
+                author.GuidelineInfo = new SummaryGuidelineInfo();
+                author.GuidelineInfo.GuidelinesRate = GetGuidelinesRate(author.MaxHourValue);
+                author.GuidelineInfo.GuidelinesCount = author.MaxHourValue / author.GuidelineInfo.GuidelinesRate;
+                author.GuidelineInfo.GuidelineWidth = GetGuidelineWidth(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
+            }
+        }
+
+        private int GetGuidelinesRate(int maxValue)
+        {
+            var integer = 1;
+            while (maxValue / integer >= _summary.GuidelinesOptimalNumber)
+                integer = integer * 2;
+            return integer;
+        }
+
+        private double GetGuidelineWidth(int maxValue, int guidelinesRate)
+        {
+            return MathHelpers.RuleOfThree(_summary.ChartMaxBarWidth, maxValue, guidelinesRate);
         }
 
     }

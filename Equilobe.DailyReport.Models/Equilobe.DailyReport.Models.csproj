@@ -94,6 +94,7 @@
     <Compile Include="ReportFrame\SprintTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
+    <Compile Include="ReportFrame\SummaryGuidelineInfo.cs" />
     <Compile Include="ReportFrame\TimesheetContext.cs" />
     <Compile Include="ReportFrame\Timing.cs" />
     <Compile Include="ReportFrame\TimingDetailed.cs" />

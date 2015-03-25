@@ -85,7 +85,7 @@ else
                     <tr>
                             <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" /></td>
                         <td style="padding:0px; padding-bottom:5px">
-                            @Partial("Views/guidelines.cshtml", Model.Summary)
+                            @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
                             @if (Model.Author.Timing.TotalTimeSeconds > 0)
                             {
                                 <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">

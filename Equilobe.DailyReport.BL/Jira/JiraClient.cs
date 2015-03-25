@@ -126,6 +126,13 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraIssue>(request);
         }
 
+        public Worklogs GetIssueWorklogs(string issueKey)
+        {
+            var request = new RestRequest(JiraApiUrls.IssueWorklogs(issueKey), Method.GET);
+
+            return ResolveJiraRequest<Worklogs>(request);
+        }
+
         public JiraIssues GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
         {
             var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(projectKey, TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));

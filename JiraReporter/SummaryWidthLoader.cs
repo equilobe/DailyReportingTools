@@ -18,10 +18,12 @@ namespace JiraReporter
             ChartMaxBarWidth = chartMaxBarWidth;
         }
 
-        public void SetWorkSummaryChartWidths(Summary summary, int workSummaryMax)
+        public void SetWorkSummaryChartWidths(Summary summary, int workSummaryMax, bool isIndividualDraft)
         {
-            SetAuthorsWorkSummaryChartWidths(summary.Authors, workSummaryMax);
-            SetRemainingUnassignedWidths(summary, workSummaryMax);
+            SetAuthorsWorkSummaryChartWidths(summary.Authors, workSummaryMax, isIndividualDraft);
+
+            if (!isIndividualDraft)
+                SetRemainingUnassignedWidths(summary, workSummaryMax);
         }
 
         private void SetRemainingUnassignedWidths(Summary summary, int workSummaryMax)
@@ -29,10 +31,13 @@ namespace JiraReporter
             summary.UnassignedRemainingChartPixelWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, workSummaryMax, summary.Timing.UnassignedTasksHoursAverageLeft);
         }
 
-        private void SetAuthorsWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax)
+        private void SetAuthorsWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax, bool isIndividualDraft)
         {
             foreach (var author in authors)
-                AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, workSummaryMax);
+                if (isIndividualDraft)
+                    AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, author.MaxHourValue);
+                else
+                    AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, workSummaryMax);
         }
 
         public void SetStatusChartWidths(int maxStatusWidth, StatusChartWidths sprint, StatusChartWidths month)

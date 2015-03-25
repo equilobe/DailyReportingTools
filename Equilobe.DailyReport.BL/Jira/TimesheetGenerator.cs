@@ -24,6 +24,7 @@ namespace Equilobe.DailyReport.BL.Jira
             var timesheetIssues = updatedIssues
                 .Select(issue => Client.GetIssue(issue.key))
                 .ToList();
+            timesheetIssues.ForEach(issue => issue.fields.worklog = Client.GetIssueWorklogs(issue.key));
 
             return timesheetIssues;
         }
