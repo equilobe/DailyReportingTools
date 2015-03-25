@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 using System.Xml;
 
 namespace Equilobe.DailyReport.SL
@@ -38,8 +39,8 @@ namespace Equilobe.DailyReport.SL
 
         private static XmlDocument GetTimeZoneMapXml()
         {
-            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-            var mapFilePath = Path.Combine(path, TimeZoneMappingFileName);
+            string TimeZoneMappingXmlPath = WebConfigurationManager.AppSettings["TimeZoneMappingPath"].ToString();
+            var mapFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TimeZoneMappingXmlPath);
             XmlDocument doc = new XmlDocument();
             doc.Load(mapFilePath);
             return doc;
