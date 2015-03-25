@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,10 +29,10 @@ namespace Equilobe.DailyReport.SL
             return timeZoneList;
         }
 
-        public string GetWindowsTimeZoneIdByIanaTimeZone (string ianaTimeZone)
+        public string GetWindowsTimeZoneIdByIanaTimeZone (ItemContext<string> itemContext)
         {
             XmlDocument timeZoneMap = GetTimeZoneMapXml();
-            XmlNode mapZoneNode = timeZoneMap.SelectSingleNode(String.Format("//mapZone[@type='{0}']", ianaTimeZone));
+            XmlNode mapZoneNode = timeZoneMap.SelectSingleNode(String.Format("//mapZone[@type='{0}']", itemContext.Id));
             return mapZoneNode == null ? null : mapZoneNode.Attributes["other"].Value.Trim();
         }
 

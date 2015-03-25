@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace DailyReportWeb.Controllers.Api
             return new Equilobe.DailyReport.Models.TimeZone.TimeZones()
             {
                 TimeZoneList = Get(),
-                SuggestedTimeZone = TimeZoneService.GetWindowsTimeZoneIdByIanaTimeZone(id)
+                SuggestedTimeZone = TimeZoneService.GetWindowsTimeZoneIdByIanaTimeZone(new ItemContext<string>(id))
             };
         } 
     }
