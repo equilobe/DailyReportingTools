@@ -153,7 +153,7 @@ namespace Equilobe.DailyReport.SL
                 reportSettings.CopyTo<IBasicSettings>(policyBuffer);
 
                 if (!string.IsNullOrEmpty(reportSettings.SerializedAdvancedSettings.PolicyString))
-                    Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedAdvancedSettings.PolicyString)
+                    Deserialization.XmlDeserialize<AdvancedReportSettings>(reportSettings.SerializedAdvancedSettings.PolicyString)
                         .CopyPropertiesOnObjects(policyBuffer);
 
                 return policyBuffer;

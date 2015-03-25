@@ -3,11 +3,13 @@ using System;
 using System.Collections.Generic;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IJiraService : IService
     {
+        JiraPolicy GetJiraInfo(ItemContext context);
         Project GetProject(JiraRequestContext context, long id);
         List<JiraIssue> GetTimesheetForUser(TimesheetContext context);
         JiraUser GetUser(JiraRequestContext context, string username);

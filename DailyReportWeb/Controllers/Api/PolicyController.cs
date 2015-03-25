@@ -1,18 +1,14 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
-using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using Microsoft.AspNet.Identity;
-using Equilobe.DailyReport.Models;
 
 namespace DailyReportWeb.Controllers.Api
 {
@@ -20,43 +16,43 @@ namespace DailyReportWeb.Controllers.Api
     public class PolicyController : ApiController
     {
         public IDataService DataService { get; set; }
-        public IPolicyEditorService PolicyService { get; set; }
+        public ISettingsService SettingsService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public FullReportSettings Get(long id)
         {
-            return PolicyService.GetPolicy(new ItemContext(id));
+            return SettingsService.GetFullSettings(new ItemContext(id));
         }
 
         // PUT: api/Policy
-        public void Post([FromBody]ReportSettingsSummary policySummary)
+        public void Post([FromBody]BasicReportSettings updatedBasicSettings)
         {
-            if(!Validations.Time(policySummary.ReportTime))
+            if(!Validations.Time(updatedBasicSettings.ReportTime))
                 throw new ArgumentException();
 
 
             var context = new ScheduledTaskContext
             {
-                ReportTime = policySummary.ReportTime,
-                UniqueProjectKey = policySummary.UniqueProjectKey
+                ReportTime = updatedBasicSettings.ReportTime,
+                UniqueProjectKey = updatedBasicSettings.UniqueProjectKey
             };
 
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == policySummary.BaseUrl);
+                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedBasicSettings.BaseUrl);
 
-                var reportSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == policySummary.ProjectId);
-                if (reportSettings == null)
+                var basicSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedBasicSettings.ProjectId);
+                if (basicSettings == null)
                 {
-                    if (string.IsNullOrEmpty(policySummary.ReportTime))
+                    if (string.IsNullOrEmpty(updatedBasicSettings.ReportTime))
                         return;
 
-                    reportSettings = new BasicSettings();
-                    db.BasicSettings.Add(reportSettings);
+                    basicSettings = new BasicSettings();
+                    db.BasicSettings.Add(basicSettings);
 
-                    policySummary.CopyPropertiesOnObjects(reportSettings);
-                    reportSettings.InstalledInstanceId = installedInstance.Id;
-                    reportSettings.UniqueProjectKey = RandomString.Get(policySummary.ProjectKey);
+                    updatedBasicSettings.CopyPropertiesOnObjects(basicSettings);
+                    basicSettings.InstalledInstanceId = installedInstance.Id;
+                    basicSettings.UniqueProjectKey = RandomString.Get(updatedBasicSettings.ProjectKey);
 
                     
 
@@ -64,10 +60,10 @@ namespace DailyReportWeb.Controllers.Api
                 }
                 else
                 {
-                    if (reportSettings.ReportTime == policySummary.ReportTime)
+                    if (basicSettings.ReportTime == updatedBasicSettings.ReportTime)
                         return;
 
-                    reportSettings.ReportTime = policySummary.ReportTime;
+                    basicSettings.ReportTime = updatedBasicSettings.ReportTime;
 
                     TaskSchedulerService.UpdateTask(context);
                 }
@@ -77,55 +73,55 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         // PUT: api/Policy/5
-        public void Post(long id, [FromBody]FullReportSettings updatedPolicy)
+        public void Post(long id, [FromBody]FullReportSettings updatedFullSettings)
         {
-            if (!Validations.Time(updatedPolicy.ReportTime) ||
-                !Validations.Mails(updatedPolicy.DraftEmails) ||
-                !Validations.Mails(updatedPolicy.Emails) ||
-                (updatedPolicy.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedPolicy.SourceControlOptions.Repo)))
+            if (!Validations.Time(updatedFullSettings.ReportTime) ||
+                !Validations.Mails(updatedFullSettings.DraftEmails) ||
+                !Validations.Mails(updatedFullSettings.Emails) ||
+                (updatedFullSettings.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedFullSettings.SourceControlOptions.Repo)))
                 throw new ArgumentException();
 
 
             var context = new ScheduledTaskContext
             {
-                ReportTime = updatedPolicy.ReportTime,
-                UniqueProjectKey = updatedPolicy.UniqueProjectKey
+                ReportTime = updatedFullSettings.ReportTime,
+                UniqueProjectKey = updatedFullSettings.UniqueProjectKey
             };
 
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedPolicy.BaseUrl);
+                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedFullSettings.BaseUrl);
 
-                var reportSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedPolicy.ProjectId);
-                if (reportSettings == null)
+                var basicSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedFullSettings.ProjectId);
+                if (basicSettings == null)
                 {
-                    reportSettings = new BasicSettings();
-                    db.BasicSettings.Add(reportSettings);
+                    basicSettings = new BasicSettings();
+                    db.BasicSettings.Add(basicSettings);
 
-                    updatedPolicy.CopyTo<IBasicSettings>(reportSettings);
+                    updatedFullSettings.CopyTo<IBasicSettings>(basicSettings);
 
-                    reportSettings.InstalledInstanceId = installedInstance.Id;
-                    reportSettings.UniqueProjectKey = RandomString.Get(updatedPolicy.ProjectKey);
+                    basicSettings.InstalledInstanceId = installedInstance.Id;
+                    basicSettings.UniqueProjectKey = RandomString.Get(updatedFullSettings.ProjectKey);
 
-                    if (!string.IsNullOrEmpty(reportSettings.ReportTime))
+                    if (!string.IsNullOrEmpty(basicSettings.ReportTime))
                         TaskSchedulerService.CreateTask(context);
                 }
                 else
                 {
-                    if (reportSettings.ReportTime != updatedPolicy.ReportTime)
+                    if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
                     {
-                        reportSettings.ReportTime = updatedPolicy.ReportTime;
+                        basicSettings.ReportTime = updatedFullSettings.ReportTime;
                         TaskSchedulerService.UpdateTask(context);
                     }
                 }
 
-                var policy = new ReportPolicy();
-                updatedPolicy.CopyTo<IAdvancedSettings>(policy);
+                var policy = new AdvancedReportSettings();
+                updatedFullSettings.CopyTo<IAdvancedSettings>(policy);
 
-                if (reportSettings.SerializedAdvancedSettings == null)
-                    reportSettings.SerializedAdvancedSettings = new SerializedAdvancedSettings();
+                if (basicSettings.SerializedAdvancedSettings == null)
+                    basicSettings.SerializedAdvancedSettings = new SerializedAdvancedSettings();
 
-                reportSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(policy);
+                basicSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(policy);
 
                 db.SaveChanges();
             }

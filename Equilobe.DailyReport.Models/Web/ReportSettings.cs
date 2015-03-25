@@ -11,7 +11,7 @@ namespace Equilobe.DailyReport.Models.Web
         public string BaseUrl { get; set; }
     }
 
-    public class ReportSettingsSummary : IBasicSettings
+    public class BasicReportSettings : IBasicSettings
     {
         public long Id { get; set; }
         public string BaseUrl { get; set; }
@@ -22,7 +22,7 @@ namespace Equilobe.DailyReport.Models.Web
         public string ReportTime { get; set; }
     }
 
-    public class ReportPolicy : IAdvancedSettings
+    public class AdvancedReportSettings : IAdvancedSettings
     {
         public string DraftEmails { get; set; }
         public string Emails { get; set; }

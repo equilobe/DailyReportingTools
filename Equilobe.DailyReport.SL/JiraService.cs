@@ -1,16 +1,50 @@
 ﻿using Equilobe.DailyReport.BL.Jira;
+using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Jira.Filters;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Equilobe.DailyReport.SL
 {
     public class JiraService : IJiraService
     {
         public IEncryptionService EncrytionService { get; set; }
+
+        public JiraPolicy GetJiraInfo(ItemContext context)
+        {
+            var reportSettings = new ReportsDb().BasicSettings.SingleOrDefault(r => r.Id == context.Id);
+            if (reportSettings == null)
+                return null;
+
+            var instance = reportSettings.InstalledInstance;
+            var jiraContext = new JiraRequestContext();
+            instance.CopyPropertiesOnObjects(jiraContext);
+
+            var project = GetProject(jiraContext, reportSettings.ProjectId);
+
+            var options = GetUsers(jiraContext, project.Key)
+                .Select(user => new User
+                {
+                    JiraDisplayName = user.displayName,
+                    JiraUserKey = user.key
+                })
+                .ToList();
+
+            return new JiraPolicy
+            {
+                BaseUrl = jiraContext.BaseUrl,
+                Username = jiraContext.JiraUsername,
+                Password = jiraContext.JiraPassword,
+                ProjectId = reportSettings.ProjectId,
+                UserOptions = options
+            };
+        }
 
         public Project GetProject(JiraRequestContext context, long id)
         {
