@@ -1,6 +1,6 @@
-﻿using Equilobe.DailyReport.Models;
-using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Web;
+using Equilobe.DailyReport.SL;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Collections.Generic;
@@ -10,10 +10,10 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class ProjectController : ApiController
+    public class InstancesController : ApiController
     {
         public IDataService DataService { get; set; }
-        public ISettingsService SettingsService { get; set; }
+
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -33,11 +33,6 @@ namespace DailyReportWeb.Controllers.Api
             var currentUser = UserManager.FindById(userId);
 
             return DataService.GetInstances(currentUser);
-        }
-
-        public List<BasicReportSettings> Get(long id)
-        {
-            return SettingsService.GetAllBasicSettings(new ItemContext(id));
         }
     }
 }

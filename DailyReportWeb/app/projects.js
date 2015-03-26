@@ -11,7 +11,7 @@ angular.module('app')
     .controller("ProjectCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         $scope.status = "loading";
 
-        $http.get("/api/project/" + $routeParams.instanceId)
+        $http.get("/api/projects/" + $routeParams.instanceId)
             .success(function (list) {
                 $scope.projects = list;
             })
@@ -23,7 +23,7 @@ angular.module('app')
             if ($scope.reportForm.reportTime.$invalid || $scope.reportForm.reportTime.$pristine)
                 return;
 
-            $http.post("/api/policy", $scope.project
+            $http.post("/api/projects", $scope.project
             ).success(function () {
                 console.log("success");
             }).error(function () {

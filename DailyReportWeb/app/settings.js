@@ -3,15 +3,15 @@
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/edit/:projectId', {
-            label: 'Policy',
-            templateUrl: 'app/policy.html',
-            controller: 'PolicyCtrl'
+            label: 'Settings',
+            templateUrl: 'app/settings.html',
+            controller: 'SettingsCtrl'
         });
     }])
-    .controller("PolicyCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
+    .controller("SettingsCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
         $scope.status = "loading";
 
-        $http.get("/api/policy/" + $routeParams.projectId)
+        $http.get("/api/settings/" + $routeParams.projectId)
             .success(function (policy) {
                 $scope.user = policy.userOptions ? policy.userOptions[0] : null;
                 $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
@@ -30,7 +30,7 @@ angular.module('app')
             $scope.status = 'saving';
             $scope.advancedOptionsForm.$setPristine();
 
-            $http.post("/api/policy/" + $scope.policy.projectId, $scope.policy
+            $http.post("/api/settings/" + $scope.policy.projectId, $scope.policy
                 ).success(function () {
                     $scope.status = "success";
                     console.log("success");

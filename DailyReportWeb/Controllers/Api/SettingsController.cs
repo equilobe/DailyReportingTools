@@ -13,9 +13,8 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class PolicyController : ApiController
+    public class SettingsController : ApiController
     {
-        public IDataService DataService { get; set; }
         public ISettingsService SettingsService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
 
@@ -24,55 +23,6 @@ namespace DailyReportWeb.Controllers.Api
             return SettingsService.GetFullSettings(new ItemContext(id));
         }
 
-        // PUT: api/Policy
-        public void Post([FromBody]BasicReportSettings updatedBasicSettings)
-        {
-            if(!Validations.Time(updatedBasicSettings.ReportTime))
-                throw new ArgumentException();
-
-
-            var context = new ScheduledTaskContext
-            {
-                ReportTime = updatedBasicSettings.ReportTime,
-                UniqueProjectKey = updatedBasicSettings.UniqueProjectKey
-            };
-
-            using (var db = new ReportsDb())
-            {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedBasicSettings.BaseUrl);
-
-                var basicSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedBasicSettings.ProjectId);
-                if (basicSettings == null)
-                {
-                    if (string.IsNullOrEmpty(updatedBasicSettings.ReportTime))
-                        return;
-
-                    basicSettings = new BasicSettings();
-                    db.BasicSettings.Add(basicSettings);
-
-                    updatedBasicSettings.CopyPropertiesOnObjects(basicSettings);
-                    basicSettings.InstalledInstanceId = installedInstance.Id;
-                    basicSettings.UniqueProjectKey = RandomString.Get(updatedBasicSettings.ProjectKey);
-
-                    
-
-                    TaskSchedulerService.CreateTask(context);
-                }
-                else
-                {
-                    if (basicSettings.ReportTime == updatedBasicSettings.ReportTime)
-                        return;
-
-                    basicSettings.ReportTime = updatedBasicSettings.ReportTime;
-
-                    TaskSchedulerService.UpdateTask(context);
-                }
-
-                db.SaveChanges();
-            }
-        }
-
-        // PUT: api/Policy/5
         public void Post(long id, [FromBody]FullReportSettings updatedFullSettings)
         {
             if (!Validations.Time(updatedFullSettings.ReportTime) ||
@@ -80,7 +30,6 @@ namespace DailyReportWeb.Controllers.Api
                 !Validations.Mails(updatedFullSettings.Emails) ||
                 (updatedFullSettings.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedFullSettings.SourceControlOptions.Repo)))
                 throw new ArgumentException();
-
 
             var context = new ScheduledTaskContext
             {

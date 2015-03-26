@@ -11,7 +11,7 @@ angular.module('app')
     .controller("InstanceCtrl", ['$scope', '$http', function ($scope, $http) {
         $scope.status = "loading";
 
-        $http.get("/api/project")
+        $http.get("/api/instances")
             .success(function (list) {
                 $scope.instances = list;
             })

@@ -184,8 +184,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
-    <Compile Include="Controllers\Api\PolicyController.cs" />
-    <Compile Include="Controllers\Api\ProjectController.cs" />
+    <Compile Include="Controllers\Api\InstancesController.cs" />
+    <Compile Include="Controllers\Api\SettingsController.cs" />
+    <Compile Include="Controllers\Api\ProjectsController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
     <Compile Include="Controllers\Api\TimezoneController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -216,12 +217,12 @@
       <DependentUpon>confirmEmail.html</DependentUpon>
     </Content>
     <Content Include="app\app.js" />
-    <Content Include="app\policy.html" />
-    <Content Include="app\policy.js">
-      <DependentUpon>policy.html</DependentUpon>
+    <Content Include="app\settings.html" />
+    <Content Include="app\settings.js">
+      <DependentUpon>settings.html</DependentUpon>
     </Content>
-    <Content Include="app\policy.test.js">
-      <DependentUpon>policy.html</DependentUpon>
+    <Content Include="app\settings.test.js">
+      <DependentUpon>settings.html</DependentUpon>
     </Content>
     <Content Include="app\projects.html" />
     <Content Include="app\projects.js">
