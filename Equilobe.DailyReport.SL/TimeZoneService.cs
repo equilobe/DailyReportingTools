@@ -13,8 +13,6 @@ namespace Equilobe.DailyReport.SL
 {
     class TimeZoneService : ITimeZoneService
     {
-        private static string TimeZoneMappingFileName = "TimeZoneMappings.xml";
-
         public List<Equilobe.DailyReport.Models.TimeZone.TimeZone> GetSystemTimeZones()
         {
             var timeZoneList = new List<Equilobe.DailyReport.Models.TimeZone.TimeZone>();

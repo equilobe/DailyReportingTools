@@ -28,7 +28,7 @@ namespace DailyReportWeb.Controllers.Api
             id = id.Replace('-', '/');
             return new Equilobe.DailyReport.Models.TimeZone.TimeZones()
             {
-                TimeZoneList = Get(),
+                TimeZoneList = TimeZoneService.GetSystemTimeZones(),
                 SuggestedTimeZone = TimeZoneService.GetWindowsTimeZoneIdByIanaTimeZone(new ItemContext<string>(id))
             };
         } 
