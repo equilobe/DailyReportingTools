@@ -5,10 +5,10 @@ angular.module('app')
         $routeProvider.when('/app/list', {
             label: 'Instances',
             templateUrl: 'app/instances.html',
-            controller: 'InstanceCtrl'
+            controller: 'InstancesCtrl'
         });
     }])
-    .controller("InstanceCtrl", ['$scope', '$http', function ($scope, $http) {
+    .controller("InstancesCtrl", ['$scope', '$http', function ($scope, $http) {
         $scope.status = "loading";
 
         $http.get("/api/instances")

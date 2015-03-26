@@ -31,46 +31,27 @@ namespace DailyReportWeb.Controllers.Api
                 (updatedFullSettings.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedFullSettings.SourceControlOptions.Repo)))
                 throw new ArgumentException();
 
-            var context = new ScheduledTaskContext
-            {
-                ReportTime = updatedFullSettings.ReportTime,
-                UniqueProjectKey = updatedFullSettings.UniqueProjectKey
-            };
-
             using (var db = new ReportsDb())
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedFullSettings.BaseUrl);
-
                 var basicSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedFullSettings.ProjectId);
-                if (basicSettings == null)
+
+                if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
                 {
-                    basicSettings = new BasicSettings();
-                    db.BasicSettings.Add(basicSettings);
-
-                    updatedFullSettings.CopyTo<IBasicSettings>(basicSettings);
-
-                    basicSettings.InstalledInstanceId = installedInstance.Id;
-                    basicSettings.UniqueProjectKey = RandomString.Get(updatedFullSettings.ProjectKey);
-
-                    if (!string.IsNullOrEmpty(basicSettings.ReportTime))
-                        TaskSchedulerService.CreateTask(context);
-                }
-                else
-                {
-                    if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
+                    basicSettings.ReportTime = updatedFullSettings.ReportTime;
+                    TaskSchedulerService.SetTask(new ScheduledTaskContext
                     {
-                        basicSettings.ReportTime = updatedFullSettings.ReportTime;
-                        TaskSchedulerService.UpdateTask(context);
-                    }
+                        ReportTime = updatedFullSettings.ReportTime,
+                        UniqueProjectKey = updatedFullSettings.UniqueProjectKey
+                    });
                 }
 
-                var policy = new AdvancedReportSettings();
-                updatedFullSettings.CopyTo<IAdvancedSettings>(policy);
+                var advancedSettings = new AdvancedReportSettings();
+                updatedFullSettings.CopyTo<IAdvancedSettings>(advancedSettings);
 
                 if (basicSettings.SerializedAdvancedSettings == null)
                     basicSettings.SerializedAdvancedSettings = new SerializedAdvancedSettings();
-
-                basicSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(policy);
+                basicSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(advancedSettings);
 
                 db.SaveChanges();
             }

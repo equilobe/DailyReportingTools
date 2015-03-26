@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -17,7 +18,37 @@ namespace Equilobe.DailyReport.SL
     {
         public ISourceControlService SourceControlService { get; set; }
         public IJiraService JiraService { get; set; }
-        public IDataService DataService { get; set; }
+
+        public void SetAllBasicSettings(ItemContext context)
+        {
+            var jiraRequestContext = new JiraRequestContext();
+            new ReportsDb().InstalledInstances
+                           .Where(ii => ii.Id == context.Id)
+                           .Single()
+                           .CopyPropertiesOnObjects(jiraRequestContext);
+
+            var jiraProjects = JiraService.GetProjectsInfo(jiraRequestContext);
+
+            using (var db = new ReportsDb())
+            {
+                var installedInstance = db.InstalledInstances
+                                          .Where(ii => ii.Id == context.Id)
+                                          .Single();
+
+                jiraProjects.ForEach(jiraProject =>
+                    {
+                        installedInstance.BasicSettings.Add(new BasicSettings
+                        {
+                            InstalledInstanceId = installedInstance.Id,
+                            BaseUrl = installedInstance.BaseUrl,
+                            ProjectId = jiraProject.ProjectId,
+                            UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
+                        });
+                    });
+                
+                db.SaveChanges();
+            }
+        }
 
         public BasicReportSettings GetBasicSettings(ItemContext context)
         {
@@ -28,9 +59,6 @@ namespace Equilobe.DailyReport.SL
                 return null;
 
             var installedInstance = basicSettings.InstalledInstance;
-            if (installedInstance.UserId != context.UserId)
-                throw new SecurityException();
-
             var jiraRequestContext = new JiraRequestContext();
             installedInstance.CopyPropertiesOnObjects(jiraRequestContext);
 
@@ -49,11 +77,8 @@ namespace Equilobe.DailyReport.SL
         public List<BasicReportSettings> GetAllBasicSettings(ItemContext context)
         {
             var installedInstance = new ReportsDb().InstalledInstances
-                                          .Where(i => i.Id == context.Id)
-                                          .Single();
-
-            if (installedInstance.UserId != context.UserId)
-                throw new SecurityException();
+                                                   .Where(i => i.Id == context.Id)
+                                                   .Single();
 
             var jiraRequestContext = new JiraRequestContext();
             installedInstance.CopyPropertiesOnObjects(jiraRequestContext);
@@ -66,7 +91,10 @@ namespace Equilobe.DailyReport.SL
                                   ProjectId = projectInfo.ProjectId,
                                   ProjectKey = projectInfo.ProjectKey,
                                   ProjectName = projectInfo.ProjectName,
-                                  ReportTime = GetReportTime(installedInstance, projectInfo.ProjectId)
+                                  ReportTime = GetReportTime(installedInstance, projectInfo.ProjectId),
+                                  UniqueProjectKey = installedInstance.BasicSettings.Where(bs => bs.ProjectId == projectInfo.ProjectId)
+                                                                                    .Select(bs => bs.UniqueProjectKey)
+                                                                                    .Single()
                               })
                               .ToList();
         }

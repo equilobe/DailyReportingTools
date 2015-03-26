@@ -1,27 +1,26 @@
-﻿using Encryptamajig;
-using Equilobe.DailyReport.DAL;
+﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Equilobe.DailyReport.SL
 {
     public class DataService : IDataService
     {
         public IEncryptionService EncryptionService { get; set; }
+        public ISettingsService SettingsService { get; set; }
 
         public void SaveInstance(InstalledInstance instanceData)
         {
+            long instanceId;
             using (var db = new ReportsDb())
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(i => i.BaseUrl == instanceData.BaseUrl && i.ClientKey == instanceData.ClientKey);
@@ -31,7 +30,11 @@ namespace Equilobe.DailyReport.SL
                     installedInstance.SharedSecret = instanceData.SharedSecret;
 
                 db.SaveChanges();
+
+                instanceId = installedInstance.Id;
             }
+
+            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void SaveInstance(RegisterModel modelData)
@@ -95,18 +98,21 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
         }
 
-        public List<Instance> GetInstances(ApplicationUser user)
+        public List<Instance> GetInstances()
         {
-            var installedInstances = user.InstalledInstances.ToList();
+            var userId = new UserContext().UserId;
             var instances = new List<Instance>();
 
-            installedInstances.ForEach(installedInstance =>
-                {
-                    instances.Add(new Instance { 
-                        Id = installedInstance.Id,
-                        BaseUrl = installedInstance.BaseUrl
-                    });
-                });
+            new ReportsDb().InstalledInstances
+                           .Where(ii => ii.UserId == userId)
+                           .ToList()
+                           .ForEach(installedInstance =>
+                           {
+                               var instance = new Instance();
+                               instance.CopyFrom<IInstance>(installedInstance);
+
+                               instances.Add(instance);
+                           });
 
             return instances;
         }

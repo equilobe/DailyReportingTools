@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Equilobe.DailyReport.Models.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Equilobe.DailyReport.Models.Storage
 {
-    public class InstalledInstance
+    public class InstalledInstance : IInstance
     {
         public long Id { get; set; }
         [Required]

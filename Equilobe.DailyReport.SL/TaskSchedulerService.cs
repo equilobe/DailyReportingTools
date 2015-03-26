@@ -1,9 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.TaskScheduling;
-using Equilobe.DailyReport.Utils;
 using Microsoft.Win32.TaskScheduler;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security.Principal;
@@ -23,40 +21,33 @@ namespace Equilobe.DailyReport.SL
             {
                 return false;
             }
-        }        
-
-        public void CreateTask(ScheduledTaskContext context)
-        {
-            using (var taskService = new TaskService())
-            {
-                TaskDefinition taskDefinition = taskService.NewTask();
-                taskDefinition.Triggers.Add(new DailyTrigger
-                {
-                    StartBoundary = DateTime.Parse(context.ReportTime)
-                });
-                taskDefinition.Actions.Add(new ExecAction(
-                    ConfigurationManager.AppSettings["jiraReporterPath"],
-                    "--uniqueProjectKey=" + context.UniqueProjectKey,
-                    ConfigurationManager.AppSettings["reportToolPath"]));
-
-                GetTaskFolder(taskService).RegisterTaskDefinition(GetTaskKey(context.UniqueProjectKey), taskDefinition, TaskCreation.Create, WindowsIdentity.GetCurrent().Name);
-            }
         }
 
-        public void UpdateTask(ScheduledTaskContext context)
+        public void SetTask(ScheduledTaskContext context)
         {
             using (var taskService = new TaskService())
             {
-                var taskDefinition = taskService.GetTask(ConfigurationManager.AppSettings["taskSchedulerFolderName"] + "\\"+ GetTaskKey(context.UniqueProjectKey)).Definition;
-                taskDefinition.Triggers.Clear();
+                var task = taskService.GetTask(ConfigurationManager.AppSettings["taskSchedulerFolderName"] + "\\" + GetTaskKey(context.UniqueProjectKey));
 
+                TaskDefinition taskDefinition;
+                if (task == null)
+                {
+                    taskDefinition = taskService.NewTask();
+                    taskDefinition.Actions.Add(new ExecAction(ConfigurationManager.AppSettings["jiraReporterPath"],
+                                                              "--uniqueProjectKey=" + context.UniqueProjectKey,
+                                                              ConfigurationManager.AppSettings["reportToolPath"]));
+                }
+                else
+                    taskDefinition = task.Definition;
+
+                taskDefinition.Triggers.Clear();
                 if (!string.IsNullOrEmpty(context.ReportTime))
                     taskDefinition.Triggers.Add(new DailyTrigger
                     {
                         StartBoundary = DateTime.Parse(context.ReportTime)
                     });
 
-                GetTaskFolder(taskService).RegisterTaskDefinition(GetTaskKey(context.UniqueProjectKey), taskDefinition, TaskCreation.Update, WindowsIdentity.GetCurrent().Name);
+                GetTaskFolder(taskService).RegisterTaskDefinition(GetTaskKey(context.UniqueProjectKey), taskDefinition, TaskCreation.CreateOrUpdate, WindowsIdentity.GetCurrent().Name);
             }
         }
 

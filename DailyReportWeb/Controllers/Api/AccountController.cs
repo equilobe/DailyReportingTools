@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
@@ -19,6 +20,7 @@ namespace DailyReportWeb.Controllers.Api
     public class AccountController : ApiController
     {
         public IDataService DataService { get; set; }
+        public ISettingsService SettingsService { get; set; }
 
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
@@ -103,6 +105,12 @@ namespace DailyReportWeb.Controllers.Api
                     Success = false,
                     ErrorList = result.Errors.ToList()
                 };
+
+            var instanceId = UserManager.FindById(userId)
+                                        .InstalledInstances
+                                        .Single()
+                                        .Id;
+            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
 
             return new AccountResponse() { Success = true };
         }

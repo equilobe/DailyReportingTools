@@ -10,7 +10,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SaveInstance(InstalledInstance instanceData);
         void SaveInstance(RegisterModel modelData);
         void DeleteInstance(string baseUrl);
-        List<Instance> GetInstances(ApplicationUser user);
+        List<Instance> GetInstances();
         string GetBaseUrl(long id);
         string GetSharedSecret(string baseUrl);
         string GetPassword(string baseUrl, string username);
