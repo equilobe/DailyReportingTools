@@ -128,7 +128,7 @@ namespace Equilobe.DailyReport.SL
                 if (report.SerializedAdvancedSettings == null)
                     return false;
 
-                var policy = Deserialization.XmlDeserialize<ReportPolicy>(report.SerializedAdvancedSettings.PolicyString);
+                var policy = Deserialization.XmlDeserialize<AdvancedReportSettings>(report.SerializedAdvancedSettings.PolicyString);
 
                 if (report == null || policy.AdvancedOptions.NoDraft)
                     return false;

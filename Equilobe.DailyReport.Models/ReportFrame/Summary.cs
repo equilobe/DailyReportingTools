@@ -77,11 +77,11 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public StatusChartWidths SprintWidths { get; set; }
         public StatusChartWidths MonthWidths { get; set; }
 
-        public SummaryGuidelineInfo GuidelineInfo { get; set; }
+        public SummaryGuidelineInfo GuidelineInfoStatus { get; set; }
+        public SummaryGuidelineInfo GuidelineInfoWorkSummary { get; set; }
 
         public int WorkSummaryMaxValue { get; set; }
         public int StatusMaxValue { get; set; }
-        public int TotalMaxValue { get; set; }
 
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }

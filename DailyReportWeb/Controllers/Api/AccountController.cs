@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
+using Equilobe.DailyReport.Utils;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -36,6 +37,11 @@ namespace DailyReportWeb.Controllers.Api
         [AllowAnonymous]
         public async Task<AccountResponse> Register(RegisterModel model)
         {
+            if (!Validations.Mail(model.Email) ||
+                !Validations.Password(model.Password) ||
+                !Validations.Url(model.BaseUrl))
+                throw new ArgumentException();
+
             List<string> errors = new List<string>();
 
             if (errors.Count != 0)
@@ -104,6 +110,9 @@ namespace DailyReportWeb.Controllers.Api
         [AllowAnonymous]
         public async Task<AccountResponse> Login(LoginModel model)
         {
+            if (!Validations.Mail(model.Email))
+                throw new ArgumentException();
+
             List<string> errors = new List<string>();
             if (errors.Count != 0)
                 return new AccountResponse()

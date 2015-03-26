@@ -17,6 +17,8 @@ namespace JiraReporter.Services
     class AuthorLoader
     {
         public IJiraService JiraService { get; set; }
+        public IEncryptionService EncryptionService { get; set; }
+
         SprintTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
         List<JiraCommit> _commits { get { return _context.Commits; } }
@@ -336,7 +338,7 @@ namespace JiraReporter.Services
 
         private void SetImage()
         {
-            _currentAuthor.Image = GetImageFromURL(_policy, _currentAuthor.AvatarLink.OriginalString);
+            _currentAuthor.Image = GetImageFromURL(_currentAuthor.AvatarLink.OriginalString);
         }
 
         private void SetRemainingEstimate()
@@ -377,11 +379,16 @@ namespace JiraReporter.Services
             return projectManager;
         }
 
-        private Image GetImageFromURL(JiraPolicy policy, string url)
+        private Image GetImageFromURL(string url)
         {
             var webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "image/png");
-            webClient.Authorize(policy, UrlExtensions.GetRelativeUrl(url));
+
+            var jiraRequestContext = new JiraRequestContext();
+            _context.JiraRequestContext.CopyPropertiesOnObjects(jiraRequestContext);
+            jiraRequestContext.JiraPassword = EncryptionService.Decrypt(jiraRequestContext.JiraPassword);
+
+            webClient.Authorize(jiraRequestContext, UrlExtensions.GetRelativeUrl(url));
 
             var imageData = webClient.DownloadData(url);
 

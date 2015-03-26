@@ -12,9 +12,6 @@ namespace DailyReportWeb
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            // Uncomment this line if JIRA plugin will be supported.
-            //routes.RegisterJiraRoutes();
-
             routes.MapRoute(
                 name: "SPA-entrypoint",
                 url: "",
@@ -42,37 +39,6 @@ namespace DailyReportWeb
                     controller = "Home",
                     action = "Index",
                     id = UrlParameter.Optional
-                }
-            );
-        }
-
-        private static void RegisterJiraRoutes(this RouteCollection routes)
-        {
-            routes.MapRoute(
-                name: "descriptor",
-                url: "atlassian-connect",
-                defaults: new
-                {
-                    controller = "Home",
-                    action = "Descriptor"
-                }
-            );
-            routes.MapRoute(
-                name: "installed-callback",
-                url: "installed",
-                defaults: new
-                {
-                    controller = "Home",
-                    action = "InstalledCallback"
-                }
-            );
-            routes.MapRoute(
-                name: "uninstalled-callback",
-                url: "uninstalled",
-                defaults: new
-                {
-                    controller = "Home",
-                    action = "UninstalledCallback"
                 }
             );
         }

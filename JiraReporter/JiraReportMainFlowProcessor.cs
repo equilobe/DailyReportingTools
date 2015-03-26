@@ -22,7 +22,7 @@ namespace JiraReporter
     {
         public IDataService DataService { get; set; }
         public IJiraService JiraService { get; set; }
-        public IPolicyEditorService PolicyService { get; set; }
+        public ISettingsService SettingsService { get; set; }
         public IReportExecutionService ReportExecutionService { get; set; }
         public IReportGeneratorService ReportGeneratorService { get; set; }
 

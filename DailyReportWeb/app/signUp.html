@@ -34,8 +34,9 @@
                             <label>
                                 Password
                             </label>
-                            <div>
-                                <input type="text" class="form-control" placeholder="Daily Report password" required ng-model="signUpForm.password" />
+                            <div ng-form="passwordForm">
+                                <input name="password" type="text" class="form-control" placeholder="Daily Report password" required ng-model="signUpForm.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
+                                <span class="form-notification" ng-show="passwordForm.password.$error.pattern && !password.focus"><b>Enter valid password</b> (min 8 chars)</span>
                             </div>
                         </div>
                     </div>

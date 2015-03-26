@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Encryptamajig">
+      <HintPath>..\packages\Encryptamajig.1.0.0.0\lib\net40\Encryptamajig.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -75,10 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataService.cs" />
+    <Compile Include="EncryptionService.cs" />
     <Compile Include="GitHubService.cs" />
     <Compile Include="JiraService.cs" />
-    <Compile Include="PolicyEditorService.cs" />
-    <Compile Include="PolicySummaryService.cs" />
+    <Compile Include="SettingsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportExecutionService.cs" />
     <Compile Include="SourceControlService.cs" />

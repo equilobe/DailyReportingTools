@@ -23,6 +23,7 @@
     }])
     .controller("AppCtrl", ['$scope', '$http', '$location', 'breadcrumbs', function ($scope, $http, $location, breadcrumbs) {
         $scope.isAuth = isAuth;
+        $scope.isPlugin = isPlugin;
         $scope.breadcrumbs = breadcrumbs;
 
         (function jsRegex() {

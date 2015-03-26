@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿using Encryptamajig;
+using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -8,13 +9,17 @@ using Equilobe.DailyReport.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Equilobe.DailyReport.SL
 {
     public class DataService : IDataService
     {
+        public IEncryptionService EncryptionService { get; set; }
+
         public void SaveInstance(InstalledInstance instanceData)
         {
             using (var db = new ReportsDb())
@@ -34,6 +39,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var instanceData = new InstalledInstance();
+                modelData.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
                 modelData.CopyPropertiesOnObjects(instanceData);
                 instanceData.UserId = db.Users.Where(u => u.Email == modelData.Email)
                                               .Select(u => u.Id)
@@ -147,7 +153,7 @@ namespace Equilobe.DailyReport.SL
                 reportSettings.CopyTo<IBasicSettings>(policyBuffer);
 
                 if (!string.IsNullOrEmpty(reportSettings.SerializedAdvancedSettings.PolicyString))
-                    Deserialization.XmlDeserialize<ReportPolicy>(reportSettings.SerializedAdvancedSettings.PolicyString)
+                    Deserialization.XmlDeserialize<AdvancedReportSettings>(reportSettings.SerializedAdvancedSettings.PolicyString)
                         .CopyPropertiesOnObjects(policyBuffer);
 
                 return policyBuffer;

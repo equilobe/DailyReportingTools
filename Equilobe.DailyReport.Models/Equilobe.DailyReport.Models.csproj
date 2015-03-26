@@ -60,8 +60,8 @@
     <Compile Include="General\UserContext.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
-    <Compile Include="Interfaces\IPolicyEditorService.cs" />
-    <Compile Include="Interfaces\IPolicySummaryService.cs" />
+    <Compile Include="Interfaces\IEncryptionService.cs" />
+    <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
-    <Compile Include="Web\Policy.cs" />
+    <Compile Include="Web\ReportSettings.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />
     <Compile Include="Interfaces\IJiraService.cs" />

@@ -14,7 +14,7 @@
     </title>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     @Styles.Render("~/Content/maincss")
-    @*@Html.IncludeConnectJs()*@
+    @Html.IncludeConnectJs()
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/angular-route.min.js"></script>
     <script src="~/Scripts/ng-breadcrumbs.js"></script>
@@ -27,35 +27,14 @@
     <script src="~/app/confirmEmail.js"></script>
     <script>
         var isAuth = @this.Context.User.Identity.IsAuthenticated.ToString().ToLower();
+        var isPlugin = @this.Context.User.IsPlugin().ToString().ToLower();
         var regex = @Html.Raw(Json.Encode(@Model));
     </script>
 </head>
 
 <body ng-controller="AppCtrl">
-    <div id="jumbo">
-        <div class="container">
-            <div class="row" ng-show="!isAuth">
-                <div class="col-md-10 col-sm-9"></div>
-                <div class="col-md-2 col-sm-3">
-                    <a class="btn btn-default btn-sm" ng-href="app/signup">Sign Up</a>
-                    <a class="btn btn-default btn-sm pull-right" ng-href="app/signin">Sign In</a>
-                </div>
-            </div>
-            <div class="row" ng-show="isAuth">
-                <div class="col-md-11 col-sm-10">
-                    <ol class="breadcrumb relative">
-                        <li ng-repeat="breadcrumb in breadcrumbs.get() track by breadcrumb.path" ng-class="{ active: $last }">
-                            <a ng-if="!$last" ng-href="{{breadcrumb.path}}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
-                            <span ng-if="$last" ng-bind="breadcrumb.label"></span>
-                        </li>
-                    </ol>
-                </div>
-                <div class="col-md-1 col-sm-2">
-                    <button class="btn btn-default btn-sm pull-right" ng-click="signOut(this)">Sign Out</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    @Html.Partial("_MainMenu")
 
     <div ng-view></div>
 

@@ -1,14 +1,18 @@
-﻿// namespace used so you get this extention magically in the Razor templates
+﻿using DailyReportWeb;
+
 namespace System.Web.Mvc
 {
     public static class HtmlHelperExtensions
     {
         public static MvcHtmlString IncludeConnectJs<T>(this HtmlHelper<T> htmlHelper)
         {
-            var xdm = HttpUtility.HtmlDecode(htmlHelper.ViewContext.HttpContext.Request.QueryString.Get("xdm_e"));
-            var cp = HttpUtility.HtmlDecode(htmlHelper.ViewContext.HttpContext.Request.QueryString.Get("cp"));
+            if (!htmlHelper.ViewContext.HttpContext.User.IsPlugin())
+                return null;
 
-            return MvcHtmlString.Create("<script type='text/javascript' src='" + xdm + cp + "/atlassian-connect/all.js'></script>");
+            var requestQueryString = htmlHelper.ViewContext.HttpContext.Request.QueryString;
+            var baseUrl = requestQueryString["xdm_e"] + requestQueryString["cp"];
+
+            return MvcHtmlString.Create("<script type='text/javascript' src='" + baseUrl + "/atlassian-connect/all.js'></script>");
         }
     }
 }
