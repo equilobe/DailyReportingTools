@@ -85,7 +85,8 @@ namespace JiraReporter
                 IsFinalDraft = report.IsFinalDraft,
                 IsIndividualDraft = report.IsIndividualDraft,
                 IsFinalReport = report.IsFinalReport,
-                UniqueProjectKey = report.UniqueProjectKey
+                UniqueProjectKey = report.UniqueProjectKey,
+                HasSprint = report.HasSprint
             };
             individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
 
