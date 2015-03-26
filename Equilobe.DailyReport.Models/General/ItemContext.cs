@@ -7,13 +7,27 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models
 {
-    public class ItemContext : UserContext
+    public class ItemContext : ItemContext<long>
     {
         public ItemContext(long id)
+            : base(id)
+        {
+
+        }
+    }
+
+    public class ItemContext<T> : UserContext
+    {
+        public ItemContext(T id)
         {
             Id = id;
         }
 
-        public long Id { get; set; }
+        public ItemContext()
+        {
+
+        }
+
+        public T Id { get; set; }
     }
 }

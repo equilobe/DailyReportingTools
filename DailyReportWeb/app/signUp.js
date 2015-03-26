@@ -29,7 +29,7 @@ angular.module('app')
                      // this method does not take into account daylight saving  
                      var timeZoneOffset = new Date().getTimezoneOffset(); 
                      var closestTimeZone = $.grep($scope.timeZoneList, function (element) { return element.utcOffset == -timeZoneOffset })[0];
-                     if (closestTimeZone != undefined)
+                     if (closestTimeZone)
                          $scope.signUpForm.timeZone = closestTimeZone.id;
                  });
         }
@@ -38,7 +38,7 @@ angular.module('app')
              .success(function (result) {
                  $http.get("https://freegeoip.net/json/" + result.ip)
                       .success(function (result) {
-                          if (result.time_zone != undefined)
+                          if (result.time_zone)
                               getAccurateTimeZoneSuggestion(result);
                           else
                               getEstimatedTimeZoneSuggestion();
