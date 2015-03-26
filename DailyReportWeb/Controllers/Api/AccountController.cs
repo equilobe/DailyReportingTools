@@ -21,6 +21,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public IDataService DataService { get; set; }
         public ISettingsService SettingsService { get; set; }
+        public IJiraService JiraService { get; set; }
 
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
@@ -43,6 +44,8 @@ namespace DailyReportWeb.Controllers.Api
                 !Validations.Password(model.Password) ||
                 !Validations.Url(model.BaseUrl))
                 throw new ArgumentException();
+
+            JiraService.CredentialsValid(model, false);
 
             List<string> errors = new List<string>();
 
@@ -97,6 +100,9 @@ namespace DailyReportWeb.Controllers.Api
             string code = HttpUtility.UrlDecode(emailConfirmation.code);
             if (userId == null || code == null)
                 return new AccountResponse() { Success = false };
+
+            if(UserManager.FindById(userId).EmailConfirmed)
+                return new AccountResponse() { Success = true };
 
             IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
             if (!result.Succeeded)

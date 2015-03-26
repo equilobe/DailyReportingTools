@@ -39,19 +39,30 @@ namespace Equilobe.DailyReport.SL
 
         public void SaveInstance(RegisterModel modelData)
         {
+            long instanceId = 0;
             using (var db = new ReportsDb())
             {
-                var instanceData = new InstalledInstance();
-                modelData.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
-                modelData.CopyPropertiesOnObjects(instanceData);
-                instanceData.UserId = db.Users.Where(u => u.Email == modelData.Email)
-                                              .Select(u => u.Id)
-                                              .Single();
+                var user = db.Users.Where(u => u.Email == modelData.Email)
+                                   .Single();
 
-                db.InstalledInstances.Add(instanceData);
+                var installedInstance = user.InstalledInstances.SingleOrDefault(i => i.BaseUrl == modelData.BaseUrl);
+                if (installedInstance != null)
+                    throw new ArgumentException();
 
+                installedInstance = new InstalledInstance();
+                modelData.CopyPropertiesOnObjects(installedInstance);
+                installedInstance.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
+                installedInstance.UserId = user.Id;
+
+                db.InstalledInstances.Add(installedInstance);
                 db.SaveChanges();
+
+                if (user.EmailConfirmed)
+                    instanceId = installedInstance.Id;
             }
+
+            if (instanceId != 0)
+                SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void DeleteInstance(string baseUrl)

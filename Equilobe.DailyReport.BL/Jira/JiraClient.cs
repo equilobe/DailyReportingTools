@@ -64,7 +64,11 @@ namespace Equilobe.DailyReport.BL.Jira
 
         static void ValidateResponse(IRestResponse response)
         {
-            if (response.ResponseStatus != ResponseStatus.Completed || response.ErrorException != null || response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NoContent)
+            if (response.StatusCode == HttpStatusCode.Unauthorized ||
+                response.StatusCode == HttpStatusCode.BadRequest ||
+                response.StatusCode == HttpStatusCode.NoContent ||
+                response.ErrorException != null ||
+                response.ResponseStatus != ResponseStatus.Completed)
                 throw new InvalidOperationException(string.Format("RestSharp status: {0}, HTTP response: {1}", response.ResponseStatus, !String.IsNullOrEmpty(response.ErrorMessage) ? response.ErrorMessage : response.StatusDescription));
         }
 

@@ -8,13 +8,25 @@ using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 
 namespace Equilobe.DailyReport.SL
 {
     public class JiraService : IJiraService
     {
-        public IEncryptionService EncrytionService { get; set; }
+        public IEncryptionService EncryptionService { get; set; }
+
+        public void CredentialsValid(object context, bool passwordEncrypted = true)
+        {
+            var jiraRequestContext = new JiraRequestContext();
+            context.CopyPropertiesOnObjects(jiraRequestContext);
+
+            if (!passwordEncrypted)
+                jiraRequestContext.JiraPassword = EncryptionService.Encrypt(jiraRequestContext.JiraPassword);
+            
+            GetUser(jiraRequestContext, jiraRequestContext.JiraUsername);
+        }
 
         public JiraPolicy GetJiraInfo(ItemContext context)
         {
@@ -122,11 +134,10 @@ namespace Equilobe.DailyReport.SL
         private JiraClient GetClient(IJiraRequestContext context)
         {
             if (!string.IsNullOrEmpty(context.SharedSecret))
-                return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, "addonKey");
+                return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, ConfigurationManager.AppSettings["addonKey"]);
             else
             {
-                var password = EncrytionService.Decrypt(context.JiraPassword);
-                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, password);
+                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, EncryptionService.Decrypt(context.JiraPassword));
             }        
         }
     }
