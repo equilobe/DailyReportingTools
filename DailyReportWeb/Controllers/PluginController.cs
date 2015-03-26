@@ -3,7 +3,6 @@ using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Newtonsoft.Json;
 using System;
-using System.Configuration;
 using System.Net.Http;
 using System.Web.Mvc;
 
@@ -13,6 +12,7 @@ namespace DailyReportWeb.Controllers
     {
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public IDataService DataService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
 
         [HttpGet]
         public ActionResult Index()
@@ -21,7 +21,7 @@ namespace DailyReportWeb.Controllers
             {
                 name = "Daily Report Tool",
                 description = "A Connect add-on that makes JIRA info available to Daily Report Tool",
-                key = ConfigurationManager.AppSettings["addonKey"],
+                key = ConfigurationService.GetAddonKey(),
                 baseUrl = UrlExtensions.GetHostUrl(Request.Url.OriginalString),
                 vendor = new
                 {

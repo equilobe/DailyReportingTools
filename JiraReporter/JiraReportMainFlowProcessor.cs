@@ -25,6 +25,8 @@ namespace JiraReporter
         public ISettingsService SettingsService { get; set; }
         public IReportExecutionService ReportExecutionService { get; set; }
         public IReportGeneratorService ReportGeneratorService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
+
 
         public void Execute(string[] args)
         {
@@ -43,7 +45,7 @@ namespace JiraReporter
             SetProjectInfo(report, project);
             LoadReportDates(report);
 
-            var contextService = new JiraContextService(report);
+            var contextService = new JiraContextService(report) { ConfigurationService = ConfigurationService };
             contextService.SetPolicy();
 
             if (RunReport(report))

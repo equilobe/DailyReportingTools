@@ -4,7 +4,6 @@ using Equilobe.DailyReport.Utils;
 using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Security.Principal;
 
@@ -12,6 +11,8 @@ namespace Equilobe.DailyReport.SL
 {
     public class TaskSchedulerService : ITaskSchedulerService
     {
+        public IConfigurationService ConfigurationService { get; set; }
+
         public bool TryRunReportTask(ProjectContext context)
         {
             try
@@ -35,9 +36,9 @@ namespace Equilobe.DailyReport.SL
                     StartBoundary = DateTime.Parse(context.ReportTime)
                 });
                 taskDefinition.Actions.Add(new ExecAction(
-                    ConfigurationManager.AppSettings["jiraReporterPath"],
+                    ConfigurationService.GetJiraReporterPath(),
                     "--uniqueProjectKey=" + context.UniqueProjectKey,
-                    ConfigurationManager.AppSettings["reportToolPath"]));
+                    ConfigurationService.GetReportToolPath()));
 
                 GetTaskFolder(taskService).RegisterTaskDefinition(GetTaskKey(context.UniqueProjectKey), taskDefinition, TaskCreation.Create, WindowsIdentity.GetCurrent().Name);
             }
@@ -47,7 +48,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var taskService = new TaskService())
             {
-                var taskDefinition = taskService.GetTask(ConfigurationManager.AppSettings["taskSchedulerFolderName"] + "\\"+ GetTaskKey(context.UniqueProjectKey)).Definition;
+                var taskDefinition = taskService.GetTask(ConfigurationService.GetTaskSchedulerFolderName() + "\\"+ GetTaskKey(context.UniqueProjectKey)).Definition;
                 taskDefinition.Triggers.Clear();
 
                 if (!string.IsNullOrEmpty(context.ReportTime))
@@ -93,13 +94,14 @@ namespace Equilobe.DailyReport.SL
 
         private TaskFolder GetTaskFolder(TaskService taskService)
         {
+            var taskSchedulerFolderName = ConfigurationService.GetTaskSchedulerFolderName();
             var taskFolder = taskService.RootFolder
                 .SubFolders
-                .Where(qr => qr.Name == ConfigurationManager.AppSettings["taskSchedulerFolderName"])
+                .Where(qr => qr.Name == taskSchedulerFolderName)
                 .SingleOrDefault();
 
             if (taskFolder == null)
-                return taskService.RootFolder.CreateFolder(ConfigurationManager.AppSettings["taskSchedulerFolderName"]);
+                return taskService.RootFolder.CreateFolder(taskSchedulerFolderName);
 
             return taskFolder;
         }

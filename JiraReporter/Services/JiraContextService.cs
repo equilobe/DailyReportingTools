@@ -2,7 +2,6 @@
 using SourceControlLogReporter;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,11 +11,14 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter.Services
 {
     public class JiraContextService
     {
+        public IConfigurationService ConfigurationService { get; set; }
+
         JiraPolicy Policy { get { return Context.Policy; } }
         JiraReport Context { get; set; }
 
@@ -61,7 +63,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendReport/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendReport/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetResendDraftUrl()
@@ -70,7 +72,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
@@ -79,7 +81,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private Uri GetResendIndividualDraftUrl()
@@ -88,7 +90,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationManager.AppSettings["webBaseUrl"] + "/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
         }
 
         private static DateTime GetDateTimeFromString(string date)

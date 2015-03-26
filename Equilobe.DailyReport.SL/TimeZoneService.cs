@@ -6,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Configuration;
 using System.Xml;
 
 namespace Equilobe.DailyReport.SL
 {
     class TimeZoneService : ITimeZoneService
     {
+        public IConfigurationService ConfigurationService { get; set; }
+
         public List<Equilobe.DailyReport.Models.TimeZone.TimeZone> GetSystemTimeZones()
         {
             var timeZoneList = new List<Equilobe.DailyReport.Models.TimeZone.TimeZone>();
@@ -30,15 +31,15 @@ namespace Equilobe.DailyReport.SL
 
         public string GetWindowsTimeZoneIdByIanaTimeZone (ItemContext<string> itemContext)
         {
-            XmlDocument timeZoneMap = GetTimeZoneMapXml();
+            var timeZoneMappingPath = ConfigurationService.GetTimeZoneMappingPath();
+            XmlDocument timeZoneMap = GetTimeZoneMapXml(timeZoneMappingPath);
             XmlNode mapZoneNode = timeZoneMap.SelectSingleNode(String.Format("//mapZone[@type='{0}']", itemContext.Id));
             return mapZoneNode == null ? null : mapZoneNode.Attributes["other"].Value.Trim();
         }
 
-        private static XmlDocument GetTimeZoneMapXml()
+        private static XmlDocument GetTimeZoneMapXml(string timeZoneMappingPath)
         {
-            string TimeZoneMappingXmlPath = WebConfigurationManager.AppSettings["TimeZoneMappingPath"].ToString();
-            var mapFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TimeZoneMappingXmlPath);
+            var mapFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, timeZoneMappingPath);
             XmlDocument doc = new XmlDocument();
             doc.Load(mapFilePath);
             return doc;

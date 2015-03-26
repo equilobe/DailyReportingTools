@@ -18,6 +18,7 @@ namespace JiraReporter.Services
     {
         public IJiraService JiraService { get; set; }
         public IEncryptionService EncryptionService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
 
         SprintTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
@@ -388,7 +389,7 @@ namespace JiraReporter.Services
             _context.JiraRequestContext.CopyPropertiesOnObjects(jiraRequestContext);
             jiraRequestContext.JiraPassword = EncryptionService.Decrypt(jiraRequestContext.JiraPassword);
 
-            webClient.Authorize(jiraRequestContext, UrlExtensions.GetRelativeUrl(url));
+            webClient.Authorize(jiraRequestContext, UrlExtensions.GetRelativeUrl(url), ConfigurationService.GetAddonKey());
 
             var imageData = webClient.DownloadData(url);
 
