@@ -42,5 +42,78 @@
                 <a ng-href="/app/list/{{instance.id}}" class="btn btn-default">Details</a>
             </div>
         </div>
+        <div class="project" ng-show="addingInstance">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        JIRA
+                    </h4>
+                </div>
+                <div class="panel-body" ng-form="newInstanceForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    Username
+                                </label>
+                                <div>
+                                    <input type="text" class="form-control" placeholder="JIRA username" required ng-model="newInstanceForm.jiraUsername" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    Password
+                                </label>
+                                <div>
+                                    <input type="text" class="form-control" placeholder="Jira password" required ng-model="newInstanceForm.jiraPassword" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>
+                                    Instance Url
+                                </label>
+                                <div ng-form="instanceUrlForm">
+                                    <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="newInstanceForm.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
+                                    <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>
+                                    Time Zone
+                                </label>
+                                <div>
+                                    <select class="form-control" ng-model="newInstanceForm.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-10 col-md-10">
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <button id="btn-add-instance" class="btn btn-default" ng-disabled="newInstanceForm.$invalid || newInstanceForm.$pristine && status != 'error'" ng-click="addInstance(this)">Add Instance</button>
+                    <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="newInstanceForm.$dirty"></span>
+                    <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
+                    <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && newInstanceForm.$pristine"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row project" ng-show="!addingInstance">
+            <div class="col-sm-10 col-md-10">
+            </div>
+            <div class="col-sm-2 col-md-2">
+                <button ng-click="addNewInstance(this)" class="btn btn-default" id="btn-add-instance">Add New Instance</button>
+            </div>
+        </div>
     </div>
 </div>
