@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
@@ -9,6 +10,7 @@ using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 
@@ -97,8 +99,8 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var basicSettings = db.BasicSettings.SingleOrDefault(r => r.Id == context.Id);
-                if (basicSettings == null || basicSettings.SerializedAdvancedSettings == null)
+                var basicSettings = db.BasicSettings.Single(bs => bs.Id == context.Id);
+                if (basicSettings.SerializedAdvancedSettings == null)
                     return null;
 
                 return Deserialization.XmlDeserialize<AdvancedReportSettings>(basicSettings.SerializedAdvancedSettings.PolicyString);
@@ -109,6 +111,21 @@ namespace Equilobe.DailyReport.SL
         {
             var basicSettings = GetBasicReportSettings(context);
             var advancedSettings = GetAdvancedReportSettings(context);
+            if (advancedSettings == null)
+            {
+                advancedSettings = new AdvancedReportSettings
+                {
+                    MonthlyOptions = new List<Month>()
+                };
+
+                DateTimeFormatInfo.InvariantInfo.MonthNames.ToList()
+                    .Where(monthName => !string.IsNullOrEmpty(monthName))
+                    .ToList()
+                    .ForEach(monthName => advancedSettings.MonthlyOptions.Add(new Month
+                    {
+                        MonthName = monthName
+                    }));
+            }
 
             var fullReportSettings = new FullReportSettings();
             basicSettings.CopyPropertiesOnObjects(fullReportSettings);
@@ -151,12 +168,8 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncSourceControlUsernames(FullReportSettings fullSettings)
         {
-            if (fullSettings.SourceControlOptions == null)
-                return;
             fullSettings.SourceControlUsernames = SourceControlService.GetContributors(fullSettings.SourceControlOptions);
 
-            if (fullSettings.UserOptions == null)
-                return;
             fullSettings.UserOptions.ForEach(user =>
             {
                 var validSourceControlUsernames = new List<string>();
