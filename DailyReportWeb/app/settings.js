@@ -9,6 +9,7 @@ angular.module('app')
         });
     }])
     .controller("SettingsCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
 
         $http.get("/api/settings/" + $routeParams.projectId)

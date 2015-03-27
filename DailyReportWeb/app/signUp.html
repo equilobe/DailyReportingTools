@@ -8,7 +8,7 @@
         </p>
     </div>
 </div>
-<form name="signUpForm">
+<form name="form">
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -16,7 +16,7 @@
                     Daily Report
                 </h4>
             </div>
-            <div class="panel-body" ng-form="dailyReportForm">
+            <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -24,7 +24,7 @@
                                 Email
                             </label>
                             <div ng-form="emailForm">
-                                <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="signUpForm.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
+                                <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
                                 <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                 Password
                             </label>
                             <div ng-form="passwordForm">
-                                <input name="password" type="text" class="form-control" placeholder="Daily Report password" required ng-model="signUpForm.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
+                                <input name="password" type="text" class="form-control" placeholder="Daily Report password" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
                                 <span class="form-notification" ng-show="passwordForm.password.$error.pattern && !password.focus"><b>Enter valid password</b> (min 8 chars)</span>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                     JIRA
                 </h4>
             </div>
-            <div class="panel-body" ng-form="dailyReportForm">
+            <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -58,7 +58,7 @@
                                 Username
                             </label>
                             <div>
-                                <input type="text" class="form-control" placeholder="JIRA username" required ng-model="signUpForm.jiraUsername" />
+                                <input type="text" class="form-control" placeholder="JIRA username" required ng-model="form.jiraUsername" />
                             </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                                 Password
                             </label>
                             <div>
-                                <input type="text" class="form-control" placeholder="Jira password" required ng-model="signUpForm.jiraPassword" />
+                                <input type="text" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                                 Instance Url
                             </label>
                             <div ng-form="instanceUrlForm">
-                                <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="signUpForm.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
+                                <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
                                 <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                                 Time Zone
                             </label>
                             <div>
-                                <select class="form-control" ng-model="signUpForm.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
+                                <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
                             </div>
                         </div>
                     </div>
@@ -100,13 +100,13 @@
         </div>
 
         <div class="container">
-            <button class="btn btn-success" ng-disabled="signUpForm.$invalid || signUpForm.$pristine && status != 'error'" ng-click="signUp(this)">
+            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signUp(this)">
                 Sign Up
             </button>
             <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
             <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && signUpForm.$pristine">{{message}}</span>
-            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && signUpForm.$pristine">{{message}}</span>
+            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && form.$pristine">{{message}}</span>
+            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine">{{message}}</span>
         </div>
     </div>
 </form>

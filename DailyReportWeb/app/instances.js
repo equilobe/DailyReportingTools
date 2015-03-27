@@ -9,6 +9,7 @@ angular.module('app')
         });
     }])
     .controller("InstancesCtrl", ['$scope', '$http', function ($scope, $http) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
 
         $http.get("/api/instances")
@@ -19,18 +20,15 @@ angular.module('app')
                 $scope.status = "loaded";
             });
 
-        $scope.addNewInstance = function ($scope) {
-            $scope.addingInstance = true;
-        };
-
         $scope.addInstance = function ($scope) {
             $scope.status = 'saving';
-            $scope.newInstanceForm.$setPristine();
+            $scope.form.$setPristine();
 
-            $http.post("/api/instances/", $scope.newInstanceForm
+            $http.post("/api/instances/", $scope.form
                 ).success(function (list) {
-                    $scope.instances = list;
+                    $scope.$parent.instances = list;
                     $scope.addingInstance = false;
+                    $scope.form = null;
                     $scope.status = "success";
                     console.log("success");
                 }).error(function () {
