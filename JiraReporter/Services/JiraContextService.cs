@@ -42,7 +42,7 @@ namespace JiraReporter.Services
         private void SetMonthlyNonWorkingDays()
         {
             if (Policy.MonthlyOptions != null)
-                foreach (var month in Policy.MonthlyOptions)
+                foreach (var month in Policy.MonthlyOptions.Months)
                     if (!string.IsNullOrEmpty(month.NonWorkingDays))
                         month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
         }
@@ -104,7 +104,7 @@ namespace JiraReporter.Services
             if (Policy.MonthlyOptions == null)
                 return null;
 
-            return Policy.MonthlyOptions.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
+            return Policy.MonthlyOptions.Months.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
         }
 
         private bool IsThisMonthOverriden()
@@ -112,7 +112,7 @@ namespace JiraReporter.Services
             if (Policy.MonthlyOptions == null)
                 return false;
 
-            return Policy.MonthlyOptions.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
+            return Policy.MonthlyOptions.Months.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
         }
 
         private IDictionary<string, List<string>> GetUsersDictionary()

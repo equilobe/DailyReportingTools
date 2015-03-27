@@ -186,14 +186,10 @@ namespace JiraReporter.Services
 
         private void SetAverageRemainingTimePerDay()
         {
-            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0)
-                _summary.Timing.RemainingMonthAverage = 0;
-            else
+            if (_summary.WorkingDays.MonthWorkingDaysLeft != 0)
                 _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / _summary.WorkingDays.MonthWorkingDaysLeft;
 
-            if (!_report.HasSprint)
-                _summary.Timing.RemainingSprintAverage = 0;
-            else
+            if (_summary.WorkingDays.SprintWorkingDaysLeft != 0)
                 _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / _summary.WorkingDays.SprintWorkingDaysLeft;
 
             TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
@@ -265,7 +261,7 @@ namespace JiraReporter.Services
         private void SetHealth()
         {
             var healthInspector = new HealthInspector(_report);
-            _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions), _summary.Timing.TotalTimeHours);
+            _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions.Months), _summary.Timing.TotalTimeHours);
             if (_sprint == null)
             {
                 _summary.DayHealth = Health.None;
@@ -474,16 +470,16 @@ namespace JiraReporter.Services
         {
             var workingDaysInfo = new WorkingDaysInfo();
             var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
-            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions);
+            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions.Months);
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions.Months);
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions.Months);
+            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions.Months);
             if (_sprint != null)
             {
                 var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone(_report.OffsetFromUtc);
                 var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone(_report.OffsetFromUtc);
-                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate, _policy.MonthlyOptions);
-                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate, _policy.MonthlyOptions.Months);
+                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions.Months);
                 workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_report);
             }
             return workingDaysInfo;

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Xml.Serialization;
 
 namespace Equilobe.DailyReport.Models.Policy
@@ -32,7 +34,7 @@ namespace Equilobe.DailyReport.Models.Policy
 
         public AdvancedOptions AdvancedOptions { get; set; }
 
-        public List<Month> MonthlyOptions { get; set; }
+        public MonthlyOptions MonthlyOptions { get; set; }
 
         public List<User> UserOptions { get; set; }
 
@@ -44,5 +46,10 @@ namespace Equilobe.DailyReport.Models.Policy
 
         [XmlIgnore]
         public IDictionary<string, List<string>> Users { get; set; }
+
+        public JiraPolicy()
+        {
+            MonthlyOptions = new MonthlyOptions();
+        }
     }
 }
