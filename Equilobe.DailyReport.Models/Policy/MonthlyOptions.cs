@@ -14,12 +14,13 @@ namespace Equilobe.DailyReport.Models.Policy
         public MonthlyOptions()
         {
             Months = new List<Month>();
-            var month = 1;
-            while (month <= 12)
-            {
-                Months.Add(new Month { MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month) });
-                month++;
-            }
+            DateTimeFormatInfo.InvariantInfo.MonthNames.ToList()
+                                                       .Where(monthName => !string.IsNullOrEmpty(monthName))
+                                                       .ToList()
+                                                       .ForEach(monthName => Months.Add(new Month
+                                                       {
+                                                           MonthName = monthName
+                                                       }));
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Equilobe.DailyReport.Models.Web
         public int AllocatedHoursPerMonth { get; set; }
         public SourceControlOptions SourceControlOptions { get; set; }
         public List<User> UserOptions { get; set; }
-        public List<Month> MonthlyOptions { get; set; }
+        public MonthlyOptions MonthlyOptions { get; set; }
         public AdvancedOptions AdvancedOptions { get; set; }
     }
 
@@ -49,7 +49,7 @@ namespace Equilobe.DailyReport.Models.Web
         public SourceControlOptions SourceControlOptions { get; set; }
         public List<string> SourceControlUsernames { get; set; }
         public List<User> UserOptions { get; set; }
-        public List<Month> MonthlyOptions { get; set; }
+        public MonthlyOptions MonthlyOptions { get; set; }
         public AdvancedOptions AdvancedOptions { get; set; }
     }
 }

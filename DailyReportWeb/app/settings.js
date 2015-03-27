@@ -15,7 +15,7 @@ angular.module('app')
             .success(function (policy) {
                 $scope.user = policy.userOptions ? policy.userOptions[0] : null;
                 $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
-                $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
+                $scope.month = policy.monthlyOptions.months ? policy.monthlyOptions.months[0] : null;
 
                 if (!policy.sourceControlOptions)
                     policy.sourceControlOptions = { type: "None" };

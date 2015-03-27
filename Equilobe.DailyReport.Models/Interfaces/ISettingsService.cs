@@ -12,5 +12,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         AdvancedReportSettings GetAdvancedSettings(ItemContext context);
 
         FullReportSettings GetFullSettings(ItemContext context);
+        FullReportSettings GetSyncedSettings(ItemContext context);
     }
 }

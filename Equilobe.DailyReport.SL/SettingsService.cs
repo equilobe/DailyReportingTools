@@ -113,21 +113,31 @@ namespace Equilobe.DailyReport.SL
 
         public FullReportSettings GetFullSettings(ItemContext context)
         {
-            var jiraInfo = JiraService.GetJiraInfo(context);
-            var basicSettings = GetBasicSettings(context);
-            var advancedSettings = GetAdvancedSettings(context);
+            var fullReportSettings = new FullReportSettings();
+            GetBasicSettings(context).CopyPropertiesOnObjects(fullReportSettings);
+            GetAdvancedSettings(context).CopyPropertiesOnObjects(fullReportSettings);
 
-            return SyncSettings(jiraInfo, basicSettings, advancedSettings);
+            return fullReportSettings;
         }
 
-        private FullReportSettings SyncSettings(JiraPolicy jiraInfo, BasicReportSettings basicSettings, AdvancedReportSettings advancedSettings)
+        public FullReportSettings GetSyncedSettings(ItemContext context)
         {
-            var fullSettings = new FullReportSettings();
-            jiraInfo.CopyPropertiesOnObjects(fullSettings);
+            var jiraInfo = JiraService.GetJiraInfo(context);
+            var fullSettings = GetFullSettings(context);
+            
+            var syncedUserOptions = new List<User>();
+            fullSettings.UserOptions.ForEach(auser =>
+                jiraInfo.UserOptions.ForEach(juser =>
+                {
+                    if (syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
+                        return;
 
-            basicSettings.CopyPropertiesOnObjects(fullSettings);
-
-            advancedSettings.CopyPropertiesOnObjects(fullSettings);
+                    if (auser.JiraUserKey == juser.JiraUserKey)
+                        syncedUserOptions.Add(auser);
+                    else
+                        syncedUserOptions.Add(juser);
+                }));
+            fullSettings.UserOptions = syncedUserOptions;
 
             if (fullSettings.SourceControlOptions != null)
                 fullSettings.SourceControlUsernames = SourceControlService.GetContributors(fullSettings.SourceControlOptions);

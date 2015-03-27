@@ -27,7 +27,7 @@ angular.module('app')
             $scope.status = 'saving';
             $scope.newInstanceForm.$setPristine();
 
-            $http.post("/api/instances/" + $scope.newInstanceForm
+            $http.post("/api/instances/", $scope.newInstanceForm
                 ).success(function (list) {
                     $scope.instances = list;
                     $scope.addingInstance = false;

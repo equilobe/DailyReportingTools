@@ -66,7 +66,8 @@ namespace JiraReporter.Helpers
 
         public static void SetAuthorAverageRemainig(JiraAuthor author, int sprintWorkingDaysLeft)
         {
-            author.Timing.TotalRemainingAverage = author.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
+            if (sprintWorkingDaysLeft > 0)
+                author.Timing.TotalRemainingAverage = author.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
             author.Timing.TotalRemainingString = author.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
         }
 
