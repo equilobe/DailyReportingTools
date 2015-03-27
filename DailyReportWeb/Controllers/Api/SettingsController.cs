@@ -23,7 +23,7 @@ namespace DailyReportWeb.Controllers.Api
             return SettingsService.GetSyncedReportSettings(new ItemContext(id));
         }
 
-        public void Post(long id, [FromBody]FullReportSettings updatedFullSettings)
+        public void Post([FromBody]FullReportSettings updatedFullSettings)
         {
             if (!Validations.Time(updatedFullSettings.ReportTime) ||
                 !Validations.Mails(updatedFullSettings.DraftEmails) ||
@@ -33,8 +33,7 @@ namespace DailyReportWeb.Controllers.Api
 
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedFullSettings.BaseUrl);
-                var basicSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedFullSettings.ProjectId);
+                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == updatedFullSettings.UniqueProjectKey);
 
                 if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
                 {

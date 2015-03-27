@@ -49,7 +49,7 @@ namespace Equilobe.DailyReport.Models.Policy
 
         public JiraPolicy()
         {
-            MonthlyOptions = new MonthlyOptions();
+
         }
     }
 }

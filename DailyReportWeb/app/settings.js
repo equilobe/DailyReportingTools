@@ -16,7 +16,7 @@ angular.module('app')
             .success(function (policy) {
                 $scope.user = policy.userOptions ? policy.userOptions[0] : null;
                 $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
-                $scope.month = policy.monthlyOptions.months ? policy.monthlyOptions.months[0] : null;
+                $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
 
                 if (!policy.sourceControlOptions)
                     policy.sourceControlOptions = { type: "None" };
@@ -31,7 +31,7 @@ angular.module('app')
             $scope.status = 'saving';
             $scope.advancedOptionsForm.$setPristine();
 
-            $http.post("/api/settings/" + $scope.policy.projectId, $scope.policy
+            $http.post("/api/settings/", $scope.policy
                 ).success(function () {
                     $scope.status = "success";
                     console.log("success");

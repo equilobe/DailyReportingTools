@@ -25,7 +25,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         int AllocatedHoursPerMonth { get; set; }
         SourceControlOptions SourceControlOptions { get; set;}
         List<User> UserOptions { get; set; }
-        MonthlyOptions MonthlyOptions { get; set; }
+        List<Month> MonthlyOptions { get; set; }
         AdvancedOptions AdvancedOptions { get; set; }
     }
 }
