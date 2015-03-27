@@ -5,7 +5,9 @@ angular.module('app')
         $routeProvider.when('/app/confirmEmail', { templateUrl: 'app/confirmEmail.html', controller: 'ConfirmEmailCtrl' });
     }])
     .controller("ConfirmEmailCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
+
         var confirmationDetails = {
             userId: $routeParams.userId,
             code: encodeURIComponent($routeParams.code)

@@ -9,6 +9,7 @@ angular.module('app')
         });
     }])
     .controller("ProjectsCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
 
         $http.get("/api/projects/" + $routeParams.instanceId)
