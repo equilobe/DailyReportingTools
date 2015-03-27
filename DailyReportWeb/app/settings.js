@@ -2,7 +2,7 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/edit/:projectId', {
+        $routeProvider.when('/app/instances/:instanceId/projects/:projectId/settings', {
             label: 'Settings',
             templateUrl: 'app/settings.html',
             controller: 'SettingsCtrl'

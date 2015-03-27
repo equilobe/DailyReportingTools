@@ -84,6 +84,7 @@ namespace Equilobe.DailyReport.SL
                                       return new BasicReportSettings
                                       {
                                           Id = basicSettings.Id,
+                                          InstalledInstanceId = basicSettings.InstalledInstanceId,
                                           BaseUrl = installedInstance.BaseUrl,
                                           ProjectId = basicSettings.ProjectId,
                                           ProjectKey = projectInfo.ProjectKey,

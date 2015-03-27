@@ -14,6 +14,7 @@ namespace Equilobe.DailyReport.Models.Web
     public class BasicReportSettings : IBasicSettings
     {
         public long Id { get; set; }
+        public long InstalledInstanceId { get; set; }
         public string BaseUrl { get; set; }
         public long ProjectId { get; set; }
         public string ProjectKey { get; set; }

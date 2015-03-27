@@ -15,7 +15,7 @@
 
         $routeProvider
             .when('/', {
-                redirectTo: '/app/list'
+                redirectTo: '/app/instances'
             })
             .otherwise({
                 redirectTo: '/'

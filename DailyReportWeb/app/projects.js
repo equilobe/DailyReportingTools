@@ -2,7 +2,7 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/list/:instanceId', {
+        $routeProvider.when('/app/instances/:instanceId/projects', {
             label: 'Projects',
             templateUrl: 'app/projects.html',
             controller: 'ProjectsCtrl'
