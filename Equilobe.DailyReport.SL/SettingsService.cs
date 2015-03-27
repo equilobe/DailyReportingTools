@@ -45,7 +45,7 @@ namespace Equilobe.DailyReport.SL
                             UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
                         });
                     });
-                
+
                 db.SaveChanges();
             }
         }
@@ -124,19 +124,20 @@ namespace Equilobe.DailyReport.SL
         {
             var jiraInfo = JiraService.GetJiraInfo(context);
             var fullSettings = GetFullSettings(context);
-            
-            var syncedUserOptions = new List<User>();
-            fullSettings.UserOptions.ForEach(auser =>
-                jiraInfo.UserOptions.ForEach(juser =>
-                {
-                    if (syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
-                        return;
 
-                    if (auser.JiraUserKey == juser.JiraUserKey)
-                        syncedUserOptions.Add(auser);
-                    else
+            var syncedUserOptions = new List<User>();
+            jiraInfo.UserOptions.ForEach(juser =>
+                {
+                    fullSettings.UserOptions.ForEach(dbuser =>
+                    {
+                        if (dbuser.JiraUserKey == juser.JiraUserKey)
+                            syncedUserOptions.Add(dbuser);
+                    });
+
+                    if (!syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
                         syncedUserOptions.Add(juser);
-                }));
+                }
+            );
             fullSettings.UserOptions = syncedUserOptions;
 
             if (fullSettings.SourceControlOptions != null)
