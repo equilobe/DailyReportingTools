@@ -19,7 +19,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public List<BasicReportSettings> Get(long id)
         {
-            return SettingsService.GetAllBasicSettings(new ItemContext(id));
+            return SettingsService.GetAllBasicReportSettings(new ItemContext(id));
         }
 
         public void Post([FromBody]BasicReportSettings updatedBasicSettings)

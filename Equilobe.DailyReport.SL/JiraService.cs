@@ -35,8 +35,7 @@ namespace Equilobe.DailyReport.SL
                 return null;
 
             var instance = reportSettings.InstalledInstance;
-            var jiraContext = new JiraRequestContext();
-            instance.CopyPropertiesOnObjects(jiraContext);
+            var jiraContext = new JiraRequestContext(instance);
 
             var project = GetProject(jiraContext, reportSettings.ProjectId);
 

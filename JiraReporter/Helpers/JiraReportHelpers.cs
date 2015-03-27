@@ -30,7 +30,7 @@ namespace JiraReporter.Helpers
             report.Policy.Username = report.Settings.InstalledInstance.JiraUsername;
             report.Policy.Password = report.Settings.InstalledInstance.JiraPassword;
 
-            return new JiraRequestContext(report.Policy.BaseUrl, report.Settings.InstalledInstance.JiraUsername, report.Settings.InstalledInstance.JiraPassword);
+            return new JiraRequestContext(report.Settings.InstalledInstance);
         }
     }
 }

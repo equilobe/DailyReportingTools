@@ -383,12 +383,7 @@ namespace JiraReporter.Services
         {
             var webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "image/png");
-
-            var jiraRequestContext = new JiraRequestContext();
-            _context.JiraRequestContext.CopyPropertiesOnObjects(jiraRequestContext);
-            jiraRequestContext.JiraPassword = EncryptionService.Decrypt(jiraRequestContext.JiraPassword);
-
-            webClient.Authorize(jiraRequestContext, UrlExtensions.GetRelativeUrl(url));
+            webClient.Authorize(_context.JiraRequestContext, UrlExtensions.GetRelativeUrl(url));
 
             var imageData = webClient.DownloadData(url);
 

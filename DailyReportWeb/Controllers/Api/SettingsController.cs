@@ -20,7 +20,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public FullReportSettings Get(long id)
         {
-            return SettingsService.GetSyncedSettings(new ItemContext(id));
+            return SettingsService.GetSyncedReportSettings(new ItemContext(id));
         }
 
         public void Post(long id, [FromBody]FullReportSettings updatedFullSettings)

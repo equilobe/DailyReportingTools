@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Storage;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -14,20 +15,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public JiraRequestContext()
         {
-
         }
 
-        public JiraRequestContext(string baseUrl, string sharedSecret)
+        public JiraRequestContext(InstalledInstance instance)
         {
-            BaseUrl = baseUrl;
-            SharedSecret = sharedSecret;
-        }
-
-        public JiraRequestContext(string baseUrl, string username, string password)
-        {
-            BaseUrl = baseUrl;
-            JiraUsername = username;
-            JiraPassword = password;
+            BaseUrl = instance.BaseUrl;
+            JiraUsername = instance.JiraUsername;
+            JiraPassword = instance.JiraPassword;
+            SharedSecret = instance.SharedSecret;
         }
     }
 }

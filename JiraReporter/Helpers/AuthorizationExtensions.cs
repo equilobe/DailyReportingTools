@@ -4,6 +4,7 @@ using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.SL;
 using System;
 using System.Configuration;
 using System.Net;
@@ -18,7 +19,7 @@ namespace JiraReporter.Helpers
             if (!string.IsNullOrEmpty(context.SharedSecret))
                 client.Headers.Add("Authorization", "JWT " + JwtAuthenticator.CreateJwt(ConfigurationManager.AppSettings["addonKey"], context.SharedSecret, relativeUrl, "GET"));
             else
-                client.Headers.Add("Authorization", "Basic " + CreateBasic(context.JiraUsername, context.JiraPassword));
+                client.Headers.Add("Authorization", "Basic " + CreateBasic(context.JiraUsername, new EncryptionService().Decrypt(context.JiraPassword)));
         }
 
         static string CreateBasic(string username, string password)
