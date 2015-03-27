@@ -113,9 +113,12 @@ namespace Equilobe.DailyReport.SL
 
         public FullReportSettings GetFullSettings(ItemContext context)
         {
+            var basicSettings = GetBasicSettings(context);
+            var advancedSettings = GetAdvancedSettings(context);
+
             var fullReportSettings = new FullReportSettings();
-            GetBasicSettings(context).CopyPropertiesOnObjects(fullReportSettings);
-            GetAdvancedSettings(context).CopyPropertiesOnObjects(fullReportSettings);
+            basicSettings.CopyPropertiesOnObjects(fullReportSettings);
+            advancedSettings.CopyPropertiesOnObjects(fullReportSettings);
 
             return fullReportSettings;
         }
@@ -125,25 +128,43 @@ namespace Equilobe.DailyReport.SL
             var jiraInfo = JiraService.GetJiraInfo(context);
             var fullSettings = GetFullSettings(context);
 
-            var syncedUserOptions = new List<User>();
-            jiraInfo.UserOptions.ForEach(juser =>
-                {
-                    fullSettings.UserOptions.ForEach(dbuser =>
-                    {
-                        if (dbuser.JiraUserKey == juser.JiraUserKey)
-                            syncedUserOptions.Add(dbuser);
-                    });
-
-                    if (!syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
-                        syncedUserOptions.Add(juser);
-                }
-            );
-            fullSettings.UserOptions = syncedUserOptions;
-
-            if (fullSettings.SourceControlOptions != null)
-                fullSettings.SourceControlUsernames = SourceControlService.GetContributors(fullSettings.SourceControlOptions);
+            SyncUserOptions(jiraInfo, fullSettings);
 
             return fullSettings;
+        }
+
+        private void SyncUserOptions(JiraPolicy jiraInfo, FullReportSettings fullSettings)
+        {
+            SyncSourceControlUsernames(fullSettings);
+
+            var syncedUserOptions = new List<User>();
+            jiraInfo.UserOptions.ForEach(juser =>
+            {
+                fullSettings.UserOptions.ForEach(user =>
+                {
+                    if (user.JiraUserKey == juser.JiraUserKey)
+                        syncedUserOptions.Add(user);
+                });
+
+                if (!syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
+                    syncedUserOptions.Add(juser);
+            });
+            fullSettings.UserOptions = syncedUserOptions;
+        }
+
+        private void SyncSourceControlUsernames(FullReportSettings fullSettings)
+        {
+            fullSettings.SourceControlUsernames = SourceControlService.GetContributors(fullSettings.SourceControlOptions);
+            fullSettings.UserOptions.ForEach(user =>
+            {
+                var validSourceControlUsernames = new List<string>();
+                user.SourceControlUsernames.ForEach(userSrcName =>
+                {
+                    if (fullSettings.SourceControlUsernames.Exists(srcUsername => srcUsername == userSrcName))
+                        validSourceControlUsernames.Add(userSrcName);
+                });
+                user.SourceControlUsernames = validSourceControlUsernames;
+            });
         }
 
         private static long GetBasicSettingsId(InstalledInstance instance, long projectId)
