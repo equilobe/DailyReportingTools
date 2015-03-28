@@ -98,35 +98,40 @@ namespace Equilobe.DailyReport.SL
 
         public AdvancedReportSettings GetAdvancedReportSettings(ItemContext context)
         {
-            using (var db = new ReportsDb())
-            {
-                var basicSettings = db.BasicSettings.Single(bs => bs.Id == context.Id);
-                if (basicSettings.SerializedAdvancedSettings == null)
-                    return null;
+            var serializedAdvancedSettings = new ReportsDb().BasicSettings
+                                                            .Single(bs => bs.Id == context.Id)
+                                                            .SerializedAdvancedSettings;
+            if (serializedAdvancedSettings != null)
+                return Deserialization.XmlDeserialize<AdvancedReportSettings>(serializedAdvancedSettings.PolicyString);
 
-                return Deserialization.XmlDeserialize<AdvancedReportSettings>(basicSettings.SerializedAdvancedSettings.PolicyString);
-            }
+            return GetDefaultAdvancedReportSettings();
+        }
+
+        public AdvancedReportSettings GetDefaultAdvancedReportSettings()
+        {
+            var advancedReportSettings = new AdvancedReportSettings
+            {
+                UserOptions = new List<User>(),
+                MonthlyOptions = new List<Month>(),
+                AdvancedOptions = new AdvancedOptions
+                {
+                    WeekendDaysList = new List<DayOfWeek> { DayOfWeek.Saturday, DayOfWeek.Sunday },
+                }
+            };
+
+            advancedReportSettings.MonthlyOptions.AddRange(DateTimeFormatInfo.InvariantInfo.MonthNames.ToList()
+                .Where(monthName => !string.IsNullOrEmpty(monthName))
+                .ToList()
+                .Select(monthName => new Month { MonthName = monthName })
+                .ToList());
+
+            return advancedReportSettings;
         }
 
         public FullReportSettings GetFullReportSettings(ItemContext context)
         {
             var basicSettings = GetBasicReportSettings(context);
             var advancedSettings = GetAdvancedReportSettings(context);
-            if (advancedSettings == null)
-            {
-                advancedSettings = new AdvancedReportSettings
-                {
-                    MonthlyOptions = new List<Month>()
-                };
-
-                DateTimeFormatInfo.InvariantInfo.MonthNames.ToList()
-                    .Where(monthName => !string.IsNullOrEmpty(monthName))
-                    .ToList()
-                    .ForEach(monthName => advancedSettings.MonthlyOptions.Add(new Month
-                    {
-                        MonthName = monthName
-                    }));
-            }
 
             var fullReportSettings = new FullReportSettings();
             basicSettings.CopyPropertiesOnObjects(fullReportSettings);
@@ -147,9 +152,6 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncUserOptions(JiraPolicy jiraInfo, FullReportSettings fullSettings)
         {
-            if (fullSettings.UserOptions == null)
-                return;
-
             var syncedUserOptions = new List<User>();
             jiraInfo.UserOptions.ForEach(juser =>
             {
