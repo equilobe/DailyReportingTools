@@ -43,16 +43,11 @@ namespace Equilobe.DailyReport.Models.Policy
 
         public List<string> AdditionalWorkflowStatuses { get; set; }
 
-        [DefaultValue("Saturday Sunday")]
-        public string WeekendDays { get; set; }
-
-        [XmlIgnore]
         public List<DayOfWeek> WeekendDaysList { get; set; }
 
         public AdvancedOptions()
         {
             PermanentTaskLabel = "permanent";
-            WeekendDays = "Saturday Sunday";
             ReopenedStatus = "Reopened";
             SendDraftToProjectManager = true;
             SendFinalToAllUsers = true;

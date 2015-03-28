@@ -33,7 +33,6 @@ namespace JiraReporter.Services
             Policy.CurrentOverride = GetCurrentOverride();
             Policy.IsThisMonthOverriden = IsThisMonthOverriden();
             Policy.Users = GetUsersDictionary();
-            Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
             Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
             SetReportType();
             SetMonthlyNonWorkingDays();
@@ -210,28 +209,6 @@ namespace JiraReporter.Services
             Context.IsFinalDraft = false;
             Context.IsIndividualDraft = false;
             Context.IsFinalReport = true;
-        }
-
-        private List<DayOfWeek> GetWeekendDays()
-        {
-            var daysList = Policy.AdvancedOptions.WeekendDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var weekendDaysEnum = new List<DayOfWeek>();
-            try
-            {
-                foreach (var day in daysList)
-                {
-                    var dayOfWeek = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), day);
-                    weekendDaysEnum.Add(dayOfWeek);
-                }
-                return weekendDaysEnum;
-            }
-            catch (Exception)
-            {
-                return new List<DayOfWeek>(){
-                        DayOfWeek.Saturday,
-                        DayOfWeek.Sunday
-                    };
-            }
         }
     }
 }

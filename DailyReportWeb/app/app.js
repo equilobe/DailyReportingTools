@@ -91,11 +91,13 @@
         };
     }])
     .directive('ngRepeat', function () {
-        return function ($scope, $element, $attrs) {
-            if ($scope.$last) setTimeout(function () {
-                $(".form-notification").on("click", function () {
-                    $(this).prev().focus();
-                });
-            }, 0);
+        return function ($scope) {
+            if ($scope.$last) {
+                setTimeout(function () {
+                    $(".form-notification").on("click", function () {
+                        $(this).prev().focus();
+                    });
+                }, 0);
+            }
         };
     });

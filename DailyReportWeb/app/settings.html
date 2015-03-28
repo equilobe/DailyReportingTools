@@ -3,7 +3,7 @@
         <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
     </h3>
 </div>
-<form name="advancedOptionsForm" ng-if="status == 'loaded'">
+<form name="form" ng-if="status == 'loaded'">
     <div id="jumbo" class="jumbotron">
         <div class="container">
             <h1>
@@ -446,46 +446,10 @@
                     <label>
                         Weekend days:
                     </label>
-                    <div class="checkbox">
+                    <div class="checkbox" ng-repeat="day in days">
                         <label>
-                            <input type="checkbox" />
-                            Sunday
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" />
-                            Monday
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" />
-                            Tuesday
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" />
-                            Wednesday
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" />
-                            Thursday
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" />
-                            Friday
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" />
-                            Saturday
+                            <input type="checkbox" weekend-days />
+                            {{day}}
                         </label>
                     </div>
                 </div>
@@ -493,12 +457,12 @@
         </div>
     </div>
     <div class="container">
-        <button class="btn btn-success" ng-disabled="advancedOptionsForm.$invalid || advancedOptionsForm.$pristine && status != 'error'" ng-click="updatePolicy(this)">
+        <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="updatePolicy(this)">
             Save advanced options
         </button>
-        <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
+        <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="form.$dirty"></span>
         <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-        <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && advancedOptionsForm.$pristine"></span>
-        <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && advancedOptionsForm.$pristine"></span>
+        <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && form.$pristine"></span>
+        <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine"></span>
     </div>
 </form>
