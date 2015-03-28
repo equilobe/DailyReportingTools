@@ -102,7 +102,7 @@
             <div class="row">
                 <div class="col-sm-10 col-md-9"></div>
                 <div class="col-sm-2 col-md-1">
-                    <button class="btn btn-danger" ng-click="addingInstance = false">Cancel</button>
+                    <button class="btn btn-danger" ng-click="cancelAddInstance(this)">Cancel</button>
                 </div>
                 <div class="col-sm-2 col-md-21">
                     <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="addInstance(this)">Add instance</button>

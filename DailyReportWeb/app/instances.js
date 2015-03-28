@@ -24,16 +24,24 @@ angular.module('app')
             $scope.status = 'saving';
             $scope.form.$setPristine();
 
-            $http.post("/api/instances/", $scope.form
-                ).success(function (list) {
-                    $scope.$parent.instances = list;
-                    $scope.addingInstance = false;
-                    $scope.form = null;
-                    $scope.status = "success";
-                    console.log("success");
-                }).error(function () {
-                    $scope.status = "error";
-                    console.log("error");
-                });
+            $http.post("/api/instances/", $scope.form)
+                 .success(function (list) {
+                     $scope.$parent.instances = list;
+                     $scope.cancelAddInstance($scope);
+                     $scope.status = "success";
+                     console.log("success");
+                 })
+                 .error(function () {
+                     $scope.status = "error";
+                     console.log("error");
+                 });
         };
+
+        $scope.cancelAddInstance = function ($scope) {
+            $scope.form.$setPristine();
+            $scope.form.baseUrl = "";
+            $scope.form.jiraUsername = "";
+            $scope.form.jiraPassword = "";
+            $scope.addingInstance = false;
+        }
     }]);
