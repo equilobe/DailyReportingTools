@@ -35,7 +35,7 @@
                                 Password
                             </label>
                             <div ng-form="passwordForm">
-                                <input name="password" type="text" class="form-control" placeholder="Daily Report password" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
+                                <input name="password" type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
                                 <span class="form-notification" ng-show="passwordForm.password.$error.pattern && !password.focus"><b>Enter valid password</b> (min 8 chars)</span>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                                 Password
                             </label>
                             <div>
-                                <input type="text" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
+                                <input type="password" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
                             </div>
                         </div>
                     </div>
