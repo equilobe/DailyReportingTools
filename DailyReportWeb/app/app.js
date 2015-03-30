@@ -14,8 +14,12 @@
         }]);
 
         $routeProvider
+            .when('/app/welcome', {
+                templateUrl: 'app/app.html',
+                controller: 'AppCtrl'
+            })
             .when('/', {
-                redirectTo: '/app/instances'
+                redirectTo: '/app/welcome'
             })
             .otherwise({
                 redirectTo: '/'

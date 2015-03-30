@@ -19,7 +19,7 @@
                             Send at:
                         </label>
                         <div ng-form="reportTimeForm">
-                            <input name="reportTime" type="text" class="form-control" placeholder="eg: 08:00" ng-model="policy.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false" ng-pattern=regex.Time />
+                            <input name="reportTime" type="text" class="form-control" placeholder="e.g. 08:00" ng-model="policy.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false" ng-pattern=regex.Time />
                             <span class="form-notification" ng-show="reportTimeForm.reportTime.$error.pattern && !reportTime.focus"><b>Enter valid time</b> (23:59)</span>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <div ng-form="emailDraftForm">
-                            <input name="emailDraft" type="text" class="form-control" placeholder="eg: dan@equilobe.com; catalin@equilobe.com" ng-model="policy.draftEmails" ng-focus="emailDraft.focus = true" ng-blur="emailDraft.focus = false" ng-pattern=regex.Mails ng-disabled="!policy.advancedOptions.sendDraftToOthers" />
+                            <input name="emailDraft" type="text" class="form-control" placeholder="e.g. dan@equilobe.com; catalin@equilobe.com" ng-model="policy.draftEmails" ng-focus="emailDraft.focus = true" ng-blur="emailDraft.focus = false" ng-pattern=regex.Mails ng-disabled="!policy.advancedOptions.sendDraftToOthers" />
                             <span class="form-notification" ng-show="emailDraftForm.emailDraft.$error.pattern && !emailDraft.focus && !emailDraft.disabled"><b>Enter valid email</b> (dan@eq.com)</span>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <div ng-form="emailFinalForm">
-                            <input name="emailFinal" type="text" class="form-control" placeholder="eg: dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emails" ng-focus="emailFinal.focus = true" ng-blur="emailFinal.focus = false" ng-pattern=regex.Mails ng-disabled="!policy.advancedOptions.sendFinalToOthers" />
+                            <input name="emailFinal" type="text" class="form-control" placeholder="e.g. dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emails" ng-focus="emailFinal.focus = true" ng-blur="emailFinal.focus = false" ng-pattern=regex.Mails ng-disabled="!policy.advancedOptions.sendFinalToOthers" />
                             <span class="form-notification" ng-show="emailFinalForm.emailFinal.$error.pattern && !emailFinal.focus"><b>Enter valid email</b> (dan@eq.com)</span>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             Expected daily team work rate (hours/day):
                         </label>
                         <div ng-form="hoursDayPlanningForm">
-                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="eg: 24" ng-model="policy.allocatedHoursPerDay" ng-focus="hoursDayPlanning.focus = true" ng-blur="hoursDayPlanning = false" ng-pattern=regex.Digits />
+                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="e.g. 24" ng-model="policy.allocatedHoursPerDay" ng-focus="hoursDayPlanning.focus = true" ng-blur="hoursDayPlanning = false" ng-pattern=regex.Digits />
                             <span class="form-notification" ng-show="hoursDayPlanningForm.hoursDayPlanning.$error.pattern && !hoursDayPlanning.focus"><b>Enter valid number</b> (84)</span>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                             Monthly hour limit:
                         </label>
                         <div ng-form="hoursMonthPlanningForm">
-                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="eg: 400" ng-model="policy.allocatedHoursPerMonth" ng-focus="hoursMonthPlanning.focus = true" ng-blur="hoursMonthPlanning = false" ng-pattern=regex.Digits />
+                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="e.g. 400" ng-model="policy.allocatedHoursPerMonth" ng-focus="hoursMonthPlanning.focus = true" ng-blur="hoursMonthPlanning = false" ng-pattern=regex.Digits />
                             <span class="form-notification" ng-show="hoursMonthPlanningForm.hoursMonthPlanning.$error.pattern && !hoursMonthPlanning.focus"><b>Enter valid number</b> (584)</span>
                         </div>
                     </div>
@@ -240,7 +240,7 @@
                                     Repository Url:
                                 </label>
                                 <div ng-form="svnRepoUrlForm">
-                                    <input name="svnRepoUrl" type="text" class="form-control" placeholder="eg: " ng-model="policy.sourceControlOptions.repo" ng-focus="svnRepoUrl.focus = true" ng-blur="svnRepoUrl.focus = false; sourceControlStatus = 'changed'" ng-pattern=regex.Url />
+                                    <input name="svnRepoUrl" type="text" class="form-control" placeholder="e.g. " ng-model="policy.sourceControlOptions.repo" ng-focus="svnRepoUrl.focus = true" ng-blur="svnRepoUrl.focus = false; sourceControlStatus = 'changed'" ng-pattern=regex.Url />
                                     <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern && !svnRepoUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                                 </div>
                             </div>
@@ -251,7 +251,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input name="svnUsername" type="text" class="form-control" placeholder="eg: " ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input name="svnUsername" type="text" class="form-control" placeholder="e.g. " ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -261,7 +261,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input name="svnPassword" type="text" class="form-control" placeholder="eg: " ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input name="svnPassword" type="text" class="form-control" placeholder="e.g. " ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -309,7 +309,7 @@
                             <div class="form-group">
                                 <label>Email override:</label>
                                 <div ng-form="emailOverrideForm">
-                                    <input name="emailOverride" type="text" class="form-control" placeholder="eg: dan@equilobe.com" ng-model="user.emailOverride" ng-focus="emailOverride.focus = true" ng-blur="emailOverride.focus = false" ng-pattern=regex.Mail />
+                                    <input name="emailOverride" type="text" class="form-control" placeholder="e.g. dan@equilobe.com" ng-model="user.emailOverride" ng-focus="emailOverride.focus = true" ng-blur="emailOverride.focus = false" ng-pattern=regex.Mail />
                                     <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern && !emailOverride.focus"><b>Enter valid email</b> (dan@eq.com)</span>
                                 </div>
                             </div>
@@ -356,7 +356,7 @@
                                     Expected daily team work rate (hours/day):
                                 </label>
                                 <div ng-form="hoursDayMonthlyForm">
-                                    <input name="hoursDayMonthly" type="text" class="form-control" placeholder="eg: 24" ng-model="month.allocatedHoursPerDay" ng-focus="hoursDayMonthly.focus = true" ng-blur="hoursDayMonthly.focus = false" ng-pattern=regex.Digits />
+                                    <input name="hoursDayMonthly" type="text" class="form-control" placeholder="e.g. 24" ng-model="month.allocatedHoursPerDay" ng-focus="hoursDayMonthly.focus = true" ng-blur="hoursDayMonthly.focus = false" ng-pattern=regex.Digits />
                                     <span class="form-notification" ng-show="hoursDayMonthlyForm.hoursDayMonthly.$error.pattern && !hoursDayMonthly.focus"><b>Enter valid number</b> (84)</span>
                                 </div>
                             </div>
@@ -367,7 +367,7 @@
                                     Monthly hour limit:
                                 </label>
                                 <div ng-form="hoursMonthMonthlyForm">
-                                    <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="eg: 400" ng-model="month.allocatedHoursPerMonth" ng-focus="hoursMonthMonthly.focus = true" ng-blur="hoursMonthMonthly.focus = false" ng-pattern=regex.Digits />
+                                    <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="e.g. 400" ng-model="month.allocatedHoursPerMonth" ng-focus="hoursMonthMonthly.focus = true" ng-blur="hoursMonthMonthly.focus = false" ng-pattern=regex.Digits />
                                     <span class="form-notification" ng-show="hoursMonthMonthlyForm.hoursMonthMonthly.$error.pattern && !hoursMonthMonthly.focus"><b>Enter valid number</b> (584)</span>
                                 </div>
                             </div>
@@ -378,7 +378,7 @@
                                     Free days:
                                 </label>
                                 <div ng-form="freeDaysMonthlyForm">
-                                    <input name="freeDaysMonthly" type="text" class="form-control" placeholder="eg: 1 16 31" ng-model="month.nonWorkingDays" ng-focus="freeDaysMonthly.focus = true" ng-blur="freeDaysMonthly.focus = false" ng-pattern=regex.Days />
+                                    <input name="freeDaysMonthly" type="text" class="form-control" placeholder="e.g. 1 16 31" ng-model="month.nonWorkingDays" ng-focus="freeDaysMonthly.focus = true" ng-blur="freeDaysMonthly.focus = false" ng-pattern=regex.Days />
                                     <span class="form-notification" ng-show="freeDaysMonthlyForm.freeDaysMonthly.$error.pattern && !freeDaysMonthly.focus"><b>Enter valid days</b> (1 16 31)</span>
                                 </div>
                             </div>
@@ -397,7 +397,7 @@
                         <label>
                             Report title:
                         </label>
-                        <input type="text" class="form-control" placeholder="eg: {{policy.projectName}} Daily Report" ng-model="policy.advancedOptions.reportTitle" />
+                        <input type="text" class="form-control" placeholder="e.g. {{policy.projectName}} Daily Report" ng-model="policy.advancedOptions.reportTitle" />
                         <p class="help-block">
                             If left blank the default will be used: Daily
                         </p>
@@ -408,7 +408,7 @@
                         <label>
                             Reopened tasks status:
                         </label>
-                        <input type="text" class="form-control" placeholder="eg: Reopened" ng-model="policy.advancedOptions.reopenedStatus" />
+                        <input type="text" class="form-control" placeholder="e.g. Reopened" ng-model="policy.advancedOptions.reopenedStatus" />
                         <p class="help-block">
                             If left blank the default will be used: Reopened.
                         </p>
@@ -419,7 +419,7 @@
                         <label>
                             Label used for permanent tasks:
                         </label>
-                        <input type="text" class="form-control" placeholder="eg: permanent" ng-model="policy.advancedOptions.permanentTaskLabel" />
+                        <input type="text" class="form-control" placeholder="e.g. permanent" ng-model="policy.advancedOptions.permanentTaskLabel" />
                         <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
                     </div>
                 </div>
