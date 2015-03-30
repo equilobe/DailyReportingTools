@@ -8,6 +8,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
     {
         long Id { get; set; }
         string BaseUrl { get; set; }
+        string TimeZone { get; set; }
     }
 
     public interface IBasicSettings

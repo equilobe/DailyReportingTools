@@ -1,10 +1,10 @@
 ﻿<div id="jumbo" class="jumbotron">
     <div class="container">
         <h1>
-            Daily Report Setup
+            Instances
         </h1>
         <p class="help-block">
-            Use this page to configure all options for the daily report.
+            Use this page to configure all options for the Daily Report.
         </p>
     </div>
 </div>
@@ -27,24 +27,23 @@
     </div>
     <div class="container" ng-if="status == 'loaded' && instances.length">
         <div class="row">
-            <label class="col-sm-10 col-md-10">
+            <label class="col-sm-9 col-md-9">
                 Instance name
             </label>
-            <label class="col-sm-2 col-md-2">
+            <label class="col-sm-3 col-md-3">
                 Options
             </label>
         </div>
         <div class="row project" ng-repeat="instance in instances">
-            <div class="col-sm-10 col-md-10">
+            <div class="col-sm-9 col-md-9">
                 {{instance.baseUrl}}
             </div>
-            <div class="col-sm-2 col-md-2">
-                <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-default">Details</a>
+            <div class="col-sm-3 col-md-3">
+                <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-default">View Projects</a>
+                <button class="btn btn-default" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance">Edit Instance</button>
             </div>
         </div>
-    </div>
-    <div class="container" ng-if="status == 'loaded'">
-        <div class="project" ng-show="addingInstance">
+        <div class="row project" ng-show="addingInstance || editingInstance">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>
@@ -59,7 +58,7 @@
                                     Username
                                 </label>
                                 <div>
-                                    <input type="text" class="form-control" placeholder="JIRA username" required ng-model="form.jiraUsername" />
+                                    <input type="text" class="form-control" placeholder="eg: JIRA username" required ng-model="form.jiraUsername" />
                                 </div>
                             </div>
                         </div>
@@ -69,7 +68,7 @@
                                     Password
                                 </label>
                                 <div>
-                                    <input type="text" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
+                                    <input type="password" class="form-control" placeholder="eg: Jira password" required ng-model="form.jiraPassword" />
                                 </div>
                             </div>
                         </div>
@@ -81,7 +80,7 @@
                                     Instance Url
                                 </label>
                                 <div ng-form="instanceUrlForm">
-                                    <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
+                                    <input name="instanceUrl" type="text" class="form-control" placeholder="eg: Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url ng-disabled="editingInstance" />
                                     <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                                 </div>
                             </div>
@@ -100,22 +99,20 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-10 col-md-9"></div>
-                <div class="col-sm-2 col-md-1">
-                    <button class="btn btn-danger" ng-click="cancelAddInstance(this)">Cancel</button>
-                </div>
-                <div class="col-sm-2 col-md-21">
-                    <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="addInstance(this)">Add instance</button>
+                <div class="col-md-10"></div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger" ng-click="clearInstanceForm(this)">Cancel</button>
+                    <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="saveInstance(this)">Save</button>
                     <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="form.$dirty"></span>
                     <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
                     <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine"></span>
                 </div>
             </div>
         </div>
-        <div class="row project" ng-show="!addingInstance">
+        <div class="row project" ng-show="!addingInstance && !editingInstance">
             <div class="col-sm-10 col-md-10"></div>
             <div class="col-sm-2 col-md-2">
-                <button class="btn btn-default" ng-click="addingInstance = true; form.timeZone = timeZone">Add New Instance</button>
+                <button class="btn btn-default" ng-click="addInstance(this)">Add New Instance</button>
             </div>
         </div>
     </div>

@@ -21,13 +21,33 @@ angular.module('app')
             });
 
         $scope.addInstance = function ($scope) {
+            $scope.addingInstance = true;
+            $scope.form.timeZone = $scope.timeZone;
+        };
+
+        $scope.editInstance = function ($scope) {
+            $scope.$parent.editingInstance = true;
+            $scope.form.baseUrl = $scope.instance.baseUrl;
+            $scope.form.timeZone = $scope.instance.timeZone;
+        };
+
+        $scope.clearInstanceForm = function ($scope) {
+            $scope.form.$setPristine();
+            $scope.form.baseUrl = "";
+            $scope.form.jiraUsername = "";
+            $scope.form.jiraPassword = "";
+            $scope.addingInstance = false;
+            $scope.editingInstance = false;
+        };
+
+        $scope.saveInstance = function ($scope) {
             $scope.status = 'saving';
             $scope.form.$setPristine();
 
             $http.post("/api/instances/", $scope.form)
                  .success(function (list) {
                      $scope.$parent.instances = list;
-                     $scope.cancelAddInstance($scope);
+                     $scope.clearInstanceForm($scope);
                      $scope.status = "success";
                      console.log("success");
                  })
@@ -36,12 +56,4 @@ angular.module('app')
                      console.log("error");
                  });
         };
-
-        $scope.cancelAddInstance = function ($scope) {
-            $scope.form.$setPristine();
-            $scope.form.baseUrl = "";
-            $scope.form.jiraUsername = "";
-            $scope.form.jiraPassword = "";
-            $scope.addingInstance = false;
-        }
     }]);

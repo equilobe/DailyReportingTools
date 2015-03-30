@@ -46,15 +46,18 @@ namespace Equilobe.DailyReport.SL
                                    .Single();
 
                 var installedInstance = user.InstalledInstances.SingleOrDefault(i => i.BaseUrl == modelData.BaseUrl);
-                if (installedInstance != null)
+                if (installedInstance != null && !string.IsNullOrEmpty(modelData.Password))
                     throw new ArgumentException();
 
-                installedInstance = new InstalledInstance();
+                if (installedInstance == null)
+                {
+                    installedInstance = new InstalledInstance();
+                    db.InstalledInstances.Add(installedInstance);
+                    installedInstance.UserId = user.Id;
+                }
+                modelData.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
                 modelData.CopyPropertiesOnObjects(installedInstance);
-                installedInstance.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
-                installedInstance.UserId = user.Id;
 
-                db.InstalledInstances.Add(installedInstance);
                 db.SaveChanges();
 
                 if (user.EmailConfirmed)
