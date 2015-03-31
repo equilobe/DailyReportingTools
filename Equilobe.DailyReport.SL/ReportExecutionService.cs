@@ -122,7 +122,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
-                var individualReports = report.IndividualDraftConfirmations.ToList();
+                var individualReports = report.IndividualDraftConfirmations.Where(dr=>dr.ReportDate.Value == context.Date.Date).ToList();
                 var isForcedByLead = IsForcedByLead(context.DraftKey, individualReports);
 
                 if (report.SerializedAdvancedSettings == null)
@@ -234,8 +234,8 @@ namespace Equilobe.DailyReport.SL
         {
             confirmations.Add(new IndividualDraftConfirmation
             {
-                IsProjectLead = draft.IsLead,
-                UniqueUserKey = draft.UserKey,
+                IsProjectLead = draft.IsProjectLead,
+                UniqueUserKey = draft.UniqueUserKey,
                 Username = draft.Username,
                 ReportDate = draft.ReportDate
             });

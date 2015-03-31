@@ -56,8 +56,8 @@ namespace JiraReporter.Services
             var individualDraft = new IndividualDraftInfo
             {
                 Username = author.Username,
-                UserKey = RandomString.Get(),
-                IsLead = author.IsProjectLead,
+                UniqueUserKey = RandomString.Get(),
+                IsProjectLead = author.IsProjectLead,
                 ReportDate = context.ToDate
             };
             SetIndividualUrls(individualDraft, context);
@@ -69,13 +69,13 @@ namespace JiraReporter.Services
         {
             individualDraft.ConfirmationDraftUrl = GetUrl(individualDraft, context.IndividualDraftConfirmationUrl);
             individualDraft.ResendDraftUrl = GetUrl(individualDraft, context.SendIndividualDraftUrl);
-            if (individualDraft.IsLead)
+            if (individualDraft.IsProjectLead)
                 individualDraft.ForceDraftUrl = GetUrl(individualDraft, context.SendDraftUrl);
         }
 
         private Uri GetUrl(IndividualDraftInfo individualDraft, Uri baseUrl)
         {
-            var url = string.Format("draftKey={0}", individualDraft.UserKey);
+            var url = string.Format("draftKey={0}", individualDraft.UniqueUserKey);
 
             return new Uri(baseUrl + "&" + url);
         }

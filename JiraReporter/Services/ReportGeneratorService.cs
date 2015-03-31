@@ -25,6 +25,8 @@ namespace JiraReporter
 
         public JiraReport GenerateReport(JiraReport report)
         {
+            FilterIndividualDrafts(report);
+
             SetSourceControlLogs(report);
 
             report.Sprint = GenerateSprint(report);
@@ -115,6 +117,11 @@ namespace JiraReporter
         {
             var summaryLoader = new SummaryLoader(report);
             return summaryLoader.LoadSummary();
+        }
+
+        void FilterIndividualDrafts(JiraReport report)
+        {
+            report.Settings.IndividualDraftConfirmations = report.Settings.IndividualDraftConfirmations.Where(r => r.ReportDate.Value == report.ToDate).ToArray();
         }
     }
 }

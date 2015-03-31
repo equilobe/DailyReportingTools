@@ -10,10 +10,10 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     public class IndividualDraftInfo
     {
         public string Username { get; set; }
-        public string UserKey { get; set; }
+        public string UniqueUserKey { get; set; }
         public DateTime? LastConfirmationDate { get; set; }
         public DateTime? ReportDate { get; set; }
-        public bool IsLead { get; set; }
+        public bool IsProjectLead { get; set; }
         public Uri ConfirmationDraftUrl { get; set; }
         public Uri ResendDraftUrl { get; set; }
         public Uri ForceDraftUrl { get; set; }

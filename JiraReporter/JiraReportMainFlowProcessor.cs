@@ -118,7 +118,7 @@ namespace JiraReporter
                     var context = new UserConfirmationContext
                     {
                         Id = report.UniqueProjectKey,
-                        DraftKey = author.IndividualDraftInfo.UserKey,
+                        DraftKey = author.IndividualDraftInfo.UniqueUserKey,
                         Info = author.IndividualDraftInfo,
                     };
                     ReportExecutionService.SaveIndividualDraftConfirmation(context);
