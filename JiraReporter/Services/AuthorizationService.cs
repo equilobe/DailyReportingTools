@@ -9,16 +9,19 @@ using System;
 using System.Net;
 using System.Text;
 
-namespace JiraReporter.Helpers
+namespace JiraReporter.Services
 {
-    public static class AuthorizationExtensions
+    public class AuthorizationService
     {
-        public static void Authorize(this WebClient client, JiraRequestContext context, string relativeUrl, string addonKey)
+        public IEncryptionService EncryptionService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
+
+        public void Authorize(WebClient client, JiraRequestContext context, string relativeUrl)
         {
             if (!string.IsNullOrEmpty(context.SharedSecret))
-                client.Headers.Add("Authorization", "JWT " + JwtAuthenticator.CreateJwt(addonKey, context.SharedSecret, relativeUrl, "GET"));
+                client.Headers.Add("Authorization", "JWT " + JwtAuthenticator.CreateJwt(ConfigurationService.GetAddonKey(), context.SharedSecret, relativeUrl, "GET"));
             else
-                client.Headers.Add("Authorization", "Basic " + CreateBasic(context.JiraUsername, new EncryptionService().Decrypt(context.JiraPassword)));
+                client.Headers.Add("Authorization", "Basic " + CreateBasic(context.JiraUsername, EncryptionService.Decrypt(context.JiraPassword)));
         }
 
         static string CreateBasic(string username, string password)

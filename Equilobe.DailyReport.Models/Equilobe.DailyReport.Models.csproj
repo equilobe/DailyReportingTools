@@ -69,7 +69,6 @@
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
-    <Compile Include="Policy\MonthlyOptions.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />

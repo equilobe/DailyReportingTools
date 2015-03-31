@@ -11,7 +11,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     {
         public string Username { get; set; }
         public string UserKey { get; set; }
-        public DateTime LastConfirmationDate { get; set; }
+        public DateTime? LastConfirmationDate { get; set; }
+        public DateTime? ReportDate { get; set; }
         public bool IsLead { get; set; }
         public Uri ConfirmationDraftUrl { get; set; }
         public Uri ResendDraftUrl { get; set; }

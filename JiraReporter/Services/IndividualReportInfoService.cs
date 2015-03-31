@@ -35,12 +35,13 @@ namespace JiraReporter.Services
                 draftConfirmation = report.IndividualDraftConfirmations.SingleOrDefault(dr => dr.UniqueUserKey == context.ExecutionInstance.UniqueUserKey);
             }
 
-            var draft = new IndividualDraftInfo
-            {
-                UserKey = draftConfirmation.UniqueUserKey,
-                Username = draftConfirmation.Username,
-                IsLead = draftConfirmation.IsProjectLead
-            };
+            var draft = new IndividualDraftInfo();
+            draftConfirmation.CopyPropertiesOnObjects(draft);
+            //{
+            //    UserKey = draftConfirmation.UniqueUserKey,
+            //    Username = draftConfirmation.Username,
+            //    IsLead = draftConfirmation.IsProjectLead
+            //};
 
             if (draftConfirmation.LastDateConfirmed != null)
                 draft.LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value;
@@ -56,7 +57,8 @@ namespace JiraReporter.Services
             {
                 Username = author.Username,
                 UserKey = RandomString.Get(),
-                IsLead = author.IsProjectLead
+                IsLead = author.IsProjectLead,
+                ReportDate = context.ToDate
             };
             SetIndividualUrls(individualDraft, context);
 

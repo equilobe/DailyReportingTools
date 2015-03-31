@@ -34,7 +34,7 @@ namespace Equilobe.DailyReport.Models.Policy
 
         public AdvancedOptions AdvancedOptions { get; set; }
 
-        public MonthlyOptions MonthlyOptions { get; set; }
+        public List<Month> MonthlyOptions { get; set; }
 
         public List<User> UserOptions { get; set; }
 

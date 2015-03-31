@@ -236,14 +236,17 @@ namespace Equilobe.DailyReport.SL
             {
                 IsProjectLead = draft.IsLead,
                 UniqueUserKey = draft.UserKey,
-                Username = draft.Username
+                Username = draft.Username,
+                ReportDate = draft.ReportDate
             });
         }
 
         void UpdateIndividualDraftConfirmation(IndividualDraftConfirmation individualDraft, IndividualDraftInfo draft)
         {
-            individualDraft.IsProjectLead = draft.IsLead;
-            individualDraft.UniqueUserKey = draft.UserKey;
+            draft.CopyPropertiesOnObjects(individualDraft);
+           // individualDraft.IsProjectLead = draft.IsLead;
+           // individualDraft.UniqueUserKey = draft.UserKey;
+          //  individualDraft.ReportDate = draft.ReportDate;
         }
 
         bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports)

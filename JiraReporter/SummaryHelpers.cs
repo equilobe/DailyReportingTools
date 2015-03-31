@@ -29,9 +29,9 @@ namespace JiraReporter
         {
             var now = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc);
             if (now <= context.Sprint.EndDate.AddDays(-1).ToOriginalTimeZone(context.OffsetFromUtc))
-                return SummaryHelpers.GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), now.AddDays(-1).Date, context.Policy.MonthlyOptions.Months);
+                return SummaryHelpers.GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), now.AddDays(-1).Date, context.Policy.MonthlyOptions);
 
-            return SummaryHelpers.GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc).AddDays(-1), context.Policy.MonthlyOptions.Months);
+            return SummaryHelpers.GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc).AddDays(-1), context.Policy.MonthlyOptions);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace JiraReporter
     {
         public IJiraService JiraService { get; set; }
         public IEncryptionService EncryptionService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
 
         public JiraReport GenerateReport(JiraReport report)
         {
@@ -55,7 +56,7 @@ namespace JiraReporter
         private List<JiraAuthor> GetReportAuthors(JiraReport context)
         {
             var authors = new List<JiraAuthor>();
-            var authorLoader = new AuthorLoader(context) { JiraService = JiraService, EncryptionService = EncryptionService };
+            var authorLoader = new AuthorLoader(context) { JiraService = JiraService, EncryptionService = EncryptionService, ConfigurationService = ConfigurationService };
             if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey) && context.ExecutionInstance.Scope == SendScope.SendIndividualDraft)
             {
                 var author = authorLoader.CreateAuthorByKey(context);

@@ -18,6 +18,7 @@ namespace Equilobe.DailyReport.Models.Storage
         [Required]
         public string UniqueUserKey { get; set; }
         public DateTime? LastDateConfirmed { get; set; }
+        public DateTime? ReportDate { get; set; }
         public bool IsProjectLead { get; set; }
 
         public virtual BasicSettings BasicSettings { get; set; }
