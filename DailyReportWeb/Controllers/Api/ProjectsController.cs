@@ -1,7 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
@@ -20,7 +19,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public List<BasicReportSettings> Get(long id)
         {
-            return SettingsService.GetAllBasicSettings(new ItemContext(id));
+            return SettingsService.GetAllBasicReportSettings(new ItemContext(id));
         }
 
         public void Post([FromBody]BasicReportSettings updatedBasicSettings)
@@ -28,40 +27,18 @@ namespace DailyReportWeb.Controllers.Api
             if (!Validations.Time(updatedBasicSettings.ReportTime))
                 throw new ArgumentException();
 
-            var context = new ScheduledTaskContext
-            {
-                ReportTime = updatedBasicSettings.ReportTime,
-                UniqueProjectKey = updatedBasicSettings.UniqueProjectKey
-            };
-
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == updatedBasicSettings.BaseUrl);
+                var basicSettings = db.BasicSettings.Single(qr => qr.Id == updatedBasicSettings.Id);
+                if (basicSettings.ReportTime == updatedBasicSettings.ReportTime)
+                    return;
 
-                var basicSettings = installedInstance.BasicSettings.SingleOrDefault(qr => qr.ProjectId == updatedBasicSettings.ProjectId);
-                if (basicSettings == null)
+                basicSettings.ReportTime = updatedBasicSettings.ReportTime;
+                TaskSchedulerService.SetTask(new ScheduledTaskContext
                 {
-                    if (string.IsNullOrEmpty(updatedBasicSettings.ReportTime))
-                        return;
-
-                    basicSettings = new BasicSettings();
-                    db.BasicSettings.Add(basicSettings);
-
-                    updatedBasicSettings.CopyPropertiesOnObjects(basicSettings);
-                    basicSettings.InstalledInstanceId = installedInstance.Id;
-                    basicSettings.UniqueProjectKey = RandomString.Get(updatedBasicSettings.ProjectKey);
-
-                    TaskSchedulerService.CreateTask(context);
-                }
-                else
-                {
-                    if (basicSettings.ReportTime == updatedBasicSettings.ReportTime)
-                        return;
-
-                    basicSettings.ReportTime = updatedBasicSettings.ReportTime;
-
-                    TaskSchedulerService.UpdateTask(context);
-                }
+                    ReportTime = updatedBasicSettings.ReportTime,
+                    UniqueProjectKey = updatedBasicSettings.UniqueProjectKey
+                });
 
                 db.SaveChanges();
             }

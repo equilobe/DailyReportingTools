@@ -2,13 +2,14 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/list', {
+        $routeProvider.when('/app/instances', {
             label: 'Instances',
             templateUrl: 'app/instances.html',
-            controller: 'InstanceCtrl'
+            controller: 'InstancesCtrl'
         });
     }])
-    .controller("InstanceCtrl", ['$scope', '$http', function ($scope, $http) {
+    .controller("InstancesCtrl", ['$scope', '$http', function ($scope, $http) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
 
         $http.get("/api/instances")
@@ -19,23 +20,40 @@ angular.module('app')
                 $scope.status = "loaded";
             });
 
-        $scope.addNewInstance = function ($scope) {
+        $scope.addInstance = function ($scope) {
             $scope.addingInstance = true;
+            $scope.form.timeZone = $scope.timeZone;
         };
 
-        $scope.addInstance = function ($scope) {
-            $scope.status = 'saving';
-            $scope.newInstanceForm.$setPristine();
+        $scope.editInstance = function ($scope) {
+            $scope.$parent.editingInstance = true;
+            $scope.form.baseUrl = $scope.instance.baseUrl;
+            $scope.form.timeZone = $scope.instance.timeZone;
+        };
 
-            $http.post("/api/instances/" + $scope.newInstanceForm
-                ).success(function (list) {
-                    $scope.instances = list;
-                    $scope.addingInstance = false;
-                    $scope.status = "success";
-                    console.log("success");
-                }).error(function () {
-                    $scope.status = "error";
-                    console.log("error");
-                });
+        $scope.clearInstanceForm = function ($scope) {
+            $scope.form.$setPristine();
+            $scope.form.baseUrl = "";
+            $scope.form.jiraUsername = "";
+            $scope.form.jiraPassword = "";
+            $scope.addingInstance = false;
+            $scope.editingInstance = false;
+        };
+
+        $scope.saveInstance = function ($scope) {
+            $scope.status = 'saving';
+            $scope.form.$setPristine();
+
+            $http.post("/api/instances/", $scope.form)
+                 .success(function (list) {
+                     $scope.$parent.instances = list;
+                     $scope.clearInstanceForm($scope);
+                     $scope.status = "success";
+                     console.log("success");
+                 })
+                 .error(function () {
+                     $scope.status = "error";
+                     console.log("error");
+                 });
         };
     }]);

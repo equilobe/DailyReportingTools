@@ -3,6 +3,27 @@
     color: #eee;
 }
 
+.welcome {
+    margin: 10% auto;
+    text-align: center;
+}
+
+.menu {
+    padding-top: 13px;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    margin: 0;
+    padding-bottom: 0;
+    font-size: 16px;
+}
+
+nav .logo img {
+    max-height: 40px;
+    margin: 5px;
+}
+
 div.disabled {
     background-color: #eee;
 }
@@ -78,7 +99,6 @@ div.disabled {
 
 .how-it-works {
     margin-top: 20px;
-    background-color: #eee;
 }
 
 [ng-form] {

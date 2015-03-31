@@ -9,6 +9,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IJiraService : IService
     {
+        void CredentialsValid(object context, bool passwordEncrypted = true);
         JiraPolicy GetJiraInfo(ItemContext context);
         Project GetProject(JiraRequestContext context, long id);
         List<JiraIssue> GetTimesheetForUser(TimesheetContext context);

@@ -35,7 +35,7 @@
                                 Password
                             </label>
                             <div>
-                                <input type="text" class="form-control" placeholder="Daily Report password" required ng-model="signInForm.password" />
+                                <input type="password" class="form-control" placeholder="Daily Report password" required ng-model="signInForm.password" />
                             </div>
                         </div>
                     </div>
@@ -53,10 +53,10 @@
         </div>
 
         <div class="container">
+            <a ng-href="app/signup" class="btn btn-default">Sign Up</a>
             <button class="btn btn-success" ng-disabled="signInForm.$invalid || signInForm.$pristine && status != 'error'" ng-click="signIn(this)">
                 Sign In
             </button>
-
             <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="signInForm.$dirty"></span>
             <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'checking'"></span>
             <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && signInForm.$pristine"></span>

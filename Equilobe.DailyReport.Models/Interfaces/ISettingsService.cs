@@ -5,11 +5,13 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface ISettingsService : IService
     {
-        BasicReportSettings GetBasicSettings(ItemContext context);
-        List<BasicReportSettings> GetAllBasicSettings(ItemContext context);
+        BasicReportSettings GetBasicReportSettings(ItemContext context);
+        List<BasicReportSettings> GetAllBasicReportSettings(ItemContext context);
+        void SetAllBasicSettings(ItemContext context);
 
-        AdvancedReportSettings GetAdvancedSettings(ItemContext context);
+        AdvancedReportSettings GetAdvancedReportSettings(ItemContext context);
 
-        FullReportSettings GetFullSettings(ItemContext context);
+        FullReportSettings GetFullReportSettings(ItemContext context);
+        FullReportSettings GetSyncedReportSettings(ItemContext context);
     }
 }

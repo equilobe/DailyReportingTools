@@ -8,6 +8,8 @@ angular.module('app')
         });
     }])
     .controller("SignInCtrl", ['$scope', '$http', '$location', function ($scope, $http, $location) {
+        $scope.$parent.child = $scope;
+
         $scope.signIn = function ($scope) {
             $scope.status = "checking";
             $scope.signInForm.$setPristine();

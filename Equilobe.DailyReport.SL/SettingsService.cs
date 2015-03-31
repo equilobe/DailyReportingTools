@@ -1,5 +1,7 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Enums;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -8,6 +10,7 @@ using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 
@@ -17,110 +20,179 @@ namespace Equilobe.DailyReport.SL
     {
         public ISourceControlService SourceControlService { get; set; }
         public IJiraService JiraService { get; set; }
-        public IDataService DataService { get; set; }
 
-        public BasicReportSettings GetBasicSettings(ItemContext context)
+        public void SetAllBasicSettings(ItemContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                var installedInstance = db.InstalledInstances
+                                          .Where(ii => ii.Id == context.Id)
+                                          .Single();
+
+                var jiraRequestContext = new JiraRequestContext(installedInstance);
+                JiraService.GetProjectsInfo(jiraRequestContext)
+                           .ForEach(jiraProject =>
+                           {
+                               installedInstance.BasicSettings.Add(new BasicSettings
+                               {
+                                   InstalledInstanceId = installedInstance.Id,
+                                   BaseUrl = installedInstance.BaseUrl,
+                                   ProjectId = jiraProject.ProjectId,
+                                   UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
+                               });
+                           });
+
+                db.SaveChanges();
+            }
+        }
+
+        public BasicReportSettings GetBasicReportSettings(ItemContext context)
         {
             var basicSettings = new ReportsDb().BasicSettings
-                                                .Where(rs => rs.Id == context.Id)
-                                                .SingleOrDefault();
+                                               .Where(bs => bs.Id == context.Id)
+                                               .SingleOrDefault();
             if (basicSettings == null)
                 return null;
 
             var installedInstance = basicSettings.InstalledInstance;
-            if (installedInstance.UserId != context.UserId)
-                throw new SecurityException();
-
-            var jiraRequestContext = new JiraRequestContext();
-            installedInstance.CopyPropertiesOnObjects(jiraRequestContext);
-
+            var jiraRequestContext = new JiraRequestContext(installedInstance);
             var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, basicSettings.ProjectId);
+
             return new BasicReportSettings
             {
-                Id = context.Id,
+                Id = basicSettings.Id,
                 BaseUrl = installedInstance.BaseUrl,
-                ProjectId = projectInfo.ProjectId,
+                ProjectId = basicSettings.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
+                UniqueProjectKey = basicSettings.UniqueProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = GetReportTime(installedInstance, projectInfo.ProjectId)
+                ReportTime = basicSettings.ReportTime
             };
         }
 
-        public List<BasicReportSettings> GetAllBasicSettings(ItemContext context)
+        public List<BasicReportSettings> GetAllBasicReportSettings(ItemContext context)
         {
             var installedInstance = new ReportsDb().InstalledInstances
-                                          .Where(i => i.Id == context.Id)
-                                          .Single();
-
-            if (installedInstance.UserId != context.UserId)
-                throw new SecurityException();
-
-            var jiraRequestContext = new JiraRequestContext();
-            installedInstance.CopyPropertiesOnObjects(jiraRequestContext);
+                                                   .Where(i => i.Id == context.Id)
+                                                   .Single();
+            var jiraRequestContext = new JiraRequestContext(installedInstance);
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
-                              .Select(projectInfo => new BasicReportSettings
-                              {
-                                  Id = GetBasicSettingsId(installedInstance, projectInfo.ProjectId),
-                                  BaseUrl = installedInstance.BaseUrl,
-                                  ProjectId = projectInfo.ProjectId,
-                                  ProjectKey = projectInfo.ProjectKey,
-                                  ProjectName = projectInfo.ProjectName,
-                                  ReportTime = GetReportTime(installedInstance, projectInfo.ProjectId)
-                              })
-                              .ToList();
+                              .Select(projectInfo =>
+                                  {
+                                      var basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
+                                      return new BasicReportSettings
+                                      {
+                                          Id = basicSettings.Id,
+                                          InstalledInstanceId = basicSettings.InstalledInstanceId,
+                                          BaseUrl = installedInstance.BaseUrl,
+                                          ProjectId = basicSettings.ProjectId,
+                                          ProjectKey = projectInfo.ProjectKey,
+                                          UniqueProjectKey = basicSettings.UniqueProjectKey,
+                                          ProjectName = projectInfo.ProjectName,
+                                          ReportTime = basicSettings.ReportTime
+                                      };
+                                  })
+                                  .ToList();
         }
 
-        public AdvancedReportSettings GetAdvancedSettings(ItemContext context)
+        public AdvancedReportSettings GetAdvancedReportSettings(ItemContext context)
         {
-            using (var db = new ReportsDb())
-            {
-                var basicSettings = db.BasicSettings.SingleOrDefault(r => r.Id == context.Id);
-                if (basicSettings == null || basicSettings.SerializedAdvancedSettings == null)
-                    return null;
+            var serializedAdvancedSettings = new ReportsDb().BasicSettings
+                                                            .Single(bs => bs.Id == context.Id)
+                                                            .SerializedAdvancedSettings;
+            if (serializedAdvancedSettings != null)
+                return Deserialization.XmlDeserialize<AdvancedReportSettings>(serializedAdvancedSettings.PolicyString);
 
-                return Deserialization.XmlDeserialize<AdvancedReportSettings>(basicSettings.SerializedAdvancedSettings.PolicyString);
-            }
+            return GetDefaultAdvancedReportSettings();
         }
 
-        public FullReportSettings GetFullSettings(ItemContext context)
+        public AdvancedReportSettings GetDefaultAdvancedReportSettings()
+        {
+            var advancedReportSettings = new AdvancedReportSettings
+            {
+                UserOptions = new List<User>(),
+                MonthlyOptions = new List<Month>(),
+                AdvancedOptions = new AdvancedOptions
+                {
+                    WeekendDaysList = new List<DayOfWeek> { DayOfWeek.Saturday, DayOfWeek.Sunday },
+                }
+            };
+
+            advancedReportSettings.MonthlyOptions.AddRange(DateTimeFormatInfo.InvariantInfo.MonthNames.ToList()
+                .Where(monthName => !string.IsNullOrEmpty(monthName))
+                .ToList()
+                .Select(monthName => new Month { MonthName = monthName })
+                .ToList());
+
+            return advancedReportSettings;
+        }
+
+        public FullReportSettings GetFullReportSettings(ItemContext context)
+        {
+            var basicSettings = GetBasicReportSettings(context);
+            var advancedSettings = GetAdvancedReportSettings(context);
+
+            var fullReportSettings = new FullReportSettings();
+            basicSettings.CopyPropertiesOnObjects(fullReportSettings);
+            advancedSettings.CopyPropertiesOnObjects(fullReportSettings);
+
+            return fullReportSettings;
+        }
+
+        public FullReportSettings GetSyncedReportSettings(ItemContext context)
         {
             var jiraInfo = JiraService.GetJiraInfo(context);
-            var basicSettings = GetBasicSettings(context);
-            var advancedSettings = GetAdvancedSettings(context);
+            var fullSettings = GetFullReportSettings(context);
 
-            return SyncSettings(jiraInfo, basicSettings, advancedSettings);
-        }
-
-        private FullReportSettings SyncSettings(JiraPolicy jiraInfo, BasicReportSettings basicSettings, AdvancedReportSettings advancedSettings)
-        {
-            var fullSettings = new FullReportSettings();
-            jiraInfo.CopyPropertiesOnObjects(fullSettings);
-
-            basicSettings.CopyPropertiesOnObjects(fullSettings);
-
-            advancedSettings.CopyPropertiesOnObjects(fullSettings);
-
-            if (fullSettings.SourceControlOptions != null)
-                fullSettings.SourceControlUsernames = SourceControlService.GetContributors(fullSettings.SourceControlOptions);
+            SyncUserOptions(jiraInfo, fullSettings);
 
             return fullSettings;
         }
 
-        private static long GetBasicSettingsId(InstalledInstance instance, long projectId)
+        private void SyncUserOptions(JiraPolicy jiraInfo, FullReportSettings fullSettings)
         {
-            return instance.BasicSettings
-                           .Where(r => r.ProjectId == projectId)
-                           .Select(r => r.Id)
-                           .SingleOrDefault();
+            var syncedUserOptions = new List<User>();
+            jiraInfo.UserOptions.ForEach(juser =>
+            {
+                fullSettings.UserOptions.ForEach(user =>
+                {
+                    if (user.JiraUserKey == juser.JiraUserKey)
+                        syncedUserOptions.Add(user);
+                });
+
+                if (!syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
+                    syncedUserOptions.Add(juser);
+            });
+            fullSettings.UserOptions = syncedUserOptions;
+
+            SyncSourceControlUsernames(fullSettings);
         }
 
-        private static string GetReportTime(InstalledInstance instance, long projectId)
+        private void SyncSourceControlUsernames(FullReportSettings fullSettings)
         {
-            return instance.BasicSettings
-                           .Where(r => r.ProjectId == projectId)
-                           .Select(r => r.ReportTime)
-                           .SingleOrDefault();
+            fullSettings.SourceControlUsernames = SourceControlService.GetContributors(fullSettings.SourceControlOptions);
+
+            fullSettings.UserOptions.ForEach(user =>
+            {
+                var validSourceControlUsernames = new List<string>();
+                user.SourceControlUsernames.ForEach(userSrcName =>
+                {
+                    if (fullSettings.SourceControlUsernames.Exists(srcUsername => srcUsername == userSrcName))
+                        validSourceControlUsernames.Add(userSrcName);
+                });
+                user.SourceControlUsernames = validSourceControlUsernames;
+            });
+        }
+
+        private BasicSettings GetBasicSettings(ItemContext context, long projectId)
+        {
+            return new ReportsDb().InstalledInstances
+                                  .Where(ii => ii.Id == context.Id)
+                                  .Single()
+                                  .BasicSettings
+                                  .Where(bs => bs.ProjectId == projectId)
+                                  .Single();
         }
     }
 }

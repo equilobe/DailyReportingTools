@@ -2,13 +2,14 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/list/:instanceId', {
+        $routeProvider.when('/app/instances/:instanceId/projects', {
             label: 'Projects',
             templateUrl: 'app/projects.html',
-            controller: 'ProjectCtrl'
+            controller: 'ProjectsCtrl'
         });
     }])
-    .controller("ProjectCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+    .controller("ProjectsCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
 
         $http.get("/api/projects/" + $routeParams.instanceId)

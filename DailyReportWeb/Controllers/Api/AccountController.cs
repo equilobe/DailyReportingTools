@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
@@ -19,6 +20,8 @@ namespace DailyReportWeb.Controllers.Api
     public class AccountController : ApiController
     {
         public IDataService DataService { get; set; }
+        public ISettingsService SettingsService { get; set; }
+        public IJiraService JiraService { get; set; }
 
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
@@ -41,6 +44,8 @@ namespace DailyReportWeb.Controllers.Api
                 !Validations.Password(model.Password) ||
                 !Validations.Url(model.BaseUrl))
                 throw new ArgumentException();
+
+            JiraService.CredentialsValid(model, false);
 
             List<string> errors = new List<string>();
 
@@ -96,6 +101,9 @@ namespace DailyReportWeb.Controllers.Api
             if (userId == null || code == null)
                 return new AccountResponse() { Success = false };
 
+            if(UserManager.FindById(userId).EmailConfirmed)
+                return new AccountResponse() { Success = true };
+
             IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
             if (!result.Succeeded)
                 return new AccountResponse()
@@ -103,6 +111,12 @@ namespace DailyReportWeb.Controllers.Api
                     Success = false,
                     ErrorList = result.Errors.ToList()
                 };
+
+            var instanceId = UserManager.FindById(userId)
+                                        .InstalledInstances
+                                        .Single()
+                                        .Id;
+            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
 
             return new AccountResponse() { Success = true };
         }
@@ -148,7 +162,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public AccountResponse Logout()
         {
-            AuthenticationManager.SignOut();
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return new AccountResponse()
             {
                 Success = true
@@ -165,7 +179,7 @@ namespace DailyReportWeb.Controllers.Api
 
         private async Task SignInAsync(ApplicationUser user, bool isPersistent)
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, await user.GenerateUserIdentityAsync(UserManager));
         }
 

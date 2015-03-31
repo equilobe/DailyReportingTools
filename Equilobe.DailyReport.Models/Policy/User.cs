@@ -16,5 +16,10 @@ namespace Equilobe.DailyReport.Models.Policy
 
         [XmlAttribute]
         public bool Ignored { get; set; }
+
+        public User()
+        {
+            SourceControlUsernames = new List<string>();
+        }
     }
 }

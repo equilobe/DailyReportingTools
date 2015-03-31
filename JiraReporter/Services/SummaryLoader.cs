@@ -107,7 +107,7 @@ namespace JiraReporter.Services
             _summary.Timing.InProgressUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
             _summary.Timing.InProgressUnassignedTasksTimeLeftString = _summary.Timing.InProgressUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
-            _summary.Timing.UnassignedTasksHoursAverageLeft = ((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600) / _summary.WorkingDays.SprintWorkingDaysLeft;
+            _summary.Timing.UnassignedTasksHoursAverageLeft = _summary.WorkingDays.SprintWorkingDaysLeft !=0 ?((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600) / _summary.WorkingDays.SprintWorkingDaysLeft : 0;
             _summary.Timing.UnassignedTasksTimeLeftString = _summary.Timing.UnassignedTasksHoursAverageLeft.RoundDoubleOneDecimal();
         }
 
@@ -186,14 +186,10 @@ namespace JiraReporter.Services
 
         private void SetAverageRemainingTimePerDay()
         {
-            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0)
-                _summary.Timing.RemainingMonthAverage = 0;
-            else
+            if (_summary.WorkingDays.MonthWorkingDaysLeft != 0)
                 _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / _summary.WorkingDays.MonthWorkingDaysLeft;
 
-            if (!_report.HasSprint)
-                _summary.Timing.RemainingSprintAverage = 0;
-            else
+            if (_summary.WorkingDays.SprintWorkingDaysLeft != 0)
                 _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / _summary.WorkingDays.SprintWorkingDaysLeft;
 
             TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
@@ -243,7 +239,7 @@ namespace JiraReporter.Services
             _summary.Timing.OpenTasksTimeLeftString = _summary.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
 
             _summary.Timing.TotalRemainingSeconds = _summary.Timing.OpenTasksTimeLeftSeconds + _summary.Timing.InProgressTasksTimeLeftSeconds;
-            _summary.Timing.TotalRemainingAverage = _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft;
+            _summary.Timing.TotalRemainingAverage = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft : 0;
             _summary.Timing.TotalRemainingString = _summary.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
         }
 
@@ -265,7 +261,7 @@ namespace JiraReporter.Services
         private void SetHealth()
         {
             var healthInspector = new HealthInspector(_report);
-            _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions), _summary.Timing.TotalTimeHours);
+            _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions.Months), _summary.Timing.TotalTimeHours);
             if (_sprint == null)
             {
                 _summary.DayHealth = Health.None;
@@ -474,16 +470,16 @@ namespace JiraReporter.Services
         {
             var workingDaysInfo = new WorkingDaysInfo();
             var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
-            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions);
+            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions.Months);
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions.Months);
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions.Months);
+            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions.Months);
             if (_sprint != null)
             {
                 var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone(_report.OffsetFromUtc);
                 var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone(_report.OffsetFromUtc);
-                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate, _policy.MonthlyOptions);
-                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate, _policy.MonthlyOptions.Months);
+                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions.Months);
                 workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_report);
             }
             return workingDaysInfo;
@@ -504,7 +500,7 @@ namespace JiraReporter.Services
         {
             _summary.GuidelineInfoStatus = new SummaryGuidelineInfo();
             _summary.GuidelineInfoStatus.GuidelinesRate = GetGuidelinesRate(_summary.StatusMaxValue);
-            _summary.GuidelineInfoStatus.GuidelinesCount = _summary.StatusMaxValue / _summary.GuidelineInfoStatus.GuidelinesRate;
+            _summary.GuidelineInfoStatus.GuidelinesCount = GetGuidelinesCount(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
             _summary.GuidelineInfoStatus.GuidelineWidth = GetGuidelineWidth(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
         }
 
@@ -512,7 +508,7 @@ namespace JiraReporter.Services
         {
             _summary.GuidelineInfoWorkSummary = new SummaryGuidelineInfo();
             _summary.GuidelineInfoWorkSummary.GuidelinesRate = GetGuidelinesRate(_summary.WorkSummaryMaxValue);
-            _summary.GuidelineInfoWorkSummary.GuidelinesCount = _summary.WorkSummaryMaxValue / _summary.GuidelineInfoWorkSummary.GuidelinesRate;
+            _summary.GuidelineInfoWorkSummary.GuidelinesCount = GetGuidelinesCount(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
             _summary.GuidelineInfoWorkSummary.GuidelineWidth = GetGuidelineWidth(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
         }
 
@@ -522,7 +518,7 @@ namespace JiraReporter.Services
             {
                 author.GuidelineInfo = new SummaryGuidelineInfo();
                 author.GuidelineInfo.GuidelinesRate = GetGuidelinesRate(author.MaxHourValue);
-                author.GuidelineInfo.GuidelinesCount = author.MaxHourValue / author.GuidelineInfo.GuidelinesRate;
+                author.GuidelineInfo.GuidelinesCount = GetGuidelinesCount(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
                 author.GuidelineInfo.GuidelineWidth = GetGuidelineWidth(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
             }
         }
@@ -533,6 +529,14 @@ namespace JiraReporter.Services
             while (maxValue / integer >= _summary.GuidelinesOptimalNumber)
                 integer = integer * 2;
             return integer;
+        }
+
+        private int GetGuidelinesCount(int maxValue, int guidelinesRate)
+        {
+            if (maxValue % guidelinesRate != 0)
+                return maxValue / guidelinesRate + 1;
+
+            return maxValue / guidelinesRate;
         }
 
         private double GetGuidelineWidth(int maxValue, int guidelinesRate)

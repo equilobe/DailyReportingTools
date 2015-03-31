@@ -2,13 +2,14 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/edit/:projectId', {
+        $routeProvider.when('/app/instances/:instanceId/projects/:projectId/settings', {
             label: 'Settings',
             templateUrl: 'app/settings.html',
             controller: 'SettingsCtrl'
         });
     }])
     .controller("SettingsCtrl", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
+        $scope.$parent.child = $scope;
         $scope.status = "loading";
 
         $http.get("/api/settings/" + $routeParams.projectId)
@@ -16,6 +17,7 @@ angular.module('app')
                 $scope.user = policy.userOptions ? policy.userOptions[0] : null;
                 $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
                 $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
+                $scope.days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
                 if (!policy.sourceControlOptions)
                     policy.sourceControlOptions = { type: "None" };
@@ -28,9 +30,9 @@ angular.module('app')
 
         $scope.updatePolicy = function ($scope) {
             $scope.status = 'saving';
-            $scope.advancedOptionsForm.$setPristine();
+            $scope.form.$setPristine();
 
-            $http.post("/api/settings/" + $scope.policy.projectId, $scope.policy
+            $http.post("/api/settings/", $scope.policy
                 ).success(function () {
                     $scope.status = "success";
                     console.log("success");
@@ -68,4 +70,25 @@ angular.module('app')
                     break;
                 }
         };
-    }]);
+    }])
+    .directive("weekendDays", function () {
+        return function ($scope, $elem) {
+            if ($scope.policy.advancedOptions.weekendDaysList.indexOf($scope.day) !== -1) {
+                $elem[0].checked = true;
+            }
+
+            $elem.bind('click', function () {
+                var index = $scope.policy.advancedOptions.weekendDaysList.indexOf($scope.day);
+
+                if ($elem[0].checked) {
+                    if (index === -1) $scope.policy.advancedOptions.weekendDaysList.push($scope.day);
+                }
+                else {
+                    if (index !== -1) $scope.policy.advancedOptions.weekendDaysList.splice(index, 1);
+                }
+
+                $scope.$apply($scope.policy.advancedOptions.weekendDaysList);
+                $scope.$apply($scope.form.$setDirty());
+            });
+        }
+    });

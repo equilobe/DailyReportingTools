@@ -56,7 +56,7 @@ namespace JiraReporter
         {
             var authors = new List<JiraAuthor>();
             var authorLoader = new AuthorLoader(context) { JiraService = JiraService, EncryptionService = EncryptionService };
-            if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey))
+            if (context.ExecutionInstance != null && !string.IsNullOrEmpty(context.ExecutionInstance.UniqueUserKey) && context.ExecutionInstance.Scope == SendScope.SendIndividualDraft)
             {
                 var author = authorLoader.CreateAuthorByKey(context);
                 if (context.ProjectManager == author.Username)

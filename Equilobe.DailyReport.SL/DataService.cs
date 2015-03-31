@@ -1,26 +1,26 @@
-﻿using Encryptamajig;
-using Equilobe.DailyReport.DAL;
+﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Equilobe.DailyReport.SL
 {
     public class DataService : IDataService
     {
         public IEncryptionService EncryptionService { get; set; }
+        public ISettingsService SettingsService { get; set; }
 
         public void SaveInstance(InstalledInstance instanceData)
         {
+            long instanceId;
             using (var db = new ReportsDb())
             {
                 var installedInstance = db.InstalledInstances.SingleOrDefault(i => i.BaseUrl == instanceData.BaseUrl && i.ClientKey == instanceData.ClientKey);
@@ -30,24 +30,42 @@ namespace Equilobe.DailyReport.SL
                     installedInstance.SharedSecret = instanceData.SharedSecret;
 
                 db.SaveChanges();
+
+                instanceId = installedInstance.Id;
             }
+
+            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void SaveInstance(RegisterModel modelData)
         {
+            long instanceId = 0;
             using (var db = new ReportsDb())
             {
-                var instanceData = new InstalledInstance();
-                modelData.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
-                modelData.CopyPropertiesOnObjects(instanceData);
-                instanceData.UserId = db.Users.Where(u => u.Email == modelData.Email)
-                                              .Select(u => u.Id)
+                var user = db.Users.Where(u => u.Email == modelData.Email)
                                               .Single();
 
-                db.InstalledInstances.Add(instanceData);
+                var installedInstance = user.InstalledInstances.SingleOrDefault(i => i.BaseUrl == modelData.BaseUrl);
+                if (installedInstance != null && !string.IsNullOrEmpty(modelData.Password))
+                    throw new ArgumentException();
+
+                if (installedInstance == null)
+                {
+                    installedInstance = new InstalledInstance();
+                    db.InstalledInstances.Add(installedInstance);
+                    installedInstance.UserId = user.Id;
+                }
+                modelData.JiraPassword = EncryptionService.Encrypt(modelData.JiraPassword);
+                modelData.CopyPropertiesOnObjects(installedInstance);
 
                 db.SaveChanges();
+
+                if (user.EmailConfirmed)
+                    instanceId = installedInstance.Id;
             }
+
+            if (instanceId != 0)
+                SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void DeleteInstance(string baseUrl)
@@ -94,18 +112,21 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
         }
 
-        public List<Instance> GetInstances(ApplicationUser user)
+        public List<Instance> GetInstances()
         {
-            var installedInstances = user.InstalledInstances.ToList();
+            var userId = new UserContext().UserId;
             var instances = new List<Instance>();
 
-            installedInstances.ForEach(installedInstance =>
+            new ReportsDb().InstalledInstances
+                           .Where(ii => ii.UserId == userId)
+                           .ToList()
+                           .ForEach(installedInstance =>
                 {
-                    instances.Add(new Instance { 
-                        Id = installedInstance.Id,
-                        BaseUrl = installedInstance.BaseUrl
+                               var instance = new Instance();
+                               instance.CopyFrom<IInstance>(installedInstance);
+
+                               instances.Add(instance);
                     });
-                });
 
             return instances;
         }

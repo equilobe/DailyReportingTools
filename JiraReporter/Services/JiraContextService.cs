@@ -35,7 +35,6 @@ namespace JiraReporter.Services
             Policy.CurrentOverride = GetCurrentOverride();
             Policy.IsThisMonthOverriden = IsThisMonthOverriden();
             Policy.Users = GetUsersDictionary();
-            Policy.AdvancedOptions.WeekendDaysList = GetWeekendDays();
             Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
             SetReportType();
             SetMonthlyNonWorkingDays();
@@ -44,7 +43,7 @@ namespace JiraReporter.Services
         private void SetMonthlyNonWorkingDays()
         {
             if (Policy.MonthlyOptions != null)
-                foreach (var month in Policy.MonthlyOptions)
+                foreach (var month in Policy.MonthlyOptions.Months)
                     if (!string.IsNullOrEmpty(month.NonWorkingDays))
                         month.NonWorkingDaysList = MonthlyOptionsHelpers.GetNonWorkingDays(month);
         }
@@ -106,7 +105,7 @@ namespace JiraReporter.Services
             if (Policy.MonthlyOptions == null)
                 return null;
 
-            return Policy.MonthlyOptions.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
+            return Policy.MonthlyOptions.Months.Find(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
         }
 
         private bool IsThisMonthOverriden()
@@ -114,7 +113,7 @@ namespace JiraReporter.Services
             if (Policy.MonthlyOptions == null)
                 return false;
 
-            return Policy.MonthlyOptions.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
+            return Policy.MonthlyOptions.Months.Exists(o => o.MonthName.ToLower() == DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).CurrentMonth().ToLower());
         }
 
         private IDictionary<string, List<string>> GetUsersDictionary()
@@ -212,28 +211,6 @@ namespace JiraReporter.Services
             Context.IsFinalDraft = false;
             Context.IsIndividualDraft = false;
             Context.IsFinalReport = true;
-        }
-
-        private List<DayOfWeek> GetWeekendDays()
-        {
-            var daysList = Policy.AdvancedOptions.WeekendDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var weekendDaysEnum = new List<DayOfWeek>();
-            try
-            {
-                foreach (var day in daysList)
-                {
-                    var dayOfWeek = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), day);
-                    weekendDaysEnum.Add(dayOfWeek);
-                }
-                return weekendDaysEnum;
-            }
-            catch (Exception)
-            {
-                return new List<DayOfWeek>(){
-                        DayOfWeek.Saturday,
-                        DayOfWeek.Sunday
-                    };
-            }
         }
     }
 }
