@@ -1,12 +1,61 @@
-﻿#jumbo {
-    background-color: #333;
-    color: #eee;
+﻿.jumbo {
+    background-color: #29a9e1;
+    color: #fff;
 }
 
-.welcome {
-    margin: 10% auto;
+    .jumbo p {
+        color: #fff;
+    }
+
+.full-page {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+}
+
+    .full-page:nth-child(2) {
+        background-color: #29a9e1;
+    }
+
+        .full-page:nth-child(2) h1,
+        .full-page:nth-child(2) p {
+            color: #fff;
+        }
+
+.hcenter {
     text-align: center;
 }
+
+.vcenter {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.welcome > * {
+    margin: 10vh 0;
+}
+
+.navigate-to {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    border: none;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #29a9e1 100%); /* FF3.6+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#29a9e1 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#29a9e1 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#29a9e1 100%); /* IE10+ */
+}
+
+    .navigate-to:focus,
+    .navigate-to:active:focus {
+        border: none;
+        outline: none;
+    }
 
 .menu {
     padding-top: 13px;
@@ -37,6 +86,11 @@ div.disabled {
     .checkbox-inline + .checkbox-inline:last-child {
         margin-right: 0;
     }
+
+
+.steps-row {
+    margin-top: 50px;
+}
 
 .step-number {
     background-color: white;
@@ -69,8 +123,11 @@ div.disabled {
 }
 
 .daily-report-small {
-    width: 50px;
+    background-size: 100%!important;
+    width: 60px;
     height: 60px;
+    vertical-align: middle;
+    margin-left: 20px;
 }
 
 .daily-report-big {
@@ -81,11 +138,13 @@ div.disabled {
 .alert-warning .daily-report {
     border-color: #c09853;
     background: url("Images/individuals.png") no-repeat center;
+
 }
 
 .alert-info .daily-report {
     border-color: #3a87ad;
     background: url("Images/manager.png") no-repeat center;
+
 }
 
 .alert-success .daily-report {
@@ -121,9 +180,9 @@ div.disabled {
     border-top: 1px solid #ddd;
 }
 
-.project > div:first-of-type {
-    padding-top: 7px;
-}
+    .project > div:first-of-type {
+        padding-top: 7px;
+    }
 
 .glyphicon {
     background-color: transparent;
@@ -140,23 +199,38 @@ div.disabled {
     cursor: pointer;
 }
 
-[ng-click]:hover {
-    text-decoration: none;
-}
- 
+    [ng-click]:hover {
+        text-decoration: none;
+    }
+
 @keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
 }
-  
+
 @-webkit-keyframes spinw {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
 }
- 
+
 @-moz-keyframes spinm {
-    from { -moz-transform: rotate(0deg);}
-    to { -moz-transform: rotate(360deg);}
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
 }
 
 @media only screen and (max-width : 520px) {
