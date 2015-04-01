@@ -18,7 +18,7 @@ angular.module('app')
                 .success(function (response) {
                     if (response.success) {
                         $scope.$parent.isAuth = true;
-                        $location.path('/app/list');
+                        $location.path('/app/instances');
                     }
                     else {
                         $scope.message = response.message;
