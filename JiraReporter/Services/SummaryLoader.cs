@@ -324,7 +324,7 @@ namespace JiraReporter.Services
             if (_report.HasSprint)
             {
                 if (_summary.AuthorsWithErrors != null)
-                    errors = _summary.AuthorsWithErrors.SelectMany(e => e.Errors).ToList();
+                    errors = errors.Concat(_summary.AuthorsWithErrors.SelectMany(e => e.Errors)).ToList();
                 if (_summary.CompletedWithEstimateErrors != null)
                     errors = errors.Concat(_summary.CompletedWithEstimateErrors).ToList();
                 if (_summary.UnassignedErrors != null)
@@ -347,7 +347,11 @@ namespace JiraReporter.Services
 
             _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
             _summary.ConfirmationErrors = new List<Error>();
-            var notConfirmed = _report.Settings.IndividualDraftConfirmations.Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Date).ToList();
+            var notConfirmed = _report.Settings.IndividualDraftConfirmations
+                .Where(d=>d.ReportDate == _report.ToDate)
+                .Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != _report.ToDate)
+                .ToList();
+
             foreach (var author in _summary.Authors)
             {
                 var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);
@@ -470,16 +474,17 @@ namespace JiraReporter.Services
         {
             var workingDaysInfo = new WorkingDaysInfo();
             var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
-            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.EndOfMonth(), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(now, now.EndOfMonth(), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(now.StartOfMonth(), now.AddDays(-1), _policy.MonthlyOptions);
+            var reportDate = _report.ToDate.AddDays(-1);
+            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, reportDate.AddDays(1), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth(), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.AddDays(1), _policy.MonthlyOptions);
             if (_sprint != null)
             {
                 var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone(_report.OffsetFromUtc);
                 var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone(_report.OffsetFromUtc);
-                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate, _policy.MonthlyOptions);
-                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate, _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate.AddDays(1), _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate.AddDays(1), _policy.MonthlyOptions);
                 workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetSprintDaysWorked(_report);
             }
             return workingDaysInfo;
