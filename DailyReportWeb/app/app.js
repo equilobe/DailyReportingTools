@@ -38,11 +38,36 @@
             $scope.regex = regex;
         })();
 
-        $scope.scroll = function () {
+        (function mouseWheel() {
+            window.onmousewheel = handleMouseWheel;
+            mouseDirections = [];
+
+            setInterval(function () {
+                if (mouseDirections.length) {
+                    $scope.pageScroll(mouseDirections[mouseDirections.length - 1]);
+                    mouseDirections = [];
+                }
+            }, 1000);
+        })();
+
+        function handleMouseWheel(event) {
+            if (event.wheelDeltaY < 0)
+                mouseDirections.push(1); // event.MOUSEDOWN = 1
+            else
+                mouseDirections.push(2); // event.MOUSEUP = 2
+
+            return false;
+        }
+
+        $scope.pageScroll = function () {
             $('body').animate({
-                scrollTop: arguments.length ? $(arguments[0]).offset().top :
+                scrollTop: arguments.length ? (typeof (arguments[0]) == "string" ? $(arguments[0]).offset().top :
+                                                                                   (arguments[0] == 2 ? $("body").scrollTop() - window.innerHeight :
+                                                                                                        $("body").scrollTop() + window.innerHeight)) :
                                               $("body").scrollTop() + window.innerHeight
-            }, 500);
+            }, 200);
+
+            return false;
         }
 
         var getAccurateTimeZoneSuggestion = function (result) {
