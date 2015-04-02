@@ -86,8 +86,9 @@ namespace Equilobe.DailyReport.SL
             if (context.Date.Date != DateTime.Today)
                 return SimpleResult.Error("Cannot resend report for another date");
 
-            if (CheckIndividualConfirmation(context))
-                return SimpleResult.Error("Draft is already confirmed. Can't resend");
+            var result = CanSendIndividualDraft(context);
+            if (result.HasError)
+                return result;
 
             context.Scope = SendScope.SendIndividualDraft;
             SetReportExecutionInstance(context);
@@ -150,6 +151,27 @@ namespace Equilobe.DailyReport.SL
 
                 return true;
             }
+        }
+
+        SimpleResult CanSendIndividualDraft(ExecutionContext context)
+        {
+            if (CheckIndividualConfirmation(context))
+                return SimpleResult.Error("Draft is already confirmed. Can't resend");
+
+            var reportSettings = new BasicSettings();
+            using(var db = new ReportsDb())
+            {
+                var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
+                reportSettings = report;
+                reportSettings.ReportExecutionSummary = report.ReportExecutionSummary;
+            }
+
+            if (reportSettings.ReportExecutionSummary != null)
+                if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null
+                    && reportSettings.ReportExecutionSummary.LastDraftSentDate.Value.Date == context.Date.Date)
+                    return SimpleResult.Error("Can't resend individual draft if final draft was already sent");
+
+            return SimpleResult.Success("");
         }
 
         void SetFinalDraftConfirmation(ExecutionContext context)

@@ -477,7 +477,7 @@ namespace JiraReporter.Services
             var reportDate = _report.ToDate.AddDays(-1);
             workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, reportDate.AddDays(1), _policy.MonthlyOptions);
             workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth(), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions);
             workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.AddDays(1), _policy.MonthlyOptions);
             if (_sprint != null)
             {
