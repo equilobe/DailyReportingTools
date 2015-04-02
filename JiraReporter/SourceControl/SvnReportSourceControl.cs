@@ -1,31 +1,15 @@
 ﻿using Equilobe.DailyReport.Models;
-using Equilobe.DailyReport.Models.Storage;
-using SourceControlLogReporter;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.SourceControl;
-using Equilobe.DailyReport.SL;
-using Equilobe.DailyReport.Models.Policy;
+using SourceControlLogReporter;
 
 namespace JiraReporter.SourceControl
 {
     class SvnReportSourceControl : SvnReport
     {
         JiraReport Context { get; set; }
-        new JiraPolicy Policy { get { return Context.Policy; } }
-        new JiraOptions Options { get { return Context.Options; } }
-        public new string PathToLog
-        {
-            get
-            {
-                return GetLogFilePath(Context.LogPath, Options.ReportDate);
-            }
-        }
 
         public SvnReportSourceControl(JiraReport context)
         {
@@ -34,9 +18,13 @@ namespace JiraReporter.SourceControl
 
         public override Log CreateLog()
         {
-            var context = new SourceControlContext{SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate};
-            var log = SvnService.GetLog(context, PathToLog);
-            return log;
+            var context = new SourceControlContext
+            {
+                SourceControlOptions = Context.Policy.SourceControlOptions,
+                FromDate = Context.Options.FromDate,
+                ToDate = Context.Options.ToDate
+            };
+            return SvnService.GetLogWithCommitLinks(context);
         }
     }
 }

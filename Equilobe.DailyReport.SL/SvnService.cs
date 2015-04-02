@@ -1,12 +1,7 @@
 ﻿using Equilobe.DailyReport.BL.Svn;
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.ReportFrame;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -17,9 +12,19 @@ namespace Equilobe.DailyReport.SL
             return new SvnClient(context);
         }
 
-        public Log GetLog(ISourceControlContext context, string pathToLog)
+        public Log GetLog(ISourceControlContext context)
         {
-            return GetSvnClient(context).GetLog(pathToLog);
+            return GetSvnClient(context).GetLog();
+        }
+
+        public Log GetLogWithCommitLinks(ISourceControlContext context)
+        {
+            return GetSvnClient(context).GetLogWithCommitLinks();
+        }
+
+        public List<string> GetAllAuthors(ISourceControlContext context)
+        {
+            return GetSvnClient(context).GetAllAuthors();
         }
     }
 }

@@ -240,7 +240,7 @@
                                     Repository Url:
                                 </label>
                                 <div ng-form="svnRepoUrlForm">
-                                    <input name="svnRepoUrl" type="text" class="form-control" placeholder="e.g. " ng-model="policy.sourceControlOptions.repo" ng-focus="svnRepoUrl.focus = true" ng-blur="svnRepoUrl.focus = false; sourceControlStatus = 'changed'" ng-pattern=regex.Url />
+                                    <input name="svnRepoUrl" type="text" class="form-control" placeholder="e.g. http://drt.equilobe.com/" ng-model="policy.sourceControlOptions.repo" ng-focus="svnRepoUrl.focus = true" ng-blur="svnRepoUrl.focus = false; sourceControlStatus = 'changed'" ng-pattern=regex.Url />
                                     <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern && !svnRepoUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                                 </div>
                             </div>
@@ -251,7 +251,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input name="svnUsername" type="text" class="form-control" placeholder="e.g. " ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input name="svnUsername" type="text" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -261,7 +261,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input name="svnPassword" type="text" class="form-control" placeholder="e.g. " ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input name="svnPassword" type="text" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>

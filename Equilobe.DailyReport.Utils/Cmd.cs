@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,17 +10,25 @@ namespace Equilobe.DailyReport.Utils
 {
     public class Cmd
     {
-        public static void ExecuteSingleCommand(string command, string directory=null)
+        public static string Execute(string command)
         {
-            Process process = new Process();
-            process.StartInfo.FileName = "cmd.exe";
-            if(!string.IsNullOrEmpty(directory))
-                process.StartInfo.WorkingDirectory = directory;
-            process.StartInfo.Arguments = string.Format("/c {0}", command);
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.UseShellExecute = false;
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.CreateNoWindow = true;
+
+            var process = new Process();
+            process.StartInfo = processStartInfo;
             process.Start();
-            process.WaitForExit();
+
+            string output = string.Empty;
+            using (StreamReader streamReader = process.StandardOutput)
+            {
+                output = streamReader.ReadToEnd();
+            }
+
+            return output;
         }
     }
 }

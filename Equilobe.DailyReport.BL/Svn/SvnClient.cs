@@ -15,59 +15,68 @@ namespace Equilobe.DailyReport.BL.Svn
 {
     public class SvnClient
     {
-        ISourceControlContext Context { get; set; }  
-        SourceControlOptions SourceControlOptions { get { return Context.SourceControlOptions; } }
-        DateTime FromDate { get { return Context.FromDate; } }
-        DateTime ToDate { get { return Context.ToDate; } }
+        ISourceControlContext Context { get; set; }
 
         public SvnClient(ISourceControlContext context)
         {
             Context = context;
         }
 
-        void SetCommitsLink(List<LogEntry> entries)
+        private string GetCommandString(bool full)
+        {
+            var command = new StringBuilder();
+            command.AppendFormat("svn log {0} --xml", Context.SourceControlOptions.Repo);
+
+            if (!full)
+                command.Append(" --quiet");
+
+            if (!string.IsNullOrEmpty(Context.SourceControlOptions.Credentials.Username) && !string.IsNullOrEmpty(Context.SourceControlOptions.Credentials.Password))
+                command.AppendFormat(" --username \"{0}\" --password \"{1}\"",
+                                     Context.SourceControlOptions.Credentials.Username,
+                                     Context.SourceControlOptions.Credentials.Password);
+
+            command.AppendFormat(" -r{{{0:yyyy-MM-ddTHH:mmZ}}}:{{{1:yyyy-MM-ddTHH:mmZ}}}",
+                                 Context.FromDate,
+                                 Context.ToDate);
+
+            return command.ToString();
+        }
+
+        public void SetCommitsLink(List<LogEntry> entries)
         {
             if (entries == null)
                 return;
 
             foreach (var entry in entries)
-                if (entry.Link == null && SourceControlOptions.CommitUrl != null)
-                    entry.Link = SourceControlOptions.CommitUrl + entry.Revision;
+                if (entry.Link == null && Context.SourceControlOptions.CommitUrl != null)
+                    entry.Link = Context.SourceControlOptions.CommitUrl + entry.Revision;
         }
 
-        void ExecuteSvnCommand(string pathToLog)
+        /// <param name="full">enables providing full informations for log with slightly increased performance hit</param>
+        public Log GetLog(bool full = false)
         {
-            Validations.EnsureDirectoryExists(Path.GetDirectoryName(pathToLog));
-            try
-            {
-                var command = GetCommandString(pathToLog);
-                Cmd.ExecuteSingleCommand(command);
-            }
-            catch (Exception ex)
-            {
-                throw new SvnNotAvailableException(ex);
-            }
-        }
+            var command = GetCommandString(full);
+            var xmlLogOutput = Cmd.Execute(command);
 
-        public Log GetLog(string pathToLog)
-        {
-            ExecuteSvnCommand(pathToLog);
-            var log = Deserialization.XmlDeserializeFileContent<Log>(pathToLog);
-            LogHelpers.RemoveWrongEntries(FromDate, log);
-            SetCommitsLink(log.Entries);
+            var log = Deserialization.XmlDeserialize<Log>(xmlLogOutput);
+            LogHelpers.RemoveWrongEntries(Context.FromDate, log);
+
+            if (full)
+                SetCommitsLink(log.Entries);
 
             return log;
         }
 
-        string GetCommandString(string pathToLog)
+        public Log GetLogWithCommitLinks()
         {
-            return string.Format("svn log {0} --xml --username \"{1}\" --password \"{2}\" -r{{{3:yyyy-MM-ddTHH:mmZ}}}:{{{4:yyyy-MM-ddTHH:mmZ}}} > \"{5}\"",
-                            SourceControlOptions.Repo,
-                            SourceControlOptions.Credentials.Username,
-                            SourceControlOptions.Credentials.Password,
-                            FromDate,
-                            ToDate,
-                            pathToLog);
+            return GetLog(true);
+        }
+
+        public List<string> GetAllAuthors()
+        {
+            return GetLog().Entries.Select(logEntry => logEntry.Author)
+                                   .Distinct()
+                                   .ToList();
         }
     }
 }
