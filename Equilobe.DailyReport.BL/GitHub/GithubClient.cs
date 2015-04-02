@@ -11,18 +11,20 @@ namespace Equilobe.DailyReport.BL.GitHub
 {
     public class GithubClient
     {
-        ApiConnection Connection { get; set; }
+        ApiConnection Client { get; set; }
 
         public GithubClient(string username, string password)
         {
-            Connection = new ApiConnection(new Connection(new ProductHeaderValue("Eq"), new InMemoryCredentialStore(new Credentials(username, password))));
+            Client = new ApiConnection(new Connection(new ProductHeaderValue("DailyReport")));
+            if(!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+                Client.Connection.Credentials = new Credentials(username, password);
         }
 
         public List<GitHubCommit> GetBranchCommits(string repositoryOwner, string repositoryName, string sinceDate, string untilDate, string branch)
         {
             Ensure.ArgumentNotNullOrEmptyString(repositoryOwner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(repositoryName, "name");
-            return Connection.GetAll<GitHubCommit>(ApiUrls.RepositoryCommitsBranchDate(repositoryOwner, repositoryName, sinceDate, untilDate, branch)).Result.ToList();
+            return Client.GetAll<GitHubCommit>(ApiUrls.RepositoryCommitsBranchDate(repositoryOwner, repositoryName, sinceDate, untilDate, branch)).Result.ToList();
         }
 
         public List<GitHubCommit> GetAllCommits(string owner, string name, string sinceDate, string untilDate)
@@ -38,14 +40,14 @@ namespace Equilobe.DailyReport.BL.GitHub
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            return Connection.GetAll<Branch>(ApiUrls.RepoBranches(owner, name)).Result.ToList();
+            return Client.GetAll<Branch>(ApiUrls.RepoBranches(owner, name)).Result.ToList();
         }
 
         public List<PullRequest> GetPullRequests(string owner, string name)
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            var pullRequests = Connection.GetAll<PullRequest>(ApiUrls.PullRequests(owner, name)).Result.ToList();
+            var pullRequests = Client.GetAll<PullRequest>(ApiUrls.PullRequests(owner, name)).Result.ToList();
             pullRequests.ForEach(p => p.User.Name = GetUser(p.User.Login).Name);
 
             return pullRequests;
@@ -55,13 +57,13 @@ namespace Equilobe.DailyReport.BL.GitHub
         {
             Ensure.ArgumentNotNullOrEmptyString(owner, "owner");
             Ensure.ArgumentNotNullOrEmptyString(name, "name");
-            return Connection.GetAll<Octokit.User>(ApiUrls.RepositoryContributors(owner, name)).Result.ToList();
+            return Client.GetAll<Octokit.User>(ApiUrls.RepositoryContributors(owner, name)).Result.ToList();
         }
 
         public Octokit.User GetUser(string username)
         {
             Ensure.ArgumentNotNullOrEmptyString(username, "username");
-            return Connection.Get<Octokit.User>(ApiUrls.User(username)).Result;
+            return Client.Get<Octokit.User>(ApiUrls.User(username)).Result;
         }
 
         static bool HasAuthor(GitHubCommit commit)
