@@ -44,11 +44,7 @@
     bottom: 0;
     text-align: center;
     border: none;
-    background: #ffffff; /* Old browsers */
-    background: -moz-linear-gradient(top, #ffffff 0%, #29a9e1 100%); /* FF3.6+ */
-    background: -webkit-linear-gradient(top, #ffffff 0%,#29a9e1 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #ffffff 0%,#29a9e1 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #ffffff 0%,#29a9e1 100%); /* IE10+ */
+    background-color: white;
 }
 
     .navigate-to:focus,
@@ -240,4 +236,30 @@ div.disabled {
         font-size: 90%;
         background-color: transparent;
     }
+}
+
+.call-to-action a{
+  font-weight:bold;
+  font-size: 1.6em;
+  padding: 15px 25px;
+}
+
+.app-introduction{
+  text-align: center;
+}
+
+.app-introduction h1{
+  font-weight: bold;
+}
+
+.app-introduction h4{
+  display: inline-block;
+  max-width: 680px;
+  line-height: 1.6em;
+  font-weight: normal;
+  font-size:1.4em;
+}
+
+*{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
