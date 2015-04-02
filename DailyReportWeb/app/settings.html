@@ -438,7 +438,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.noIndividualDraft" ng-checked="policy.advancedOptions.noDraft" ng-disabled="policy.advancedOptions.noDraft" />
+                                <input type="checkbox" ng-model="policy.advancedOptions.noIndividualDraft" ng-checked="policy.advancedOptions.noIndividualDraft || policy.advancedOptions.noDraft" ng-disabled="policy.advancedOptions.noDraft" />
                                 Do not send a draft report to each user
                             </label>
                         </div>
