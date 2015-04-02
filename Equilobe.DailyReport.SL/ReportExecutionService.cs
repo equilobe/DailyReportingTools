@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -44,7 +45,7 @@ namespace Equilobe.DailyReport.SL
             if (context.Date.Date != DateTime.Today)
                 return SimpleResult.Error("Cannot resend draft for another date");
 
-            if (!CanSendFullDraft(context))
+            if (!CanSendFullDraft(context) && !IsForcedByLead(context))
                 return SimpleResult.Error("Cannot send report if not all individual drafts were confirmed");
 
             context.Scope = SendScope.SendFinalDraft;
@@ -62,8 +63,9 @@ namespace Equilobe.DailyReport.SL
             if (context.Date.Date != DateTime.Today)
                 return SimpleResult.Error("Cannot confirm report for another date");
 
-            if (CheckIndividualConfirmation(context))
-                return SimpleResult.Error("This draft is already confirmed");
+            var canConfirm = CanConfirm(context);
+            if (canConfirm.HasError)
+                return canConfirm;
 
             if (!MarkIndividualDraftAsConfirmed(context))
                 return SimpleResult.Error("Error in confirmation");
@@ -124,7 +126,6 @@ namespace Equilobe.DailyReport.SL
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 var individualReports = report.IndividualDraftConfirmations.Where(dr=>dr.ReportDate.Value == context.Date.Date).ToList();
-                var isForcedByLead = IsForcedByLead(context.DraftKey, individualReports);
 
                 if (report.SerializedAdvancedSettings == null)
                     return false;
@@ -137,10 +138,7 @@ namespace Equilobe.DailyReport.SL
                 if (policy.AdvancedOptions.NoIndividualDraft)
                     return true;
 
-                if (!isForcedByLead && report.ReportExecutionSummary == null)
-                    return false;
-
-                if (isForcedByLead || ( report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today))
+                if (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today)
                     return true;
 
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
@@ -155,23 +153,29 @@ namespace Equilobe.DailyReport.SL
 
         SimpleResult CanSendIndividualDraft(ExecutionContext context)
         {
-            if (CheckIndividualConfirmation(context))
-                return SimpleResult.Error("Draft is already confirmed. Can't resend");
-
             var reportSettings = new BasicSettings();
             using(var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
-                reportSettings = report;
-                reportSettings.ReportExecutionSummary = report.ReportExecutionSummary;
+                report.CopyPropertiesOnObjects(reportSettings);
             }
 
-            if (reportSettings.ReportExecutionSummary != null)
-                if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null
-                    && reportSettings.ReportExecutionSummary.LastDraftSentDate.Value.Date == context.Date.Date)
-                    return SimpleResult.Error("Can't resend individual draft if final draft was already sent");
+            if (WasFinalDraftSentToday(reportSettings.ReportExecutionSummary, context.Date.Date))
+                return SimpleResult.Error("Can't resend individual draft if final draft was already sent");
+
+            if (IsIndividualDraftConfirmed(context, reportSettings.IndividualDraftConfirmations))
+                return SimpleResult.Error("Can't resend draft after confirmation");
 
             return SimpleResult.Success("");
+        }
+
+        bool WasFinalDraftSentToday(ReportExecutionSummary summary, DateTime reportDate)
+        {
+            if (summary != null)
+                if (summary.LastDraftSentDate != null && summary.LastDraftSentDate.Value.Date == reportDate)
+                    return true;
+
+            return false;
         }
 
         void SetFinalDraftConfirmation(ExecutionContext context)
@@ -207,20 +211,35 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        bool CheckIndividualConfirmation(ExecutionContext context)
+        SimpleResult CanConfirm(ExecutionContext context)
         {
+            var basicSettings = new BasicSettings();
+
             using (var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
-                if (report.IndividualDraftConfirmations == null)
-                    return false;
-
-                var draft = report.IndividualDraftConfirmations.SingleOrDefault(d => d.UniqueUserKey == context.DraftKey);
-                if (draft == null || draft.LastDateConfirmed == null || draft.LastDateConfirmed.Value.Date != DateTime.Today)
-                    return false;
-
-                return true;
+                report.CopyPropertiesOnObjects(basicSettings);
             }
+
+            if (WasFinalDraftSentToday(basicSettings.ReportExecutionSummary, context.Date.Date))
+                return SimpleResult.Error("Can't confirm individual draft if final draft was already sent");
+
+            if (basicSettings.IndividualDraftConfirmations == null)
+                return SimpleResult.Success("Can confirm");
+
+            if(IsIndividualDraftConfirmed(context, basicSettings.IndividualDraftConfirmations))
+                return SimpleResult.Error("Draft is already confirmed");
+
+            return SimpleResult.Success("Can confirm");
+        }
+
+        bool IsIndividualDraftConfirmed(ExecutionContext context, ICollection<IndividualDraftConfirmation> individualDrafts)
+        {
+            var draft = individualDrafts.SingleOrDefault(d => d.UniqueUserKey == context.DraftKey);
+            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.Date == context.Date.Date)
+                return true;
+
+            return false;
         }
 
         void SetReportExecutionInstance(ExecutionContext context)
@@ -276,7 +295,18 @@ namespace Equilobe.DailyReport.SL
             return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date != DateTime.Today);
         }
 
-        bool IsForcedByLead(string userKey, List<IndividualDraftConfirmation> individualConfirmations)
+        bool IsForcedByLead(ExecutionContext context)
+        {
+            var individualDrafts = new List<IndividualDraftConfirmation>();
+
+            using(var db = new ReportsDb())
+            {
+                var settings = db.BasicSettings.SingleOrDefault(bs => bs.UniqueProjectKey == context.Id);
+                return FindLead(context.DraftKey, settings.IndividualDraftConfirmations);
+            }
+        }
+
+        bool FindLead(string userKey, ICollection<IndividualDraftConfirmation> individualConfirmations)
         {
             if (individualConfirmations == null || string.IsNullOrEmpty(userKey))
                 return false;
