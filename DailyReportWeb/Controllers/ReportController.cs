@@ -29,7 +29,7 @@ namespace DailyReportWeb.Controllers
         {
             var result = ReportExecutionService.ConfirmIndividualDraft(context);
             return Content(result.Message);
-            }
+        }
 
 
         [HttpGet]
