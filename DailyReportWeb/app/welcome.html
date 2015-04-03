@@ -1,257 +1,248 @@
-﻿
-<div class="full-page">
-    <div class="welcome hcenter vcenter container">
-        <div class="logo">
-            <img id="main" src="../Content/Images/logo-main.PNG" />
-        </div>
-        <div class="app-introduction">
-            <h1>
-                Email reporting for JIRA
-            </h1>
-            <h4>
-                Dailyreport is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
-            </h4>
-        </div>
-        <div>
-            <p class="call-to-action">
-                <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
-            </p>
-            <p class="reports-count">
-                {{data.reportsGenerated}} reports generated
-            </p>
-        </div>
-    </div>
-    <button type="button" class="btn btn-link navigate-to" ng-click="pageScroll()">
-        <div class="text">Learn more</div>
-        <span class="glyphicon glyphicon-chevron-down"></span>
-    </button>
-</div>
-
-<div class="full-page">
-    <div class="container">
-        <h1>
-            The report your clients have been waiting for
-        </h1>
-        <p class="help-block">
-            Communicate project status to your clients or boss without wasting valuable time.
-        </p>
-        <p class="help-block">
-            It also keeps you and your team focused and informed.
-        </p>
-        <div class="row">
+﻿<div class="welcome-page">
+    <div class="full-page">
+        <div class="jumbo">
             <div class="container">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" data-target="#sprintStatus">Sprint Status</a></li>
-                    <li><a data-toggle="tab" data-target="#teamStatus">Team Status</a></li>
-                    <li><a data-toggle="tab" data-target="#timesheet">Full Timesheet</a></li>
-                    <li><a data-toggle="tab" data-target="#completedSection">Recently Completed</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade in active" id="sprintStatus">
-                        <h3>Sprint Status</h3>
-                    </div>
-                    <div class="tab-pane fade" id="teamStatus">
-                        <h3>Team Status</h3>
-                    </div>
-                    <div class="tab-pane fade" id="timesheet">
-                        <h3>Full Timesheet</h3>
-                    </div>
-                    <div class="tab-pane fade" id="completedSection">
-                        <h3>Recently Completed</h3>
-                    </div>
+                <div class="pull-right">
+                    <a class="btn" ng-click="pageScroll()">ABOUT</a>
+                    <a class="btn" href="app/signin">LOGIN</a>
                 </div>
             </div>
         </div>
+        <div class="welcome hcenter vcenter container">
+            <div class="logo">
+                <img id="main" src="../Content/Images/logo-main.PNG" />
+            </div>
+            <div class="app-introduction">
+                <h1>
+                    Email reporting for JIRA
+                </h1>
+                <p class="help-block">
+                    Dailyreport is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
+                </p>
+            </div>
+            <div>
+                <p class="call-to-action">
+                    <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
+                </p>
+                <p class="reports-count">
+                    {{data.reportsGenerated}}&nbsp;
+                </p>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="full-page">
-    <div class="jumbo">
+    <div>
         <div class="container">
             <h1>
-                "Project management to keep everyone and everything on track"
+                The report your clients have been waiting for
             </h1>
-            <p class="help-block pull-right">
-                Catalin Criveteanu, Managing Partner at Equilobe
+            <p class="help-block">
+                Communicate project status to your clients or boss without wasting valuable time.
+                It also keeps you and your team focused and informed.
             </p>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2">
-                <img class="pull-left" src="../Content/Images/individuals.png" />
-            </div>
-            <div class="col-md-7">
-                <h2>
-                    Works in JIRA.
-                </h2>
-                <p class="help-block">
-                    Available as a JIRA plugin, you can install it from Atlassian Marketplace.<br />
-                    Just one click to install and make the tool available for admins.
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <img class="pull-left" src="../Content/Images/individuals.png" />
-            </div>
-            <div class="col-md-7">
-                <h2>
-                    Works over email.
-                </h2>
-                <p class="help-block">
-                    Each team member receives the report in their inbox every day.<br />
-                    It looks great on most email clients. Mobile too.<br />
-                    Our unique 3 step process is 100% email driven.<br />
-                    No sign in required for you, your team, your boss or your clients.
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <img class="pull-left" src="../Content/Images/individuals.png" />
-            </div>
-            <div class="col-md-7">
-                <h2>
-                    Not a JIRA admin? No problem.
-                </h2>
-                <p class="help-block">
-                    You don't need to be the admin of your JIRA site to make it work.<br />
-                    If you have read access to a project than you can start getting the daily report for that project.<br />
-                    You can activate no matter if you are a project manager, developer or client.
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <img class="pull-left" src="../Content/Images/individuals.png" />
-            </div>
-            <div class="col-md-7">
-                <h2>
-                    Set it up in 30 seconds. Literally.
-                </h2>
-                <p class="help-block">
-                    It's as easy as setting the report time for your project.<br />
-                    That's actually the only thing you need to set to make it work.<br />
-                    We have clever defaults for everything else.<br />
-                    Also, once you've set it up, you can just forget about it.<br />
-                    The report will just show up in your inbox every day.
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <img class="pull-left" src="../Content/Images/individuals.png" />
-            </div>
-            <div class="col-md-7">
-                <h2>
-                    Customize everything to make it your own.
-                </h2>
-                <p class="help-block">
-                    We understand that one size doesn't always fit everyone, so we're giving you the chance to tweak every little aspect of your report.<br />
-                    We want you to get the report you want, not the report we think you need.
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <img class="pull-left" src="../Content/Images/individuals.png" />
-            </div>
-            <div class="col-md-7">
-                <h2>
-                    Support. Support. Support.
-                </h2>
-                <p class="help-block">
-                    We are glad to help with any problem you might have.<br />
-                    Just send us an email and we'll reply within 24 hours. No exceptions.
-                </p>
+            <div class="row">
+                <div class="container">
+                    <ul class="nav nav-pills nav-stacked col-md-3">
+                        <li class="active"><a data-toggle="tab" data-target="#sprintStatus">Sprint Status</a></li>
+                        <li><a data-toggle="tab" data-target="#teamStatus">Team Status</a></li>
+                        <li><a data-toggle="tab" data-target="#timesheet">Full Timesheet</a></li>
+                        <li><a data-toggle="tab" data-target="#completedSection">Recently Completed</a></li>
+                    </ul>
+                    <div class="tab-content col-md-9">
+                        <div class="tab-pane fade in active" id="sprintStatus">
+                            <h3>Sprint Status</h3>
+                        </div>
+                        <div class="tab-pane fade" id="teamStatus">
+                            <h3>Team Status</h3>
+                        </div>
+                        <div class="tab-pane fade" id="timesheet">
+                            <h3>Full Timesheet</h3>
+                        </div>
+                        <div class="tab-pane fade" id="completedSection">
+                            <h3>Recently Completed</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="full-page">
-    <div class="jumbo">
+    <div>
+        <div class="jumbo">
+            <div class="container">
+                <h1>
+                    "Project management to keep everyone and everything on track"
+                </h1>
+                <p class="pull-right">
+                    Catalin Criveteanu, Managing Partner at Equilobe
+                </p>
+            </div>
+        </div>
+        <div class="container reasons-to-join" style="max-width: 900px">
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="../Content/Images/email.svg" />
+                </div>
+                <div class="col-sm-10">
+                    <h1>
+                        Email based
+                    </h1>
+                    <p class="help-block">
+                        Each team member receives the report in their inbox every day.
+                        It looks great on most email clients. Mobile too.
+                        Our unique 3 step process is 100% email driven.
+                        No sign in required for you, your team, your boss or your clients.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="../Content/Images/idcard.svg" />
+                </div>
+                <div class="col-sm-10">
+                    <h1>
+                        Do it yourself
+                    </h1>
+                    <p class="help-block">
+                        You don't need to be the admin of your JIRA site to make it work.
+                        If you have read access to a project than you can start getting the daily report for that project.
+                        You can activate no matter if you are a project manager, developer or client.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="../Content/Images/rocket.svg" />
+                </div>
+                <div class="col-sm-10">
+                    <h1>
+                        30 second set up
+                    </h1>
+                    <p class="help-block">
+                        It's as easy as setting the report time for your project.
+                        That's actually the only thing you need to set to make it work.
+                        We have clever defaults for everything else.
+                        Also, once you've set it up, you can just forget about it.
+                        The report will just show up in your inbox every day.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="../Content/Images/create.svg" />
+                </div>
+                <div class="col-sm-10">
+                    <h1>
+                        Your own
+                    </h1>
+                    <p class="help-block">
+                        We understand that one size doesn't always fit everyone, so we're giving you the chance to tweak every little aspect of your report.
+                        We want you to get the report you want, not the report we think you need.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <img src="../Content/Images/assistant.svg" />
+                </div>
+                <div class="col-sm-10">
+                    <h1>
+                        Great support
+                    </h1>
+                    <p class="help-block">
+                        We are glad to help with any problem you might have.
+                        Just send us an email and we'll reply within 24 hours. No exceptions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="jumbo">
+            <div class="container">
+                <h1>
+                    "The best report ever. Must have for anyone working with JIRA."
+                </h1>
+                <p class="pull-right">
+                    Dan Badea, Managing Partner at Equilobe
+                </p>
+            </div>
+        </div>
         <div class="container">
             <h1>
-                "The best report ever. Must have for anyone working with JIRA."
+                Get the most accurate report with our 3 step process
             </h1>
-            <p class="help-block pull-right">
-                Dan Badea, Managing Partner at Equilobe
+            <p class="help-block">
+                People sometimes forget to log all their work and that's perfectly normal.
+                We have designed the ideal workflow that lets your team add missing work logs and guarantees you'll never get an incomplete report.
             </p>
-        </div>
-    </div>
-    <div class="container">
-        <h2>
-            Get the most accurate report with our 3 step process
-        </h2>
-        <p class="help-block">
-            People sometimes forget to log all their work and that's perfectly normal.
-        </p>
-        <p class="help-block">
-            We have designed the ideal workflow that lets your team add missing work logs and guarantees you'll never get an incomplete report.
-        </p>
-        <div class="row steps-row">
-            <div class="col-sm-4">
-                <div class="alert alert-warning step">
-                    <div class="step-number">1</div>
-                    <h3>
-                        Individual draft report
-                    </h3>
-                    <p class="help-block">
-                        sent to and confirmed by
-                        <br />
-                        <strong>each team member</strong>
-                    </p>
-                    <div class="step-icon">
-                        <div class="daily-report daily-report-big"></div>
+            <div class="row steps-row">
+                <div class="col-sm-4">
+                    <div class="alert alert-warning step">
+                        <div class="step-number">1</div>
+                        <h3>
+                            Individual draft report
+                        </h3>
+                        <p class="help-block">
+                            sent to and confirmed by
+                            <br />
+                            <strong>each team member</strong>
+                        </p>
+                        <div class="step-icon">
+                            <div class="daily-report daily-report-big"></div>
+                        </div>
+                        <p class="help-block step-facts">
+                            <i>Use it to:</i><br />
+                            add work logs<br />
+                            correct report errors<br />
+                            update estimates<br />
+                        </p>
                     </div>
-                    <p class="help-block step-facts">
-                        add work logs<br />
-                        correct report errors<br />
-                        update estimates<br />
-                    </p>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="alert alert-info step">
-                    <div class="step-number">2</div>
-                    <h3>
-                        Full draft report
-                    </h3>
-                    <p class="help-block">
-                        sent to and confirmed by
-                        <br />
-                        <strong>the project manager</strong>
-                    </p>
-                    <div class="step-icon">
-                        <div class="daily-report daily-report-big"></div>
+                <div class="col-sm-4">
+                    <div class="alert alert-info step">
+                        <div class="step-number">2</div>
+                        <h3>
+                            Full draft report
+                        </h3>
+                        <p class="help-block">
+                            sent to and confirmed by
+                            <br />
+                            <strong>the project manager</strong>
+                        </p>
+                        <div class="step-icon">
+                            <div class="daily-report daily-report-big"></div>
+                        </div>
+                        <p class="help-block step-facts">
+                            <i>Use it to:</i><br />
+                            update sprint scope<br />
+                            correct high-level report errors<br />
+                            <br />
+                        </p>
                     </div>
-                    <p class="help-block step-facts">
-                        update sprint scope<br />
-                        correct high-level report errors<br />
-                    </p>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="alert alert-success step">
-                    <div class="step-number">3</div>
-                    <h3>
-                        Final report
-                    </h3>
-                    <p class="help-block">
-                        sent to the entire team
-                        <br />
-                        <strong>and other stakeholders</strong>
-                    </p>
-                    <div class="step-icon">
-                        <div class="daily-report daily-report-big"></div>
+                <div class="col-sm-4">
+                    <div class="alert alert-success step">
+                        <div class="step-number">3</div>
+                        <h3>
+                            Final report
+                        </h3>
+                        <p class="help-block">
+                            sent to the entire team
+                            <br />
+                            <strong>and other stakeholders</strong>
+                        </p>
+                        <div class="step-icon">
+                            <div class="daily-report daily-report-big"></div>
+                        </div>
+                        <p class="help-block step-facts">
+                            <i>Use it to:</i><br />
+                            inform clients<br />
+                            keep team on track<br />
+                            <br />
+                        </p>
                     </div>
-                    <p class="help-block step-facts">
-                        add work logs<br />
-                        correct report errors<br />
-                        update estimates<br />
-                    </p>
                 </div>
             </div>
         </div>

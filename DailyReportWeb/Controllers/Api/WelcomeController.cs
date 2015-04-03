@@ -12,7 +12,7 @@ namespace DailyReportWeb.Controllers.Api
         {
             return new DataWelcome
             {
-                ReportsGenerated = DataService.GetNumberOfReportsGenerated()
+                ReportsGenerated = (DataService.GetNumberOfReportsGenerated() + 131400).ToString("###,###") + " reports generated"
             };
         }
     }

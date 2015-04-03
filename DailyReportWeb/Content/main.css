@@ -1,26 +1,10 @@
-﻿.jumbo {
+﻿* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
     background-color: #29a9e1;
-    color: #fff;
 }
-
-    .jumbo p {
-        color: #fff;
-    }
-
-.full-page {
-    position: relative;
-    height: 100vh;
-    min-height: 600px;
-}
-
-    .full-page:nth-child(2) {
-        background-color: #29a9e1;
-    }
-
-        .full-page:nth-child(2) h1,
-        .full-page:nth-child(2) p {
-            color: #fff;
-        }
 
 .hcenter {
     text-align: center;
@@ -32,26 +16,65 @@
     transform: translateY(-50%);
 }
 
+.jumbo {
+    background-color: #29a9e1;
+}
+
+    .jumbo * {
+        color: #fff;
+    }
+
+.full-page {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+}
+
+.welcome-page .full-page .jumbo {
+    margin: 0;
+}
+
+.welcome-page .jumbo {
+    margin: 50px 0 20px;
+}
+
+.welcome-page h1,
+.welcome-page h3 {
+    font-weight: bold;
+}
+
+.welcome-page .help-block {
+    display: inline-block;
+    max-width: 680px;
+    line-height: 1.6em;
+    font-weight: normal;
+    font-size: 1.4em;
+    color: black;
+    font-weight: 300;
+}
+
+.welcome-page .step-number {
+    background-color: white;
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18pt;
+    display: inline-block;
+    margin-top: 20px;
+}
+
 .welcome > * {
     margin: 10vh 0;
 }
 
-.navigate-to {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    border: none;
-    background-color: white;
+.call-to-action a {
+    font-weight: bold;
+    font-size: 1.6em;
+    padding: 15px 25px;
 }
-
-    .navigate-to:focus,
-    .navigate-to:active:focus {
-        border: none;
-        outline: none;
-    }
 
 .menu {
     padding-top: 13px;
@@ -83,7 +106,6 @@ div.disabled {
         margin-right: 0;
     }
 
-
 .steps-row {
     margin-top: 50px;
 }
@@ -91,18 +113,20 @@ div.disabled {
 .step-number {
     background-color: white;
     border-radius: 25px;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
     font-weight: bold;
-    font-size: 18pt;
     display: inline-block;
-    margin-top: 20px;
 }
 
 .step {
     text-align: center;
+}
+
+.step h4 {
+    margin-bottom: 0;
 }
 
 .step-icon {
@@ -119,11 +143,11 @@ div.disabled {
 }
 
 .daily-report-small {
-    background-size: 100%!important;
-    width: 60px;
-    height: 60px;
+    background-size: 100% !important;
+    width: 40px;
+    height: 40px;
     vertical-align: middle;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .daily-report-big {
@@ -133,19 +157,17 @@ div.disabled {
 
 .alert-warning .daily-report {
     border-color: #c09853;
-    background: url("Images/individuals.png") no-repeat center;
-
+    background: url("Images/individuals.svg") no-repeat center;
 }
 
 .alert-info .daily-report {
     border-color: #3a87ad;
-    background: url("Images/manager.png") no-repeat center;
-
+    background: url("Images/manager.svg") no-repeat center;
 }
 
 .alert-success .daily-report {
     border-color: #468847;
-    background: url("Images/stakeholders.png") no-repeat center;
+    background: url("Images/stakeholders.svg") no-repeat center;
 }
 
 .step-facts {
@@ -236,30 +258,4 @@ div.disabled {
         font-size: 90%;
         background-color: transparent;
     }
-}
-
-.call-to-action a{
-  font-weight:bold;
-  font-size: 1.6em;
-  padding: 15px 25px;
-}
-
-.app-introduction{
-  text-align: center;
-}
-
-.app-introduction h1{
-  font-weight: bold;
-}
-
-.app-introduction h4{
-  display: inline-block;
-  max-width: 680px;
-  line-height: 1.6em;
-  font-weight: normal;
-  font-size:1.4em;
-}
-
-*{
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
