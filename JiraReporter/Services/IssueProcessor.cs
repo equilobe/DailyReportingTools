@@ -214,7 +214,7 @@ namespace JiraReporter
         private void SetDisplayStatus()
         {
             if (_policy.AdvancedOptions.AdditionalWorkflowStatuses != null)
-                if (_policy.AdvancedOptions.AdditionalWorkflowStatuses.Exists(s => s == _currentIssue.Status))
+                if (_policy.AdvancedOptions.AdditionalWorkflowStatuses.Exists(s => s.ToLower() == _currentIssue.Status.ToLower()))
                     _currentIssue.DisplayStatus = true;
         }
 

@@ -457,6 +457,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>
+                            Workflow statuses:
+                        </label>
+                        <div ng-form="additionalWorkflowStatusForm" ng-repeat="additionalWorkflowStatus in policy.advancedOptions.additionalWorkflowStatuses track by $index">
+                            <input type="text" class="form-control" placeholder="e.g. To Do" ng-model="policy.advancedOptions.additionalWorkflowStatuses[$index]" workflow-status />
+                        </div>      
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container-alternate">

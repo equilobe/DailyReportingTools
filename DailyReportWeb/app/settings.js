@@ -22,6 +22,9 @@ angular.module('app')
                 if (!policy.sourceControlOptions)
                     policy.sourceControlOptions = { type: "None" };
 
+                if (!policy.advancedOptions.additionalWorkflowStatuses)
+                    policy.advancedOptions.additionalWorkflowStatuses = [''];
+
                 $scope.policy = policy;
             })
             .finally(function () {
@@ -70,6 +73,8 @@ angular.module('app')
                     break;
                 }
         };
+
+
     }])
     .directive("weekendDays", function () {
         return function ($scope, $elem) {
@@ -89,6 +94,23 @@ angular.module('app')
 
                 $scope.$apply($scope.policy.advancedOptions.weekendDaysList);
                 $scope.$apply($scope.form.$setDirty());
+            });
+        }
+    })
+    .directive("workflowStatus", function () {
+        return function ($scope, $elem) {
+            $elem.bind('blur', function () {
+                if (!$scope.$last && $elem[0].value == "") {
+                    $scope.policy.advancedOptions.additionalWorkflowStatuses.splice($scope.$index, 1);
+                }
+
+                if (($scope.$last && $elem[0].value != "") ||
+                    !$scope.policy.advancedOptions.additionalWorkflowStatuses.length) {
+                    $scope.policy.advancedOptions.additionalWorkflowStatuses.push('');
+
+                }
+
+                $scope.$apply($scope.policy.advancedOptions.additionalWorkflowStatuses);
             });
         }
     });
