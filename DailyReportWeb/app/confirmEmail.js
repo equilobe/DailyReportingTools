@@ -2,9 +2,12 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/confirmEmail', { templateUrl: 'app/confirmEmail.html', controller: 'ConfirmEmailCtrl' });
+        $routeProvider.when('/app/confirmEmail', {
+            templateUrl: 'app/confirmEmail.html',
+            controller: 'ConfirmEmailController'
+        });
     }])
-    .controller("ConfirmEmailCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+    .controller("ConfirmEmailController", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 

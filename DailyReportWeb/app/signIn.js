@@ -4,10 +4,10 @@ angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/signin', {
             templateUrl: 'app/signIn.html',
-            controller: 'SignInCtrl'
+            controller: 'SignInController'
         });
     }])
-    .controller("SignInCtrl", ['$scope', '$http', '$location', function ($scope, $http, $location) {
+    .controller("SignInController", ['$scope', '$http', '$location', function ($scope, $http, $location) {
         $scope.$parent.child = $scope;
 
         $scope.signIn = function ($scope) {

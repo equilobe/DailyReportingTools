@@ -189,6 +189,7 @@
     <Compile Include="Controllers\Api\ProjectsController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
     <Compile Include="Controllers\Api\TimezoneController.cs" />
+    <Compile Include="Controllers\Api\WelcomeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PluginController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -202,8 +203,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\app.html" />
-    <Content Include="app\app.test.js" />
     <Content Include="app\instances.html" />
     <Content Include="app\instances.js">
       <DependentUpon>instances.html</DependentUpon>
@@ -232,6 +231,13 @@
     </Content>
     <Content Include="app\projects.test.js">
       <DependentUpon>projects.html</DependentUpon>
+    </Content>
+    <Content Include="app\welcome.html" />
+    <Content Include="app\welcome.js">
+      <DependentUpon>welcome.html</DependentUpon>
+    </Content>
+    <Content Include="app\welcome.test.js">
+      <DependentUpon>welcome.html</DependentUpon>
     </Content>
     <Content Include="App_Data\TimeZoneMappings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -134,6 +134,7 @@
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
+    <Compile Include="Web\DataWelcome.cs" />
     <Compile Include="Web\ReportSettings.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />

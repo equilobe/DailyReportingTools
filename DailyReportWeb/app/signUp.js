@@ -4,10 +4,10 @@ angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/signup', {
             templateUrl: 'app/signUp.html',
-            controller: 'SignUpCtrl'
+            controller: 'SignUpController'
         });
     }])
-    .controller("SignUpCtrl", ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+    .controller("SignUpController", ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
         $scope.$parent.child = $scope;
 
         $scope.setTimeZone = $interval(function () {

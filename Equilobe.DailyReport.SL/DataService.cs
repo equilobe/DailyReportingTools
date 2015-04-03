@@ -131,6 +131,11 @@ namespace Equilobe.DailyReport.SL
             return instances;
         }
 
+        public long GetNumberOfReportsGenerated()
+        {
+            return new ReportsDb().ReportExecutionInstances.ToList().Last().Id;
+        }
+
         public string GetBaseUrl(long id)
         {
             return new ReportsDb().InstalledInstances

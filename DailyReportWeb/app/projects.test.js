@@ -1,15 +1,12 @@
 ﻿'use strict';
 
 describe('app module', function () {
-
     beforeEach(module('app'));
 
-    describe('ProjectCtrl controller', function () {
-
+    describe('ProjectsController controller', function () {
         it('should ....', inject(function ($controller) {
-            var controller = $controller('ProjectCtrl');
+            var controller = $controller('ProjectsController');
             expect(controller).toBeDefined();
         }));
-
     });
 });

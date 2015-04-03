@@ -3,9 +3,9 @@
 describe('app module', function () {
     beforeEach(module('app'));
 
-    describe('ConfirmEmailController controller', function () {
+    describe('WelcomeController controller', function () {
         it('should ....', inject(function ($controller) {
-            var controller = $controller('ConfirmEmailController');
+            var controller = $controller('WelcomeController');
             expect(controller).toBeDefined();
         }));
     });

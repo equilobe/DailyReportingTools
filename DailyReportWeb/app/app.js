@@ -14,10 +14,6 @@
         }]);
 
         $routeProvider
-            .when('/app/welcome', {
-                templateUrl: 'app/app.html',
-                controller: 'AppCtrl'
-            })
             .when('/', {
                 redirectTo: '/app/welcome'
             })
@@ -25,7 +21,7 @@
                 redirectTo: '/'
             });
     }])
-    .controller("AppCtrl", ['$scope', '$http', '$location', 'breadcrumbs', function ($scope, $http, $location, breadcrumbs) {
+    .controller("AppController", ['$scope', '$http', '$location', 'breadcrumbs', function ($scope, $http, $location, breadcrumbs) {
         $scope.isAuth = isAuth;
         $scope.isPlugin = isPlugin;
         $scope.breadcrumbs = breadcrumbs;
@@ -38,17 +34,17 @@
             $scope.regex = regex;
         })();
 
-        (function mouseWheel() {
-            window.onmousewheel = handleMouseWheel;
-            mouseDirections = [];
+        //(function mouseWheel() {
+        //    window.onmousewheel = handleMouseWheel;
+        //    mouseDirections = [];
 
-            setInterval(function () {
-                if (mouseDirections.length) {
-                    $scope.pageScroll(mouseDirections[mouseDirections.length - 1]);
-                    mouseDirections = [];
-                }
-            }, 1000);
-        })();
+        //    setInterval(function () {
+        //        if (mouseDirections.length) {
+        //            $scope.pageScroll(mouseDirections[mouseDirections.length - 1]);
+        //            mouseDirections = [];
+        //        }
+        //    }, 1000);
+        //})();
 
         function handleMouseWheel(event) {
             if (event.wheelDeltaY < 0)

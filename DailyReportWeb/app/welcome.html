@@ -17,11 +17,11 @@
                 <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
             </p>
             <p class="reports-count">
-                131,473 reports generated
+                {{data.reportsGenerated}} reports generated
             </p>
         </div>
     </div>
-    <button type="button" class="btn btn-link navigate-to" ng-click="scroll()">
+    <button type="button" class="btn btn-link navigate-to" ng-click="pageScroll()">
         <div class="text">Learn more</div>
         <span class="glyphicon glyphicon-chevron-down"></span>
     </button>

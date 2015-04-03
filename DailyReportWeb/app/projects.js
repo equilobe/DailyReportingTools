@@ -5,10 +5,10 @@ angular.module('app')
         $routeProvider.when('/app/instances/:instanceId/projects', {
             label: 'Projects',
             templateUrl: 'app/projects.html',
-            controller: 'ProjectsCtrl'
+            controller: 'ProjectsController'
         });
     }])
-    .controller("ProjectsCtrl", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+    .controller("ProjectsController", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 
