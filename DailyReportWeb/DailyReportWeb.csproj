@@ -329,6 +329,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_MainMenu.cshtml" />
+    <Content Include="Tools\AngularJS MVC.zip" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
