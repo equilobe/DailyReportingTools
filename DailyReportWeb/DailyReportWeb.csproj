@@ -264,13 +264,17 @@
     <Content Include="Content\Images\assistant.svg" />
     <Content Include="Content\Images\create.svg" />
     <Content Include="Content\Images\email.svg" />
+    <Content Include="Content\Images\full-timesheet.png" />
     <Content Include="Content\Images\idcard.svg" />
     <Content Include="Content\Images\individuals.svg" />
     <Content Include="Content\Images\logo-main.PNG" />
     <Content Include="Content\Images\logo-menu.PNG" />
     <Content Include="Content\Images\manager.svg" />
+    <Content Include="Content\Images\recently-completed.png" />
     <Content Include="Content\Images\rocket.svg" />
+    <Content Include="Content\Images\sprint-status.png" />
     <Content Include="Content\Images\stakeholders.svg" />
+    <Content Include="Content\Images\team-status.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

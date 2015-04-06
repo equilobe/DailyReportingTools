@@ -1,5 +1,5 @@
 ﻿<div class="welcome-page">
-    <div class="full-page">
+    <div class="full-page vcenter-parent">
         <div class="public-menu">
             <div class="container">
                 <div class="pull-right">
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="welcome hcenter vcenter container">
-            <div class ="logo">
+            <div class="logo">
                 <img src="../Content/Images/logo-main.PNG" />
             </div>
             <h1>
@@ -37,28 +37,64 @@
                 Communicate project status to your clients or boss without wasting valuable time.
                 It also keeps you and your team focused and informed.
             </p>
-            <div class="row">
-                <div class="container">
-                    <ul class="nav nav-pills nav-stacked col-md-3">
-                        <li class="active"><a data-toggle="tab" data-target="#sprintStatus">Sprint Status</a></li>
-                        <li><a data-toggle="tab" data-target="#teamStatus">Team Status</a></li>
-                        <li><a data-toggle="tab" data-target="#timesheet">Full Timesheet</a></li>
-                        <li><a data-toggle="tab" data-target="#completedSection">Recently Completed</a></li>
-                    </ul>
-                    <div class="tab-content col-md-9">
-                        <div class="tab-pane fade in active" id="sprintStatus">
-                            <h3>Sprint Status</h3>
-                        </div>
-                        <div class="tab-pane fade" id="teamStatus">
-                            <h3>Team Status</h3>
-                        </div>
-                        <div class="tab-pane fade" id="timesheet">
-                            <h3>Full Timesheet</h3>
-                        </div>
-                        <div class="tab-pane fade" id="completedSection">
-                            <h3>Recently Completed</h3>
-                        </div>
-                    </div>
+            <div class="row vcenter-content">
+                <div class="col-md-7">
+                    <h2>
+                        Sprint status
+                    </h2>
+                    <p class="help-block">
+                        This is a must read section. Just by looking at this section you can immediately see if your sprint is on track or if you need to adjust scope.
+                        The values in the chart are all daily averages, which allows you to easily compare them.
+                        The sprint chart is accompanied by a month chart, because most of the time budgets are monthly even though you work in sprints, or for the rare cases when you don’t use sprints.
+                    </p>
+                </div>
+                <div class="col-md-5 hcenter">
+                    <img src="../Content/Images/sprint-status.png" />
+                </div>
+            </div>
+            <div class="row vcenter-content">
+                <div class="col-md-7 col-md-push-5">
+                    <h2>
+                        Team summary
+                    </h2>
+                    <p class="help-block">
+                        In this section you can see the work breakdown for each team member. Daily averages are also used for easy comparison.
+                        You can immediately spot if someone forgot to log some work or if he has too many tasks on his plate.
+                        Only relevant people to the current sprint are shown in the list.
+                    </p>
+                </div>
+                <div class="col-md-5 col-md-pull-7 hcenter">
+                    <img src="../Content/Images/team-status.png" />
+                </div>
+            </div>
+            <div class="row vcenter-content">
+                <div class="col-md-7">
+                    <h2>
+                        Scrum notes
+                    </h2>
+                    <p class="help-block">
+                        The tasks and sub-tasks that a person worked on the day before, as indicated by his work logs, are part of this section that looks a lot like a set of scrum notes.
+                        It tells you what the person worked on, but also what he plans to work on next.
+                        The version control system is also used to get the full list of commits and pull requests.
+                    </p>
+                </div>
+                <div class="col-md-5 hcenter">
+                    <img src="../Content/Images/full-timesheet.png" />
+                </div>
+            </div>
+            <div class="row vcenter-content">
+                <div class="col-md-7 col-md-push-5">
+                    <h2>
+                        Recently completed
+                    </h2>
+                    <p class="help-block">
+                        If you want to refresh your memory about the tasks that have been completed in the last 7 days you can use this section of the report.
+                        The tasks are grouped per day and contain other useful information like who was responsible for it and how long did it take to complete.
+                        No sub-tasks are shown here.
+                    </p>
+                </div>
+                <div class="col-md-5 col-md-pull-7 hcenter">
+                    <img src="../Content/Images/recently-completed.png" />
                 </div>
             </div>
         </div>
@@ -244,4 +280,32 @@
             </div>
         </div>
     </div>
+
+    <div>
+        <div class="container">
+            <div class="hcenter">
+                <p class="call-to-action">
+                    <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="col-md-4">
+                <img src="../Content/Images/logo-menu.PNG" />
+            </div>
+            <div class="col-md-8">
+                <p>All rights reserved ©2015 Equilobe Software.</p>
+                <p><a href="http://www.equilobe.com/contact/">Contact us</a>, or join us on <a href="https://twitter.com/">Twitter</a>, <a href="https://www.facebook.com/">Facebook</a>, and <a href="https://plus.google.com/">Google+</a>.</p>
+                <p>
+                    <a href="/terms">Terms of service</a>,
+                    <a href="/privacy">Privacy policy</a>,
+                    <a href="/refund">Refund policy</a>,
+                    <a href="/security">Security information</a>
+                </p>
+            </div>
+        </div>
+    </footer>
 </div>

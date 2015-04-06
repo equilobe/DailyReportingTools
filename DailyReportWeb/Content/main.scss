@@ -2,85 +2,111 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
-    background-color: #29a9e1;
-}
-
-.hcenter {
-    text-align: center;
-}
-
-.vcenter {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.jumbo {
-    background-color: #29a9e1;
-}
-
-    .jumbo * {
-        color: #fff;
-    }
-
 .full-page {
     position: relative;
     height: 100vh;
     min-height: 620px;
 }
 
-.welcome-page h1,
-.welcome-page h3 {
-    font-weight: bold;
-}
-
-.welcome-page .help-block,
-.welcome-page h4 {
-    display: inline-block;
-    max-width: 680px;
-    line-height: 1.6em;
-    font-weight: normal;
-    font-size: 1.4em;
-    color: black;
-    font-weight: 300;
-}
-
-.welcome-page .step-number {
-    background-color: white;
-    border-radius: 25px;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
+.hcenter {
     text-align: center;
-    font-weight: bold;
-    font-size: 18pt;
-    display: inline-block;
-    margin-top: 20px;
 }
 
-.welcome-page .logo{
-  margin-bottom: 60px;
+.vcenter-parent {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+    > .vcenter {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 }
 
-.welcome-page .jumbo{
-  margin-top: 50px;
-  margin-bottom: 50px;
-  padding-top: 20px;
-  padding-bottom:20px;
+.jumbo {
+    background-color: #29a9e1;
+
+    h1,
+    p,
+    label {
+        color: #fff;
+    }
 }
 
-.call-to-action{
-  margin-top: 60px;
+.welcome-page {
+
+    h1,
+    h3 {
+        font-weight: bold;
+    }
+
+    h4,
+    .help-block {
+        display: inline-block;
+        max-width: 680px;
+        line-height: 1.6em;
+        font-weight: normal;
+        font-size: 1.4em;
+        color: black;
+        font-weight: 300;
+    }
+
+    .logo {
+        margin-bottom: 60px;
+    }
+
+    .jumbo {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .welcome {
+        padding-top: 65px;
+        padding-bottom: 10px;
+    }
+
+    .public-menu {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        position: absolute;
+        left: 0;
+        right: 0;
+    }
+
+    .call-to-action {
+        margin-top: 60px;
+    }
+
+    .call-to-action a {
+        font-weight: bold;
+        font-size: 1.6em;
+        padding: 15px 25px;
+    }
+
+    .step-number {
+        background-color: white;
+        border-radius: 25px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18pt;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    footer {
+        margin-top: 50px;
+        padding-top: 10px;
+        border-top: 1px solid #DDD;
+    }
 }
 
-.call-to-action a {
-    font-weight: bold;
-    font-size: 1.6em;
-    padding: 15px 25px;
-}
-
-.menu {
+.user-menu {
     padding-top: 13px;
 }
 
@@ -106,9 +132,9 @@ div.disabled {
     margin-right: 10px;
 }
 
-    .checkbox-inline + .checkbox-inline:last-child {
-        margin-right: 0;
-    }
+.checkbox-inline + .checkbox-inline:last-child {
+    margin-right: 0;
+}
 
 .steps-row {
     margin-top: 50px;
@@ -127,10 +153,10 @@ div.disabled {
 
 .step {
     text-align: center;
-}
 
-.step h4 {
-    margin-bottom: 0;
+    h4 {
+        margin-bottom: 0;
+    }
 }
 
 .step-icon {
@@ -182,29 +208,22 @@ div.disabled {
     margin-top: 20px;
 }
 
-[ng-form] {
-    position: relative;
-}
-
-.form-notification {
-    position: absolute;
-    top: 9px;
-    right: 12px;
-    font-size: 14px;
-    color: rgba(185, 74, 72, 0.8);
-    background-color: rgb(255, 255, 255);
-    line-height: normal;
-}
-
 .project {
     padding-top: 8px;
     padding-bottom: 8px;
     border-top: 1px solid #ddd;
-}
 
-    .project > div:first-of-type {
+    > div:first-of-type {
         padding-top: 7px;
     }
+}
+
+.form-notification {
+    position: static;
+    float: right;
+    font-size: 90%;
+    background-color: transparent;
+}
 
 .glyphicon {
     background-color: transparent;
@@ -217,13 +236,17 @@ div.disabled {
     -moz-animation: spinm 1.2s infinite linear;
 }
 
+[ng-form] {
+    position: relative;
+}
+
 [ng-click] {
     cursor: pointer;
 }
 
-    [ng-click]:hover {
-        text-decoration: none;
-    }
+[ng-click]:hover {
+    text-decoration: none;
+}
 
 @keyframes spin {
     from {
@@ -255,24 +278,36 @@ div.disabled {
     }
 }
 
-@media only screen and (max-width : 520px) {
+@media only screen and (min-width : 520px) {
+
     .form-notification {
-        position: static;
-        float: right;
-        font-size: 90%;
-        background-color: transparent;
+        position: absolute;
+        top: 9px;
+        right: 12px;
+        font-size: 14px;
+        color: rgba(185, 74, 72, 0.8);
+        background-color: rgb(255, 255, 255);
+        line-height: normal;
     }
 }
 
-.public-menu{
-  padding-top:15px;
-  padding-bottom: 15px;
-  position: absolute;
-  left:0;
-  right:0;
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
 }
 
-.welcome {
-  padding-top: 65px;
-  padding-bottom: 10px;
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+    .vcenter-content > * {
+        display: table-cell;
+        vertical-align: middle;
+        float: none;
+    }
+}
+
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }
