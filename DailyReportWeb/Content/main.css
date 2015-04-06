@@ -63,6 +63,13 @@
   margin-bottom: 60px;
 }
 
+.welcome-page .jumbo{
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-top: 20px;
+  padding-bottom:20px;
+}
+
 .call-to-action{
   margin-top: 60px;
 }
