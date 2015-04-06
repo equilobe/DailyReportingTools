@@ -1,0 +1,278 @@
+﻿* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
+    background-color: #29a9e1;
+}
+
+.hcenter {
+    text-align: center;
+}
+
+.vcenter {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.jumbo {
+    background-color: #29a9e1;
+}
+
+    .jumbo * {
+        color: #fff;
+    }
+
+.full-page {
+    position: relative;
+    height: 100vh;
+    min-height: 620px;
+}
+
+.welcome-page h1,
+.welcome-page h3 {
+    font-weight: bold;
+}
+
+.welcome-page .help-block,
+.welcome-page h4 {
+    display: inline-block;
+    max-width: 680px;
+    line-height: 1.6em;
+    font-weight: normal;
+    font-size: 1.4em;
+    color: black;
+    font-weight: 300;
+}
+
+.welcome-page .step-number {
+    background-color: white;
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18pt;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.welcome-page .logo{
+  margin-bottom: 60px;
+}
+
+.welcome-page .jumbo{
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-top: 20px;
+  padding-bottom:20px;
+}
+
+.call-to-action{
+  margin-top: 60px;
+}
+
+.call-to-action a {
+    font-weight: bold;
+    font-size: 1.6em;
+    padding: 15px 25px;
+}
+
+.menu {
+    padding-top: 13px;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    margin: 0;
+    padding-bottom: 0;
+    font-size: 16px;
+}
+
+nav .logo img {
+    max-height: 40px;
+    margin: 5px;
+}
+
+div.disabled {
+    background-color: #eee;
+}
+
+.checkbox-inline,
+.checkbox-inline + .checkbox-inline {
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+    .checkbox-inline + .checkbox-inline:last-child {
+        margin-right: 0;
+    }
+
+.steps-row {
+    margin-top: 50px;
+}
+
+.step-number {
+    background-color: white;
+    border-radius: 25px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.step {
+    text-align: center;
+}
+
+.step h4 {
+    margin-bottom: 0;
+}
+
+.step-icon {
+    padding-top: 40px;
+    padding-bottom: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+}
+
+.daily-report {
+    background-color: white;
+    display: inline-block;
+}
+
+.daily-report-small {
+    background-size: 100% !important;
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.daily-report-big {
+    width: 128px;
+    height: 128px;
+}
+
+.alert-warning .daily-report {
+    border-color: #c09853;
+    background: url("Images/individuals.svg") no-repeat center;
+}
+
+.alert-info .daily-report {
+    border-color: #3a87ad;
+    background: url("Images/manager.svg") no-repeat center;
+}
+
+.alert-success .daily-report {
+    border-color: #468847;
+    background: url("Images/stakeholders.svg") no-repeat center;
+}
+
+.step-facts {
+    padding-bottom: 20px;
+}
+
+.how-it-works {
+    margin-top: 20px;
+}
+
+[ng-form] {
+    position: relative;
+}
+
+.form-notification {
+    position: absolute;
+    top: 9px;
+    right: 12px;
+    font-size: 14px;
+    color: rgba(185, 74, 72, 0.8);
+    background-color: rgb(255, 255, 255);
+    line-height: normal;
+}
+
+.project {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-top: 1px solid #ddd;
+}
+
+    .project > div:first-of-type {
+        padding-top: 7px;
+    }
+
+.glyphicon {
+    background-color: transparent;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin 1.2s infinite linear;
+    -ms-animation: spin 1.2s infinite linear;
+    -webkit-animation: spinw 1.2s infinite linear;
+    -moz-animation: spinm 1.2s infinite linear;
+}
+
+[ng-click] {
+    cursor: pointer;
+}
+
+    [ng-click]:hover {
+        text-decoration: none;
+    }
+
+@keyframes spin {
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spinw {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spinm {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@media only screen and (max-width : 520px) {
+    .form-notification {
+        position: static;
+        float: right;
+        font-size: 90%;
+        background-color: transparent;
+    }
+}
+
+.public-menu{
+  padding-top:15px;
+  padding-bottom: 15px;
+  position: absolute;
+  left:0;
+  right:0;
+}
+
+.welcome {
+  padding-top: 65px;
+  padding-bottom: 10px;
+}

@@ -72,3 +72,5 @@ packages/
 
 #Config files
 **/[Cc]onfig/*.config
+/DailyReportWeb/Content/main.css
+/DailyReportWeb/Content/main.css.map
