@@ -1,33 +1,30 @@
 ﻿<div class="welcome-page">
     <div class="full-page">
-        <div class="jumbo">
+        <div class="public-menu">
             <div class="container">
                 <div class="pull-right">
-                    <a class="btn" ng-click="pageScroll()">ABOUT</a>
-                    <a class="btn" href="app/signin">LOGIN</a>
+                    <a class="btn" href="app/signup">Sign Up</a>
+                    <a class="btn" ng-click="pageScroll()">About</a>
+                    <a class="btn" href="app/signin">Log in</a>
                 </div>
             </div>
         </div>
         <div class="welcome hcenter vcenter container">
-            <div class="logo">
-                <img id="main" src="../Content/Images/logo-main.PNG" />
+            <div class ="logo">
+                <img src="../Content/Images/logo-main.PNG" />
             </div>
-            <div class="app-introduction">
-                <h1>
-                    Email reporting for JIRA
-                </h1>
-                <p class="help-block">
-                    Dailyreport is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
-                </p>
-            </div>
-            <div>
-                <p class="call-to-action">
-                    <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
-                </p>
-                <p class="reports-count">
-                    {{data.reportsGenerated}}&nbsp;
-                </p>
-            </div>
+            <h1>
+                Email reporting for JIRA
+            </h1>
+            <h4>
+                Dailyreport is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
+            </h4>
+            <p class="call-to-action">
+                <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
+            </p>
+            <p class="reports-count">
+                131,427 reports generated
+            </p>
         </div>
     </div>
 
@@ -78,7 +75,7 @@
                 </p>
             </div>
         </div>
-        <div class="container reasons-to-join" style="max-width: 900px">
+        <div class="container reasons-to-join">
             <div class="row">
                 <div class="col-sm-2">
                     <img src="../Content/Images/email.svg" />

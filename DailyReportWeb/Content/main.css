@@ -27,15 +27,7 @@
 .full-page {
     position: relative;
     height: 100vh;
-    min-height: 600px;
-}
-
-.welcome-page .full-page .jumbo {
-    margin: 0;
-}
-
-.welcome-page .jumbo {
-    margin: 50px 0 20px;
+    min-height: 620px;
 }
 
 .welcome-page h1,
@@ -43,7 +35,8 @@
     font-weight: bold;
 }
 
-.welcome-page .help-block {
+.welcome-page .help-block,
+.welcome-page h4 {
     display: inline-block;
     max-width: 680px;
     line-height: 1.6em;
@@ -66,8 +59,12 @@
     margin-top: 20px;
 }
 
-.welcome > * {
-    margin: 10vh 0;
+.welcome-page .logo{
+  margin-bottom: 60px;
+}
+
+.call-to-action{
+  margin-top: 60px;
 }
 
 .call-to-action a {
@@ -258,4 +255,17 @@ div.disabled {
         font-size: 90%;
         background-color: transparent;
     }
+}
+
+.public-menu{
+  padding-top:15px;
+  padding-bottom: 15px;
+  position: absolute;
+  left:0;
+  right:0;
+}
+
+.welcome {
+  padding-top: 65px;
+  padding-bottom: 10px;
 }

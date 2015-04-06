@@ -12,15 +12,4 @@ angular.module('app')
             $location.url('/app/instances');
             return;
         }
-
-        $scope.$parent.child = $scope;
-        $scope.status = "loading";
-
-        $http.get("/api/welcome")
-            .success(function (response) {
-                $scope.data = response;
-            })
-            .finally(function () {
-                $scope.status = "loaded";
-            });
     }]);
