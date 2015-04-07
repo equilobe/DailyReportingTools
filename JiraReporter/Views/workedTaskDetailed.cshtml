@@ -1,0 +1,142 @@
+﻿@{
+    var remainingEstimate = "";
+    var color = "black";
+    var colspan = "colspan = 2";
+    var test = false;
+}
+@if (Model.Subtasks.Count > 0)
+{
+    remainingEstimate = Model.TotalRemaining;
+}
+else
+{
+    remainingEstimate = Model.RemainingEstimate;
+}
+@if (Model.IsSubtask == true)
+{
+    colspan = "";
+    test = true;
+}
+else
+{
+    colspan = "colspan=2";
+    test = false;
+}
+
+<tr>
+    @if (test == true)
+    {
+        <td></td>
+    }
+
+    <td style="vertical-align:top; width:15px">
+        @if (Model.Resolution != null && Model.StatusCategory.name == "Done")
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
+        }
+        else if (Model.StatusCategory.name == "In Progress")
+        {
+            <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
+        }
+        else if (Model.Resolution == null)
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal">&#10065;</span>
+        }
+    </td>
+    <td @colspan>
+        @if (Model.StatusCategory.name == "Done")
+        {
+            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
+            {
+                <b style="color:black; padding:1.5px">@Model.Resolution</b>
+            }
+        }
+        @if (Model.DisplayStatus == true)
+        {
+            <b style="color:black; padding:1.5px;">@Model.Status</b>
+        }
+        <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
+        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
+        @if (Model.ExceededOriginalEstimate == true && Model.IsSubtask == false)
+        {
+            color = "orange";
+        }
+        else
+        {
+            color = "black";
+        }
+        <span style="color:@color;"> &#x25cf; @Model.TimeLoggedTotal spent</span>
+        @if (Model.Label != null || Model.IsSubtask == true)
+        {
+            color = "orange";
+        }
+        else
+        {
+            color = "red";
+        }
+        @if (Model.TotalRemainingSeconds == 0 && Model.Resolution == null)
+        {
+            <span style="color:@color; font-weight:bold"> &#x25cf; @remainingEstimate left</span>
+        }
+        @if (Model.TotalRemainingSeconds > 0)
+        {
+            if (Model.Resolution != null && Model.StatusCategory.name == "Done" && Model.Subtasks.Count > 0)
+            {
+
+                <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left from subtasks</span>
+            }
+            else
+            {
+                <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
+            }
+        }
+        @if (Model.Assignee == null)
+        {
+            <span style="color:black"> &#x25cf; Unassigned</span>
+        }
+        else
+        {
+            if (Model.Assignee != Model.LoggedAuthor)
+            {
+                <span style="color:black"> &#x25cf; @Model.Assignee</span>
+            }
+        }
+        @if (Model.PullRequests != null)
+        {
+            if (Model.PullRequests.Count > 0)
+            {
+                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+            }
+        }
+        <div style="margin-top:5px; margin-left:10px;">
+            @if (Model.TimeSpent > 0)
+            {
+                <b style="color:black">Work log: @Model.TimeLogged</b>
+            }
+            else
+            {
+                <b style="color:black">Work log: <b style="color:orange">no work logged</b></b>
+            }
+            @if (Model.Entries != null)
+            {
+                if (Model.Entries.Count > 0)
+                {
+                    @Partial("Views/entryComments.cshtml", Model.Entries)
+                }
+            }
+
+        </div>
+
+        <div style="margin-top:5px; margin-left:10px; margin-bottom:5px">
+            @if (Model.Commits != null)
+            {
+                @Partial("Views/commits.cshtml", Model.Commits)
+            }
+        </div>
+    </td>
+    @if (test == false)
+    {
+        <td></td>
+    }
+</tr>
+
