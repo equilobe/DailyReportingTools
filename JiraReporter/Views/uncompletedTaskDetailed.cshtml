@@ -1,0 +1,97 @@
+﻿@{
+    var color = string.Empty;
+    var timeSpentTotalColor = string.Empty;
+}
+<tr>
+    <td style="vertical-align:top; width:15px">
+        @if (Model.StatusType == "In Progress")
+        {
+            <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black">&#9658;</span>
+        }
+        else if (Model.StatusType == "Open")
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal; color:black">&#10065;</span>
+        }
+    </td>
+    <td colspan="2">
+        @if (Model.IsNew)
+        {
+            <b style="color:black"> NEW: </b>
+        }
+        @if (Model.Status == Model.PolicyReopenedStatus && Model.StatusType == "Open")
+        {
+            <b style="color:black">Reopened: </b>
+        }
+        else
+        {
+            if (Model.TimeSpent > 0)
+            {
+                <b style="color:black">Paused: </b>
+            }
+        }
+        @if (Model.ExistsInTimesheet == true && Model.StatusCategory.name == "In Progress")
+        {
+            <span style="font-weight:bold; color:black">Continue:</span>
+        }
+        @if (Model.DisplayStatus == true)
+        {
+            <b style="color:black; padding:1.5px;">@Model.Status</b>
+        }
+        <a style="text-decoration: none; font-weight:bold; color:#15C;" href="@Model.Link">@Model.Summary</a>
+        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
+        @if (Model.Label != null)
+        {
+            color = "orange";
+        }
+        else
+        {
+            color = "red";
+        }
+        @if (Model.ExceededOriginalEstimate == true)
+        {
+            timeSpentTotalColor = "orange";
+        }
+        else
+        {
+            timeSpentTotalColor = "black";
+        }
+        @if (Model.TimeSpentTotal > 0)
+        {
+        <span style="color:@timeSpentTotalColor"> &#x25cf; @Model.TimeLoggedTotal worked </span>
+        }
+        @if (Model.Subtasks.Count == 0)
+        {
+            if (Model.RemainingEstimateSeconds == 0)
+            {
+                <span style="color:@color; font-weight:bold;"> &#x25cf; @Model.RemainingEstimate left</span>
+            }
+            else
+            {
+                <span style="color:black"> &#x25cf; @Model.RemainingEstimate left</span>
+            }
+        }
+        else
+        {
+            if (Model.TotalRemainingSeconds == 0)
+            {
+                <span style="color:@color; font-weight:bold">&#x25cf; @Model.TotalRemaining left</span>
+            }
+            else
+            {
+                <span style="color:black"> &#x25cf; @Model.TotalRemaining left</span>
+            }
+        }
+        @if (Model.HasSubtasksInProgress == true)
+        {
+            <span style="color:red; font-weight:bold;"> &#x25cf; has sub-tasks in progress </span>
+        }
+        @if (Model.PullRequests != null)
+        {
+            if (Model.PullRequests.Count > 0)
+            {
+                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+            }
+        }
+    </td>
+    <td></td>
+</tr>

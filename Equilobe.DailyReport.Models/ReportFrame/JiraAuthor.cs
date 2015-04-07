@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.Views;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -78,8 +79,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasAssignedIssues { get; set; }
         public bool HasDayLogs { get; set; }
         public int MaxHourValue { get; set; }
+        public bool HasSprint { get; set; }
 
         public SummaryGuidelineInfo GuidelineInfo { get; set; }
+
+        public UncompletedTasks InProgressTasksModel { get; set; }
+        public UncompletedTasks OpenTasksModel { get; set; }
 
         public JiraAuthor()
         {

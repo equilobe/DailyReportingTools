@@ -2,6 +2,7 @@
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Views;
 using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,7 @@ namespace JiraReporter.Services
         public void SetAuthorAdvancedProperties(JiraAuthor a)
         {
             this._currentAuthor = a;
+            a.HasSprint = _context.HasSprint;
             SetTimesheets();
             SetCommits();
             OrderIssues();
@@ -92,6 +94,22 @@ namespace JiraReporter.Services
             SetAvatarId();
             SetOverrideEmail();
             SetAuthorIsEmpty();
+            SetViewModels();
+        }
+
+        private void SetViewModels()
+        {
+            _currentAuthor.InProgressTasksModel = new UncompletedTasks
+            {
+                AuthorName = _currentAuthor.Name,
+                Issues = _currentAuthor.InProgressTasks
+            };
+
+            _currentAuthor.OpenTasksModel = new UncompletedTasks
+            {
+                AuthorName = _currentAuthor.Name,
+                Issues = _currentAuthor.OpenTasks
+            };
         }
 
         private void SetName()

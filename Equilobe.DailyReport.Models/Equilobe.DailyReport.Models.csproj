@@ -130,6 +130,7 @@
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedAdvancedSettings.cs" />
     <Compile Include="TimeZone\TimeZones.cs" />
+    <Compile Include="Views\UncompletedTasks.cs" />
     <Compile Include="Web\AccountModel.cs" />
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />

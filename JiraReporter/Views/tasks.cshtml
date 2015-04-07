@@ -1,0 +1,25 @@
+﻿@foreach (var task in Model.Issues)
+{
+    if (task.Assignee == Model.AuthorName)
+    {
+        @Partial("Views/uncompletedTask.cshtml", task)
+        if (task.SubtasksIssues != null)
+        {
+            if (task.SubtasksIssues.Count > 0)
+            {
+                foreach (var subtask in task.SubtasksIssues)
+                {
+                    @Partial("Views/subtask.cshtml", subtask)
+                }
+            }
+        }
+    }
+    else
+    {
+        @Partial("Views/parentTask.cshtml", task)
+        foreach (var subtask in task.AssigneeSubtasks)
+        {
+            @Partial("Views/subtask.cshtml", subtask)
+        }
+    }
+}
