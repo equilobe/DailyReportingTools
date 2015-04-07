@@ -4,20 +4,20 @@
             <div class="container">
                 <div class="pull-right">
                     <a class="btn" href="app/signup">Sign Up</a>
-                    <a class="btn" ng-click="pageScroll()">About</a>
+                    <a class="btn" ng-click="pageScroll('#about')">About</a>
                     <a class="btn" href="app/signin">Log in</a>
                 </div>
             </div>
         </div>
-        <div class="welcome hcenter vcenter container">
-            <div class="logo">
+        <div class="container welcome hcenter vcenter">
+            <div class="main-logo">
                 <img src="../Content/Images/logo-main.PNG" />
             </div>
             <h1>
                 Email reporting for JIRA
             </h1>
             <h4>
-                Dailyreport is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
+                Daily Report is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
             </h4>
             <p class="call-to-action">
                 <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="report-summary" id="about">
         <div class="container">
             <h1>
                 The report your clients have been waiting for
@@ -37,7 +37,9 @@
                 Communicate project status to your clients or boss without wasting valuable time.
                 It also keeps you and your team focused and informed.
             </p>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7">
                     <h2>
                         Sprint status
@@ -52,7 +54,9 @@
                     <img src="../Content/Images/sprint-status.png" />
                 </div>
             </div>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7 col-md-push-5">
                     <h2>
                         Team summary
@@ -67,7 +71,9 @@
                     <img src="../Content/Images/team-status.png" />
                 </div>
             </div>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7">
                     <h2>
                         Scrum notes
@@ -82,7 +88,9 @@
                     <img src="../Content/Images/full-timesheet.png" />
                 </div>
             </div>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7 col-md-push-5">
                     <h2>
                         Recently completed
@@ -100,7 +108,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="reasons-to-join">
         <div class="jumbo">
             <div class="container">
                 <h1>
@@ -111,15 +119,15 @@
                 </p>
             </div>
         </div>
-        <div class="container reasons-to-join">
+        <div class="container">
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/email.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Email based
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         Each team member receives the report in their inbox every day.
                         It looks great on most email clients. Mobile too.
@@ -129,13 +137,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/idcard.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Do it yourself
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         You don't need to be the admin of your JIRA site to make it work.
                         If you have read access to a project than you can start getting the daily report for that project.
@@ -144,13 +152,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/rocket.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         30 second set up
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         It's as easy as setting the report time for your project.
                         That's actually the only thing you need to set to make it work.
@@ -161,13 +169,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/create.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Your own
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         We understand that one size doesn't always fit everyone, so we're giving you the chance to tweak every little aspect of your report.
                         We want you to get the report you want, not the report we think you need.
@@ -175,13 +183,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/assistant.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Great support
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         We are glad to help with any problem you might have.
                         Just send us an email and we'll reply within 24 hours. No exceptions.
@@ -191,7 +199,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="process-3-steps">
         <div class="jumbo">
             <div class="container">
                 <h1>
@@ -292,20 +300,20 @@
     </div>
 
     <footer>
-        <div class="container">
-            <div class="col-md-4">
-                <img src="../Content/Images/logo-menu.PNG" />
-            </div>
-            <div class="col-md-8">
-                <p>All rights reserved ©2015 Equilobe Software.</p>
-                <p><a href="http://www.equilobe.com/contact/">Contact us</a>, or join us on <a href="https://twitter.com/">Twitter</a>, <a href="https://www.facebook.com/">Facebook</a>, and <a href="https://plus.google.com/">Google+</a>.</p>
-                <p>
-                    <a href="/terms">Terms of service</a>,
-                    <a href="/privacy">Privacy policy</a>,
-                    <a href="/refund">Refund policy</a>,
-                    <a href="/security">Security information</a>
-                </p>
-            </div>
+        <div class="container hcenter">
+            <p>
+                <img class="logo" src="../Content/Images/logo-menu.PNG" />
+                <span> ©2015 Equilobe Software</span>
+            </p>
+            <p>
+                <a href="http://www.equilobe.com/contact/">Contact us</a>, or join us on <a href="https://twitter.com/">Twitter</a>, <a href="https://www.facebook.com/">Facebook</a>, and <a href="https://plus.google.com/">Google+</a>.
+            </p>
+            <p>
+                <a href="/terms">Terms of service</a>,
+                <a href="/privacy">Privacy policy</a>,
+                <a href="/refund">Refund policy</a>,
+                <a href="/security">Security information</a>
+            </p>
         </div>
     </footer>
 </div>
