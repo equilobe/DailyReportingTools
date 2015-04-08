@@ -162,6 +162,9 @@ namespace Equilobe.DailyReport.SL
                 if (reportSettings.FinalDraftConfirmation != null)
                     if (reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
                         _report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
+
+                _report.Settings.InstalledInstance.User = new ApplicationUser();
+                reportSettings.InstalledInstance.User.CopyPropertiesOnObjects(_report.Settings.InstalledInstance.User);
             }
         }
 

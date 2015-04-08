@@ -10,7 +10,7 @@
             @foreach (var completedTasks in Model.CompletedTasks)
             {
                 <div style="margin-top:10px; line-height:1.4em;">
-                    <span style="color:sienna">Completed @completedTasks.Key (@completedTasks.Value.Count)</span>
+                    <i style="color:sienna">Completed @completedTasks.Key (@completedTasks.Value.Count)</i>
                     <table style="margin-left:10px;" cellpadding="1.5px">
                         <tbody>
                             @foreach (var task in completedTasks.Value)

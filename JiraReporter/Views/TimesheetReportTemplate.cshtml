@@ -47,11 +47,13 @@
                             or
                         </td>
                         <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
-                            <a style="color:#0000FF; font-weight:bold; text-decoration:none; font-size:12px; line-height:40px" href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
+                            <a style="color:#0000FF;  text-decoration:none; font-size:12px; line-height:40px" href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
     }
+    
+    @Partial("Views/footer.cshtml", Model)
 
 </div>
