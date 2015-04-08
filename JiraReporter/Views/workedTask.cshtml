@@ -57,23 +57,6 @@ else
             }
         }
 
-        @if (Model.TimeSpent > 0)
-        {
-            <b style="color:black" title="@entryComments"> @Model.TimeLogged worked</b>
-        }
-        else
-        {
-            <b style="color:orange"> no work logged</b>
-        }
-
-        @if (Model.Commits != null)
-        {
-            <span> &#x25cf; </span>
-            @Partial("Views/commits.cshtml", Model.Commits)
-        }
-        
-        <b style="color:black"> on </b>
-
         @if (Model.StatusCategory.name == "Done")
         {
             if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
@@ -85,8 +68,6 @@ else
         {
             <b style="color:black; padding:1.5px;">@Model.Status</b>
         }
-        <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
-
         @{
             title = Model.Key;
             title += '\n' + Model.TimeLoggedTotal + " spent";
@@ -116,6 +97,22 @@ else
                     title += '\n' + Model.Assignee;
                 }
             }
+        }
+        <a href=@Model.Link style="text-decoration: none; font-weight:bold" title="@title"> @Model.Summary</a>
+
+        @if (Model.Commits != null)
+        {
+            <span> &#x25cf; </span>
+            @Partial("Views/commits.cshtml", Model.Commits)
+        }
+        
+        @if (Model.TimeSpent > 0)
+        {
+            <b style="color:black" title="@entryComments"> &#x25cf; @Model.TimeLogged worked</b>
+        }
+        else
+        {
+            <b style="color:orange"> &#x25cf; no work logged</b>
         }
 
         @if (Model.PullRequests != null)

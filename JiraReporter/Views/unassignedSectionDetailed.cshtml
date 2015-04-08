@@ -1,0 +1,17 @@
+﻿@if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
+{
+    <div style="margin-top:60px; line-height:1.4em;">
+        <h1 style="color:black">Unassigned </h1>
+        <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+            <tbody>
+                @foreach (var task in Model.ReportTasks.UnassignedTasks)
+                {
+                    if (task.IsSubtask == false)
+                    {
+                        @Partial("Views/uncompletedTask.cshtml", task)
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}

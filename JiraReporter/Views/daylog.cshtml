@@ -1,36 +1,27 @@
-﻿<div style="margin-top:15px; line-height:1.4em">
+﻿<div style="margin-top:10px; line-height:1.4em">
     @Partial("Views/workedHeader.cshtml", Model)
     @if (Model.Issues != null)
     {
         if (Model.Issues.Count > 0)
         {
-            <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
+            <table style="margin-left:10px;" cellpadding="1.5px">
                 <tbody>
                     @foreach (var issue in Model.Issues)
                     {
-                        if (issue.AssigneeSubtasks != null)
+                        if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.AuthorName)
                         {
-                            if (issue.AssigneeSubtasks.Count > 0)
-                            {
-                                if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.AuthorName)
-                                {
-                                    @Partial("Views/workedTask.cshtml", issue)
-                                }
-                                else
-                                {
-                                    @Partial("Views/parentTask.cshtml", issue)
-                                }
-                                foreach (var subtask in issue.AssigneeSubtasks)
-                                {
-                                    @Partial("Views/workedTask.cshtml", subtask)
-                                }
-                            }
+                            @Partial("Views/workedTask.cshtml", issue)
                         }
-                        if (issue.AssigneeSubtasks == null || issue.AssigneeSubtasks.Count == 0)
+                        else
                         {
-                            if (issue.IsSubtask == false)
+                            @Partial("Views/parentTask.cshtml", issue)
+                        }
+                        
+                        if (issue.SubtasksDetailed != null)
+                        {
+                            foreach (var subtask in issue.SubtasksDetailed)
                             {
-                                @Partial("Views/workedTask.cshtml", issue)
+                                @Partial("Views/workedTask.cshtml", subtask)
                             }
                         }
                     }
