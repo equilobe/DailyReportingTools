@@ -146,9 +146,9 @@ namespace JiraReporter.Services
         static IssueDetailed CreateParent(IssueDetailed task, JiraAuthor author)
         {
             var parent = new IssueDetailed(task.Parent);
-            foreach (var subtask in parent.SubtasksIssues)
+            foreach (var subtask in parent.SubtasksDetailed)
                 IssueAdapter.SetLoggedAuthor(subtask, author.Name);
-            parent.AssigneeSubtasks = new List<IssueDetailed>();
+            parent.SubtasksDetailed = new List<IssueDetailed>();
             return parent;
         }
 
@@ -178,15 +178,15 @@ namespace JiraReporter.Services
                     if (parentIssue != null)
                     {
                         parent = new IssueDetailed(parentIssue);
-                        if (parent.AssigneeSubtasks == null)
-                            parent.AssigneeSubtasks = new List<IssueDetailed>();
-                        if (parent.AssigneeSubtasks.Exists(t => t.Key == task.Key) == false)
-                            parent.AssigneeSubtasks.Add(new IssueDetailed(task));
+                        if (parent.SubtasksDetailed == null)
+                            parent.SubtasksDetailed = new List<IssueDetailed>();
+                        if (parent.SubtasksDetailed.Exists(t => t.Key == task.Key) == false)
+                            parent.SubtasksDetailed.Add(new IssueDetailed(task));
                     }
                     else
                     {
                         parent = CreateParent(task, author);
-                        parent.AssigneeSubtasks.Add(new IssueDetailed(task));
+                        parent.SubtasksDetailed.Add(new IssueDetailed(task));
                         IssueAdapter.SetLoggedAuthor(parent, author.Name);
                         parentTasks.Add(parent);
                     }

@@ -34,6 +34,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string InProgressTasksTimeLeftString { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeftString { get; set; }
+        public int UncompletedTasksTimeLeftSeconds { get; set; }
+        public string UncompletedTasksTimeLeftString { get; set; }
 
         public int TotalRemainingSeconds { get; set; }
         public double TotalRemainingHours { get; set; }

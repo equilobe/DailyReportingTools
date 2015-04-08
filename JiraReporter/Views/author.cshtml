@@ -1,7 +1,7 @@
 ﻿@if (Model.HasDayLogs || Model.HasAssignedIssues)
 {
     <div style="margin-top:20px;">
-        <b style="color:black; line-height:1.4em; margin-bottom:0px">@Model.Name</b>
+        <h3 style="color:black; line-height:1.4em; margin-bottom:0px">@Model.Name</h3>
 
         @if (Model.DayLogs.Count > 0)
         {
@@ -12,44 +12,28 @@
         }
         @if (Model.HasSprint)
         {
-            @if (Model.InProgressTasks.Count > 0)
+            @if (Model.UncompletedTasksCount > 0)
             {
                 <div style="margin-top:10px; line-height:1.4em;">
-                    <i style="color:sienna; font-size:12px;">In Progress</i>
+                    <i style="color:sienna; font-size:12px;">Next</i>
 
-                    @if (Model.Timing.InProgressTasksTimeLeftSeconds == 0)
+                    @if (Model.Timing.UncompletedTasksTimeLeftSeconds == 0)
                     {
-                        <span style="color:red; font-size:12px;"> &#x25cf; @Model.Timing.InProgressTasksTimeLeftString left</span>
+                        <i style="color:red; font-size:12px;"> &#x25cf; @Model.Timing.UncompletedTasksTimeLeftString left</i>
                     }
                     else
                     {
-                        <span style="color:sienna; font-size:12px;"> &#x25cf; @Model.Timing.InProgressTasksTimeLeftString left</span>
+                        <i style="color:sienna; font-size:12px;"> &#x25cf; @Model.Timing.UncompletedTasksTimeLeftString left</i>
                     }
                     <table style="margin-left:10px;" cellpadding="1.5px">
                         <tbody>
-                            @Partial("Views/tasks.cshtml", Model.InProgressTasksModel)
+                            @Partial("Views/tasks.cshtml", Model.UncompletedTasksModel)
                         </tbody>
                     </table>
-                </div>
-            }
-
-            @if (Model.OpenTasks.Count > 0)
-            {
-                <div style="line-height:1.4em; color:sienna; margin-top:10px;">
-                    <i style="font-size: 12px; color: sienna">Upcoming </i>
-                    @if (Model.Timing.OpenTasksTimeLeftSeconds != 0)
+                    @if(Model.AdditionalUncompletedTasksCount > 0)
                     {
-                        <span style="color: sienna; font-size:12px;"> &#x25cf; @Model.Timing.OpenTasksTimeLeftString left</span>
+                       <span> + <a href="@Model.IssueSearchUrl" style="text-decoration:none">@Model.AdditionalUncompletedTasksCount more</a> </span> 
                     }
-                    else
-                    {
-                        <span style="color:red; font-size:12px;">&#x25cf; @Model.Timing.OpenTasksTimeLeftString left</span>
-                    }
-                    <table style="margin-left:10px;" cellpadding="1.5px">
-                        <tbody>
-                            @Partial("Views/tasks.cshtml", Model.OpenTasksModel)
-                        </tbody>
-                    </table>
                 </div>
             }
         }

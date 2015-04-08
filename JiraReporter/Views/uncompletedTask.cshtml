@@ -38,32 +38,32 @@
 
             if (Model.IsNew)
             {
-                <b style="color:black"> NEW: </b>
+                <span style="color:black"> NEW: </span>
             }
             if (Model.Status == Model.PolicyReopenedStatus && Model.StatusType == "Open")
             {
-                <b style="color:black">Reopened: </b>
+                <span style="color:black">Reopened: </span>
             }
             else
             {
                 if (Model.TimeSpent > 0)
                 {
-                    <b style="color:black">Paused: </b>
+                    <span style="color:black">Paused: </span>
                 }
             }
         }
 
         @if (Model.ExistsInTimesheet == true && Model.StatusCategory.name == "In Progress")
         {
-            <span style="font-weight:bold; color:black">Continue:</span>
+            <span style="color:black">Continue:</span>
         }
 
         @if (Model.DisplayStatus == true)
         {
-            <b style="color:black; padding:1.5px;">@Model.Status</b>
+            <span style="color:black; padding:1.5px;">@Model.Status</span>
         }
 
-        <a style="text-decoration: none; font-weight:bold; color:#15C;" title="@title" href="@Model.Link">@Model.Summary</a>
+        <a style="text-decoration: none; color:#15C;" title="@title" href="@Model.Link">@Model.Summary</a>
 
         @if (Model.PullRequests != null)
         {

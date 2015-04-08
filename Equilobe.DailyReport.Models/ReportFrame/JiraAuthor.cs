@@ -63,9 +63,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> OpenTasks { get; set; }
         public List<IssueDetailed> InProgressTasksParents { get; set; }
         public List<IssueDetailed> OpenTasksParents { get; set; }
+        public List<IssueDetailed> UncompletedTasks { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
+        public int UncompletedTasksCount { get; set; }
+        public int AdditionalUncompletedTasksCount { get; set; }
 
         public List<JiraCommit> Commits { get; set; }
         public List<JiraDayLog> DayLogs { get; set; }
@@ -85,6 +88,9 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public UncompletedTasks InProgressTasksModel { get; set; }
         public UncompletedTasks OpenTasksModel { get; set; }
+        public UncompletedTasks UncompletedTasksModel { get; set; }
+
+        public Uri IssueSearchUrl { get; set; }
 
         public JiraAuthor()
         {
