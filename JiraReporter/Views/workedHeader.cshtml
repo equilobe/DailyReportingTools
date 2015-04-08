@@ -1,31 +1,10 @@
 ﻿@{
-    var test = false;
+
     var dayName = "";
 }
-@if(Model.Issues!=null)
-{
-    if (Model.Issues.Count > 0)
-    {
-        test = true;
-    }
-    else 
-    {
-        test = false;
-    }
-}
-@if(Model.Commits.Count>0)
-{
-    test = true;
-}
-@*@if(Model.Title == "Yesterday")
-{
-    dayName = "(" + Model.Date.DayOfWeek + ")";
-}*@
-    
-@if (test==true)
-{
-    <b style="color:Sienna; font-size:16px; "> @Model.Date.DayOfWeek </b>
-    if (Model.TimeSpent > 0)
+
+    <b style="color:Sienna; font-size:12px; "> @Model.Date.DayOfWeek </b>
+    @if (Model.TimeSpent > 0)
     {
         <span style="color:Sienna; font-size:12px;"> &#x25cf; @Model.TimeLogged worked </span>
     }
@@ -33,7 +12,6 @@
     {
         <b style="color:orange; font-size:12px;"> &#x25cf; no work logged </b>
     }
-}
 
 
 

@@ -1,0 +1,48 @@
+﻿<tr>
+    <td style="vertical-align:top; width:15px">
+        @if (Model.Resolution != null)
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
+        }
+        else if (Model.StatusCategory.name == "In Progress")
+        {
+            <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
+        }
+        else if (Model.Resolution == null)
+        {
+            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal">&#10065;</span>
+        }
+    </td>
+    <td colspan="2">
+        @if (Model.StatusCategory.name == "Done")
+        {
+            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
+            {
+                <b style="color:black; padding:1.5px">@Model.Resolution</b>
+            }
+        }
+        @if (Model.DisplayStatus == true)
+        {
+            <b style="color:black; padding:1.5px;">@Model.Status</b>
+        }
+        <a href=@Model.Link style="text-decoration: none; font-weight:bold; color:#15C;"> @Model.Summary </a>
+        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
+        @if (Model.Assignee == null)
+        {
+            <span style="color:black;"> &#x25cf; Unassigned</span>
+        }
+        else if (Model.Assignee != Model.LoggedAuthor)
+        {
+            <span style="color:black;"> &#x25cf; @Model.Assignee</span>
+        }
+        @if (Model.PullRequests != null)
+        {
+            if (Model.PullRequests.Count > 0)
+            {
+                <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
+            }
+        }
+    </td>
+    <td></td>
+</tr>
+

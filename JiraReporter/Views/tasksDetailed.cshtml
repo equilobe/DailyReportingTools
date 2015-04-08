@@ -9,10 +9,7 @@
             {
                 foreach (var subtask in task.SubtasksIssues)
                 {
-                    if (subtask.Assignee == Model.AuthorName)
-                    {
-                        @Partial("Views/subtask.cshtml", subtask)
-                    }
+                    @Partial("Views/subtask.cshtml", subtask)
                 }
             }
         }
