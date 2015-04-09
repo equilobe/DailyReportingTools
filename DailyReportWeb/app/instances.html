@@ -16,31 +16,33 @@
         </h3>
     </div>
     <div class="container" ng-if="status == 'loaded' && !instances.length">
-        <h1>
+        <h2>
             <span class="alert-danger">
                 No instances available
             </span>
-        </h1>
+        </h2>
         <p class="help-block">
             Daily Report tool is unable to find any instance.
         </p>
     </div>
     <div class="container" ng-if="status == 'loaded' && instances.length">
         <div class="row">
-            <label class="col-sm-9 col-md-9">
+            <label class="col-lg-10 col-md-9 col-sm-9 col-xs-7">
                 Instance name
             </label>
-            <label class="col-sm-3 col-md-3">
+            <label class="col-lg-2 col-md-3 col-sm-3 col-xs-5">
                 Options
             </label>
         </div>
         <div class="row project" ng-repeat="instance in instances">
-            <div class="col-sm-9 col-md-9">
+            <div class="col-lg-9 col-md-8 col-sm-8">
                 {{instance.baseUrl}}
             </div>
-            <div class="col-sm-3 col-md-3">
-                <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-default">View Projects</a>
-                <button class="btn btn-default" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance">Edit Instance</button>
+            <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="pull-right">
+                    <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-default">View Projects</a>
+                    <button class="btn btn-default" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance">Edit Instance</button>
+                </div>
             </div>
         </div>
         <div class="row project" ng-show="addingInstance || editingInstance">
