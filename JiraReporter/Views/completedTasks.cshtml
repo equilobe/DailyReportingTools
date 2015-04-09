@@ -29,7 +29,7 @@
                                             <span style="color:black; padding:1.5px;">@task.Status</span>
                                         }
                                         <a style="text-decoration: none; color:#15C;" href="@task.Link">@task.Summary</a>
-                                        <span style="color: #B8B8B8;"> &#x25cf; @task.Key </span>
+                                        <span style="color: #B8B8B8;"> &#x2022; @task.Key </span>
                                         @if (task.TimeSpentTotal > 0)
                                         {
                                             color = "black";
@@ -38,22 +38,22 @@
                                         {
                                             color = "red";
                                         }
-                                        <span style="color:@color;"> &#x25cf; @task.TimeLoggedTotal worked</span>
+                                        <span style="color:@color;"> &#x2022; @task.TimeLoggedTotal worked</span>
                                         @if (task.RemainingEstimateSeconds == 0 && task.TotalRemainingSeconds > 0)
                                         {
-                                            <span style="white-space:nowrap; color:red;"> &#x25cf; @task.TotalRemaining left from subtasks </span>
+                                            <span style="white-space:nowrap; color:red;"> &#x2022; @task.TotalRemaining left from subtasks </span>
                                         }
                                         @if (task.RemainingEstimateSeconds != 0)
                                         {
-                                            <span style="white-space:nowrap; color:red;"> &#x25cf; @task.RemainingEstimate left </span>
+                                            <span style="white-space:nowrap; color:red;"> &#x2022; @task.RemainingEstimate left </span>
                                         }
                                         @if (task.Assignee != null)
                                         {
-                                            <span style="color:black"> &#x25cf; @task.Assignee </span>
+                                            <span style="color:black"> &#x2022; @task.Assignee </span>
                                         }
                                         else
                                         {
-                                            <span style="color:black"> &#x25cf; Unassigned </span>
+                                            <span style="color:black"> &#x2022; Unassigned </span>
                                         }
                                     </td>
                                 </tr>

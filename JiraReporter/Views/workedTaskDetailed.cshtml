@@ -56,7 +56,7 @@ else
             <b style="color:black; padding:1.5px;">@Model.Status</b>
         }
         <a href=@Model.Link style="text-decoration: none; font-weight:bold"> @Model.Summary</a>
-        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
+        <span style="color: #B8B8B8;"> &#x2022; @Model.Key </span>
         @if (Model.ExceededOriginalEstimate == true && Model.IsSubtask == false)
         {
             color = "orange";
@@ -65,7 +65,7 @@ else
         {
             color = "black";
         }
-        <span style="color:@color;"> &#x25cf; @Model.TimeLoggedTotal spent</span>
+        <span style="color:@color;"> &#x2022; @Model.TimeLoggedTotal spent</span>
         @if (Model.Label != null || Model.IsSubtask == true)
         {
             color = "orange";
@@ -76,29 +76,29 @@ else
         }
         @if (Model.TotalRemainingSeconds == 0 && Model.Resolution == null)
         {
-            <span style="color:@color; font-weight:bold"> &#x25cf; @remainingEstimate left</span>
+            <span style="color:@color; font-weight:bold"> &#x2022; @remainingEstimate left</span>
         }
         @if (Model.TotalRemainingSeconds > 0)
         {
             if (Model.Resolution != null && Model.StatusCategory.name == "Done" && Model.Subtasks.Count > 0)
             {
 
-                <span style="color:@color; font-weight:bold;"> &#x25cf; @remainingEstimate left from subtasks</span>
+                <span style="color:@color; font-weight:bold;"> &#x2022; @remainingEstimate left from subtasks</span>
             }
             else
             {
-                <span style="color:black;"> &#x25cf; @remainingEstimate left</span>
+                <span style="color:black;"> &#x2022; @remainingEstimate left</span>
             }
         }
         @if (Model.Assignee == null)
         {
-            <span style="color:black"> &#x25cf; Unassigned</span>
+            <span style="color:black"> &#x2022; Unassigned</span>
         }
         else
         {
             if (Model.Assignee != Model.LoggedAuthor)
             {
-                <span style="color:black"> &#x25cf; @Model.Assignee</span>
+                <span style="color:black"> &#x2022; @Model.Assignee</span>
             }
         }
         @if (Model.PullRequests != null)

@@ -12,18 +12,18 @@
         }
         @if (Model.HasSprint)
         {
-            @if (Model.UncompletedTasksCount > 0)
+            if (Model.UncompletedTasksCount > 0)
             {
                 <div style="margin-top:10px; line-height:1.4em;">
                     <i style="color:sienna; font-size:12px;">Next</i>
 
                     @if (Model.Timing.UncompletedTasksTimeLeftSeconds == 0)
                     {
-                        <i style="color:red; font-size:12px;"> &#x25cf; @Model.Timing.UncompletedTasksTimeLeftString left</i>
+                        <i style="color:red; font-size:12px;"> &#x2022; @Model.Timing.UncompletedTasksTimeLeftString left</i>
                     }
                     else
                     {
-                        <i style="color:sienna; font-size:12px;"> &#x25cf; @Model.Timing.UncompletedTasksTimeLeftString left</i>
+                        <i style="color:sienna; font-size:12px;"> &#x2022; @Model.Timing.UncompletedTasksTimeLeftString left</i>
                     }
                     <table style="margin-left:10px;" cellpadding="1.5px">
                         <tbody>
