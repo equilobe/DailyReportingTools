@@ -6,11 +6,11 @@
     <i style="color:Sienna; font-size:12px; "> @Model.Date.DayOfWeek </i>
     @if (Model.TimeSpent > 0)
     {
-        <i style="color:Sienna; font-size:12px;"> &#x2022; @Model.TimeLogged worked </i>
+        <i style="color:Sienna; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.TimeLogged worked </i>
     }
     else
     {
-        <i style="color:orange; font-size:12px;"> &#x2022; no work logged </i>
+        <i style="color:orange; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> no work logged </i>
     }
 
 

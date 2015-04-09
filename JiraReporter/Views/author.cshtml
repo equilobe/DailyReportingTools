@@ -19,11 +19,11 @@
 
                     @if (Model.Timing.UncompletedTasksTimeLeftSeconds == 0)
                     {
-                        <i style="color:red; font-size:12px;"> &#x2022; @Model.Timing.UncompletedTasksTimeLeftString left</i>
+                        <i style="color:red; font-size:12px;"><span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.UncompletedTasksTimeLeftString left</i>
                     }
                     else
                     {
-                        <i style="color:sienna; font-size:12px;"> &#x2022; @Model.Timing.UncompletedTasksTimeLeftString left</i>
+                        <i style="color:sienna; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.UncompletedTasksTimeLeftString left</i>
                     }
                     <table style="margin-left:10px;" cellpadding="1.5px">
                         <tbody>

@@ -102,17 +102,17 @@ else
 
         @if (Model.Commits != null && Model.Commits.Count>0)
         {
-            <span> &#x2022; </span>
+            <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> 
             @Partial("Views/commits.cshtml", Model.Commits)
         }
         
         @if (Model.TimeSpent > 0)
         {
-            <span style="color:black" title="@entryComments"> &#x2022; @Model.TimeLogged worked</span>
+            <span style="color:black" title="@entryComments"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.TimeLogged worked</span>
         }
         else
         {
-            <span style="color:orange"> &#x2022; no work logged</span>
+            <span style="color:orange"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> no work logged</span>
         }
 
         @if (Model.PullRequests != null)

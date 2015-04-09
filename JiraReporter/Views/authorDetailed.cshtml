@@ -19,11 +19,11 @@
 
                     @if (Model.Timing.InProgressTasksTimeLeftSeconds == 0)
                     {
-                        <span style="color:red; font-size:12px;"> &#x2022; @Model.Timing.InProgressTasksTimeLeftString left</span>
+                        <span style="color:red; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.InProgressTasksTimeLeftString left</span>
                     }
                     else
                     {
-                        <span style="color:sienna; font-size:12px;"> &#x2022; @Model.Timing.InProgressTasksTimeLeftString left</span>
+                        <span style="color:sienna; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.InProgressTasksTimeLeftString left</span>
                     }
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                         <tbody>
@@ -39,11 +39,11 @@
                     <b style="font-size: 16px; color: sienna">Upcoming </b>
                     @if (Model.Timing.OpenTasksTimeLeftSeconds != 0)
                     {
-                        <span style="color: sienna; font-size:12px;"> &#x2022; @Model.Timing.OpenTasksTimeLeftString left</span>
+                        <span style="color: sienna; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.OpenTasksTimeLeftString left</span>
                     }
                     else
                     {
-                        <span style="color:red; font-size:12px;">&#x2022; @Model.Timing.OpenTasksTimeLeftString left</span>
+                        <span style="color:red; font-size:12px;"><span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.OpenTasksTimeLeftString left</span>
                     }
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
                         <tbody>
