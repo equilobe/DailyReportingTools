@@ -151,6 +151,7 @@ namespace Equilobe.DailyReport.SL
                 var reportSettings = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
                 _report.Settings = new BasicSettings();
                 reportSettings.CopyTo<BasicSettings>(_report.Settings);
+                reportSettings.InstalledInstance.User.CopyTo<ApplicationUser>(_report.Settings.InstalledInstance.User);
                 if (reportSettings.ReportExecutionSummary != null)
                 {
                     if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
@@ -162,9 +163,6 @@ namespace Equilobe.DailyReport.SL
                 if (reportSettings.FinalDraftConfirmation != null)
                     if (reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
                         _report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
-
-                _report.Settings.InstalledInstance.User = new ApplicationUser();
-                reportSettings.InstalledInstance.User.CopyPropertiesOnObjects(_report.Settings.InstalledInstance.User);
             }
         }
 

@@ -100,7 +100,7 @@ else
         }
         <a href=@Model.Link style="text-decoration: none;" title="@title"> @Model.Summary</a>
 
-        @if (Model.Commits != null)
+        @if (Model.Commits != null && Model.Commits.Count>0)
         {
             <span> &#x25cf; </span>
             @Partial("Views/commits.cshtml", Model.Commits)
