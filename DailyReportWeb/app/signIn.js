@@ -8,6 +8,7 @@ angular.module('app')
         });
     }])
     .controller("SignInController", ['$scope', '$http', '$location', function ($scope, $http, $location) {
+        $("body").attr("data-page", "signin");
         $scope.$parent.child = $scope;
 
         $scope.signIn = function ($scope) {

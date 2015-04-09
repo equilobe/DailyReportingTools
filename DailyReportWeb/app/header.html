@@ -1,0 +1,27 @@
+﻿<header>
+    <div class="container">
+        <div class="menu-logo pull-left">
+            <img src="Content/Images/logo-menu.PNG" />
+        </div>
+
+        <div ng-if="!isAuth" class="public-menu">
+            <div class="pull-right">
+                <a class="btn" href="app/signup">Sign Up</a>
+                <a class="btn about" ng-click="pageScroll('#about')">About</a>
+                <a class="btn" href="app/signin">Log in</a>
+            </div>
+        </div>
+
+        <div ng-if="isAuth" class="user-menu">
+            <ol class="breadcrumb pull-left">
+                <li ng-repeat="breadcrumb in breadcrumbs.get() track by breadcrumb.path" ng-class="{ active: $last }">
+                    <a ng-if="!$last" ng-href="{{breadcrumb.path}}" ng-bind="breadcrumb.label" class="margin-right-xs"></a>
+                    <span ng-if="$last" ng-bind="breadcrumb.label"></span>
+                </li>
+            </ol>
+            <div class="user-settings" ng-if="!isPlugin">
+                <a class="btn pull-right" ng-click="signOut(this)">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>

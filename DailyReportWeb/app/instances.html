@@ -99,13 +99,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-10"></div>
-                <div class="col-md-2">
+                <div class="col-md-12">
                     <button class="btn btn-danger" ng-click="clearInstanceForm(this)">Cancel</button>
                     <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="saveInstance(this)">Save</button>
                     <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="form.$dirty"></span>
                     <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-                    <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine"></span>
+                    <span class="alert-danger glyphicon glyphicon-remove message" ng-show="status == 'error' && form.$pristine"><span>{{message}}</span></span>
                 </div>
             </div>
         </div>

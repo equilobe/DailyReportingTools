@@ -9,6 +9,7 @@ angular.module('app')
         });
     }])
     .controller("SettingsController", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
+        $("body").attr("data-page", "settings");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 

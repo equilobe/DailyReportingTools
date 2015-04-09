@@ -8,6 +8,7 @@ angular.module('app')
         });
     }])
     .controller("SignUpController", ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+        $("body").attr("data-page", "signup");
         $scope.$parent.child = $scope;
 
         $scope.setTimeZone = $interval(function () {

@@ -34,12 +34,12 @@
 </head>
 
 <body ng-controller="AppController">
-    
-    @Html.Partial("_MainMenu")
+
+    <div ng-include="'app/header.html'"></div>
 
     <div ng-view></div>
 
-    @Html.Partial("_HowItWorks")
+    <div ng-include="'app/footer.html'"></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>

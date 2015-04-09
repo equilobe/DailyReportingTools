@@ -100,14 +100,13 @@
         </div>
 
         <div class="container">
-            <a ng-href="app/signin" class="btn btn-default">Sign In</a>
             <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signUp(this)">
                 Sign Up
             </button>
             <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
             <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && form.$pristine">{{message}}</span>
-            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine">{{message}}</span>
+            <span class="alert-success glyphicon glyphicon-ok message" ng-show="status == 'success' && form.$pristine"><span>{{message}}</span></span>
+            <span class="alert-danger glyphicon glyphicon-remove message" ng-show="status == 'error' && form.$pristine"><span>{{message}}</span></span>
         </div>
     </div>
 </form>

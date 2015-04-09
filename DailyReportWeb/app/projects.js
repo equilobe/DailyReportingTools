@@ -9,6 +9,7 @@ angular.module('app')
         });
     }])
     .controller("ProjectsController", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+        $("body").attr("data-page", "projects");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 

@@ -8,6 +8,9 @@ angular.module('app')
         });
     }])
     .controller("WelcomeController", ["$scope", "$http", "$location", function ($scope, $http, $location) {
+        $("body").attr("data-page", "welcome");
+        $scope.$parent.child = $scope;
+
         if (isAuth) {
             $location.url('/app/instances');
             return;

@@ -34,32 +34,11 @@
             $scope.regex = regex;
         })();
 
-        //(function mouseWheel() {
-        //    window.onmousewheel = handleMouseWheel;
-        //    mouseDirections = [];
-
-        //    setInterval(function () {
-        //        if (mouseDirections.length) {
-        //            $scope.pageScroll(mouseDirections[mouseDirections.length - 1]);
-        //            mouseDirections = [];
-        //        }
-        //    }, 1000);
-        //})();
-
-        function handleMouseWheel(event) {
-            if (event.wheelDeltaY < 0)
-                mouseDirections.push(1); // event.MOUSEDOWN = 1
-            else
-                mouseDirections.push(2); // event.MOUSEUP = 2
-
-            return false;
-        }
-
         $scope.pageScroll = function () {
             $('body').animate({
                 scrollTop: arguments.length ? (typeof (arguments[0]) == "string" ? $(arguments[0]).offset().top :
-                                                                                   (arguments[0] == 2 ? $("body").scrollTop() - window.innerHeight :
-                                                                                                        $("body").scrollTop() + window.innerHeight)) :
+                                                                                   (arguments[0] == 2 ? $("body").scrollTop() - window.innerHeight : // event.MOUSEUP = 2
+                                                                                                        $("body").scrollTop() + window.innerHeight)) : // event.MOUSEDOWN = 1
                                               $("body").scrollTop() + window.innerHeight
             }, 200);
 
@@ -114,7 +93,7 @@
         $scope.signOut = function ($scope) {
             $http.post("/api/account/logout")
                 .success(function () {
-                    $scope.$parent.isAuth = false;
+                    $scope.$parent.$parent.isAuth = false;
                     $location.path('/app/signin');
                 })
                 .error(function () {

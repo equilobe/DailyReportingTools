@@ -26,7 +26,9 @@ namespace DailyReportWeb.Controllers.Api
             if (!Validations.Url(instance.BaseUrl))
                 throw new ArgumentException();
 
-            JiraService.CredentialsValid(instance, false);
+            var credentialsValid = JiraService.CredentialsValid(instance, false);
+            if (!credentialsValid)
+                throw new ArgumentException();
 
             instance.Email = User.GetUsername();
             DataService.SaveInstance(instance);
