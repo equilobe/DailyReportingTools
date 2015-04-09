@@ -71,7 +71,7 @@ namespace JiraReporter
                 IsBodyHtml = true
             };
 
-            AddMailAttachments(message);
+            //AddMailAttachments(message);
 
             AddMailRecipients(message);
 
@@ -84,18 +84,18 @@ namespace JiraReporter
                 message.To.Add(addr);
         }
 
-        private void AddMailAttachments(MailMessage message)
-        {
-            if (Report.IsIndividualDraft)
-                AddAttachementImage(Author.Image, Author.AvatarId, message);
-            else
-            {
-                foreach (var author in Authors)
-                    if(!author.IsEmpty)
-                       AddAttachementImage(author.Image, author.AvatarId, message);
-                AddAttachementImageFromDisk(message);
-            }
-        }
+        //private void AddMailAttachments(MailMessage message)
+        //{
+        //    if (Report.IsIndividualDraft)
+        //        AddAttachementImage(Author.DRTAvatarLink, Author.AvatarId, message);
+        //    else
+        //    {
+        //        foreach (var author in Authors)
+        //            if(!author.IsEmpty)
+        //               AddAttachementImage(author.DRTAvatarLink, author.AvatarId, message);
+        //        AddAttachementImageFromDisk(message);
+        //    }
+        //}
 
         public override string GetReportSubject(string reportPath)
         {

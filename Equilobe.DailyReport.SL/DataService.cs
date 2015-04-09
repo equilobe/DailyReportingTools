@@ -151,6 +151,9 @@ namespace Equilobe.DailyReport.SL
                 var reportSettings = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
                 _report.Settings = new BasicSettings();
                 reportSettings.CopyTo<BasicSettings>(_report.Settings);
+                reportSettings.InstalledInstance.CopyTo<InstalledInstance>(_report.Settings.InstalledInstance);
+                reportSettings.InstalledInstance.UserImages.CopyTo<ICollection<UserImage>>(_report.Settings.InstalledInstance.UserImages);
+
                 if (reportSettings.ReportExecutionSummary != null)
                 {
                     if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)

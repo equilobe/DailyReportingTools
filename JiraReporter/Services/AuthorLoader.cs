@@ -1,7 +1,9 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Models.Storage;
 using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
@@ -88,10 +90,9 @@ namespace JiraReporter.Services
             SetAuthorDayLogs();
             SetAuthorErrors();
             SetRemainingEstimate();
-            SetImage();
-            SetAvatarId();
             SetOverrideEmail();
             SetAuthorIsEmpty();
+            SetImage();
         }
 
         private void SetName()
@@ -339,7 +340,12 @@ namespace JiraReporter.Services
 
         private void SetImage()
         {
-            _currentAuthor.Image = GetImageFromURL(_currentAuthor.AvatarLink.OriginalString);
+            if (_currentAuthor.IsEmpty)
+                return;
+
+            var image = GetImageFromURL(_currentAuthor.JiraAvatarLink.OriginalString);
+            SetUserAvatar(image);
+            
         }
 
         private void SetRemainingEstimate()
@@ -380,7 +386,7 @@ namespace JiraReporter.Services
             return projectManager;
         }
 
-        private Image GetImageFromURL(string url)
+        private byte[] GetImageFromURL(string url)
         {
             var webClient = new WebClient();
             webClient.Headers.Add("Content-Type", "image/png");
@@ -391,19 +397,39 @@ namespace JiraReporter.Services
                 EncryptionService = EncryptionService
             }.Authorize(webClient,_context.JiraRequestContext, UrlExtensions.GetRelativeUrl(url));
 
-            var imageData = webClient.DownloadData(url);
-
-            MemoryStream stream = new MemoryStream(imageData);
-            var img = Image.FromStream(stream);
-            stream.Close();
-
-            return img;
+            return webClient.DownloadData(url);
         }
 
-        private void SetAvatarId()
+        private void SetUserAvatar(byte[] image)
         {
-            var avatar = _currentAuthor.AvatarLink.OriginalString;
-            _currentAuthor.AvatarId = avatar.Substring(avatar.LastIndexOf("avatarId="));
+            using(var db = new ReportsDb())
+            {
+                var installedInstace = db.InstalledInstances.Single(i => i.Id == _context.Settings.InstalledInstance.Id);
+
+                if (!installedInstace.UserImages.ToList().Exists(userImage => userImage.Username == _currentAuthor.Username))
+                    SaveAvatarToDb(image, installedInstace);
+
+                var authorAvatar = installedInstace.UserImages.Single(a=>a.Username == _currentAuthor.Username);
+                _currentAuthor.DRTAvatarLink = GetUserAvatarLink(authorAvatar.Key);
+                db.SaveChanges();
+            }
         }
+
+        private void SaveAvatarToDb(byte[] image, InstalledInstance installedInstace)
+        {
+            installedInstace.UserImages.Add(new UserImage
+            {
+                ImageContent = image,
+                InstalledInstanceId = installedInstace.Id,
+                Key = RandomString.Get(),
+                Username = _currentAuthor.Username
+            });
+        }
+
+        private Uri GetUserAvatarLink(string imageKey)
+        {
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/" + imageKey);
+        }
+
     }
 }
