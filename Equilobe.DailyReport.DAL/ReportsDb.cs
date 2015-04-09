@@ -56,5 +56,6 @@ namespace Equilobe.DailyReport.DAL
         public DbSet<FinalDraftConfirmation> FinalDraftConfirmations { get; set; }
         public DbSet<IndividualDraftConfirmation> IndividualDraftConfirmations { get; set; }
         public DbSet<SerializedAdvancedSettings> SerializedAdvancedSettings { get; set; }
+        public DbSet<UserImage> UserImages { get; set; }
     }
 }

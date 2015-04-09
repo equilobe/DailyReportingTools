@@ -120,6 +120,7 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\IdentityModel.cs" />
+    <Compile Include="Storage\UserImage.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />
     <Compile Include="Storage\IndividualDraftConfirmation.cs" />
