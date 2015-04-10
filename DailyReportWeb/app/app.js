@@ -93,6 +93,7 @@
         $scope.signOut = function ($scope) {
             $http.post("/api/account/logout")
                 .success(function () {
+                    isAuth = false;
                     $scope.$parent.$parent.isAuth = false;
                     $location.path('/app/signin');
                 })

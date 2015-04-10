@@ -4,8 +4,8 @@
 
 .full-page {
     position: relative;
-    min-height: 620px;
-    height: 768px;
+    min-height: 640px;
+    height: 100vh;
 }
 
 .hcenter {
@@ -26,6 +26,9 @@
 }
 
 .jumbo {
+    margin-top: 60px;
+    padding-top: 20px;
+    padding-bottom: 15px;
     background-color: #29a9e1;
 
     h1,
@@ -36,22 +39,24 @@
 }
 
 header {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    z-index: 8000;
+    font-size: 16px;
 
     .menu-logo img {
-        max-height: 40px;
-        margin: 5px;
+        max-height: 34px;
     }
 
     .public-menu {
-        padding-top: 15px;
-        padding-bottom: 15px;
+        margin-top: 8px;
     }
 
     .breadcrumb {
         background-color: transparent;
         margin: 0;
-        padding: 22px 70px 10px 30px;
-        font-size: 16px;
+        padding: 13px 70px 0 30px;
     }
 
     .user-menu {
@@ -59,7 +64,7 @@ header {
 
         .user-settings {
             position: absolute;
-            top: 16px;
+            top: 8px;
             right: 0;
         }
     }
@@ -182,9 +187,8 @@ div.disabled {
 .form-notification {
     position: absolute;
     right: 0;
-    /*position: static;*/
-    /*float: right;*/
     font-size: 90%;
+    color: rgba(185, 74, 72, 0.8);
     background-color: transparent;
 }
 
@@ -219,85 +223,11 @@ div.disabled {
     text-decoration: none;
 }
 
-@keyframes spin {
-    from {
-        transform: scale(1) rotate(0deg);
-    }
-
-    to {
-        transform: scale(1) rotate(360deg);
-    }
-}
-
-@-webkit-keyframes spinw {
-    from {
-        -webkit-transform: rotate(0deg);
-    }
-
-    to {
-        -webkit-transform: rotate(360deg);
-    }
-}
-
-@-moz-keyframes spinm {
-    from {
-        -moz-transform: rotate(0deg);
-    }
-
-    to {
-        -moz-transform: rotate(360deg);
-    }
-}
-
-@media only screen and (min-width : 520px) {
-
-    .form-notification {
-        position: absolute;
-        top: 9px;
-        right: 12px;
-        font-size: 14px;
-        color: rgba(185, 74, 72, 0.8);
-        background-color: rgb(255, 255, 255);
-        line-height: normal;
-    }
-}
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-    .full-page {
-        height: 100vh;
-    }
-
-    .welcome-page {
-
-        .main-logo {
-            margin-bottom: 60px;
-        }
-
-        .call-to-action {
-            margin-top: 60px;
-        }
-    }
-}
-
-
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-
-    .vcenter-content > * {
-        display: table-cell;
-        vertical-align: middle;
-        float: none;
-    }
-}
-
-
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-}
-
-
 [data-page='welcome'] {
+
+    .full-page {
+        margin-top: -50px;
+    }
 
     h1,
     h2 {
@@ -320,7 +250,7 @@ div.disabled {
     }
 
     .jumbo {
-        margin-top: 50px;
+        margin-top: 60px;
         margin-bottom: 50px;
         padding-top: 20px;
         padding-bottom: 20px;
@@ -335,11 +265,12 @@ div.disabled {
     }
 
     .call-to-action {
+        margin-top: 30px;
 
         a {
             font-weight: bold;
-            font-size: 1.6em;
-            padding: 15px 25px;
+            font-size: 1.2em;
+            padding: 10px 15px;
             white-space: normal;
         }
     }
@@ -358,12 +289,15 @@ div.disabled {
     }
 
     .welcome {
-        padding-top: 10px;
-        padding-bottom: 10px;
-        z-index: -1;
+        margin-top: 50px;
+
+        .main-logo {
+            margin-bottom: 30px;
+        }
 
         h1 {
             font-weight: bold;
+            font-size: 28px;
         }
 
         h4 {
@@ -395,4 +329,146 @@ div.disabled {
     .how-it-works {
         display: none;
     }
+}
+
+[data-page='signin'] {
+
+    form {
+        max-width: 500px;
+    }
+}
+
+[data-page='signup'] {
+
+    form {
+        max-width: 500px;
+    }
+}
+
+[data-page='instances'] {
+
+    form {
+        max-width: 500px;
+    }
+
+    .jumbo {
+        margin-top: 90px;
+    }
+}
+
+[data-page='projects'] {
+
+    .jumbo {
+        margin-top: 90px;
+    }
+}
+
+[data-page='settings'] {
+
+    .jumbo {
+        margin-top: 90px;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spinw {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes spinm {
+    from {
+        -moz-transform: rotate(0deg);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+
+    .form-notification {
+        position: absolute;
+        top: 9px;
+        right: 12px;
+        font-size: 14px;
+        background-color: rgb(255, 255, 255);
+        line-height: normal;
+    }
+
+    [data-page='welcome'] {
+
+        .welcome {
+
+            .main-logo {
+                margin-bottom: 60px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+        }
+
+        .call-to-action {
+            margin-top: 60px;
+
+            a {
+                font-size: 1.6em;
+                padding: 10px 15px;
+            }
+        }
+    }
+
+    [data-page='instances'] {
+
+        .jumbo {
+            margin-top: 60px;
+        }
+    }
+
+    [data-page='projects'] {
+
+        .jumbo {
+            margin-top: 60px;
+        }
+    }
+
+    [data-page='settings'] {
+
+        .jumbo {
+            margin-top: 60px;
+        }
+    }
+}
+
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+    .vcenter-content > * {
+        display: table-cell;
+        vertical-align: middle;
+        float: none;
+    }
+}
+
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
 }

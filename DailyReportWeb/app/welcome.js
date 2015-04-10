@@ -15,4 +15,8 @@ angular.module('app')
             $location.url('/app/instances');
             return;
         }
+
+        var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+        if (iOS)
+            $('.full-page').height(window.innerHeight);
     }]);
