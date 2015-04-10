@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,11 +9,13 @@ namespace DailyReportWeb.Controllers
 {
     public class AvatarController : Controller
     {
-        // GET: Avatar
-        public ActionResult Avatar(string key)
-        {
+       public IDataService DataService { get; set; }
 
-            return View();
+        // GET: Avatar
+        public ActionResult Image(string id)
+        {
+            var image = DataService.GetImageFromDb(id);
+            return File(image, "image/png");
         }
     }
 }

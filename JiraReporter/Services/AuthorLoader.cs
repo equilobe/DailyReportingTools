@@ -345,7 +345,6 @@ namespace JiraReporter.Services
 
             var image = GetImageFromURL(_currentAuthor.JiraAvatarLink.OriginalString);
             SetUserAvatar(image);
-            
         }
 
         private void SetRemainingEstimate()
@@ -428,7 +427,7 @@ namespace JiraReporter.Services
 
         private Uri GetUserAvatarLink(string imageKey)
         {
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/" + imageKey);
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/image/" + imageKey);
         }
 
     }

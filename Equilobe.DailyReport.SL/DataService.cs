@@ -188,6 +188,14 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public byte[] GetImageFromDb(string key)
+        {
+            using (var db = new Equilobe.DailyReport.DAL.ReportsDb())
+            {
+                return db.InstalledInstances.SelectMany(i => i.UserImages).Single(i => i.Key == key).ImageContent;
+            }
+        }
+
         public JiraPolicy GetPolicy(string uniqueProjectKey)
         {
             var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
