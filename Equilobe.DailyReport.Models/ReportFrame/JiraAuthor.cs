@@ -59,15 +59,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> Issues { get; set; }
         public List<IssueDetailed> MonthIssues { get; set; }
         public List<IssueDetailed> SprintIssues { get; set; }
-        public List<IssueDetailed> InProgressTasks { get; set; }
-        public List<IssueDetailed> OpenTasks { get; set; }
+
         public List<IssueDetailed> InProgressTasksParents { get; set; }
         public List<IssueDetailed> OpenTasksParents { get; set; }
-        public List<IssueDetailed> UncompletedTasks { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
-        public int UncompletedTasksCount { get; set; }
+        public int RemainingTasksCount { get; set; }
         public int AdditionalUncompletedTasksCount { get; set; }
 
         public List<JiraCommit> Commits { get; set; }
@@ -86,9 +84,9 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public SummaryGuidelineInfo GuidelineInfo { get; set; }
 
-        public UncompletedTasks InProgressTasksModel { get; set; }
-        public UncompletedTasks OpenTasksModel { get; set; }
-        public UncompletedTasks UncompletedTasksModel { get; set; }
+        public AuthorTasks InProgressTasksModel { get; set; }
+        public AuthorTasks OpenTasksModel { get; set; }
+        public AuthorTasks RemainingTasks { get; set; }
 
         public Uri IssueSearchUrl { get; set; }
 

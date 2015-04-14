@@ -2,7 +2,6 @@
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Models.Views;
 using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
@@ -28,6 +27,7 @@ namespace JiraReporter.Services
         Sprint _sprint { get { return _context.Sprint; } }
         JiraAuthor _currentAuthor;
         JiraReport _context;
+        int _currentTasksCount;
 
         public AuthorLoader(JiraReport context)
         {
@@ -95,28 +95,6 @@ namespace JiraReporter.Services
             SetAvatarId();
             SetOverrideEmail();
             SetAuthorIsEmpty();
-            SetViewModels();
-        }
-
-        private void SetViewModels()
-        {
-            _currentAuthor.InProgressTasksModel = new UncompletedTasks
-            {
-                AuthorName = _currentAuthor.Name,
-                Issues = _currentAuthor.InProgressTasksParents
-            };
-
-            _currentAuthor.OpenTasksModel = new UncompletedTasks
-            {
-                AuthorName = _currentAuthor.Name,
-                Issues = _currentAuthor.OpenTasksParents
-            };
-
-            _currentAuthor.UncompletedTasksModel = new UncompletedTasks
-            {
-                AuthorName = _currentAuthor.Name,
-                Issues = _currentAuthor.UncompletedTasks
-            };
         }
 
         private void SetName()
@@ -259,48 +237,57 @@ namespace JiraReporter.Services
 
             SetAuthorInProgressTasks();
             SetAuthorOpenTasks();
-            SetAuthorUncompletedTasksSection();
+            SetAuthorRemainingTasksSection();
         }
 
         private void SetAuthorInProgressTasks()
         {
-            _currentAuthor.InProgressTasks = new List<IssueDetailed>();
-            _currentAuthor.InProgressTasks = GetAuthorTasks(_reportTasks.InProgressTasks);
-            _currentAuthor.InProgressTasksCount = _currentAuthor.InProgressTasks.Count();
-            TaskLoader.SetErrors(_currentAuthor.InProgressTasks, _policy);
-            IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.InProgressTasks, _currentAuthor.Issues);
-            if (_currentAuthor.InProgressTasks != null)
+            var inProgressTasks = new List<IssueDetailed>();
+            inProgressTasks = GetAuthorTasks(_reportTasks.InProgressTasks);
+            _currentAuthor.InProgressTasksCount = inProgressTasks.Count();
+            TaskLoader.SetErrors(inProgressTasks, _policy);
+            IssueAdapter.SetIssuesExistInTimesheet(inProgressTasks, _currentAuthor.Issues);
+            if (inProgressTasks != null)
             {
-                _currentAuthor.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.InProgressTasks);
+                _currentAuthor.Timing.InProgressTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(inProgressTasks);
                 _currentAuthor.Timing.InProgressTasksTimeLeftString = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds.SetTimeFormat8Hour();
             }
-            _currentAuthor.InProgressTasksParents = TaskLoader.GetParentTasks(_currentAuthor.InProgressTasks, _currentAuthor);
-            _currentAuthor.InProgressTasksParents = _currentAuthor.InProgressTasksParents.OrderBy(priority => priority.Priority.id).ToList();
+
+            _currentAuthor.InProgressTasksModel = new AuthorTasks
+            {
+                Issues = TaskLoader.GetParentTasks(inProgressTasks, _currentAuthor),
+                AuthorName = _currentAuthor.Name
+            };
+
+            _currentAuthor.InProgressTasksModel.Issues = _currentAuthor.InProgressTasksModel.Issues.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        private void SetAuthorUncompletedTasksSection()
+        private void SetAuthorRemainingTasksSection()
         {
-            _currentAuthor.Timing.UncompletedTasksTimeLeftSeconds = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds + _currentAuthor.Timing.OpenTasksTimeLeftSeconds;
-            _currentAuthor.Timing.UncompletedTasksTimeLeftString = _currentAuthor.Timing.UncompletedTasksTimeLeftSeconds.SetTimeFormat8Hour();
-            var tasksCount = 0;
-            _currentAuthor.UncompletedTasks = new List<IssueDetailed>();
+            _currentAuthor.Timing.RemainingTasksTimeLeftSeconds = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds + _currentAuthor.Timing.OpenTasksTimeLeftSeconds;
+            _currentAuthor.Timing.RemainingTasksTimeLeftString = _currentAuthor.Timing.RemainingTasksTimeLeftSeconds.SetTimeFormat8Hour();
+            _currentTasksCount = 0;
 
-            AddToUncompletedTasksList(ref tasksCount, _currentAuthor.InProgressTasksParents);
-            AddToUncompletedTasksList(ref tasksCount, _currentAuthor.OpenTasksParents);
+            _currentAuthor.RemainingTasks = new AuthorTasks();
+            _currentAuthor.RemainingTasks.AuthorName = _currentAuthor.Name;
+            _currentAuthor.RemainingTasks.Issues = new List<IssueDetailed>();
+
+            AddToRemainingTasksList(_currentAuthor.InProgressTasksParents);
+            AddToRemainingTasksList(_currentAuthor.OpenTasksParents);
 
             SetUncompletedTasksAdditionalCount();
         }
 
-        private void AddToUncompletedTasksList(ref int count, List<IssueDetailed> tasks)
+        private void AddToRemainingTasksList(List<IssueDetailed> tasks)
         {
             foreach (var issue in tasks)
             {
-                if (count >= 3)
+                if (_currentTasksCount >= 3)
                     return;
 
                 var newIssue = new IssueDetailed();
                 if (issue.Assignee == _currentAuthor.Name)
-                    count++;
+                    _currentTasksCount++;
 
                 issue.CopyPropertiesOnObjects(newIssue);
                 newIssue.Subtasks = new List<Subtask>();
@@ -312,33 +299,33 @@ namespace JiraReporter.Services
                     {
                         if (subtask.Assignee == _currentAuthor.Name)
                         {
-                            count++;
+                            _currentTasksCount++;
                             newIssue.SubtasksDetailed.Add(subtask);
-                            if (count == 3)
+                            if (_currentTasksCount == 3)
                             {
-                                _currentAuthor.UncompletedTasks.Add(newIssue);
+                                _currentAuthor.RemainingTasks.Issues.Add(newIssue);
                                 return;
                             }
                         }
                     }
                 }
 
-                _currentAuthor.UncompletedTasks.Add(newIssue);
+                _currentAuthor.RemainingTasks.Issues.Add(newIssue);
             }
         }
 
         private void SetUncompletedTasksAdditionalCount()
         {
-            var uncompletedVisibleTasksCount = _currentAuthor.UncompletedTasks.Count + _currentAuthor.UncompletedTasks.SelectMany(t => t.SubtasksDetailed).ToList().Count;
-            _currentAuthor.UncompletedTasksCount = _currentAuthor.InProgressTasksCount + _currentAuthor.OpenTasksCount;
-            _currentAuthor.AdditionalUncompletedTasksCount = _currentAuthor.UncompletedTasksCount - uncompletedVisibleTasksCount;
+            var uncompletedVisibleTasksCount = _currentAuthor.RemainingTasks.Count + _currentAuthor.RemainingTasks.SelectMany(t => t.SubtasksDetailed).ToList().Count;
+            _currentAuthor.RemainingTasksCount = _currentAuthor.InProgressTasksCount + _currentAuthor.OpenTasksCount;
+            _currentAuthor.AdditionalUncompletedTasksCount = _currentAuthor.RemainingTasksCount - uncompletedVisibleTasksCount;
         }
 
 
         private void SetAuthorIsEmpty()
         {
-            var hasInProgress = _currentAuthor.InProgressTasks != null && _currentAuthor.InProgressTasks.Count > 0;
-            var hasOpenTasks = _currentAuthor.OpenTasks != null && _currentAuthor.OpenTasks.Count > 0;
+            var hasInProgress = _currentAuthor.InProgressTasksModel.Issues != null && _currentAuthor.InProgressTasksModel.Issues.Count > 0;
+            var hasOpenTasks = _currentAuthor.OpenTasksModel.Issues != null && _currentAuthor.OpenTasksModel.Issues.Count > 0;
             var hasDayLogs = _currentAuthor.DayLogs != null && _currentAuthor.DayLogs.Count > 0;
             var hasIssues = (_currentAuthor.MonthIssues != null && _currentAuthor.MonthIssues.Count > 0)
                 || (_currentAuthor.SprintIssues != null && _currentAuthor.SprintIssues.Count > 0);
@@ -380,11 +367,11 @@ namespace JiraReporter.Services
                 return;
 
             var inProgressTasksErrors = new List<Error>();
-            if (_currentAuthor.InProgressTasks != null && _currentAuthor.InProgressTasks.Count > 0)
-                inProgressTasksErrors = _currentAuthor.InProgressTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (_currentAuthor.InProgressTasksParents != null && _currentAuthor.InProgressTasksParents.Count > 0)
+                inProgressTasksErrors = _currentAuthor.InProgressTasksParents.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
             var openTasksErrors = new List<Error>();
-            if (_currentAuthor.OpenTasks != null && _currentAuthor.OpenTasks.Count > 0)
-                openTasksErrors = _currentAuthor.OpenTasks.Where(e => e.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (_currentAuthor.OpenTasksParents != null && _currentAuthor.OpenTasksParents.Count > 0)
+                openTasksErrors = _currentAuthor.OpenTasksParents.Where(e => e.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
 
             if (inProgressTasksErrors.Count > 0 || openTasksErrors.Count > 0)
             {
@@ -397,18 +384,24 @@ namespace JiraReporter.Services
 
         private void SetAuthorOpenTasks()
         {
-            _currentAuthor.OpenTasks = new List<IssueDetailed>();
-            _currentAuthor.OpenTasks = GetAuthorTasks(_reportTasks.OpenTasks);
-            _currentAuthor.InProgressTasksCount = _currentAuthor.InProgressTasks.Count; 
-            TaskLoader.SetErrors(_currentAuthor.OpenTasks, _policy);
-            IssueAdapter.SetIssuesExistInTimesheet(_currentAuthor.OpenTasks, _currentAuthor.Issues);
-            if (_currentAuthor.OpenTasks != null)
+            var openTasks = new List<IssueDetailed>();
+            openTasks = GetAuthorTasks(_reportTasks.OpenTasks);
+            _currentAuthor.InProgressTasksCount = openTasks.Count;
+            TaskLoader.SetErrors(openTasks, _policy);
+            IssueAdapter.SetIssuesExistInTimesheet(openTasks, _currentAuthor.Issues);
+            if (openTasks != null)
             {
-                _currentAuthor.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(_currentAuthor.OpenTasks);
+                _currentAuthor.Timing.OpenTasksTimeLeftSeconds = IssueAdapter.GetTasksTimeLeftSeconds(openTasks);
                 _currentAuthor.Timing.OpenTasksTimeLeftString = _currentAuthor.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
             }
-            _currentAuthor.OpenTasksParents = TaskLoader.GetParentTasks(_currentAuthor.OpenTasks, _currentAuthor);
-            _currentAuthor.OpenTasksParents = _currentAuthor.OpenTasksParents.OrderBy(priority => priority.Priority.id).ToList();
+
+            _currentAuthor.OpenTasksModel = new AuthorTasks
+            {
+                Issues = TaskLoader.GetParentTasks(openTasks, _currentAuthor),
+                AuthorName = _currentAuthor.Name
+            };
+
+            _currentAuthor.OpenTasksModel.Issues = _currentAuthor.OpenTasksModel.Issues.OrderBy(priority => priority.Priority.id).ToList();
         }
 
         private List<IssueDetailed> GetAuthorTasks(List<IssueDetailed> tasks)

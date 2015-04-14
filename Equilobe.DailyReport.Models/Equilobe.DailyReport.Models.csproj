@@ -130,13 +130,10 @@
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedAdvancedSettings.cs" />
     <Compile Include="TimeZone\TimeZones.cs" />
-    <Compile Include="Views\UncompletedTasks.cs" />
-    <Compile Include="Web\AccountModel.cs" />
+    <Compile Include="ReportFrame\AuthorTasks.cs" />
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
-    <Compile Include="Web\DataWelcome.cs" />
-    <Compile Include="Web\ReportSettings.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />
     <Compile Include="Interfaces\IJiraService.cs" />
@@ -161,7 +158,9 @@
       <Name>Equilobe.DailyReport.Utils</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
