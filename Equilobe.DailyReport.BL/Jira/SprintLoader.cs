@@ -24,7 +24,7 @@ namespace Equilobe.DailyReport.BL.Jira
 
         List<View> GetRapidViewsFromProject()
         {
-            var views = Client.GetRapidViews(); 
+            var views = Client.GetRapidViews();
 
             var rapidViews = views
                 .Where(view => view.filter.query.ToLower().Contains(Filter.ProjectKey.ToLower())
@@ -45,7 +45,7 @@ namespace Equilobe.DailyReport.BL.Jira
             return Client.GetRapidView(activeViewId);
         }
 
-        public Sprint GetLatestSprint()
+        public Sprint GetLatestSprint(DateTime date)
         {
             var projectViews = GetRapidViewsFromProject();
             var activeView = GetActiveView(projectViews);
@@ -58,8 +58,11 @@ namespace Equilobe.DailyReport.BL.Jira
 
             if (sprints == null || sprints.Count == 0)
                 return null;
-            
-            var sprint = GetCompleteSprint(sprints.Last().id.ToString(), rapidViewId);
+
+            var sprint = GetSprint(sprints, date, rapidViewId);
+
+            if (sprint != null && sprint.state == "CLOSED")
+                return null;
 
             return sprint;
         }
@@ -69,6 +72,24 @@ namespace Equilobe.DailyReport.BL.Jira
             var completedSprint = Client.GetSprintReport(rapidViewId, sprintId).sprint;
 
             return completedSprint;
+        }
+
+        Sprint GetSprint(List<Sprint> sprints, DateTime date, string rapidViewId)
+        {
+            while (sprints.Count > 0)
+            {
+                var sprint = sprints.Last();
+                sprint = GetCompleteSprint(sprint.id.ToString(), rapidViewId);
+                if (sprint.StartDate.Date <= date && sprint.EndDate.Date >= date)
+                    return sprint;
+
+                if (date > sprint.EndDate)
+                    return null;
+
+                sprints.Remove(sprints.Last());
+            }
+
+            return null;
         }
     }
 }
