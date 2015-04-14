@@ -18,5 +18,17 @@ namespace SourceControlLogReporter.RazorEngine
             var partialViewResult = Razor.Parse(template, model);
             return partialViewResult;
         }
+
+        public string Partial(string path) 
+        {
+            var template = File.ReadAllText(path);
+            var partialViewResult = Razor.Parse(template);
+            return partialViewResult;
+        }
+
+        public string Dot()
+        {
+            return Partial("Views/dot.cshtml");
+        }
     }
 }
