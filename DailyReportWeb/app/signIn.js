@@ -8,16 +8,17 @@ angular.module('app')
         });
     }])
     .controller("SignInController", ['$scope', '$http', '$location', function ($scope, $http, $location) {
+        $("body").attr("data-page", "signin");
         $scope.$parent.child = $scope;
 
         $scope.signIn = function ($scope) {
             $scope.status = "checking";
-            $scope.signInForm.$setPristine();
+            $scope.form.$setPristine();
 
-            $http.post("/api/account/login", $scope.signInForm)
+            $http.post("/api/account/login", $scope.form)
                 .success(function (response) {
                     if (response.success) {
-                        $scope.$parent.isAuth = true;
+                        $scope.$root.isAuth = true;
                         $location.path('/app/instances');
                     }
                     else {

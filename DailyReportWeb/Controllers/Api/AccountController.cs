@@ -45,7 +45,13 @@ namespace DailyReportWeb.Controllers.Api
                 !Validations.Url(model.BaseUrl))
                 throw new ArgumentException();
 
-            JiraService.CredentialsValid(model, false);
+            var credentialsValid = JiraService.CredentialsValid(model, false);
+            if (!credentialsValid)
+                return new AccountResponse()
+                {
+                    Success = false,
+                    Message = "Invalid JIRA username or password"
+                };
 
             List<string> errors = new List<string>();
 
@@ -101,7 +107,7 @@ namespace DailyReportWeb.Controllers.Api
             if (userId == null || code == null)
                 return new AccountResponse() { Success = false };
 
-            if(UserManager.FindById(userId).EmailConfirmed)
+            if (UserManager.FindById(userId).EmailConfirmed)
                 return new AccountResponse() { Success = true };
 
             IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
@@ -138,19 +144,19 @@ namespace DailyReportWeb.Controllers.Api
 
             var user = await UserManager.FindAsync(model.Email, model.Password);
 
-            if (!await UserManager.IsEmailConfirmedAsync(user.Id))
-                return new AccountResponse()
-                {
-                    Success = false,
-                    Message = "Account has not been activated yet. Please check the mail and proceed with account confirmation."
-                };
-
             if (user == null)
                 return new AccountResponse()
                 {
                     Success = false,
                     ErrorList = errors,
                     Message = "Invalid username or password."
+                };
+
+            if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                return new AccountResponse()
+                {
+                    Success = false,
+                    Message = "Account has not been activated yet. Please check the mail and proceed with account confirmation."
                 };
 
             await SignInAsync(user, model.RememberMe);

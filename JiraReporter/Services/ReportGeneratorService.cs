@@ -112,7 +112,7 @@ namespace JiraReporter
 
         Sprint GenerateSprint(JiraReport report)
         {
-            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
+            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.ToDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
             var sprint = JiraService.GetProjectSprintForDate(projectDateFilter);
             if (sprint != null)
                 report.HasSprint = true;

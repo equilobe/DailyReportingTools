@@ -44,7 +44,7 @@ else
                                     <tbody>
                                         <tr>
                                             <td style="vertical-align:top; width:15px">
-                                                <span><span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span></span>
+                                                @Dot();
                                             </td>
                                             <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no estimate</b></td>
                                         </tr>
@@ -86,7 +86,7 @@ else
                             <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" /></td>
                             <td style="padding:0px; padding-bottom:5px">
                                 @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
-                                @if (Model.Author.Timing.AverageWorked > 0)
+                            @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
                                 {
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                         <div style="display:inline-block; background-color:#5CB85C; width:@Model.Author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -98,7 +98,7 @@ else
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                     </div>
                                 }
-                                @if (Model.Author.Timing.AverageWorkedSprint > 0)
+                            @if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
                                 {
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                         <div style="display:inline-block; background-color:#F60; width:@Model.Author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -110,7 +110,7 @@ else
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                     </div>
                                 }
-                                @if (Model.Author.Timing.AverageWorkedMonth > 0)
+                            @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
                                 {
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                         <div style="display:inline-block; background-color:#F0AD4E; width:@Model.Author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -122,7 +122,7 @@ else
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                     </div>
                                 }
-                                @if (Model.Author.Timing.TotalRemainingAverage > 0)
+                            @if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
                                 {
                                     <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                         <div style="display:inline-block; background-color:#337AB7; width:@Model.Author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>

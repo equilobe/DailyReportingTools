@@ -8,8 +8,15 @@ angular.module('app')
         });
     }])
     .controller("WelcomeController", ["$scope", "$http", "$location", function ($scope, $http, $location) {
-        if (isAuth) {
+        $("body").attr("data-page", "welcome");
+        $scope.$parent.child = $scope;
+
+        if ($scope.$root.isAuth) {
             $location.url('/app/instances');
             return;
         }
+
+        var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+        if (iOS)
+            $('.full-page').height(window.innerHeight);
     }]);

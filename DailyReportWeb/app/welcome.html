@@ -1,23 +1,14 @@
 ﻿<div class="welcome-page">
     <div class="full-page vcenter-parent">
-        <div class="public-menu">
-            <div class="container">
-                <div class="pull-right">
-                    <a class="btn" href="app/signup">Sign Up</a>
-                    <a class="btn" ng-click="pageScroll()">About</a>
-                    <a class="btn" href="app/signin">Log in</a>
-                </div>
-            </div>
-        </div>
-        <div class="welcome hcenter vcenter container">
-            <div class="logo">
+        <div class="container welcome hcenter vcenter">
+            <div class="main-logo">
                 <img src="../Content/Images/logo-main.PNG" />
             </div>
             <h1>
                 Email reporting for JIRA
             </h1>
             <h4>
-                Dailyreport is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
+                Daily Report is the easiest way to track the status of JIRA projects. It keeps clients up to date and happy and the team focused and on track.
             </h4>
             <p class="call-to-action">
                 <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
@@ -28,7 +19,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="report-summary" id="about">
         <div class="container">
             <h1>
                 The report your clients have been waiting for
@@ -37,60 +28,66 @@
                 Communicate project status to your clients or boss without wasting valuable time.
                 It also keeps you and your team focused and informed.
             </p>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7">
                     <h2>
                         Sprint status
                     </h2>
                     <p class="help-block">
-                        This is a must read section. Just by looking at this section you can immediately see if your sprint is on track or if you need to adjust scope.
-                        The values in the chart are all daily averages, which allows you to easily compare them.
-                        The sprint chart is accompanied by a month chart, because most of the time budgets are monthly even though you work in sprints, or for the rare cases when you don’t use sprints.
+                        Immediately see if your sprint is on track or if you need to adjust scope.
+                        Chart values are all daily averages for easy comparison.
+                        A month chart is also present, because most of the time budgets are monthly even though you work in sprints.
                     </p>
                 </div>
                 <div class="col-md-5 hcenter">
                     <img src="../Content/Images/sprint-status.png" />
                 </div>
             </div>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7 col-md-push-5">
                     <h2>
                         Team summary
                     </h2>
                     <p class="help-block">
-                        In this section you can see the work breakdown for each team member. Daily averages are also used for easy comparison.
-                        You can immediately spot if someone forgot to log some work or if he has too many tasks on his plate.
-                        Only relevant people to the current sprint are shown in the list.
+                        Review the work breakdown for each team member with an easy to read chart that used only dailyaverages.
+                        Immediately spot if someone forgot to log work or has too much work left.
                     </p>
                 </div>
                 <div class="col-md-5 col-md-pull-7 hcenter">
                     <img src="../Content/Images/team-status.png" />
                 </div>
             </div>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7">
                     <h2>
-                        Scrum notes
+                        “Scrum notes”
                     </h2>
                     <p class="help-block">
-                        The tasks and sub-tasks that a person worked on the day before, as indicated by his work logs, are part of this section that looks a lot like a set of scrum notes.
-                        It tells you what the person worked on, but also what he plans to work on next.
-                        The version control system is also used to get the full list of commits and pull requests.
+                        See the tasks and sub-tasks that a person worked on the day before, as indicated by his work logs.
+                        The list of commits and pull requests are included by connecting your version control system.
+                        You can also see what the person will work on next.
                     </p>
                 </div>
                 <div class="col-md-5 hcenter">
                     <img src="../Content/Images/full-timesheet.png" />
                 </div>
             </div>
-            <div class="row vcenter-content">
+        </div>
+        <div class="row">
+            <div class="container vcenter-content">
                 <div class="col-md-7 col-md-push-5">
                     <h2>
                         Recently completed
                     </h2>
                     <p class="help-block">
-                        If you want to refresh your memory about the tasks that have been completed in the last 7 days you can use this section of the report.
-                        The tasks are grouped per day and contain other useful information like who was responsible for it and how long did it take to complete.
-                        No sub-tasks are shown here.
+                        Review the tasks that have been completed in the last 7 days.
+                        The responsible person and how long it took to complete the task is also shown.
                     </p>
                 </div>
                 <div class="col-md-5 col-md-pull-7 hcenter">
@@ -100,7 +97,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="reasons-to-join">
         <div class="jumbo">
             <div class="container">
                 <h1>
@@ -111,15 +108,15 @@
                 </p>
             </div>
         </div>
-        <div class="container reasons-to-join">
+        <div class="container">
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/email.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Email based
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         Each team member receives the report in their inbox every day.
                         It looks great on most email clients. Mobile too.
@@ -129,13 +126,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/idcard.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Do it yourself
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         You don't need to be the admin of your JIRA site to make it work.
                         If you have read access to a project than you can start getting the daily report for that project.
@@ -144,13 +141,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/rocket.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         30 second set up
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         It's as easy as setting the report time for your project.
                         That's actually the only thing you need to set to make it work.
@@ -161,13 +158,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/create.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Your own
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         We understand that one size doesn't always fit everyone, so we're giving you the chance to tweak every little aspect of your report.
                         We want you to get the report you want, not the report we think you need.
@@ -175,13 +172,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">
+                <h2 class="col-md-2 hcenter">
                     <img src="../Content/Images/assistant.svg" />
-                </div>
-                <div class="col-sm-10">
-                    <h1>
+                </h2>
+                <div class="col-md-10">
+                    <h2>
                         Great support
-                    </h1>
+                    </h2>
                     <p class="help-block">
                         We are glad to help with any problem you might have.
                         Just send us an email and we'll reply within 24 hours. No exceptions.
@@ -191,7 +188,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="process-3-steps">
         <div class="jumbo">
             <div class="container">
                 <h1>
@@ -281,31 +278,11 @@
         </div>
     </div>
 
-    <div>
-        <div class="container">
-            <div class="hcenter">
-                <p class="call-to-action">
-                    <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
-                </p>
-            </div>
+    <div class="container">
+        <div class="hcenter">
+            <p class="call-to-action">
+                <a ng-href="app/signup" class="btn btn-success btn-lg">Get the daily report free for 1 month</a>
+            </p>
         </div>
     </div>
-
-    <footer>
-        <div class="container">
-            <div class="col-md-4">
-                <img src="../Content/Images/logo-menu.PNG" />
-            </div>
-            <div class="col-md-8">
-                <p>All rights reserved ©2015 Equilobe Software.</p>
-                <p><a href="http://www.equilobe.com/contact/">Contact us</a>, or join us on <a href="https://twitter.com/">Twitter</a>, <a href="https://www.facebook.com/">Facebook</a>, and <a href="https://plus.google.com/">Google+</a>.</p>
-                <p>
-                    <a href="/terms">Terms of service</a>,
-                    <a href="/privacy">Privacy policy</a>,
-                    <a href="/refund">Refund policy</a>,
-                    <a href="/security">Security information</a>
-                </p>
-            </div>
-        </div>
-    </footer>
 </div>

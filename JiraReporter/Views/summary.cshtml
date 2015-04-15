@@ -86,7 +86,9 @@ else
                                                     <td style="vertical-align:top; width:15px">
                                                         <span><span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span></span>
                                                     </td>
-                                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has not confirmed draft</b></td>
+                                                    <td colspan="1" style="text-align: left">
+                                                    <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
+                                                    </td>
                                                 </tr>
                                             }
                                         }
@@ -284,15 +286,14 @@ else
         <table cellspacing="0" style="margin-top:20px">
             @foreach (var author in Model.Authors)
             {
-                imgSrc = "cid:" + author.AvatarId;
                 <tr>
                     <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <img src="@imgSrc" />
+                        <img src="@*@author.DRTAvatarLink*@" />
                         <span style="color:black; display:inline-block; padding-top:5px">@author.ShortName</span>
                     </td>
                     <td style="padding:0px; padding-bottom:10px; height:55px">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
-                        @if (author.Timing.AverageWorked > 0)
+                        @if (author.Timing.AverageWorkedHours >= 0.1)
                         {
                             <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                 <div style="display:inline-block; background-color:#5CB85C; width:@author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -305,7 +306,7 @@ else
                             </div>
                         }
 
-                        @if (author.Timing.AverageWorkedSprint > 0)
+                        @if (author.Timing.AverageWorkedSprintHours >= 0.1)
                         {
                             <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                 <div style="display:inline-block; background-color:#F60; width:@author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -318,7 +319,7 @@ else
                             </div>
                         }
 
-                        @if (author.Timing.AverageWorkedMonth > 0)
+                        @if (author.Timing.AverageWorkedMonthHours >= 0.1)
                         {
                             <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
                                 <div style="display:inline-block; background-color:#F0AD4E; width:@author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
@@ -331,7 +332,7 @@ else
                             </div>
                         }
 
-                        @if (author.Timing.TotalRemainingAverage > 0)
+                        @if (author.Timing.TotalRemainingAverage >= 0.1)
                         {
                             <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:0px">
                                 <div style="display:inline-block; background-color:#337AB7; width:@author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>

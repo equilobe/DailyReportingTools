@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
-using Equilobe.DailyReport.Models.Views;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
@@ -60,9 +59,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> MonthIssues { get; set; }
         public List<IssueDetailed> SprintIssues { get; set; }
 
-        public List<IssueDetailed> InProgressTasksParents { get; set; }
-        public List<IssueDetailed> OpenTasksParents { get; set; }
-
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
         public int RemainingTasksCount { get; set; }
@@ -84,8 +80,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public SummaryGuidelineInfo GuidelineInfo { get; set; }
 
-        public AuthorTasks InProgressTasksModel { get; set; }
-        public AuthorTasks OpenTasksModel { get; set; }
+        public AuthorTasks InProgressTasks { get; set; }
+        public AuthorTasks OpenTasks { get; set; }
         public AuthorTasks RemainingTasks { get; set; }
 
         public Uri IssueSearchUrl { get; set; }

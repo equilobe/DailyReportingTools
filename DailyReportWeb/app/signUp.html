@@ -1,113 +1,92 @@
 ﻿<div class="jumbotron jumbo">
     <div class="container">
         <h1>
-            Daily Report
+            Sign Up
         </h1>
         <p class="help-block">
-            Use this page to create account.
+            One account to manage all your JIRA projects reporting
         </p>
     </div>
 </div>
-<form name="form">
+<form name="form" class="container">
+    <div class="panel-heading">
+        <h3>
+            Daily Report
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="form-group">
+                <label>
+                    Email
+                </label>
+                <div ng-form="emailForm">
+                    <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
+                    <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Password
+                </label>
+                <div ng-form="passwordForm">
+                    <input name="password" type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
+                    <span class="form-notification" ng-show="passwordForm.password.$error.pattern && !password.focus"><b>Enter valid password</b> (min 8 chars)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-heading">
+        <h3>
+            JIRA
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="form-group">
+                <label>
+                    Instance Url
+                </label>
+                <div ng-form="instanceUrlForm">
+                    <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
+                    <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Time Zone
+                </label>
+                <div>
+                    <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Username
+                </label>
+                <div>
+                    <input type="text" class="form-control" placeholder="JIRA username" required ng-model="form.jiraUsername" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Password
+                </label>
+                <div>
+                    <input type="password" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4>
-                    Daily Report
-                </h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>
-                                Email
-                            </label>
-                            <div ng-form="emailForm">
-                                <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
-                                <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>
-                                Password
-                            </label>
-                            <div ng-form="passwordForm">
-                                <input name="password" type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
-                                <span class="form-notification" ng-show="passwordForm.password.$error.pattern && !password.focus"><b>Enter valid password</b> (min 8 chars)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4>
-                    JIRA
-                </h4>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>
-                                Username
-                            </label>
-                            <div>
-                                <input type="text" class="form-control" placeholder="JIRA username" required ng-model="form.jiraUsername" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>
-                                Password
-                            </label>
-                            <div>
-                                <input type="password" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label>
-                                Instance Url
-                            </label>
-                            <div ng-form="instanceUrlForm">
-                                <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
-                                <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>
-                                Time Zone
-                            </label>
-                            <div>
-                                <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <a ng-href="app/signin" class="btn btn-default">Sign In</a>
-            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signUp(this)">
-                Sign Up
-            </button>
-            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
-            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && form.$pristine">{{message}}</span>
-            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine">{{message}}</span>
-        </div>
+        <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signUp(this)">
+            Sign Up
+        </button>
+        <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="advancedOptionsForm.$dirty"></span>
+        <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
+        <span class="alert-success glyphicon glyphicon-ok message" ng-show="status == 'success' && form.$pristine"><span>{{message}}</span></span>
+        <span class="alert-danger glyphicon glyphicon-remove message" ng-show="status == 'error' && form.$pristine"><span>{{message}}</span></span>
     </div>
 </form>

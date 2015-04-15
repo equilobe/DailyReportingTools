@@ -18,15 +18,23 @@ namespace Equilobe.DailyReport.SL
         public IEncryptionService EncryptionService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
 
-        public void CredentialsValid(object context, bool passwordEncrypted = true)
+        public bool CredentialsValid(object context, bool passwordEncrypted = true)
         {
             var jiraRequestContext = new JiraRequestContext();
             context.CopyPropertiesOnObjects(jiraRequestContext);
 
             if (!passwordEncrypted)
                 jiraRequestContext.JiraPassword = EncryptionService.Encrypt(jiraRequestContext.JiraPassword);
-            
-            GetUser(jiraRequestContext, jiraRequestContext.JiraUsername);
+
+            try
+            {
+                GetUser(jiraRequestContext, jiraRequestContext.JiraUsername);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public JiraPolicy GetJiraInfo(ItemContext context)
@@ -128,7 +136,7 @@ namespace Equilobe.DailyReport.SL
         public Sprint GetProjectSprintForDate(ProjectDateFilter filter)
         {
             var client = GetClient(filter.Context);
-            return new SprintLoader(filter, client).GetLatestSprint();
+            return new SprintLoader(filter, client).GetLatestSprint(filter.Date);
         }
 
         private JiraClient GetClient(IJiraRequestContext context)

@@ -9,6 +9,7 @@ angular.module('app')
         });
     }])
     .controller("InstancesController", ['$scope', '$http', function ($scope, $http) {
+        $("body").attr("data-page", "instances");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 
@@ -26,7 +27,7 @@ angular.module('app')
         };
 
         $scope.editInstance = function ($scope) {
-            $scope.$parent.editingInstance = true;
+            $scope.$parent.$parent.editingInstance = true;
             $scope.form.baseUrl = $scope.instance.baseUrl;
             $scope.form.timeZone = $scope.instance.timeZone;
         };
@@ -53,6 +54,7 @@ angular.module('app')
                  })
                  .error(function () {
                      $scope.status = "error";
+                     $scope.message = "Invalid JIRA username or password";
                      console.log("error");
                  });
         };
