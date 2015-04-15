@@ -11,7 +11,7 @@ angular.module('app')
         $("body").attr("data-page", "welcome");
         $scope.$parent.child = $scope;
 
-        if (isAuth) {
+        if ($scope.$root.isAuth) {
             $location.url('/app/instances');
             return;
         }
