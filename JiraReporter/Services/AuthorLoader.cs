@@ -21,6 +21,7 @@ namespace JiraReporter.Services
         public IJiraService JiraService { get; set; }
         public IEncryptionService EncryptionService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
+        public IDataService DataService { get; set; }
 
         SprintTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
@@ -386,33 +387,14 @@ namespace JiraReporter.Services
 
         private void SetUserAvatar(byte[] image)
         {
-            using(var db = new ReportsDb())
-            {
-                var installedInstace = db.InstalledInstances.Single(i => i.Id == _context.Settings.InstalledInstance.Id);
-
-                if (!installedInstace.UserImages.ToList().Exists(userImage => userImage.Username == _currentAuthor.Username))
-                    SaveAvatarToDb(image, installedInstace);
-
-                var authorAvatar = installedInstace.UserImages.Single(a=>a.Username == _currentAuthor.Username);
-                _currentAuthor.ReportAvatarLink = GetUserAvatarLink(authorAvatar.Key);
-                db.SaveChanges();
-            }
+            DataService.AddAvatar(_currentAuthor.Username, _context.Settings.InstalledInstanceId, image);
+            var key = DataService.GetAvatarKey(_currentAuthor.Username);
+            SetUserAvatarLink(key);
         }
 
-        private void SaveAvatarToDb(byte[] image, InstalledInstance installedInstace)
+        private void SetUserAvatarLink(string imageKey)
         {
-            installedInstace.UserImages.Add(new UserImage
-            {
-                ImageContent = image,
-                InstalledInstanceId = installedInstace.Id,
-                Key = RandomString.Get(),
-                Username = _currentAuthor.Username
-            });
-        }
-
-        private Uri GetUserAvatarLink(string imageKey)
-        {
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/image/" + imageKey);
+            _currentAuthor.ReportAvatarLink =  new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/image/" + imageKey);
         }
 
     }

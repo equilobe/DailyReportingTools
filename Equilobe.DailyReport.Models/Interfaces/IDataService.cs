@@ -20,5 +20,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SetReportFromDb(Equilobe.DailyReport.Models.ReportFrame.JiraReport report);
         JiraPolicy GetPolicy(string uniqueProjectKey);
         byte[] GetImage(string key);
+        void AddAvatar(string username, long instanceId, byte[] image);
+        string GetAvatarKey(string username);
     }
 }

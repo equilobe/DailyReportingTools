@@ -122,11 +122,11 @@ namespace Equilobe.DailyReport.SL
                            .ToList()
                            .ForEach(installedInstance =>
                 {
-                               var instance = new Instance();
-                               instance.CopyFrom<IInstance>(installedInstance);
+                    var instance = new Instance();
+                    instance.CopyFrom<IInstance>(installedInstance);
 
-                               instances.Add(instance);
-                    });
+                    instances.Add(instance);
+                });
 
             return instances;
         }
@@ -202,6 +202,36 @@ namespace Equilobe.DailyReport.SL
             var policy = new JiraPolicy();
             policyBuffer.CopyPropertiesOnObjects(policy);
             return policy;
+        }
+
+        public void AddAvatar(string username, long instanceId, byte[] image)
+        {
+            using (var db = new ReportsDb())
+            {
+                var avatar = db.UserImages.SingleOrDefault(userImage => userImage.Username == username);
+                if (avatar != null)
+                    return;
+
+                db.UserImages.Add(new UserImage
+                {
+                    ImageContent = image,
+                    Key = RandomString.Get(),
+                    Username = username,
+                    InstalledInstanceId = instanceId
+                });
+
+                db.SaveChanges();
+            }
+        }
+
+        public string GetAvatarKey(string username)
+        {
+            using (var db = new ReportsDb())
+            {
+                var avatar = db.UserImages.Single(im => im.Username == username);
+
+                return avatar.Key;
+            }
         }
     }
 }
