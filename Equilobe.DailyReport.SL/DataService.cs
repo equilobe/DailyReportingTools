@@ -157,6 +157,7 @@ namespace Equilobe.DailyReport.SL
                     .Include(s => s.ReportExecutionSummary)
                     .Include(s => s.FinalDraftConfirmation)
                     .Include(s => s.IndividualDraftConfirmations)
+                    .Include(s => s.ReportExecutionInstances)
                     .SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
             }
         }

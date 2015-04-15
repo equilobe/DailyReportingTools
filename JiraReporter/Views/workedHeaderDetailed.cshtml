@@ -7,9 +7,9 @@
 <b style="color:Sienna; font-size:16px; "> @Model.Date.DayOfWeek </b>
 @if (Model.TimeSpent > 0)
 {
-    <span style="color:Sienna; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.TimeLogged worked </span>
+    <span style="color:Sienna; font-size:12px;"> @Dot() @Model.TimeLogged worked </span>
 }
 else
 {
-    <b style="color:orange; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> no work logged </b>
+    <b style="color:orange; font-size:12px;"> @Dot() no work logged </b>
 }

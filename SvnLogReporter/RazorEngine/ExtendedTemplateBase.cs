@@ -19,10 +19,10 @@ namespace SourceControlLogReporter.RazorEngine
             return partialViewResult;
         }
 
-        public string Partial(string path) 
+        public string Partial(string path)
         {
             var template = File.ReadAllText(path);
-            var partialViewResult = Razor.Parse(template);
+            var partialViewResult = Razor.Parse(template, typeof(object));
             return partialViewResult;
         }
 

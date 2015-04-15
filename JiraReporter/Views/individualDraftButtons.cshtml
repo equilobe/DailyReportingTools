@@ -1,0 +1,26 @@
+﻿<table style="margin-top:50px; width:250px; height:50px;">
+    <tbody>
+        <tr>
+            <td width="100px" height="40px" style="display:inline-block; padding:0px; line-height:40px;" title="This will confirm the draft ONLY for this particular user and send the draft report to the project manager &#013; Only click the button after: &#013; - errors have been corrected &#013; - all work has been logged">
+                @Partial("Views/confirmationButton.cshtml", Model.IndividualDraftInfo.ConfirmationDraftUrl)
+            </td>
+
+            <td width="30px" height="40px" style="display:inline-block;font-size:12px; line-height:40px;padding:0px; text-align:center">
+                or
+            </td>
+            <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
+                <a style="color:#0000FF; text-decoration:none; font-size:12px; line-height:40px" href="@Model.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+@if (Model.IsProjectLead == true)
+{
+    <div>
+        <hr style="width:250px; margin-left:0px" />
+        <span style="font-size:12px; color:black;">
+            If not everyone from your team has confirmed their report, you can also <a style="color:#0000FF; font-weight:bold; text-decoration:none;" href="@Model.IndividualDraftInfo.ForceDraftUrl">force the full draft</a>.
+        </span>
+    </div>
+}

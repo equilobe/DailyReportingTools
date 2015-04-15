@@ -1,68 +1,63 @@
 ﻿@{
     var color = "";
 }
-@if (Model.CompletedTasks != null)
-{
-    if (Model.CompletedTasks.Count > 0)
-    {
-        <div style="margin-top:30px">
-            <h3 style="color:black;">Completed last 7 days</h3>
-            @foreach (var completedTasks in Model.CompletedTasks)
-            {
-                <div style="margin-top:10px; line-height:1.4em;">
-                    <i style="color:sienna">Completed @completedTasks.Key (@completedTasks.Value.Count)</i>
-                    <table style="margin-left:10px;" cellpadding="1.5px">
-                        <tbody>
-                            @foreach (var task in completedTasks.Value)
-                            {
-                                <tr>
-                                    <td style="vertical-align:top">
-                                        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
-                                    </td>
-                                    <td>
-                                        @if (task.Resolution != "Fixed" && task.Resolution != "Done")
-                                        {
-                                            <span style="color:black; padding:1.5px">@task.Resolution</span>
-                                        }
-                                        @if (task.DisplayStatus == true)
-                                        {
-                                            <span style="color:black; padding:1.5px;">@task.Status</span>
-                                        }
-                                        <a style="text-decoration: none; color:#15C;" href="@task.Link">@task.Summary</a>
-                                        <span style="color: #B8B8B8;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @task.Key </span>
-                                        @if (task.TimeSpentTotal > 0)
-                                        {
-                                            color = "black";
-                                        }
-                                        else
-                                        {
-                                            color = "red";
-                                        }
-                                        <span style="color:@color;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @task.TimeLoggedTotal worked</span>
-                                        @if (task.RemainingEstimateSeconds == 0 && task.TotalRemainingSeconds > 0)
-                                        {
-                                            <span style="white-space:nowrap; color:red;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @task.TotalRemaining left from subtasks </span>
-                                        }
-                                        @if (task.RemainingEstimateSeconds != 0)
-                                        {
-                                            <span style="white-space:nowrap; color:red;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @task.RemainingEstimate left </span>
-                                        }
-                                        @if (task.Assignee != null)
-                                        {
-                                            <span style="color:black"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @task.Assignee </span>
-                                        }
-                                        else
-                                        {
-                                            <span style="color:black"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> Unassigned </span>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
 
-                </div>
-            }
+<div style="margin-top:30px">
+    <h3 style="color:black;">Completed last 7 days</h3>
+    @foreach (var completedTasks in Model.CompletedTasks)
+    {
+        <div style="margin-top:10px; line-height:1.4em;">
+            <i style="color:sienna">Completed @completedTasks.Key (@completedTasks.Value.Count)</i>
+            <table style="margin-left:10px;" cellpadding="1.5px">
+                <tbody>
+                    @foreach (var task in completedTasks.Value)
+                    {
+                        <tr>
+                            <td style="vertical-align:top">
+                                <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
+                            </td>
+                            <td>
+                                @if (task.Resolution != "Fixed" && task.Resolution != "Done")
+                                {
+                                    <span style="color:black; padding:1.5px">@task.Resolution</span>
+                                }
+                                @if (task.DisplayStatus == true)
+                                {
+                                    <span style="color:black; padding:1.5px;">@task.Status</span>
+                                }
+                                <a style="text-decoration: none; color:#15C;" href="@task.Link">@task.Summary</a>
+                                <span style="color: #B8B8B8;"> @Dot() @task.Key </span>
+                                @if (task.TimeSpentTotal > 0)
+                                {
+                                    color = "black";
+                                }
+                                else
+                                {
+                                    color = "red";
+                                }
+                                <span style="color:@color;"> @Dot() @task.TimeLoggedTotal worked</span>
+                                @if (task.RemainingEstimateSeconds == 0 && task.TotalRemainingSeconds > 0)
+                                {
+                                    <span style="white-space:nowrap; color:red;"> @Dot() @task.TotalRemaining left from subtasks </span>
+                                }
+                                @if (task.RemainingEstimateSeconds != 0)
+                                {
+                                    <span style="white-space:nowrap; color:red;"> @Dot() @task.RemainingEstimate left </span>
+                                }
+                                @if (task.Assignee != null)
+                                {
+                                    <span style="color:black"> @Dot() @task.Assignee </span>
+                                }
+                                else
+                                {
+                                    <span style="color:black"> @Dot() Unassigned </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
         </div>
     }
-} 
+</div>

@@ -31,28 +31,19 @@
                         }
                     }
                 </div>
+                @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
+                {
+                    @Partial("Views/unassignedSection.cshtml", Model)
+                }
 
-                @Partial("Views/unassignedSection.cshtml", Model)
-
-                @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
+                @if (Model.ReportTasks.CompletedTasks != null && Model.ReportTasks.CompletedTasks.Count > 0)
+                {
+                    @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
+                }
 
                 @if (Model.IsFinalDraft)
                 {
-                    <table style="margin-top:50px; width:250px; height:50px;">
-                        <tbody>
-                            <tr>
-                                <td width="100px" height="40px" title="This will confirm the draft for ALL users and send the final report &#013; Only click the button after: &#013; - errors have been corrected &#013; - everyone has logged their work &#013; - sprint scope has been adjusted (if necessary)" style="display:inline-block; padding:0px; line-height:40px;">
-                                    @Partial("Views/confirmationButton.cshtml", Model.SendReportUrl)
-                                </td>
-                                <td width="30px" height="40px" style="display:inline-block;font-size:12px; line-height:40px;padding:0px; text-align:center">
-                                    or
-                                </td>
-                                <td width="100px" height="40px;" style="display:inline-block; padding:0px; line-height:40px;">
-                                    <a style="color:#0000FF;  text-decoration:none; font-size:12px; line-height:40px" href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    @Partial("Views/fullDraftButtons.cshtml", Model)
                 }
 
                 @Partial("Views/footer.cshtml", Model)

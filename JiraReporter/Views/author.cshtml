@@ -19,15 +19,15 @@
 
                     @if (Model.Timing.RemainingTasksTimeLeftSeconds == 0)
                     {
-                        <i style="color:red; font-size:12px;"><span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.RemainingTasksTimeLeftString left</i>
+                        <i style="color:red; font-size:12px;">@Dot(); @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                     else
                     {
-                        <i style="color:sienna; font-size:12px;"> <span style="font-style:normal; font-size:25px; vertical-align:middle">&#x2022; </span> @Model.Timing.RemainingTasksTimeLeftString left</i>
+                        <i style="color:sienna; font-size:12px;"> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                     <table style="margin-left:10px;" cellpadding="1.5">
                         <tbody>
-                            @Partial("Views/tasks.cshtml", Model.UncompletedTasksModel)
+                            @Partial("Views/tasks.cshtml", Model.RemainingTasks)
                         </tbody>
                     </table>
                     @if(Model.AdditionalUncompletedTasksCount > 0)
