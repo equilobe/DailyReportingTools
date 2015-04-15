@@ -120,7 +120,7 @@ namespace Equilobe.DailyReport.SL
 
         #region Helpers
 
-        bool CanSendFullDraft(ExecutionContext context)
+        public bool CanSendFullDraft(ExecutionContext context)
         {
             using (var db = new ReportsDb())
             {

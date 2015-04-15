@@ -184,6 +184,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
+    <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
+    <Compile Include="Controllers\Api\ConfirmIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\InstancesController.cs" />
     <Compile Include="Controllers\Api\SettingsController.cs" />
     <Compile Include="Controllers\Api\ProjectsController.cs" />
@@ -203,6 +205,20 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\confirmDraft.html" />
+    <Content Include="app\confirmDraft.js">
+      <DependentUpon>confirmDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\confirmDraft.test.js">
+      <DependentUpon>confirmDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\confirmIndividualDraft.html" />
+    <Content Include="app\confirmIndividualDraft.js">
+      <DependentUpon>confirmIndividualDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\confirmIndividualDraft.test.js">
+      <DependentUpon>confirmIndividualDraft.html</DependentUpon>
+    </Content>
     <Content Include="app\footer.html" />
     <Content Include="app\header.html" />
     <Content Include="app\instances.html" />

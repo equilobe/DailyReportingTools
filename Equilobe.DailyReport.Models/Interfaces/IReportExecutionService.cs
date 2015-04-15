@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.ReportExecution;
 using System;
+
 namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IReportExecutionService : IService
@@ -11,5 +12,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         SimpleResult SendIndividualDraft(ExecutionContext context);
         void SaveIndividualDraftConfirmation(UserConfirmationContext context);
         void MarkExecutionInstanceAsExecuted(ItemContext context);
+        bool CanSendFullDraft(ExecutionContext context);
     }
 }
