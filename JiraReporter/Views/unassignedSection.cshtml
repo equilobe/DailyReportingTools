@@ -1,0 +1,14 @@
+﻿<div style="margin-top:10px; line-height:1.4em;">
+    <h3 style="color:black">Unassigned </h3>
+    <table style="margin-left:10px;" cellpadding="1.5px">
+        <tbody>
+            @foreach (var task in Model.ReportTasks.UnassignedTasks)
+            {
+                if (task.IsSubtask == false)
+                {
+                    @Partial("Views/uncompletedTask.cshtml", task)
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -10,6 +10,8 @@ using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
+
 
 namespace Equilobe.DailyReport.SL
 {
@@ -144,26 +146,23 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
-        public void SetReportFromDb(JiraReport _report)
+
+        // TODO: refactor to return a different object that is not tied to the Storage layer
+        public BasicSettings GetReportSettingsWithDetails(string uniqueProjectKey)
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
-                _report.Settings = new BasicSettings();
-                reportSettings.CopyTo<BasicSettings>(_report.Settings);
-                if (reportSettings.ReportExecutionSummary != null)
-                {
-                    if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
-                        _report.LastDraftSentDate = reportSettings.ReportExecutionSummary.LastDraftSentDate.Value;
-                    if (reportSettings.ReportExecutionSummary.LastFinalReportSentDate != null)
-                        _report.LastReportSentDate = reportSettings.ReportExecutionSummary.LastFinalReportSentDate.Value;
-                }
-
-                if (reportSettings.FinalDraftConfirmation != null)
-                    if (reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
-                        _report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
+                return db.BasicSettings
+                    .Include(s => s.InstalledInstance.User)
+                    .Include(s => s.ReportExecutionSummary)
+                    .Include(s => s.FinalDraftConfirmation)
+                    .Include(s => s.IndividualDraftConfirmations)
+                    .Include(s => s.ReportExecutionInstances)
+                    .SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
             }
         }
+
+      
 
         FullReportSettings GetPolicyBufferFromDb(string uniqueProjectKey)
         {

@@ -18,7 +18,7 @@ angular.module('app')
             $http.post("/api/account/login", $scope.form)
                 .success(function (response) {
                     if (response.success) {
-                        $scope.$parent.isAuth = true;
+                        $scope.$root.isAuth = true;
                         $location.path('/app/instances');
                     }
                     else {

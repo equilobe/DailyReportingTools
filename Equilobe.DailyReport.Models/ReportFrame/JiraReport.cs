@@ -174,6 +174,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public Uri IndividualDraftConfirmationUrl { get; set; }
         public Uri SendIndividualDraftUrl { get; set; }
 
+        public Uri IssueSearchUrl { get; set; }
+
         public string ProjectManager { get; set; }
 
         public string RootPath { get { return Path.GetFullPath(ProjectName); } }

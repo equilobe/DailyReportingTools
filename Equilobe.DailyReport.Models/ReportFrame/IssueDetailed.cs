@@ -41,8 +41,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string Updated { get; set; }
         public DateTime UpdatedDate { get; set; }
         public List<Subtask> Subtasks { get; set; }
-        public List<IssueDetailed> SubtasksIssues { get; set; }
-        public List<IssueDetailed> AssigneeSubtasks { get; set; }
+        public List<IssueDetailed> SubtasksDetailed { get; set; }
         public bool ExistsInTimesheet { get; set; }
         public DateTime Created { get; set; }
         public List<JiraCommit> Commits { get; set; }
@@ -107,12 +106,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             if (issue.Subtasks != null)
             {
                 this.Subtasks = issue.Subtasks;
-                this.SubtasksIssues = issue.SubtasksIssues;
+                this.SubtasksDetailed = issue.SubtasksDetailed;
             }
-            if (issue.AssigneeSubtasks != null)
-                this.AssigneeSubtasks = issue.AssigneeSubtasks;
-            else
-                AssigneeSubtasks = new List<IssueDetailed>();
             this.Commits = issue.Commits;
             this.PullRequests = issue.PullRequests;
             this.LoggedAuthor = issue.LoggedAuthor;
@@ -122,7 +117,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             this.HasSubtasksInProgress = issue.HasSubtasksInProgress;
             this.CompletedTimeAgo = issue.CompletedTimeAgo;
             this.HasWorkLoggedByAssignee = issue.HasWorkLoggedByAssignee;
-            //this.ErrorsCount = issue.ErrorsCount;
             this.StatusType = issue.StatusType;
             this.DisplayStatus = issue.DisplayStatus;
         }

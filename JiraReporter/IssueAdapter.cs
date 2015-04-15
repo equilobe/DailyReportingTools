@@ -137,14 +137,14 @@ namespace JiraReporter
 
         public static bool HasSubtasksInProgress(IssueDetailed task)
         {
-            if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksIssues.Exists(s => s.StatusCategory.name == "In Progress"))
+            if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksDetailed.Exists(s => s.StatusCategory.name == "In Progress"))
                 return true;
             return false;
         }
 
         public static bool HasAssignedSubtasksInProgress(IssueDetailed task)
         {
-            if (HasSubtasksInProgress(task) == true && task.SubtasksIssues.Exists(s => s.Assignee == task.Assignee))
+            if (HasSubtasksInProgress(task) == true && task.SubtasksDetailed.Exists(s => s.Assignee == task.Assignee))
                 return true;
             return false;
         }
@@ -192,8 +192,8 @@ namespace JiraReporter
 
         public static void SetSubtasksLoggedAuthor(IssueDetailed issue, string authorName)
         {
-            if (issue.SubtasksIssues != null && issue.SubtasksIssues.Count > 0)
-                foreach (var subtask in issue.SubtasksIssues)
+            if (issue.SubtasksDetailed != null && issue.SubtasksDetailed.Count > 0)
+                foreach (var subtask in issue.SubtasksDetailed)
                     SetLoggedAuthor(subtask, authorName);
         }
 

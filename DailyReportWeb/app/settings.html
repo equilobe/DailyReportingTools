@@ -34,9 +34,6 @@
         </div>
     </div>
     <div class="container">
-        <h1>
-            Advanced options
-        </h1>
         <div class="container-alternate">
             <h3>
                 Recipients
@@ -211,7 +208,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitPassword" class="form-control" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="password" name="gitPassword" class="form-control" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -262,7 +259,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input name="svnPassword" type="text" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="password" name="svnPassword" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>

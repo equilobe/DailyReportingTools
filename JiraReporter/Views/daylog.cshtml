@@ -1,0 +1,37 @@
+﻿<div style="margin-top:10px; line-height:1.4em">
+    @Partial("Views/workedHeader.cshtml", Model)
+    @if (Model.Issues != null)
+    {
+        if (Model.Issues.Count > 0)
+        {
+            <table style="margin-left:10px;" cellpadding="1.5px">
+                <tbody>
+                    @foreach (var issue in Model.Issues)
+                    {
+                        if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.AuthorName)
+                        {
+                            @Partial("Views/workedTask.cshtml", issue)
+                        }
+                        else
+                        {
+                            @Partial("Views/parentTask.cshtml", issue)
+                        }
+                        
+                        if (issue.SubtasksDetailed != null)
+                        {
+                            foreach (var subtask in issue.SubtasksDetailed)
+                            {
+                                @Partial("Views/workedTask.cshtml", subtask)
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</div>
+
+@if (Model.UnsyncedCommits.Count > 0)
+{
+    @Partial("Views/unrelatedCommits.cshtml", Model.UnsyncedCommits)
+}

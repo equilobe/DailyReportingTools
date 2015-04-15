@@ -80,11 +80,8 @@ namespace Equilobe.DailyReport.BL.Jira
             {
                 var sprint = sprints.Last();
                 sprint = GetCompleteSprint(sprint.id.ToString(), rapidViewId);
-                if (sprint.StartDate.Date <= date && sprint.EndDate.Date >= date)
+                if (sprint.StartDate.Date <= date)
                     return sprint;
-
-                if (date > sprint.EndDate)
-                    return null;
 
                 sprints.Remove(sprints.Last());
             }

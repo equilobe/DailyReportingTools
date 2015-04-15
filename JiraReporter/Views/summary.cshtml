@@ -1,10 +1,6 @@
 ﻿@{
     var day = string.Empty;
     var imgSrc = string.Empty;
-    var display = string.Empty;
-    var visibility = string.Empty;
-    var sprintDisplay = string.Empty;
-    var sprintVisibility = string.Empty;
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
@@ -43,7 +39,7 @@ else
                                     {
                                     <tr>
                                         <td style="vertical-align:top; width:15px">
-                                            <span>&#x25cf;</span>
+                                                @Dot()
                                         </td>
                                         <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
                                     </tr>
@@ -52,7 +48,7 @@ else
                                     {
                                     <tr>
                                         <td style="vertical-align:top; width:15px">
-                                            <span>&#x25cf;</span>
+                                                @Dot()
                                         </td>
                                         <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
                                     </tr>
@@ -61,7 +57,7 @@ else
                                     {
                                     <tr>
                                         <td style="vertical-align:top; width:15px">
-                                            <span>&#x25cf;</span>
+                                                @Dot()
                                         </td>
                                         <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
                                     </tr>
@@ -72,7 +68,7 @@ else
                                         {
                                     <tr>
                                         <td style="vertical-align:top; width:15px">
-                                            <span>&#x25cf;</span>
+                                                    @Dot()
                                         </td>
                                         <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
                                     </tr>
@@ -86,9 +82,11 @@ else
                                             {
                                     <tr>
                                         <td style="vertical-align:top; width:15px">
-                                            <span>&#x25cf;</span>
+                                                        @Dot()
                                         </td>
-                                        <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has not confirmed draft</b></td>
+                                                    <td colspan="1" style="text-align: left">
+                                                    <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
+                                                    </td>
                                     </tr>
                                             }
                                         }
@@ -141,9 +139,9 @@ else
             <tbody>
                 @if (Model.HasSprint)
                 {
-                    <tr style="@sprintDisplay; sprintVisibility">
+                    <tr>
                         <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                            <img src="cid:sprint_48.png" />
+                            <img src="https://dailyreport.equilobe.com/content/images/report/sprint.png" />
                             <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
                         </td>
                         <td style="padding:0px; padding-bottom:10px; height:75px">
@@ -209,7 +207,7 @@ else
                 {
                     <tr>
                         <td style="width:75px; height:55px; max-width:55px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                            <img src="cid:calendar_month_48.png" />
+                            <img src="https://dailyreport.equilobe.com/content/images/report/calendar_month.png" />
                             <span style="color:black; display:inline-block; padding-top:5px">Month</span>
                         </td>
                         <td style="padding:0px; padding-bottom:10px; height:55px;">
@@ -263,7 +261,7 @@ else
 @if (Model.HasWorkSummary)
 {
     <div style="margin-top:50px">
-        <h3 style="margin-top:15px; color:black">Work summary / person (h / day)</h3>
+        <h3 style="margin-top:15px; color:black">Team summary (h / day)</h3>
         <div style="margin-top:20px">
             <span style="margin-left:5px">
                 <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
@@ -286,7 +284,7 @@ else
             {
                 <tr>
                     <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <img src="" />
+                        <img src="@*@author.DRTAvatarLink*@" />
                         <span style="color:black; display:inline-block; padding-top:5px">@author.ShortName</span>
                     </td>
                     <td style="padding:0px; padding-bottom:10px; height:55px">
@@ -350,14 +348,11 @@ else
                 </tr>
             }
 
-            @if (Model.Timing.UnassignedTasksSecondsLeft == 0)
+            @if (Model.Timing.UnassignedTasksHoursAverageLeft == 0)
             {
-                display = "display:none !important";
-                visibility = "visibility:hidden";
-            }
-            <tr style="@visibility; @display">
+                <tr>
                 <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                    <img src="cid:unassigned_48.png" />
+                        <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
                     <span style="color:black; display:inline-block; padding-top:5px">Unassigned</span>
                 </td>
                 <td style="padding:0px; padding-bottom:10px; height:55px">
@@ -374,6 +369,8 @@ else
                     </div>
                 </td>
             </tr>
+            }
+
         </table>
     </div>
 }

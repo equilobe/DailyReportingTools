@@ -21,6 +21,7 @@ namespace JiraReporter.Services
             dayLog.Commits = AuthorHelpers.GetDayLogCommits(author, date, context.OffsetFromUtc);
             dayLog.Date = date;
             dayLog.Title = TimeFormatting.GetStringDay(date, context.ReportDate);
+            dayLog.AuthorName = author.Name;
 
             if (author.Issues != null)
                 if (author.Issues.Count > 0)

@@ -22,8 +22,8 @@
             });
     }])
     .controller("AppController", ['$scope', '$http', '$location', 'breadcrumbs', function ($scope, $http, $location, breadcrumbs) {
-        $scope.isAuth = isAuth;
-        $scope.isPlugin = isPlugin;
+        $scope.$root.isAuth = isAuth;
+        $scope.$root.isPlugin = isPlugin;
         $scope.breadcrumbs = breadcrumbs;
         $scope.child = {};
 
@@ -93,8 +93,7 @@
         $scope.signOut = function ($scope) {
             $http.post("/api/account/logout")
                 .success(function () {
-                    isAuth = false;
-                    $scope.$parent.$parent.isAuth = false;
+                    $scope.$root.isAuth = false;
                     $location.path('/app/signin');
                 })
                 .error(function () {

@@ -5,11 +5,11 @@
     <b style="color:black">@Model.Count</b>
     @if (Model.Count > 1)
     {
-        <b style="color:black"> unrelated commits </b>
+        <span style="color:black"> unrelated commits </span>
     }
     else
     { 
-        <b style="color:black"> unrelated commit </b>
+        <span style="color:black"> unrelated commit </span>
     }
     <b>@Partial("Views/commitsList.cshtml", Model)</b>
 </div>

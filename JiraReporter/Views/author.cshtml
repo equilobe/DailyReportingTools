@@ -1,0 +1,41 @@
+﻿@if (Model.HasDayLogs || Model.HasAssignedIssues)
+{
+    <div style="margin-top:20px;">
+        <h3 style="color:black; line-height:1.4em; margin-bottom:0px">@Model.Name</h3>
+
+        @if (Model.DayLogs.Count > 0)
+        {
+            foreach (var dayLog in Model.DayLogs)
+            {
+                @Partial("Views/daylog.cshtml", dayLog)
+            }
+        }
+        @if (Model.HasSprint)
+        {
+            if (Model.RemainingTasksCount > 0)
+            {
+                <div style="margin-top:10px; line-height:1.4em;">
+                    <i style="color:sienna; font-size:12px;">Next</i>
+
+                    @if (Model.Timing.RemainingTasksTimeLeftSeconds == 0)
+                    {
+                        <i style="color:red; font-size:12px;">@Dot(); @Model.Timing.RemainingTasksTimeLeftString left</i>
+                    }
+                    else
+                    {
+                        <i style="color:sienna; font-size:12px;"> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
+                    }
+                    <table style="margin-left:10px;" cellpadding="1.5">
+                        <tbody>
+                            @Partial("Views/tasks.cshtml", Model.RemainingTasks)
+                        </tbody>
+                    </table>
+                    @if(Model.AdditionalUncompletedTasksCount > 0)
+                    {
+                       <span> + <a href="@Model.IssueSearchUrl" style="text-decoration:none">@Model.AdditionalUncompletedTasksCount more</a> </span> 
+                    }
+                </div>
+            }
+        }
+    </div>
+}
