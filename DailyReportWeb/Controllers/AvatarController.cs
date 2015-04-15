@@ -14,7 +14,7 @@ namespace DailyReportWeb.Controllers
         // GET: Avatar
         public ActionResult Image(string id)
         {
-            var image = DataService.GetImageFromDb(id);
+            var image = DataService.GetImage(id);
             return File(image, "image/png");
         }
     }

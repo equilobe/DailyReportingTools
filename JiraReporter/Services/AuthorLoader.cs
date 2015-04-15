@@ -343,7 +343,7 @@ namespace JiraReporter.Services
             if (_currentAuthor.IsEmpty)
                 return;
 
-            var image = GetImageFromURL(_currentAuthor.JiraAvatarLink.OriginalString);
+            var image = JiraService.GetUserAvatar(_context.JiraRequestContext, _currentAuthor.JiraAvatarLink.OriginalString);
             SetUserAvatar(image);
         }
 
@@ -354,7 +354,6 @@ namespace JiraReporter.Services
 
             _currentAuthor.Timing.TotalRemainingSeconds = _currentAuthor.Timing.InProgressTasksTimeLeftSeconds + _currentAuthor.Timing.OpenTasksTimeLeftSeconds;
             _currentAuthor.Timing.TotalRemainingHours = (double)_currentAuthor.Timing.TotalRemainingSeconds / 3600;
-    //        _currentAuthor.Timing.TotalRemainingString = _currentAuthor.Timing.TotalRemainingSeconds.SetTimeFormat8Hour();
         }
 
         private void SetOverrideEmail()
@@ -385,20 +384,6 @@ namespace JiraReporter.Services
             return projectManager;
         }
 
-        private byte[] GetImageFromURL(string url)
-        {
-            var webClient = new WebClient();
-            webClient.Headers.Add("Content-Type", "image/png");
-
-            new AuthorizationService
-            {
-                ConfigurationService = ConfigurationService,
-                EncryptionService = EncryptionService
-            }.Authorize(webClient,_context.JiraRequestContext, UrlExtensions.GetRelativeUrl(url));
-
-            return webClient.DownloadData(url);
-        }
-
         private void SetUserAvatar(byte[] image)
         {
             using(var db = new ReportsDb())
@@ -409,7 +394,7 @@ namespace JiraReporter.Services
                     SaveAvatarToDb(image, installedInstace);
 
                 var authorAvatar = installedInstace.UserImages.Single(a=>a.Username == _currentAuthor.Username);
-                _currentAuthor.DRTAvatarLink = GetUserAvatarLink(authorAvatar.Key);
+                _currentAuthor.ReportAvatarLink = GetUserAvatarLink(authorAvatar.Key);
                 db.SaveChanges();
             }
         }

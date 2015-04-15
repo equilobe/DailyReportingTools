@@ -19,6 +19,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         System.Collections.Generic.List<string> GetUniqueProjectsKey(string baseUrl);
         void SetReportFromDb(Equilobe.DailyReport.Models.ReportFrame.JiraReport report);
         JiraPolicy GetPolicy(string uniqueProjectKey);
-        byte[] GetImageFromDb(string key);
+        byte[] GetImage(string key);
     }
 }

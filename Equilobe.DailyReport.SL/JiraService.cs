@@ -139,6 +139,19 @@ namespace Equilobe.DailyReport.SL
             return new SprintLoader(filter, client).GetLatestSprint();
         }
 
+        public byte[] GetUserAvatar(JiraRequestContext context, string url)
+        {
+            var authorizationContext = new AuthorizationContext
+            {
+                Username = context.JiraUsername,
+                Password = EncryptionService.Decrypt(context.JiraPassword),
+                SharedSecret = context.SharedSecret,
+                AddonKey = ConfigurationService.GetAddonKey()
+            };
+
+            return WebDownloads.GetUserAvatar(authorizationContext, url);
+        }
+
         private JiraClient GetClient(IJiraRequestContext context)
         {
             if (!string.IsNullOrEmpty(context.SharedSecret))

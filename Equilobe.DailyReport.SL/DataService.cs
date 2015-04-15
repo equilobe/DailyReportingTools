@@ -188,11 +188,11 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public byte[] GetImageFromDb(string key)
+        public byte[] GetImage(string key)
         {
             using (var db = new Equilobe.DailyReport.DAL.ReportsDb())
             {
-                return db.InstalledInstances.SelectMany(i => i.UserImages).Single(i => i.Key == key).ImageContent;
+                return db.UserImages.Single(i => i.Key == key).ImageContent;
             }
         }
 
