@@ -18,23 +18,28 @@
             {
                 if(Model.Resolution != "Fixed" && Model.Resolution != "Done")
                 {
-                    <b style="color:black; padding:1.5px">@Model.Resolution</b>
+                    <span style="color:black; padding:1.5px">@Model.Resolution</span>
                 }
             }
             @if (Model.DisplayStatus == true)
             {
-                <b style="color:black; padding:1.5px;">@Model.Status</b>
+                <span style="color:black; padding:1.5px;">@Model.Status</span>
             }
-            <a href=@Model.Link style="text-decoration: none; font-weight:bold; color:#15C;"> @Model.Summary </a>
-            <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
-            @if (Model.Assignee == null)
-            {
-                <span style="color:black;"> &#x25cf; Unassigned</span>
+            
+            @{
+                var title = Model.Key;
+                if (Model.Assignee == null)
+                {
+                   title+= "\n Unassigned";
+                }
+                else if (Model.Assignee != Model.LoggedAuthor)
+                {
+                    title+= '\n' + Model.Assignee;
+                }
             }
-            else if (Model.Assignee != Model.LoggedAuthor)
-            {
-                <span style="color:black;"> &#x25cf; @Model.Assignee</span>
-            }
+            
+            <a href=@Model.Link style="text-decoration: none; color:#15C;" title="@title"> @Model.Summary </a>
+   
             @if (Model.PullRequests != null)
             {
                 if (Model.PullRequests.Count > 0)

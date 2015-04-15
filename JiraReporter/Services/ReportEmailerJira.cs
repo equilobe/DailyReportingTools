@@ -93,7 +93,7 @@ namespace JiraReporter
                 foreach (var author in Authors)
                     if(!author.IsEmpty)
                        AddAttachementImage(author.Image, author.AvatarId, message);
-                AddAttachementImageFromDisk(message);
+            //    AddAttachementImageFromDisk(message);
             }
         }
 

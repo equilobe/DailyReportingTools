@@ -171,12 +171,12 @@ namespace JiraReporter
         private void SetSubtasks(IssueDetailed issue)
         {
             var jiraIssue = new JiraIssue();
-            issue.SubtasksIssues = new List<IssueDetailed>();
+            issue.SubtasksDetailed = new List<IssueDetailed>();
             foreach (var task in issue.Subtasks)
             {
                 jiraIssue = JiraService.GetIssue(_context.JiraRequestContext, task.key);
-                issue.SubtasksIssues.Add(new IssueDetailed(jiraIssue));
-                SetGenericIssue(issue.SubtasksIssues.Last(), jiraIssue);
+                issue.SubtasksDetailed.Add(new IssueDetailed(jiraIssue));
+                SetGenericIssue(issue.SubtasksDetailed.Last(), jiraIssue);
             }
         }
 

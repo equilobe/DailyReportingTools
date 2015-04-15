@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cmd.cs" />
+    <Compile Include="CollectionExtensions.cs" />
     <Compile Include="CommandLine.cs" />
     <Compile Include="CommandLineText.cs" />
     <Compile Include="DateTimeExtensions.cs" />

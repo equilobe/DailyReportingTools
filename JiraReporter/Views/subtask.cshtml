@@ -1,18 +1,7 @@
 ﻿@{
-    var color = "";
-    var bold = "";
+    var title = string.Empty;
 }
 
-@if ((Model.RemainingEstimateSeconds == 0 && Model.Resolution == null) || (Model.RemainingEstimateSeconds > 0 && Model.Resolution != null))
-{
-    color = "orange";
-    bold = "bold";
-}
-else
-{
-    color = "black";
-    bold = "normal";
-}
 <tr>
     <td></td>
     <td style="vertical-align:top; width:15px">
@@ -34,57 +23,61 @@ else
         {
             if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
             {
-                <b style="color:black; padding:1.5px">@Model.Resolution</b>
+                <span style="color:black; padding:1.5px">@Model.Resolution</span>
             }
         }
         @if (Model.IsNew)
         {
-            <b style="color:black"> NEW: </b>
+            <span style="color:black"> NEW: </span>
         }
         @if (Model.StatusCategory.name == "In Progress")
         {
             if (Model.ExistsInTimesheet == true)
             {
-                <b style="color:black">Continue:</b>
+                <span style="color:black">Continue:</span>
             }
         }
         else
         {
             if (Model.Status == Model.PolicyReopenedStatus)
             {
-                <span style="font-weight:bold; color:black">Reopened:</span>
+                <span style="color:black">Reopened:</span>
             }
             else if (Model.TimeSpent > 0)
             {
-                <span style="font-weight:bold; color:black">Paused:</span>
+                <span style="color:black">Paused:</span>
             }
         }
         @if (Model.DisplayStatus == true)
         {
             <b style="color:black; padding:1.5px;">@Model.Status</b>
         }
-        <a style="text-decoration: none; font-weight:bold; color:#15C;" href="@Model.Link">@Model.Summary</a>
-        <span style="color: #B8B8B8;"> &#x25cf; @Model.Key </span>
 
-        @if (Model.TimeSpentOnTask > 0)
-        {
-            <span style="color:black"> &#x25cf; @Model.TimeLoggedTotal worked </span>
-        }
-        @if (Model.Resolution == null)
-        {
-            <span style="color:@color; font-weight:@bold"> &#x25cf; @Model.RemainingEstimate left </span>
-        }
-        @if (Model.Assignee == null)
-        {
-            <span style="color:black"> &#x25cf; Unassigned</span>
-        }
-        else
-        {
-            if (Model.Assignee != Model.LoggedAuthor)
+        @{
+            title = Model.Key;
+            if (Model.TimeSpentOnTask > 0)
             {
-                <span style="color:black"> &#x25cf; @Model.Assignee</span>
+                title += '\n' + Model.TimeLoggedTotal + " worked";
+            }
+            if (Model.Resolution == null)
+            {
+                title += '\n' + Model.RemainingEstimate + " left";
+            }
+            if (Model.Assignee == null)
+            {
+                title += '\n' + "Unassigned";
+            }
+            else
+            {
+                if (Model.Assignee != Model.LoggedAuthor)
+                {
+                    title += '\n' + Model.Assignee;
+                }
             }
         }
+
+        <a style="text-decoration: none; color:#15C;" title="@title" href="@Model.Link">@Model.Summary</a>
+
         @if (Model.PullRequests != null)
         {
             if (Model.PullRequests.Count > 0)

@@ -35,7 +35,8 @@ namespace JiraReporter
 
             var policy = DataService.GetPolicy(options.UniqueProjectKey);
             var report = new JiraReport(policy, options);
-            DataService.SetReportFromDb(report);
+            report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
+            SetLastReportDatesFromSettings(report);
             report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(report);
 
             SetExecutionInstance(report);
@@ -52,6 +53,21 @@ namespace JiraReporter
                 RunReportTool(report);
             else
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
+        }
+
+        private void SetLastReportDatesFromSettings(JiraReport _report)
+        {
+            if (_report.Settings.ReportExecutionSummary != null)
+            {
+                if (_report.Settings.ReportExecutionSummary.LastDraftSentDate != null)
+                    _report.LastDraftSentDate = _report.Settings.ReportExecutionSummary.LastDraftSentDate.Value;
+                if (_report.Settings.ReportExecutionSummary.LastFinalReportSentDate != null)
+                    _report.LastReportSentDate = _report.Settings.ReportExecutionSummary.LastFinalReportSentDate.Value;
+            }
+
+            if (_report.Settings.FinalDraftConfirmation != null)
+                if (_report.Settings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
+                    _report.LastFinalDraftConfirmationDate = _report.Settings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
         }
 
         ReportExecutionInstance GetUnexecutedInstance(BasicSettings report)
