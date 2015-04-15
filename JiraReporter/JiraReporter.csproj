@@ -170,9 +170,13 @@
     <None Include="Views\forceDraftButton.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\fullDraftButtons.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\guidelines.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\individualDraftButtons.cshtml" />
     <None Include="Views\IndividualReportTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
