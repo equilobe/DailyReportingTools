@@ -3,15 +3,12 @@ using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportExecution;
 using Equilobe.DailyReport.Models.ReportFrame;
-using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
-using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
@@ -61,20 +58,16 @@ namespace DailyReportWeb.Controllers.Api
             if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
                 return "You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.";
 
-            var fullDraftRecipients = GetConfirmationRecipients(advancedSettings);
+            var recipients = GetConfirmationRecipients(advancedSettings);
 
             if (!ReportExecutionService.CanSendFullDraft(context))
             {
                 var usersToConfirm = GetUsersToConfirmIndividualDraft(context, jiraUsers);
-                return string.Format("{0} must confirm. After everyone confirms, the full draft will be sent to {1}",
-                                     StringExtensions.GetNaturalLanguage(usersToConfirm),
-                                     StringExtensions.GetNaturalLanguage(fullDraftRecipients));
+                return string.Format("{0} must confirm. After everyone confirms, the full draft will be sent to {1}", usersToConfirm, recipients);
             }
 
-
             if (!confirmationHasError)
-                return string.Format("You were the last one to confirm. The full draft will be sent shortly to {0}",
-                                     StringExtensions.GetNaturalLanguage(fullDraftRecipients));
+                return string.Format("You were the last one to confirm. The full draft will be sent shortly to {0}", recipients);
 
             DateTime? draftSentDate;
             using (var db = new ReportsDb())
@@ -84,17 +77,12 @@ namespace DailyReportWeb.Controllers.Api
             }
 
             if (draftSentDate.Value.Date == DateTime.Today)
-            {
-                return string.Format("The full draft report was already sent at {0} to {1}",
-                                     draftSentDate.Value.ToShortTimeString(),
-                                     StringExtensions.GetNaturalLanguage(fullDraftRecipients));
-            }
-            
-            return string.Format("The full draft report will be sent shortly to {1}",
-                    StringExtensions.GetNaturalLanguage(fullDraftRecipients));
+                return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
+
+            return string.Format("The full draft report will be sent shortly to {1}", recipients);
         }
 
-        private static List<string> GetUsersToConfirmIndividualDraft(ExecutionContext context, List<JiraUser> jiraUsers)
+        private static string GetUsersToConfirmIndividualDraft(ExecutionContext context, List<JiraUser> jiraUsers)
         {
             var usernamesToConfirm = new List<string>();
             var usersToConfirm = new List<string>();
@@ -118,10 +106,10 @@ namespace DailyReportWeb.Controllers.Api
                 });
             });
 
-            return usersToConfirm;
+            return StringExtensions.GetNaturalLanguage(usersToConfirm);
         }
 
-        private static List<string> GetConfirmationRecipients(AdvancedReportSettings advancedSettings)
+        private static string GetConfirmationRecipients(AdvancedReportSettings advancedSettings)
         {
             var fullDraftRecipients = new List<string>();
 
@@ -140,7 +128,7 @@ namespace DailyReportWeb.Controllers.Api
                 fullDraftRecipients.AddRange(emails);
             }
 
-            return fullDraftRecipients;
+            return StringExtensions.GetNaturalLanguage(fullDraftRecipients);
         }
     }
 }
