@@ -8,6 +8,7 @@ using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Web.Http;
@@ -22,7 +23,6 @@ namespace DailyReportWeb.Controllers.Api
         public DataConfirmIndividualDraft Post(ExecutionContext context)
         {
             var username = string.Empty;
-            var projectKey = string.Empty;
             long projectId;
             var jiraRequestContext = new JiraRequestContext();
             var advancedSettings = new AdvancedReportSettings();
@@ -44,77 +44,70 @@ namespace DailyReportWeb.Controllers.Api
             var jiraDisplayName = JiraService.GetUser(jiraRequestContext, username).displayName;
 
             var confirmationResult = ReportExecutionService.ConfirmIndividualDraft(context);
-
             var confirmationDetails = new StringBuilder();
-            if (confirmationResult.HasError)
-            {
 
-            }
-            else
+            if (ReportExecutionService.CanSendFullDraft(context))
             {
-                if (ReportExecutionService.CanSendFullDraft(context))
+                if (confirmationResult.HasError)
                 {
-                    confirmationDetails.Append("You were the last one to confirm. The full draft will be sent shortly to");
+                    DateTime? draftSentDate;
+                    using (var db = new ReportsDb())
+                    {
+                        var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
+                        draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
+                    }
+
+                    if (draftSentDate.Value.Date == DateTime.Today)
+                        confirmationDetails.AppendFormat("The full draft report was already sent at {0}", draftSentDate.Value.ToShortTimeString());
+                    else
+                        confirmationDetails.Append("The full draft report will be sent shortly to");
                 }
                 else
                 {
-                    var usernamesToConfirm = new List<string>();
-                    var usersToConfirm = new List<string>();
-
-                    using (var db = new ReportsDb())
-                    {
-                        var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
-                        usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.ReportDate == context.Date &&
-                                                                                          idc.LastDateConfirmed != DateTime.Today &&
-                                                                                          idc.BasicSettingsId == basicSettingsId)
-                                                                            .Select(qr => qr.Username)
-                                                                            .ToList();
-                    }
-
-                    usernamesToConfirm.ForEach(usernameToConfirm =>
-                    {
-                        jiraUsers.ForEach(jiraUser =>
-                        {
-                            if (usernameToConfirm == jiraUser.name)
-                                usersToConfirm.Add(jiraUser.displayName);
-                        });
-                    });
-
-                    foreach (var userToConfirm in usersToConfirm)
-                    {
-                        if (usersToConfirm.Count > 1)
-                        {
-                            if (userToConfirm.Equals(usersToConfirm.Last()))
-                                confirmationDetails.Append(" and ");
-                            else
-                                confirmationDetails.Append(", ");
-                        }
-
-                        confirmationDetails.AppendFormat("{0}", userToConfirm);
-                    }
-
-                    confirmationDetails.Append(" must confirm. The full draft will be sent after everyone confirms to");
-                }
-
-                if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
-                    confirmationDetails.Append(" the project lead");
-
-                if (advancedSettings.AdvancedOptions.SendFinalToOthers)
-                {
-                    var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                            .ToList();
-
-                    foreach (var email in emails)
-                    {
-                        if (email.Equals(emails.Last()))
-                            confirmationDetails.Append(" and");
-                        else
-                            confirmationDetails.Append(",");
-
-                        confirmationDetails.AppendFormat(" {0}", email);
-                    }
+                    confirmationDetails.Append("You were the last one to confirm. The full draft will be sent shortly to");
                 }
             }
+            else
+            {
+                var usernamesToConfirm = new List<string>();
+                var usersToConfirm = new List<string>();
+
+                using (var db = new ReportsDb())
+                {
+                    var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
+                    usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
+                                                                                      idc.ReportDate == context.Date &&
+                                                                                      DbFunctions.TruncateTime(idc.LastDateConfirmed) != DateTime.Today)
+                                                                        .Select(qr => qr.Username)
+                                                                        .ToList();
+                }
+
+                usernamesToConfirm.ForEach(usernameToConfirm =>
+                {
+                    jiraUsers.ForEach(jiraUser =>
+                    {
+                        if (usernameToConfirm == jiraUser.name)
+                            usersToConfirm.Add(jiraUser.displayName);
+                    });
+                });
+
+                confirmationDetails.AppendFormat("{0}", StringExtensions.GetNaturalLanguage(usersToConfirm));
+
+                confirmationDetails.Append(" must confirm. After everyone confirms, the full draft will be sent to");
+            }
+
+            var fullDraftRecipients = new List<string>();
+            if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
+                fullDraftRecipients.Add("the project lead");
+
+            if (advancedSettings.AdvancedOptions.SendFinalToOthers)
+            {
+                var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                         .ToList();
+                fullDraftRecipients.AddRange(emails);
+            }
+
+            confirmationDetails.AppendFormat(" {0}", StringExtensions.GetNaturalLanguage(fullDraftRecipients));
 
             return new DataConfirmIndividualDraft
             {

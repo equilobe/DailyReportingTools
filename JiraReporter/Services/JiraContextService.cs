@@ -62,7 +62,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendReport/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendReport/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private Uri GetResendDraftUrl()
@@ -71,7 +71,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
@@ -80,7 +80,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private Uri GetResendIndividualDraftUrl()
@@ -89,7 +89,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private static DateTime GetDateTimeFromString(string date)
