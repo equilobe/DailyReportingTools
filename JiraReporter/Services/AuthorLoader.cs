@@ -298,7 +298,7 @@ namespace JiraReporter.Services
                 {
                     foreach (var subtask in issue.SubtasksDetailed)
                     {
-                        if (subtask.Assignee != _currentAuthor.Name)
+                        if (subtask.Assignee != _currentAuthor.Name || subtask.Resolution != null)
                             continue;
 
                         _currentTasksCount++;
@@ -381,7 +381,7 @@ namespace JiraReporter.Services
         {
             var openTasks = new List<IssueDetailed>();
             openTasks = GetAuthorTasks(_reportTasks.OpenTasks);
-            _currentAuthor.InProgressTasksCount = openTasks.Count;
+            _currentAuthor.OpenTasksCount = openTasks.Count;
             TaskLoader.SetErrors(openTasks, _policy);
             IssueAdapter.SetIssuesExistInTimesheet(openTasks, _currentAuthor.Issues);
             if (openTasks != null)

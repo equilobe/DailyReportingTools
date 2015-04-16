@@ -60,7 +60,7 @@ namespace Equilobe.DailyReport.BL
 
         public static string Search(string jql)
         {
-            return string.Format("rest/api/2/search?jql={0}", jql);
+            return string.Format("rest/api/2/search?jql={0}&startAt=0&maxResults=1000", jql);
         }
 
         public static string ResolvedIssues(string projectKey, string fromDate, string endDate)
