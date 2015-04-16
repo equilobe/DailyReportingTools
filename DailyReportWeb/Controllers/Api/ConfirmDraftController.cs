@@ -20,7 +20,7 @@ namespace DailyReportWeb.Controllers.Api
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }
 
-        public DataConfirmIndividualDraft Post(ExecutionContext context)
+        public DataConfirmDraft Post(ExecutionContext context)
         {
             long projectId;
             var jiraRequestContext = new JiraRequestContext();
@@ -80,7 +80,7 @@ namespace DailyReportWeb.Controllers.Api
                 confirmationDetails.AppendFormat(" {0}", StringExtensions.GetNaturalLanguage(fullDraftRecipients));
             }
 
-            return new DataConfirmIndividualDraft
+            return new DataConfirmDraft
             {
                 Project = jiraProject.Name,
                 Status = confirmationResult,

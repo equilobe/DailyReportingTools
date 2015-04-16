@@ -1,7 +1,7 @@
 ﻿
 namespace Equilobe.DailyReport.Models.Web
 {
-    public class DataConfirmIndividualDraft
+    public class DataConfirmDraft
     {
         public string User { get; set; }
         public string Project { get; set; }
