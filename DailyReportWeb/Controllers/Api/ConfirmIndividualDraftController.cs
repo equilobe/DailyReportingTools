@@ -100,7 +100,7 @@ namespace DailyReportWeb.Controllers.Api
             if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
                 fullDraftRecipients.Add("the project lead");
 
-            if (advancedSettings.AdvancedOptions.SendFinalToOthers)
+            if (advancedSettings.AdvancedOptions.SendDraftToOthers)
             {
                 var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
                                                          .ToList();

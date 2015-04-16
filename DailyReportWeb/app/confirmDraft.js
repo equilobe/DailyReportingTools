@@ -2,7 +2,7 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/report/confirmDraft/:executionContext', {
+        $routeProvider.when('/app/report/confirmDraft/:id', {
             templateUrl: 'app/confirmDraft.html',
             controller: 'ConfirmDraftController'
         });
@@ -12,9 +12,12 @@ angular.module('app')
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 
-        $http.get("/api/confirmDraft/" + $routeParams.executionContext)
+        $http.post("/api/confirmDraft/", $routeParams)
             .success(function (response) {
-                $scope.response = response;
+                $scope.data = response;
+            })
+            .error(function () {
+                $scope.error = "Something went wrong, request is not valid";
             })
             .finally(function () {
                 $scope.status = "loaded";

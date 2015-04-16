@@ -62,7 +62,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendReport/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private Uri GetResendDraftUrl()
@@ -80,7 +80,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private Uri GetResendIndividualDraftUrl()

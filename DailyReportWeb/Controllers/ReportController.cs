@@ -7,15 +7,14 @@ namespace DailyReportWeb.Controllers
 {
     public class ReportController : Controller
     {
-
         public IReportExecutionService ReportExecutionService { get; set; }
 
-        [HttpGet]
-        public ActionResult SendReport(ExecutionContext context)
-        {
-            var result = ReportExecutionService.SendReport(context);
-            return Content(result.Message);
-        }
+        //[HttpGet]
+        //public ActionResult SendReport(ExecutionContext context)
+        //{
+        //    var result = ReportExecutionService.SendReport(context);
+        //    return Content(result.Message);
+        //}
 
         [HttpGet]
         public ActionResult SendDraft(ExecutionContext context)
@@ -24,13 +23,12 @@ namespace DailyReportWeb.Controllers
             return Content(result.Message);
         }
 
-        [HttpGet]
-        public ActionResult ConfirmIndividualDraft(ExecutionContext context)
-        {
-            var result = ReportExecutionService.ConfirmIndividualDraft(context);
-            return Content(result.Message);
-        }
-
+        //[HttpGet]
+        //public ActionResult ConfirmIndividualDraft(ExecutionContext context)
+        //{
+        //    var result = ReportExecutionService.ConfirmIndividualDraft(context);
+        //    return Content(result.Message);
+        //}
 
         [HttpGet]
         public ActionResult SendIndividualDraft(ExecutionContext context)
