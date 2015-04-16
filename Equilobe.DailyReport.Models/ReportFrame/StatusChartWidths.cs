@@ -14,6 +14,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
        {
            get
            {
+               return DayWidth.ToString();
+           }
+       }
+       public string DayWidthPx
+       {
+           get
+           {
                return DayWidth.ToString() + "px";
            }
        }
@@ -21,6 +28,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
        public double EstimatedSeconds { get; set; }
        public double EstimatedWidth { get; set; }
        public string EstimatedWidthString
+       {
+           get
+           {
+               return EstimatedWidth.ToString();
+           }
+       }
+       public string EstimatedWidthPx
        {
            get
            {
@@ -34,6 +48,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
        {
            get
            {
+               return DoneWidth.ToString();
+           }
+       }
+       public string DoneWidthPx
+       {
+           get
+           {
                return DoneWidth.ToString() + "px";
            }
        }
@@ -41,6 +62,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
        public double RemainingSeconds { get; set; }
        public double RemainingWidth { get; set; }
        public string RemainingWidthString
+       {
+           get
+           {
+               return RemainingWidth.ToString();
+           }
+       }
+       public string RemainingWidthPx
        {
            get
            {

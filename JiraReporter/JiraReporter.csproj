@@ -133,6 +133,9 @@
     <None Include="Views\authorDetailed.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\chartBar.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\commits.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

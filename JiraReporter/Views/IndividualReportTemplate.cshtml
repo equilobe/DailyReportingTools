@@ -64,25 +64,32 @@ else
                             <table>
                                 <tbody>
                                     <tr>
-                                        <td style="padding-right:5px">
+                                        <td>
                                             @Square("#5CB85C")
-                                            <span style="color:black; font-size:12px; padding-left:2px">@day</span>
+                                        </td>
+                                        <td style="padding-right:5px">
+                                            <span style="color:black; font-size:11px; padding-left:2px">@day</span>
                                         </td>
                                         @if (Model.HasSprint)
                                         {
-                                            <td style="padding-right:5px">
+                                            <td>
                                                 @Square("#F60")
-                                                <span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
+                                            </td>
+                                            <td style="padding-right:5px">
+                                                <span style="color:black; font-size:11px; padding-left:2px">Sprint avg.</span>
                                             </td>
                                         }
-
-                                        <td style="padding-right:5px">
+                                        <td>
                                             @Square("#F0AD4E")
-                                            <span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
                                         </td>
                                         <td style="padding-right:5px">
+                                            <span style="color:black; font-size:11px; padding-left:2px">Month avg.</span>
+                                        </td>
+                                        <td>
                                             @Square("#337AB7")
-                                            <span style="color:black; font-size:12px; padding-left:2px">Remaining avg.</span>
+                                        </td>
+                                        <td style="padding-right:5px">
+                                            <span style="color:black; font-size:11px; padding-left:2px">Remaining avg.</span>
                                         </td>
                                     </tr>
                                 </tbody>

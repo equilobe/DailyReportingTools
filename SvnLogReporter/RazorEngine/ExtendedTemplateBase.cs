@@ -41,5 +41,12 @@ namespace SourceControlLogReporter.RazorEngine
         {
             return Partial("Views/square.cshtml", new Square(color));
         }
+
+        public string ChartBar(string color, string width, string barMaxWidth, string text)
+        {
+            var model = new ChartBar(color, width, barMaxWidth, text);
+
+            return Partial("Views/chartBar.cshtml", model);
+        }
     }
 }
