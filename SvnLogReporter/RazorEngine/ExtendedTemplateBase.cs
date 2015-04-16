@@ -30,5 +30,10 @@ namespace SourceControlLogReporter.RazorEngine
         {
             return Partial("Views/dot.cshtml");
         }
+
+        public string ErrorIcon()
+        {
+            return Partial("Views/errorIcon.cshtml");
+        }
     }
 }

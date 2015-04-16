@@ -274,6 +274,7 @@
     <Content Include="Content\Images\logo-menu.PNG" />
     <Content Include="Content\Images\manager.svg" />
     <Content Include="Content\Images\recently-completed.png" />
+    <Content Include="Content\Images\Report\error.png" />
     <Content Include="Content\Images\rocket.svg" />
     <Content Include="Content\Images\sprint-status.png" />
     <Content Include="Content\Images\Report\sprint.png" />

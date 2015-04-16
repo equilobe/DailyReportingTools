@@ -164,6 +164,9 @@
     <None Include="Views\entryComments.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\errorIcon.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\footer.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
