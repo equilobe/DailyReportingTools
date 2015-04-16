@@ -20,6 +20,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             UniqueProjectKey = Options.UniqueProjectKey;
         }
 
+        public JiraReport() { }
+
         public BasicSettings Settings { get; set; }
 
         private TimeSpan? _offsetFromUtc;
