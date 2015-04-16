@@ -197,6 +197,9 @@
     <None Include="Views\resendDraftButton.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\square.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\subtask.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

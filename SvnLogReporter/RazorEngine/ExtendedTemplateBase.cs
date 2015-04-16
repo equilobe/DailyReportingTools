@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RazorEngine;
 using RazorEngine.Templating;
 using System.Diagnostics;
+using Equilobe.DailyReport.Models.Views;
 
 namespace SourceControlLogReporter.RazorEngine
 {
@@ -34,6 +35,11 @@ namespace SourceControlLogReporter.RazorEngine
         public string ErrorIcon()
         {
             return Partial("Views/errorIcon.cshtml");
+        }
+
+        public string Square(string color)
+        {
+            return Partial("Views/square.cshtml", new Square(color));
         }
     }
 }
