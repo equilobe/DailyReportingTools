@@ -370,6 +370,36 @@ div.disabled {
     }
 }
 
+[data-page='confirmIndividualDraft'] {
+
+    header {
+        display: none;
+    }
+
+    .main-logo {
+        margin-bottom: 80px;
+    }
+
+    .confirmation-result {
+        display: inline-block;
+    }
+}
+
+[data-page='confirmDraft'] {
+
+    header {
+        display: none;
+    }
+
+    .main-logo {
+        margin-bottom: 80px;
+    }
+
+    .confirmation-result {
+        display: inline-block;
+    }
+}
+
 @keyframes spin {
     from {
         transform: scale(1) rotate(0deg);

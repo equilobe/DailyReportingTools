@@ -35,7 +35,7 @@ namespace Equilobe.DailyReport.SL
             SetReportExecutionInstance(context);
 
             if (TryRunReport(context))
-                return SimpleResult.Success("Report confirmed. Final report sent");
+                return SimpleResult.Success("Full draft report successfully confirmed!");
             else
                 return SimpleResult.Error("Error in sending the final report");
         }
@@ -61,7 +61,7 @@ namespace Equilobe.DailyReport.SL
         public SimpleResult ConfirmIndividualDraft(ExecutionContext context)
         {
             if (context.Date.Date != DateTime.Today)
-                return SimpleResult.Error("Cannot confirm report for another date");
+                return SimpleResult.Error("Cannot confirm report for another date!");
 
             var canConfirm = CanConfirm(context);
             if (canConfirm.HasError)
@@ -77,10 +77,10 @@ namespace Equilobe.DailyReport.SL
                 if (!TryRunReport(context))
                     return SimpleResult.Error("Report confirmed. Error in sending full draft report");
 
-                return SimpleResult.Error("Report confirmed. Full draft sent");
+                return SimpleResult.Success("Individual draft report successfully confirmed!");
             }
 
-            return SimpleResult.Success("Report confirmed");
+            return SimpleResult.Success("Individual draft report successfully confirmed!");
         }
 
         public SimpleResult SendIndividualDraft(ExecutionContext context)
@@ -222,13 +222,13 @@ namespace Equilobe.DailyReport.SL
             }
 
             if (WasFinalDraftSentToday(basicSettings.ReportExecutionSummary, context.Date.Date))
-                return SimpleResult.Error("Can't confirm individual draft if final draft was already sent");
+                return SimpleResult.Error("Individual draft report already confirmed!");
 
             if (basicSettings.IndividualDraftConfirmations == null)
                 return SimpleResult.Success("Can confirm");
 
             if(IsIndividualDraftConfirmed(context, basicSettings.IndividualDraftConfirmations))
-                return SimpleResult.Error("Draft is already confirmed");
+                return SimpleResult.Error("Individual draft report already confirmed!");
 
             return SimpleResult.Success("Can confirm");
         }

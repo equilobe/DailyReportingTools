@@ -42,42 +42,43 @@ namespace DailyReportWeb.Controllers.Api
             var confirmationResult = ReportExecutionService.SendReport(context);
             var confirmationDetails = new StringBuilder();
 
-            if (confirmationResult.HasError)
+            if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
+                confirmationDetails.Append("You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.");
+            else
             {
-                DateTime? reportSentDate;
-                using (var db = new ReportsDb())
+                if (!confirmationResult.HasError)
+                    confirmationDetails.Append("The final report will be sent shortly to");
+                else
                 {
-                    var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
-                    reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
+                    DateTime? reportSentDate;
+                    using (var db = new ReportsDb())
+                    {
+                        var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
+                        reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
+                    }
+
+                    if (reportSentDate.Value.Date == DateTime.Today)
+                        confirmationDetails.AppendFormat("The final report was already sent at {0} to", reportSentDate.Value.ToShortTimeString());
+                    else
+                        confirmationDetails.Append("The final report will be sent shortly to");
                 }
 
-                if (reportSentDate.Value.Date == DateTime.Today)
-                    confirmationDetails.AppendFormat("The final report was already sent at {0}", reportSentDate.Value.ToShortTimeString());
+                var fullDraftRecipients = new List<string>();
+
+                if (advancedSettings.AdvancedOptions.SendFinalToAllUsers)
+                    fullDraftRecipients.Add("the entire team");
                 else
-                    confirmationDetails.Append("The final report will be sent shortly to");
-            }
-            else
-            {
-                confirmationDetails.Append("The final report will be sent shortly to");
-            }
+                    fullDraftRecipients.Add("the project lead");
 
-            var fullDraftRecipients = new List<string>();
+                if (advancedSettings.AdvancedOptions.SendFinalToOthers)
+                {
+                    var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                             .ToList();
+                    fullDraftRecipients.AddRange(emails);
+                }
 
-            if (advancedSettings.AdvancedOptions.SendFinalToAllUsers)
-                fullDraftRecipients.Add("the entire team");
-            else
-            {
-                fullDraftRecipients.Add("the project lead");
+                confirmationDetails.AppendFormat(" {0}", StringExtensions.GetNaturalLanguage(fullDraftRecipients));
             }
-
-            if (advancedSettings.AdvancedOptions.SendFinalToOthers)
-            {
-                var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                         .ToList();
-                fullDraftRecipients.AddRange(emails);
-            }
-
-            confirmationDetails.AppendFormat(" {0}", StringExtensions.GetNaturalLanguage(fullDraftRecipients));
 
             return new DataConfirmIndividualDraft
             {

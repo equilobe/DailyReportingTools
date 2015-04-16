@@ -1,7 +1,9 @@
 ﻿<div class="full-page vcenter-parent">
     <div class="container hcenter vcenter">
         <div class="main-logo">
-            <img src="../Content/Images/logo-main.PNG" />
+            <a href="/">
+                <img src="../Content/Images/logo-main.PNG" />
+            </a>
         </div>
 
         <div ng-if="status == 'loading'">
@@ -12,12 +14,12 @@
 
         <div ng-if="status == 'loaded'">
             <div ng-if="!error">
-                <h1>
+                <h3>
                     {{data.project}}
-                </h1>
-                <p class="alert" ng-class="data.status.hasError ? 'alert-danger' : 'alert-success'">
+                </h3>
+                <h3 class="confirmation-result alert" ng-class="data.status.hasError ? 'alert-danger' : 'alert-success'">
                     {{data.status.message}}
-                </p>
+                </h3>
                 <p>
                     {{data.details}}
                 </p>
