@@ -352,7 +352,7 @@ else
                 </tr>
             }
 
-            @if (Model.Timing.UnassignedTasksHoursAverageLeft == 0)
+            @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1)
             {
                 <tr>
                     <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
