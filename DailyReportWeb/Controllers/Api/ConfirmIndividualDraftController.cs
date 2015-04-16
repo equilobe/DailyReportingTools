@@ -97,8 +97,14 @@ namespace DailyReportWeb.Controllers.Api
             }
 
             var fullDraftRecipients = new List<string>();
-            if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
-                fullDraftRecipients.Add("the project lead");
+
+            if (advancedSettings.AdvancedOptions.SendDraftToAllUsers)
+                fullDraftRecipients.Add("the entire team");
+            else
+            {
+                if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
+                    fullDraftRecipients.Add("the project lead");
+            }
 
             if (advancedSettings.AdvancedOptions.SendDraftToOthers)
             {

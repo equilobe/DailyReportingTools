@@ -42,29 +42,33 @@ namespace DailyReportWeb.Controllers.Api
             var confirmationResult = ReportExecutionService.SendReport(context);
             var confirmationDetails = new StringBuilder();
 
-            if (ReportExecutionService.CanSendFullDraft(context))
+            if (confirmationResult.HasError)
             {
-                if (confirmationResult.HasError)
+                DateTime? reportSentDate;
+                using (var db = new ReportsDb())
                 {
-                    DateTime? reportSentDate;
-                    using (var db = new ReportsDb())
-                    {
-                        var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
-                        reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
-                    }
+                    var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
+                    reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
+                }
 
-                    if (reportSentDate.Value.Date == DateTime.Today)
-                        confirmationDetails.AppendFormat("The final report was already sent at {0}", reportSentDate.Value.ToShortTimeString());
-                }
+                if (reportSentDate.Value.Date == DateTime.Today)
+                    confirmationDetails.AppendFormat("The final report was already sent at {0}", reportSentDate.Value.ToShortTimeString());
                 else
-                {
                     confirmationDetails.Append("The final report will be sent shortly to");
-                }
+            }
+            else
+            {
+                confirmationDetails.Append("The final report will be sent shortly to");
             }
 
             var fullDraftRecipients = new List<string>();
+
             if (advancedSettings.AdvancedOptions.SendFinalToAllUsers)
                 fullDraftRecipients.Add("the entire team");
+            else
+            {
+                fullDraftRecipients.Add("the project lead");
+            }
 
             if (advancedSettings.AdvancedOptions.SendFinalToOthers)
             {
