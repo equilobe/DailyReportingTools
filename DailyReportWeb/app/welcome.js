@@ -8,13 +8,13 @@ angular.module('app')
         });
     }])
     .controller("WelcomeController", ["$scope", "$http", "$location", function ($scope, $http, $location) {
-        $("body").attr("data-page", "welcome");
-        $scope.$parent.child = $scope;
-
         if ($scope.$root.isAuth) {
-            $location.url('/app/instances');
+            $location.url('/app/projects');
             return;
         }
+
+        $("body").attr("data-page", "welcome");
+        $scope.$parent.child = $scope;
 
         var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
         if (iOS)

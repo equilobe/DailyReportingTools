@@ -3,7 +3,6 @@
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/instances', {
-            label: 'Instances',
             templateUrl: 'app/instances.html',
             controller: 'InstancesController'
         });

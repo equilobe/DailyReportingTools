@@ -15,13 +15,11 @@
             <h1>
                 Projects
             </h1>
-            <p class="help-block">
-                {{projects[0].baseUrl}}
-            </p>
+            <select class="form-control" ng-model="instance" ng-options="instance as instance[0].baseUrl for instance in instances"></select>
         </div>
     </div>
     <div class="table">
-        <div class="container" ng-if="!projects.length">
+        <div class="container" ng-if="!instance.length">
             <h2>
                 <span class="alert-danger">
                     No projects available
@@ -31,8 +29,8 @@
                 Daily Report is unable to find any project.
             </p>
         </div>
-        <div class="container" ng-if="projects.length">
-            <div class="row project" ng-repeat="project in projects">
+        <div class="container" ng-if="instance.length">
+            <div class="row project" ng-repeat="project in instance">
                 <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/" class="btn btn-link">
                     <h4>
                         {{project.projectName}}
