@@ -162,7 +162,7 @@ else
                                     </td>
                                     <td style="padding:0px; padding-bottom:10px; height:75px">
                                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
-                                        @if (Model.Timing.AverageWorked > 0)
+                                        @if (Model.Timing.AverageWorked >= 0.1)
                                         {
                                             @ChartBar("#5CB85C", @Model.SprintWidths.DayWidthString, @Model.ChartMaxWidthString, @Model.Timing.AverageWorkedString)
                                         }
@@ -170,7 +170,7 @@ else
                                         {
                                             @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
                                         }
-                                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.SprintAverageEstimate > 0)
+                                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.SprintAverageEstimate >= 0.1)
                                         {
                                             @ChartBar("#999", @Model.SprintWidths.EstimatedWidthString, @Model.ChartMaxWidthString, @Model.Timing.SprintAverageEstimateString)
                                         }
@@ -178,7 +178,7 @@ else
                                         {
                                             @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
                                         }
-                                        @if (Model.Timing.AverageWorkedSprint > 0)
+                                        @if (Model.Timing.AverageWorkedSprint >= 0.1)
                                         {
                                             @ChartBar("#FF6600", @Model.SprintWidths.DoneWidthString, @Model.ChartMaxWidthString, @Model.Timing.AverageWorkedSprintString)
                                         }
@@ -186,7 +186,7 @@ else
                                         {
                                             @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
                                         }
-                                        @if (Model.Timing.RemainingSprintAverage > 0)
+                                        @if (Model.Timing.RemainingSprintAverage >= 0.1)
                                         {
                                             @ChartBar("#337AB7", @Model.SprintWidths.RemainingWidthString, @Model.ChartMaxWidthString, @Model.Timing.RemainingSprintAverageString)
                                         }
@@ -211,43 +211,33 @@ else
                                     </td>
                                     <td style="padding:0px; padding-bottom:10px; height:55px;">
                                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
-                                        <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                        </div>
-                                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.MonthAverageEstimated > 0)
+
+                                        @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
+
+                                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.MonthAverageEstimated >= 0.1)
                                         {
-                                            <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                                <div style="display:inline-block; background-color:#999; width: @Model.MonthWidths.EstimatedWidthString; height:14px; float:left; margin:0"></div>
-                                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.MonthAverageEstimatedString</div>
-                                            </div>
+                                            @ChartBar("#999", @Model.MonthWidths.EstimatedWidthString, @Model.ChartMaxWidthString, @Model.Timing.MonthAverageEstimatedString)
+
                                         }
                                         else
                                         {
-                                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                            </div>
+                                            @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
                                         }
-                                        @if (Model.Timing.AverageWorkedMonth > 0)
+                                        @if (Model.Timing.AverageWorkedMonth >= 0.1)
                                         {
-                                            <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                                <div style="display:inline-block; background-color:#FF6600; width: @Model.MonthWidths.DoneWidthString; height:14px; float:left; margin:0"></div>
-                                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.AverageWorkedMonthString</div>
-                                            </div>
+                                            @ChartBar("#FF6600", @Model.MonthWidths.DoneWidthString, @Model.ChartMaxWidthString, @Model.Timing.AverageWorkedMonthString)
                                         }
                                         else
                                         {
-                                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                            </div>
+                                            @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
                                         }
-                                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage > 0)
+                                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage >= 0.1)
                                         {
-                                            <div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                                <div style="display:inline-block; background-color:#337AB7; width: @Model.MonthWidths.RemainingWidthString; height:14px; float:left; margin:0"></div>
-                                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Timing.RemainingMonthAverageString</div>
-                                            </div>
+                                            @ChartBar("#337AB7", @Model.MonthWidths.RemainingWidthString, @Model.ChartMaxWidthString, @Model.Timing.RemainingMonthAverageString)
                                         }
                                         else
                                         {
-                                            <div style="width: @Model.ChartMaxWidthString; max-width:@Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                            </div>
+                                            @ChartBar("white", @Model.ChartMaxWidthString, @Model.ChartMaxWidthString, "")
                                         }
                                     </td>
                                 </tr>
