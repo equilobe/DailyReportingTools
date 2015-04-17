@@ -9,40 +9,34 @@
     </div>
 </div>
 <form name="form" class="container">
-    <div class="panel-heading">
-        <h3>
-            Daily Report
-        </h3>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="form-group">
-                <label>
-                    Email
-                </label>
-                <div ng-form="emailForm">
-                    <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
-                    <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>
-                    Password
-                </label>
-                <div>
-                    <input type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="checkbox-inline">
-                    <input type="checkbox" ng-model="form.rememberMe" />
-                    Remember me
-                </label>
-            </div>
+    <h3>
+        Daily Report
+    </h3>
+    <div class="form-group">
+        <label>
+            Email
+        </label>
+        <div ng-form="emailForm">
+            <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
+            <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
         </div>
     </div>
+    <div class="form-group">
+        <label>
+            Password
+        </label>
+        <div>
+            <input type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="checkbox-inline">
+            <input type="checkbox" ng-model="form.rememberMe" />
+            Remember me
+        </label>
+    </div>
 
-    <div class="container">
+    <div>
         <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signIn(this)">
             Sign In
         </button>
