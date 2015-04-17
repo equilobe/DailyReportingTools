@@ -32,30 +32,14 @@
             </p>
         </div>
         <div class="container" ng-if="projects.length">
-            <div class="row">
-                <label class="col-sm-6 col-md-6">
-                    Project name
-                </label>
-                <label class="col-sm-4 col-md-4">
-                    Report time
-                </label>
-                <label class="col-sm-2 col-md-2">
-                    Options
-                </label>
-            </div>
             <div class="row project" ng-repeat="project in projects">
-                <div class="col-sm-6 col-md-6">
-                    {{project.projectName}}
-                </div>
-                <div class="col-sm-4 col-md-4">
-                    <div ng-form="reportForm">
-                        <input name="reportTime" type="text" class="form-control" placeholder="e.g. 08:00" ng-model="project.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false; updateReportTime(this)" ng-pattern=regex.Time />
-                        <span class="form-notification" ng-show="reportForm.reportTime.$error.pattern && !reportTime.focus"><b>Enter valid time</b> (23:59)</span>
-                    </div>
-                </div>
-                <div class="col-sm-2 col-md-2">
-                    <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/" class="btn btn-default">Details</a>
-                </div>
+                <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/" class="btn btn-link">
+                    <h4>
+                        {{project.projectName}}
+                    </h4>
+                </a>
+                <span class="help-block" ng-if="project.reportTime">Sending report at {{project.reportTime}}</span>
+                <span class="help-block" ng-if="!project.reportTime">Not sending report</span>
             </div>
         </div>
     </div>
