@@ -15,7 +15,7 @@
             <h1>
                 Projects
             </h1>
-            <select class="form-control" ng-model="instance" ng-options="instance as instance[0].baseUrl for instance in instances"></select>
+            <select class="form-control" ng-model="instance" ng-options="instance as instance[0].baseUrl for instance in instances" ng-change="checkNavigation(this)"></select>
         </div>
     </div>
     <div class="table">
