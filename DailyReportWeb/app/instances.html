@@ -32,22 +32,20 @@
             </p>
         </div>
         <div class="container" ng-if="instances.length">
-            <div class="row">
-                <label class="col-lg-10 col-md-9 col-sm-9 col-xs-7">
-                    Instance name
-                </label>
-                <label class="col-lg-2 col-md-3 col-sm-3 col-xs-5">
-                    Options
-                </label>
-            </div>
             <div class="row project" ng-repeat="instance in instances">
                 <div class="col-lg-9 col-md-8 col-sm-8">
-                    {{instance.baseUrl}}
+                    <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-link">
+                        <h3>
+                            {{instance.baseUrl}}
+                        </h3>
+                    </a>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="pull-right">
-                        <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-default">View Projects</a>
-                        <button class="btn btn-default" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance">Edit Instance</button>
+                        <h3>
+                            <button class="btn btn-default glyphicon glyphicon-edit" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance" title="Edit Instance"></button>
+                            <button class="btn btn-default glyphicon glyphicon-remove" ng-click="" ng-disabled="addingInstance || editingInstance" title="Delete Instance"></button>
+                        </h3>
                     </div>
                 </div>
             </div>
@@ -101,7 +99,9 @@
         </div>
         <div class="container">
             <div class="row project" ng-show="!addingInstance && !editingInstance">
-                <button class="btn btn-default pull-right" ng-click="addInstance(this)">Add New Instance</button>
+                <div class="col-md-12">
+                    <button class="btn btn-default glyphicon glyphicon-plus pull-right" ng-click="addInstance(this)" title="Add New Instance"></button>
+                </div>
             </div>
         </div>
     </div>
