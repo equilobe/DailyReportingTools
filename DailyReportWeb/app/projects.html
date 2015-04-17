@@ -18,26 +18,26 @@
             <select class="form-control" ng-model="instance" ng-options="instance as instance[0].baseUrl for instance in instances" ng-change="checkNavigation(this)"></select>
         </div>
     </div>
-    <div class="table">
-        <div class="container" ng-if="!instance.length">
-            <h2>
-                <span class="alert-danger">
-                    No projects available
-                </span>
-            </h2>
-            <p class="help-block">
-                Daily Report is unable to find any project.
-            </p>
-        </div>
-        <div class="container" ng-if="instance.length">
-            <div class="row project" ng-repeat="project in instance">
-                <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/" class="btn btn-link">
-                    <h4>
-                        {{project.projectName}}
-                    </h4>
-                </a>
-                <span class="help-block" ng-if="project.reportTime">Sending report at {{project.reportTime}}</span>
-                <span class="help-block" ng-if="!project.reportTime">Not sending report</span>
+    <div class="container" ng-if="!instance.length">
+        <h2>
+            <span class="alert-danger">
+                No projects available
+            </span>
+        </h2>
+        <p class="help-block">
+            Daily Report is unable to find any project.
+        </p>
+    </div>
+    <div class="container projects" ng-if="instance.length">
+        <div ng-repeat="project in instance">
+            <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/">
+                <h3>
+                    {{project.projectName}}
+                </h3>
+            </a>
+            <div class="help-block">
+                <span class="alert-success" ng-if="project.reportTime">Sending report at {{project.reportTime}}</span>
+                <span class="alert-danger" ng-if="!project.reportTime">Not sending report</span>
             </div>
         </div>
     </div>

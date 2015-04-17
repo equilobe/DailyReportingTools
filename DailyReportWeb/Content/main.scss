@@ -356,6 +356,17 @@ div.disabled {
     }
 }
 
+[data-page='projects'] {
+
+    .projects .help-block {
+        margin-top: -10px;
+
+        & > span {
+            background-color: transparent;
+        }
+    }
+}
+
 [data-page='confirmIndividualDraft'] {
 
     header {
