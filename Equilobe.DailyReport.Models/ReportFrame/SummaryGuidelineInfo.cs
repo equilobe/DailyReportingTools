@@ -26,6 +26,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
 
+        public double GuidelineWidthSmall
+        {
+            get
+            {
+                return GuidelineWidth / 2;
+            }
+        }
+
         public int GuidelinesCount { get; set; }
 
         public readonly int ChartMaxWidth = 300;

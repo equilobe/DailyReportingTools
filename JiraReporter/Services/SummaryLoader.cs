@@ -102,12 +102,14 @@ namespace JiraReporter.Services
             if (!_report.HasSprint)
                 return;
 
+            var unassignedTasksHoursLeft = ((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600);
+
             _summary.Timing.OpenUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
             _summary.Timing.OpenUnassignedTasksTimeLeftString = _summary.Timing.OpenUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.InProgressUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
             _summary.Timing.InProgressUnassignedTasksTimeLeftString = _summary.Timing.InProgressUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
-            _summary.Timing.UnassignedTasksHoursAverageLeft = _summary.WorkingDays.SprintWorkingDaysLeft !=0 ?((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600) / _summary.WorkingDays.SprintWorkingDaysLeft : 0;
+            _summary.Timing.UnassignedTasksHoursAverageLeft = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? unassignedTasksHoursLeft / _summary.WorkingDays.SprintWorkingDaysLeft : unassignedTasksHoursLeft;
             _summary.Timing.UnassignedTasksTimeLeftString = _summary.Timing.UnassignedTasksHoursAverageLeft.RoundDoubleOneDecimal();
         }
 
@@ -188,9 +190,13 @@ namespace JiraReporter.Services
         {
             if (_summary.WorkingDays.MonthWorkingDaysLeft != 0)
                 _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / _summary.WorkingDays.MonthWorkingDaysLeft;
+            else
+                _summary.Timing.RemainingMonthAverage = _summary.Timing.RemainingMonthHours;
 
             if (_summary.WorkingDays.SprintWorkingDaysLeft != 0)
                 _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / _summary.WorkingDays.SprintWorkingDaysLeft;
+            else
+                _summary.Timing.RemainingSprintAverage = (double)(_summary.Timing.TotalRemainingSeconds / 3600);
 
             TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
         }
@@ -239,7 +245,7 @@ namespace JiraReporter.Services
             _summary.Timing.OpenTasksTimeLeftString = _summary.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
 
             _summary.Timing.TotalRemainingSeconds = _summary.Timing.OpenTasksTimeLeftSeconds + _summary.Timing.InProgressTasksTimeLeftSeconds;
-            _summary.Timing.TotalRemainingAverage = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft : 0;
+            _summary.Timing.TotalRemainingAverage = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft : _summary.Timing.TotalRemainingHours;
             _summary.Timing.TotalRemainingString = _summary.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
         }
 

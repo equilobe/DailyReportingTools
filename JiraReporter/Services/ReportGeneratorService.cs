@@ -15,6 +15,7 @@ using JiraReporter.Helpers;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Autofac;
+using Equilobe.DailyReport.Utilsr;
 namespace JiraReporter
 {
     class ReportGeneratorService : IReportGeneratorService
@@ -39,9 +40,18 @@ namespace JiraReporter
 
             report.Summary = LoadSummary(report);
 
-            report.Title = JiraReportHelpers.GetReportTitle(report);
+            SetDetails(report);
 
             return report;
+        }
+
+        private static void SetDetails(JiraReport report)
+        {
+            report.Title = JiraReportHelpers.GetReportTitle(report);
+
+            report.EmailSubject = JiraReportHelpers.GetReportSubject(report);
+
+            report.Date = ReportDateFormatter.GetReportDate(report.FromDate, report.ToDate);
         }
 
         private void SetIssueSearchUrl(JiraReport report)
@@ -85,7 +95,7 @@ namespace JiraReporter
             report.CopyPropertiesOnObjects(individualReport);
             individualReport.Author = author;
 
-            individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
+            individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport);
 
             return individualReport;
         }

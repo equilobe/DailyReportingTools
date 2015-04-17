@@ -9,7 +9,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
     {
         List<JiraAuthor> Authors { get; set; }
         List<JiraCommit> Commits { get; set; }
-        DateTime Date { get; }
+        string Date { get; set; }
+        DateTime ReportDate { get; }
         DateTime FromDate { get; }
         List<JiraPullRequest> PullRequests { get; set; }
         Sprint Sprint { get; set; }

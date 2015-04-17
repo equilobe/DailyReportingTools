@@ -68,6 +68,8 @@ namespace JiraReporter.Helpers
         {
             if (sprintWorkingDaysLeft > 0)
                 author.Timing.TotalRemainingAverage = author.Timing.TotalRemainingHours / sprintWorkingDaysLeft;
+            else
+                author.Timing.TotalRemainingAverage = author.Timing.TotalRemainingHours;
             author.Timing.TotalRemainingString = author.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
         }
 

@@ -63,6 +63,18 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _title = value; }
         }
 
+        private string _emailSubject;
+        public string EmailSubject
+        {
+            get
+            {
+                if (_emailSubject == null)
+                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
+                return _emailSubject;
+            }
+            set { _emailSubject = value; }
+        }
+
 
 
         private List<JiraAuthor> _authors;
@@ -77,9 +89,10 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _authors = value; }
         }
 
-        public DateTime Date { get { return Options.FromDate; } }
+        //public DateTime Date { get { return Options.FromDate; } }
         public DateTime FromDate { get { return Options.FromDate; } }
         public DateTime ToDate { get { return Options.ToDate; } }
+        public string Date { get; set; }
 
         private Summary _summary;
         public Summary Summary

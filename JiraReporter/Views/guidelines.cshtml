@@ -1,14 +1,71 @@
 ﻿@{
     var guideNumber = Model.GuidelinesRate;
+    var paddingLeft = "";
+    var border = "1px solid #B8B8B8;";
 }
-<div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-    @for (int i = 0; i < Model.GuidelinesCount; i++)
-    {
-        <div style="display:inline-block; height:14px; min-height:14px; float:left; margin:0; width:@Model.GuidelineWidthString">
-            <div style="height:7px; width:@Model.GuidelineWidthString; font-size:9px; text-align:center; margin-left:@Model.GuidelineCounterMarginLeft; margin-bottom:5px; color:gray">@guideNumber</div>
-            <div style="border-right:1px solid #B8B8B8; border-bottom:1px solid #B8B8B8; height: 7px; margin-bottom:5px; min-width:@Model.GuidelineWidthString; width:@Model.GuidelineWidthString"></div>
-        </div>
-        
-        guideNumber += Model.GuidelinesRate;
-    }
-</div>
+@*<div style="width: @Model.ChartMaxWidthString; max-width: @Model.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+        @for (int i = 0; i < Model.GuidelinesCount; i++)
+        {
+            <div style="display:inline-block; height:14px; min-height:14px; float:left; margin:0; width:@Model.GuidelineWidthString">
+                <div style="height:7px; width:@Model.GuidelineWidthString; font-size:9px; text-align:center; margin-left:@Model.GuidelineCounterMarginLeft; margin-bottom:5px; color:gray">@guideNumber</div>
+                <div style="border-right:1px solid #B8B8B8; border-bottom:1px solid #B8B8B8; height: 7px; margin-bottom:5px; min-width:@Model.GuidelineWidthString; width:@Model.GuidelineWidthString"></div>
+            </div>
+
+            guideNumber += Model.GuidelinesRate;
+        }
+    </div>*@
+
+<table width="@Model.ChartMaxWidth" cellspacing="0" cellpadding="0" height="14" style="overflow:hidden; padding-bottom:2px;">
+    <tbody>
+        <tr>
+            @{
+                paddingLeft = "";
+            }
+
+            @for (int i = 0; i < Model.GuidelinesCount; i++)
+            {
+                if (i == 0)
+                {
+                    paddingLeft = @Model.GuidelineWidthSmall + "px";
+                }
+                else
+                {
+                    paddingLeft = "0";
+                }
+
+                <td colspan="2" width="@Model.GuidelineWidth" height="7" style="font-size:9px; text-align:center; color:black; padding-left:@paddingLeft">
+                    @guideNumber
+                </td>
+
+                guideNumber += Model.GuidelinesRate;
+            }
+        </tr>
+        <tr>
+            @{
+                paddingLeft = "";
+            }
+            @for (int i = 0; i < Model.GuidelinesCount; i++)
+            {
+                if (i == 0)
+                {
+                    paddingLeft = @Model.GuidelineWidthSmall + "px";
+                }
+                else
+                {
+                    paddingLeft = "0";
+                }
+                if (i == Model.GuidelinesCount - 1)
+                {
+                    border = "";
+                }
+
+                <td width="@Model.GuidelineWidthSmall" height="7" style="border-right:1px solid #B8B8B8; border-bottom:1px solid #B8B8B8; padding-left:@paddingLeft">
+                    &nbsp;
+                </td>
+                <td width="@Model.GuidelineWidthSmall" height="7" style="border-bottom:@border; padding-left:@paddingLeft">
+                    &nbsp;
+                </td>
+            }
+        </tr>
+    </tbody>
+</table>

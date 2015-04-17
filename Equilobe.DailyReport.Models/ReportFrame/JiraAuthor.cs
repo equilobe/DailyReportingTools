@@ -23,6 +23,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public Timing Timing { get; set; }
 
         public double DayChartPixelWidth { get; set; }
+        public string DayChartWidthString
+        {
+            get
+            {
+                return DayChartPixelWidth.ToString();
+            }
+        }
         public string DayChartPixelWidthString
         {
             get
@@ -31,6 +38,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
         public double SprintChartPixelWidth { get; set; }
+        public string SprintChartWidthString
+        {
+            get
+            {
+                return SprintChartPixelWidth.ToString();
+            }
+        }
         public string SprintChartPixelWidthString
         {
             get
@@ -39,6 +53,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
         public double MonthChartPixelWidth { get; set; }
+        public string MonthChartWidthString
+        {
+            get
+            {
+                return MonthChartPixelWidth.ToString();
+            }
+        }
         public string MonthChartPixelWidthString
         {
             get
@@ -47,6 +68,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
         public double RemainingChartPixelWidth { get; set; }
+        public string RemainingChartWidthString
+        {
+            get
+            {
+                return RemainingChartPixelWidth.ToString();
+            }
+        }
         public string RemainingChartPixelWidthString
         {
             get

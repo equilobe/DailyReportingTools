@@ -182,6 +182,9 @@
     <None Include="Views\guidelines.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\header.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\individualDraftButtons.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

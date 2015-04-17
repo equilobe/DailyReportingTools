@@ -1,0 +1,34 @@
+﻿<table cellpadding="0" cellspacing="0" style="padding-top:20px">
+    <tbody>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="120" height="30" style="line-height:35px">
+                            <img width="120" height="30" style="display:block" src="https://dailyreport.equilobe.com/content/images/logo-menu.PNG" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h1 style="color:black; font-family:'Segoe UI', sans-serif, Arial; font-weight:normal">@Model.Title</h1>
+            </td>
+        </tr>
+        <tr>
+            <td style="color:black; font-family:'Segoe UI', sans-serif, Arial; padding:0">
+                @Model.Date
+            </td>
+        </tr>
+
+        @if (Model.IsIndividualDraft || Model.IsFinalDraft)
+        {
+            <tr>
+                <td style="background-color:#FEFAC0">
+                    <p style="color:#A77A23; font-family:'Segoe UI', sans-serif, Arial">This is a DRAFT report. Please confirm it using the button at the end</p>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

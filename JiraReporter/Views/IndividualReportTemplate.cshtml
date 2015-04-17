@@ -15,7 +15,7 @@ else
 
 <div style="margin-top:20px; font-size:12px">
 
-    <h3 style="color:black">@Model.Title</h3>
+   @Partial("Views/header.cshtml", Model)
 
     <div style="margin-top:20px">
         @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)

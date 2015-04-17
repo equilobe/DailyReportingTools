@@ -16,11 +16,11 @@
     <tbody>
         <tr>
             <td>
-                <h3 style="color:black">@Model.Title</h3>
+                @Partial("Views/header.cshtml", Model)
 
-                <div>
+                <table style="padding-top:30px">
                     @Partial("Views/summary.cshtml", Model.Summary)
-                </div>
+                </table>
 
                 <div style="margin-top:40px; line-height:1.4em;">
                     @if (Model.Authors.Count > 0)
