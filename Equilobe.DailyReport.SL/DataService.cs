@@ -188,7 +188,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public byte[] GetImage(string key)
+        public byte[] GetUserImageByKey(string key)
         {
             using (var db = new Equilobe.DailyReport.DAL.ReportsDb())
             {
@@ -204,7 +204,7 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public void AddAvatar(string username, long instanceId, byte[] image)
+        public void AddUserImage(string username, long instanceId, byte[] image)
         {
             using (var db = new ReportsDb())
             {
@@ -224,7 +224,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public string GetAvatarKey(string username)
+        public string GetUserImageKey(string username)
         {
             using (var db = new ReportsDb())
             {
