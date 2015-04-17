@@ -51,6 +51,10 @@ header {
 
     .public-menu {
         margin-top: 8px;
+
+        a:hover {
+            text-decoration: none;
+        }
     }
 
     .breadcrumb {

@@ -8,15 +8,15 @@
 
         <div ng-if="!isAuth" class="public-menu">
             <div class="pull-right">
-                <a class="btn" href="app/signup">Sign Up</a>
-                <a class="btn about" ng-click="pageScroll('#about')">About</a>
-                <a class="btn" href="app/signin">Log in</a>
+                <a class="btn btn-link about" ng-click="pageScroll('#about')">About</a>
+                <a class="btn btn-link" ng-href="app/signup">Sign Up</a>
+                <a class="btn btn-link" ng-href="app/signin">Log in</a>
             </div>
         </div>
 
         <div ng-if="isAuth" class="user-menu">
             <div class="user-settings" ng-if="!isPlugin">
-                <a class="btn pull-right" ng-click="signOut(this)">Logout</a>
+                <a class="btn btn-link pull-right" ng-click="signOut(this)">Logout</a>
             </div>
         </div>
     </div>
