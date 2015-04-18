@@ -25,8 +25,11 @@
     }
 }
 
-.jumbo {
+[data-page] {
     margin-top: 60px;
+}
+
+.jumbo {
     padding-top: 20px;
     padding-bottom: 15px;
     background-color: #29a9e1;
@@ -73,7 +76,7 @@ header {
         }
     }
 
-    .btn.about {
+    .about {
         display: none;
     }
 }
@@ -81,14 +84,22 @@ header {
 
 footer {
     margin-top: 50px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     padding-top: 30px;
     border-top: 1px solid #DDD;
-    font-weight: bold;
 
-    .logo {
-        width: 130px;
-        vertical-align: bottom;
+    a {
+        color: #333;
+        text-decoration: underline;
+
+        &:nth-child(2n) {
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+    }
+
+    .about {
+        display: none;
     }
 }
 
@@ -254,7 +265,6 @@ div.disabled {
     }
 
     .jumbo {
-        margin-top: 60px;
         margin-bottom: 50px;
         padding-top: 20px;
         padding-bottom: 20px;
@@ -264,7 +274,7 @@ div.disabled {
         display: none;
     }
 
-    .btn.about {
+    .about {
         display: inline-block;
     }
 
@@ -459,27 +469,6 @@ div.disabled {
                 font-size: 1.6em;
                 padding: 10px 15px;
             }
-        }
-    }
-
-    [data-page='instances'] {
-
-        .jumbo {
-            margin-top: 60px;
-        }
-    }
-
-    [data-page='projects'] {
-
-        .jumbo {
-            margin-top: 60px;
-        }
-    }
-
-    [data-page='settings'] {
-
-        .jumbo {
-            margin-top: 60px;
         }
     }
 }

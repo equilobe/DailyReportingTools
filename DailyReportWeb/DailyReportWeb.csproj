@@ -219,6 +219,13 @@
     <Content Include="app\confirmIndividualDraft.test.js">
       <DependentUpon>confirmIndividualDraft.html</DependentUpon>
     </Content>
+    <Content Include="app\eula.html" />
+    <Content Include="app\eula.js">
+      <DependentUpon>eula.html</DependentUpon>
+    </Content>
+    <Content Include="app\eula.test.js">
+      <DependentUpon>eula.html</DependentUpon>
+    </Content>
     <Content Include="app\footer.html" />
     <Content Include="app\header.html" />
     <Content Include="app\instances.html" />
