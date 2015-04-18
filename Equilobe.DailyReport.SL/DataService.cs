@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
+using System.Net.Http;
 
 
 namespace Equilobe.DailyReport.SL
@@ -123,12 +124,14 @@ namespace Equilobe.DailyReport.SL
                            .Where(ii => ii.UserId == userId)
                            .ToList()
                            .ForEach(installedInstance =>
-                {
-                               var instance = new Instance();
-                               instance.CopyFrom<IInstance>(installedInstance);
-
-                               instances.Add(instance);
-                    });
+                           {
+                               instances.Add(new Instance
+                               {
+                                   Id = installedInstance.Id,
+                                   BaseUrl = UrlExtensions.GetAuthority(installedInstance.BaseUrl),
+                                   TimeZone = installedInstance.TimeZone
+                               });
+                           });
 
             return instances;
         }
@@ -162,7 +165,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-      
+
 
         FullReportSettings GetPolicyBufferFromDb(string uniqueProjectKey)
         {

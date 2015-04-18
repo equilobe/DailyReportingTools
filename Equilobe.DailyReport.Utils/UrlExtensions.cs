@@ -18,5 +18,10 @@ namespace System.Net.Http
         {
             return new Uri(url).PathAndQuery.Substring(1);
         }
+
+        public static string GetAuthority(string url)
+        {
+            return new Uri(url).Authority;
+        }
     }
 }

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Security;
 
 namespace Equilobe.DailyReport.SL
@@ -118,7 +119,7 @@ namespace Equilobe.DailyReport.SL
                                               {
                                                   Id = basicSettings.Id,
                                                   InstalledInstanceId = basicSettings.InstalledInstanceId,
-                                                  BaseUrl = installedInstance.BaseUrl,
+                                                  BaseUrl = UrlExtensions.GetAuthority(installedInstance.BaseUrl),
                                                   ProjectId = basicSettings.ProjectId,
                                                   ProjectKey = projectInfo.ProjectKey,
                                                   UniqueProjectKey = basicSettings.UniqueProjectKey,

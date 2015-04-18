@@ -15,29 +15,50 @@
             <h1>
                 Projects
             </h1>
-            <select class="form-control" ng-model="instance" ng-options="instance as instance[0].baseUrl for instance in instances" ng-change="checkNavigation(this)"></select>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    {{instance[0].baseUrl}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="instance in instances"><a href="#" ng-click="setInstance()">{{instance[0].baseUrl}}</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/app/instances"><span class="glyphicon glyphicon-cog"></span> Manage JIRA servers</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-    <div class="container" ng-if="!instance.length">
+    <div class="container" ng-if="!instances.length">
         <h2>
             <span class="alert-danger">
-                No projects available
+                No instances available
             </span>
         </h2>
         <p class="help-block">
-            Daily Report is unable to find any project.
+            Daily Report is unable to find any instance.
         </p>
     </div>
-    <div class="container projects" ng-if="instance.length">
-        <div ng-repeat="project in instance">
-            <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/">
-                <h3>
-                    {{project.projectName}}
-                </h3>
-            </a>
-            <div class="help-block">
-                <span class="alert-success" ng-if="project.reportTime">Sending report at {{project.reportTime}}</span>
-                <span class="alert-danger" ng-if="!project.reportTime">Not sending report</span>
+    <div ng-if="instances.length">
+        <div class="container" ng-if="!instance.length">
+            <h2>
+                <span class="alert-danger">
+                    No projects available
+                </span>
+            </h2>
+            <p class="help-block">
+                Daily Report is unable to find any project.
+            </p>
+        </div>
+        <div class="container projects" ng-if="instance.length">
+            <div ng-repeat="project in instance">
+                <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/">
+                    <h3>
+                        {{project.projectName}}
+                    </h3>
+                </a>
+                <div class="help-block">
+                    <span class="alert-success" ng-if="project.reportTime">Sending report at {{project.reportTime}}</span>
+                    <span class="alert-danger" ng-if="!project.reportTime">Not sending report</span>
+                </div>
             </div>
         </div>
     </div>

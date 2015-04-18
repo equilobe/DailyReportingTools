@@ -18,18 +18,14 @@ angular.module('app')
 
         $http.get("/api/projects/")
             .success(function (instances) {
-                $scope.instance = instances ? ($routeParams.instanceId ? instances[$routeParams.instanceId - 1] : instances[0]) : null;
-                instances.push([{ id: 0, baseUrl: "Manage JIRA servers" }]);
+                $scope.instance = instances ? ($routeParams.instanceId ? instances[$routeParams.instanceId - 1] : instances[0]) : {};
                 $scope.instances = instances;
             })
             .finally(function () {
                 $scope.status = "loaded";
             });
 
-        $scope.checkNavigation = function () {
-            if (this.instance[0].id == 0) {
-                $location.url('/app/instances');
-                return;
-            }
+        $scope.setInstance = function () {
+            $scope.instance = this.instance;
         }
     }]);
