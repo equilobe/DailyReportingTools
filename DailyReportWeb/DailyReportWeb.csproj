@@ -229,6 +229,13 @@
     </Content>
     <Content Include="app\footer.html" />
     <Content Include="app\header.html" />
+    <Content Include="app\howItWorks.html" />
+    <Content Include="app\howItWorks.js">
+      <DependentUpon>howItWorks.html</DependentUpon>
+    </Content>
+    <Content Include="app\howItWorks.test.js">
+      <DependentUpon>howItWorks.html</DependentUpon>
+    </Content>
     <Content Include="app\instances.html" />
     <Content Include="app\instances.js">
       <DependentUpon>instances.html</DependentUpon>
