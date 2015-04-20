@@ -128,7 +128,7 @@ namespace Equilobe.DailyReport.SL
                                instances.Add(new Instance
                                {
                                    Id = installedInstance.Id,
-                                   BaseUrl = UrlExtensions.GetAuthority(installedInstance.BaseUrl),
+                                   BaseUrl = installedInstance.BaseUrl,
                                    TimeZone = installedInstance.TimeZone
                                });
                            });

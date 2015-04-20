@@ -35,7 +35,7 @@
             <div class="col-sm-8">
                 <a ng-href="app/instances/{{instance.id}}/projects/">
                     <h3>
-                        {{instance.baseUrl}}
+                        {{instance.baseUrl.substring(instance.baseUrl.lastIndexOf('/') + 1)}}
                     </h3>
                 </a>
             </div>
