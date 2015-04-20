@@ -1,49 +1,55 @@
 ﻿<div class="jumbotron jumbo">
     <div class="container">
         <h1>
-            Sign In
+            Support
         </h1>
         <p class="help-block">
-            Get inside of the best JIRA reporting tool
+            dailyreport@equilobe.com
         </p>
     </div>
 </div>
 <div class="container">
-    <form name="form">
-        <h3>
-            Daily Report
-        </h3>
+    <h3>
+        Please contact us at dailyreport@equilobe.com
+    </h3>
+    <form name="form" hidden>
+        <div class="form-group">
+            <label>
+                Name
+            </label>
+            <div>
+                <input type="text" class="form-control" placeholder="Your name" required ng-model="form.name" />
+            </div>
+        </div>
         <div class="form-group">
             <label>
                 Email
             </label>
             <div ng-form="emailForm">
-                <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
+                <input name="email" type="text" class="form-control" placeholder="Your email" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
                 <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
             </div>
         </div>
         <div class="form-group">
             <label>
-                Password
+                Message
             </label>
             <div>
-                <input type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" />
+                <textarea class="form-control" placeholder="Your message" required ng-model="form.message"></textarea>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="checkbox-inline">
-                <input type="checkbox" ng-model="form.rememberMe" />
-                Remember me
-            </label>
         </div>
 
         <div>
             <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signIn(this)">
-                Sign In
+                Send
             </button>
-            <span class="status-message" ng-show="status == 'checking'">
+            <span class="status-message" ng-show="status == 'sending'">
                 <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                <span>Loading</span>
+                <span>Sending</span>
+            </span>
+            <span class="status-message" ng-show="status == 'success' && form.$pristine">
+                <span class="alert-success glyphicon glyphicon-ok"></span>
+                <span>{{message}}</span>
             </span>
             <span class="status-message" ng-show="status == 'error' && form.$pristine">
                 <span class="alert-danger glyphicon glyphicon-remove"></span>

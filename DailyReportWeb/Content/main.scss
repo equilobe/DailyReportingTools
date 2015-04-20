@@ -395,6 +395,20 @@ div.disabled {
     }
 }
 
+[data-page='contact'] {
+
+    form {
+        max-width: 500px;
+    }
+}
+
+[data-page='eula'] {
+
+    .row p {
+        font-size: 16px;
+    }
+}
+
 @keyframes spin {
     from {
         transform: scale(1) rotate(0deg);
