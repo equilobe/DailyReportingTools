@@ -3,9 +3,9 @@
 describe('app module', function () {
     beforeEach(module('app'));
 
-    describe('ConfirmIndividualDraftController controller', function () {
+    describe('SendDraftController controller', function () {
         it('should ....', inject(function ($controller) {
-            var controller = $controller('ConfirmIndividualDraftController');
+            var controller = $controller('SendDraftController');
             expect(controller).toBeDefined();
         }));
     });

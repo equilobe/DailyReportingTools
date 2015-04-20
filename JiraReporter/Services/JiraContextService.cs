@@ -71,7 +71,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
@@ -89,7 +89,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
         }
 
         private static DateTime GetDateTimeFromString(string date)

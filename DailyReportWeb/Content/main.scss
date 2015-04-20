@@ -373,25 +373,17 @@ div.disabled {
     }
 }
 
-[data-page='confirmIndividualDraft'] {
+[data-page='confirmIndividualDraft'],
+[data-page='sendIndividualDraft'],
+[data-page='confirmDraft'],
+[data-page='sendDraft'] {
 
     header {
         display: none;
     }
 
-    .main-logo {
-        margin-bottom: 80px;
-    }
-
-    .confirmation-result {
-        display: inline-block;
-    }
-}
-
-[data-page='confirmDraft'] {
-
-    header {
-        display: none;
+    .data-page {
+        margin-top: 0;
     }
 
     .main-logo {

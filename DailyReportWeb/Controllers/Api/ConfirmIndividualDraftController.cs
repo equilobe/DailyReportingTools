@@ -18,7 +18,7 @@ namespace DailyReportWeb.Controllers.Api
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }
 
-        public DataConfirmDraft Post(ExecutionContext context)
+        public DataReportOperation Post(ExecutionContext context)
         {
             var username = string.Empty;
             long projectId;
@@ -44,7 +44,7 @@ namespace DailyReportWeb.Controllers.Api
             var confirmationResult = ReportExecutionService.ConfirmIndividualDraft(context);
             var confirmationDetails = GetIndividualDraftConfirmationDetails(context, advancedSettings, jiraUsers, confirmationResult.HasError);
 
-            return new DataConfirmDraft
+            return new DataReportOperation
             {
                 User = jiraDisplayName,
                 Project = jiraProject.Name,

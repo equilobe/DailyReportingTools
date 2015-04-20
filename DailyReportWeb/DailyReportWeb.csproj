@@ -187,6 +187,8 @@
     <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
     <Compile Include="Controllers\Api\ConfirmIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\InstancesController.cs" />
+    <Compile Include="Controllers\Api\SendDraftController.cs" />
+    <Compile Include="Controllers\Api\SendIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\SettingsController.cs" />
     <Compile Include="Controllers\Api\ProjectsController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
@@ -194,7 +196,6 @@
     <Compile Include="Controllers\Api\WelcomeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PluginController.cs" />
-    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="DependencyInjection.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -243,6 +244,20 @@
       <DependentUpon>confirmEmail.html</DependentUpon>
     </Content>
     <Content Include="app\app.js" />
+    <Content Include="app\sendDraft.html" />
+    <Content Include="app\sendDraft.js">
+      <DependentUpon>sendDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\sendDraft.test.js">
+      <DependentUpon>sendDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\sendIndividualDraft.html" />
+    <Content Include="app\sendIndividualDraft.js">
+      <DependentUpon>sendIndividualDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\sendIndividualDraft.test.js">
+      <DependentUpon>sendIndividualDraft.html</DependentUpon>
+    </Content>
     <Content Include="app\settings.html" />
     <Content Include="app\settings.js">
       <DependentUpon>settings.html</DependentUpon>

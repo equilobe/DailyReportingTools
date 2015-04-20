@@ -16,7 +16,7 @@ namespace DailyReportWeb.Controllers.Api
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }
 
-        public DataConfirmDraft Post(ExecutionContext context)
+        public DataReportOperation Post(ExecutionContext context)
         {
             long projectId;
             var jiraRequestContext = new JiraRequestContext();
@@ -37,7 +37,7 @@ namespace DailyReportWeb.Controllers.Api
             var confirmationResult = ReportExecutionService.SendReport(context);
             var confirmationDetails = GetDraftConfirmationDetails(context, advancedSettings, confirmationResult.HasError);
 
-            return new DataConfirmDraft
+            return new DataReportOperation
             {
                 Project = jiraProject.Name,
                 Status = confirmationResult,
