@@ -49,12 +49,10 @@ angular.module('app')
                      $scope.$parent.instances = list;
                      $scope.clearInstanceForm($scope);
                      $scope.status = "success";
-                     console.log("success");
                  })
                  .error(function () {
                      $scope.status = "error";
                      $scope.message = "Invalid JIRA username or password";
-                     console.log("error");
                  });
         };
     }]);

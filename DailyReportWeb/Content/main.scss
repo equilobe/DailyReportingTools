@@ -218,12 +218,8 @@ div.disabled {
     -moz-animation: spinm 1.2s infinite linear;
 }
 
-.message {
+.status-message {
     vertical-align: middle;
-
-    span {
-        vertical-align: top;
-    }
 }
 
 [ng-form] {
