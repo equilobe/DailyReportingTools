@@ -89,15 +89,15 @@ namespace DailyReportWeb.Controllers
         public ActionResult Uninstalled()
         {
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
-            var baseUrl = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).BaseUrl;
+            var pluginKey = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).ClientKey;
 
-            var projectKeys = DataService.GetUniqueProjectsKey(baseUrl);
-
+            var projectKeys = DataService.GetUniqueProjectsKey(pluginKey);
             TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
             {
                 UniqueProjectKeys = projectKeys
             });
-            DataService.DeleteInstance(baseUrl);
+
+            DataService.DeleteInstance(pluginKey);
 
             return Content(String.Empty);
         }

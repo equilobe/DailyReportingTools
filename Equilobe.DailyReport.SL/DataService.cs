@@ -71,11 +71,22 @@ namespace Equilobe.DailyReport.SL
                 SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
-        public void DeleteInstance(string baseUrl)
+        public void DeleteInstance(string pluginKey)
         {
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == baseUrl);
+                var installedInstance = db.InstalledInstances.Single(qr => qr.ClientKey == pluginKey);
+                db.InstalledInstances.Remove(installedInstance);
+
+                db.SaveChanges();
+            }
+        }
+
+        public void DeleteInstance(long id)
+        {
+            using (var db = new ReportsDb())
+            {
+                var installedInstance = db.InstalledInstances.Single(qr => qr.Id == id);
                 db.InstalledInstances.Remove(installedInstance);
 
                 db.SaveChanges();
@@ -106,13 +117,26 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
-        public List<string> GetUniqueProjectsKey(string baseUrl)
+        public List<string> GetUniqueProjectsKey(string pluginKey)
         {
-            return new ReportsDb().InstalledInstances
-                .Where(installedInstance => installedInstance.BaseUrl == baseUrl)
-                .SelectMany(installedInstance => installedInstance.BasicSettings
-                .Select(reportSettings => reportSettings.UniqueProjectKey))
-                .ToList();
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                         .Where(installedInstance => installedInstance.ClientKey == pluginKey)
+                         .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
+                         .ToList();
+            }
+        }
+
+        public List<string> GetUniqueProjectsKey(long id)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                         .Where(installedInstance => installedInstance.Id == id)
+                         .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
+                         .ToList();
+            }
         }
 
         public List<Instance> GetInstances()

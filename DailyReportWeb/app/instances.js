@@ -31,6 +31,20 @@ angular.module('app')
             $scope.form.timeZone = $scope.instance.timeZone;
         };
 
+        $scope.deleteInstance = function ($scope) {
+            if (confirm("Are you sure you want to remove instance ?\n" + $scope.instance.baseUrl) == true) {
+                $scope.child.status = "loading";
+
+                $http.delete("/api/instances/" + $scope.instance.id)
+                    .success(function (list) {
+                        $scope.instances = list;
+                    })
+                    .finally(function () {
+                        $scope.child.status = "loaded";
+                    });
+            }
+        };
+
         $scope.clearInstanceForm = function ($scope) {
             $scope.form.$setPristine();
             $scope.form.baseUrl = "";
