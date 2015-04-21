@@ -50,34 +50,49 @@ namespace Equilobe.DailyReport.SL
 
         public BasicReportSettings GetBasicReportSettings(ItemContext context)
         {
-            var basicSettings = new ReportsDb().BasicSettings
-                                               .Where(bs => bs.Id == context.Id)
-                                               .SingleOrDefault();
-            if (basicSettings == null)
-                return null;
+            var jiraRequestContext = new JiraRequestContext();
+            var reportSettings = new BasicReportSettings();
 
-            var installedInstance = basicSettings.InstalledInstance;
-            var jiraRequestContext = new JiraRequestContext(installedInstance);
-            var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, basicSettings.ProjectId);
+            using (var db = new ReportsDb())
+            {
+                var basicSettings = db.BasicSettings
+                                      .Where(bs => bs.Id == context.Id)
+                                      .SingleOrDefault();
 
+                if (basicSettings == null)
+                    return null;
+
+                basicSettings.CopyPropertiesOnObjects(reportSettings);
+                basicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
+            }
+
+            var projectInfo = JiraService.GetProjectInfo(jiraRequestContext, reportSettings.ProjectId);
             return new BasicReportSettings
             {
-                Id = basicSettings.Id,
-                BaseUrl = installedInstance.BaseUrl,
-                ProjectId = basicSettings.ProjectId,
+                Id = reportSettings.Id,
+                BaseUrl = reportSettings.BaseUrl,
+                ProjectId = reportSettings.ProjectId,
                 ProjectKey = projectInfo.ProjectKey,
-                UniqueProjectKey = basicSettings.UniqueProjectKey,
+                UniqueProjectKey = reportSettings.UniqueProjectKey,
                 ProjectName = projectInfo.ProjectName,
-                ReportTime = basicSettings.ReportTime
+                ReportTime = reportSettings.ReportTime
             };
         }
 
         public List<BasicReportSettings> GetAllBasicReportSettings(ItemContext context)
         {
-            var installedInstance = new ReportsDb().InstalledInstances
-                                                   .Where(i => i.Id == context.Id)
-                                                   .Single();
-            var jiraRequestContext = new JiraRequestContext(installedInstance);
+            var baseUrl = string.Empty;
+            var jiraRequestContext = new JiraRequestContext();
+
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances
+                  .Where(i => i.Id == context.Id)
+                  .Single();
+
+                instance.CopyPropertiesOnObjects(jiraRequestContext);
+                baseUrl = instance.BaseUrl;
+            }
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
                               .Select(projectInfo =>
@@ -93,7 +108,7 @@ namespace Equilobe.DailyReport.SL
                                   {
                                       Id = basicSettings.Id,
                                       InstalledInstanceId = basicSettings.InstalledInstanceId,
-                                      BaseUrl = installedInstance.BaseUrl,
+                                      BaseUrl = baseUrl,
                                       ProjectId = basicSettings.ProjectId,
                                       ProjectKey = projectInfo.ProjectKey,
                                       UniqueProjectKey = basicSettings.UniqueProjectKey,
@@ -106,11 +121,15 @@ namespace Equilobe.DailyReport.SL
 
         public List<List<BasicReportSettings>> GetAllBasicReportSettings(UserContext context)
         {
-            var installedInstances = new ReportsDb().InstalledInstances
-                                                   .Where(i => i.UserId == context.UserId)
-                                                   .ToList();
-            if (installedInstances.Count == 0)
-                return null;
+            List<InstalledInstance> installedInstances;
+            using (var db = new ReportsDb())
+            {
+                installedInstances = db.InstalledInstances
+                                       .Where(i => i.UserId == context.UserId)
+                                       .ToList();
+                if (installedInstances.Count == 0)
+                    return null;
+            }
 
             var instances = new List<List<BasicReportSettings>>();
             foreach (var installedInstance in installedInstances)
@@ -150,12 +169,14 @@ namespace Equilobe.DailyReport.SL
 
         public AdvancedReportSettings GetAdvancedReportSettings(ItemContext context)
         {
-            var serializedAdvancedSettings = new ReportsDb().BasicSettings
-                                                            .Single(bs => bs.Id == context.Id)
-                                                            .SerializedAdvancedSettings;
-            if (serializedAdvancedSettings != null)
-                return Deserialization.XmlDeserialize<AdvancedReportSettings>(serializedAdvancedSettings.PolicyString);
-
+            using (var db = new ReportsDb())
+            {
+                var serializedAdvancedSettings = db.BasicSettings
+                                                   .Single(bs => bs.Id == context.Id)
+                                                   .SerializedAdvancedSettings;
+                if (serializedAdvancedSettings != null)
+                    return Deserialization.XmlDeserialize<AdvancedReportSettings>(serializedAdvancedSettings.PolicyString);
+            }
             return GetDefaultAdvancedReportSettings();
         }
 
@@ -239,12 +260,15 @@ namespace Equilobe.DailyReport.SL
 
         private BasicSettings GetBasicSettings(ItemContext context, long projectId)
         {
-            return new ReportsDb().InstalledInstances
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
                                   .Where(ii => ii.Id == context.Id)
                                   .Single()
                                   .BasicSettings
                                   .Where(bs => bs.ProjectId == projectId)
                                   .Single();
+            }
         }
     }
 }

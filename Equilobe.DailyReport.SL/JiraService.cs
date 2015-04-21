@@ -39,15 +39,20 @@ namespace Equilobe.DailyReport.SL
 
         public JiraPolicy GetJiraInfo(ItemContext context)
         {
-            var reportSettings = new ReportsDb().BasicSettings.SingleOrDefault(r => r.Id == context.Id);
-            if (reportSettings == null)
-                return null;
+            long projectId;
+            var jiraContext = new JiraRequestContext();
 
-            var instance = reportSettings.InstalledInstance;
-            var jiraContext = new JiraRequestContext(instance);
+            using (var db = new ReportsDb())
+            {
+                var reportSettings = db.BasicSettings.SingleOrDefault(r => r.Id == context.Id);
+                if (reportSettings == null)
+                    return null;
 
-            var project = GetProject(jiraContext, reportSettings.ProjectId);
+                projectId = reportSettings.ProjectId;
+                reportSettings.InstalledInstance.CopyPropertiesOnObjects(jiraContext);
+            }
 
+            var project = GetProject(jiraContext, projectId);
             var options = GetUsers(jiraContext, project.Key)
                 .Select(user => new User
                 {
@@ -61,7 +66,7 @@ namespace Equilobe.DailyReport.SL
                 BaseUrl = jiraContext.BaseUrl,
                 Username = jiraContext.JiraUsername,
                 Password = jiraContext.JiraPassword,
-                ProjectId = reportSettings.ProjectId,
+                ProjectId = projectId,
                 UserOptions = options
             };
         }
@@ -98,17 +103,17 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetRapidViews();
         }
 
-        public SprintReport GetSprintReport(JiraRequestContext context,string rapidViewId, string sprintId)
+        public SprintReport GetSprintReport(JiraRequestContext context, string rapidViewId, string sprintId)
         {
             return GetClient(context).GetSprintReport(rapidViewId, sprintId);
         }
 
-        public List<Sprint> GetAllSprints(JiraRequestContext context,string rapidViewId)
+        public List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId)
         {
             return GetClient(context).GetAllSprints(rapidViewId);
         }
 
-        public JiraIssue GetIssue(JiraRequestContext context,string issueKey)
+        public JiraIssue GetIssue(JiraRequestContext context, string issueKey)
         {
             return GetClient(context).GetIssue(issueKey);
         }
@@ -118,12 +123,12 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context.RequestContext).GetCompletedIssues(context.ProjectKey, context.StartDate, context.EndDate);
         }
 
-        public JiraIssues GetSprintTasks(JiraRequestContext context,string projectKey)
+        public JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey)
         {
             return GetClient(context).GetSprintTasks(projectKey);
         }
 
-        public ProjectInfo GetProjectInfo (JiraRequestContext context,long id)
+        public ProjectInfo GetProjectInfo(JiraRequestContext context, long id)
         {
             return GetClient(context).GetProjectInfo(id);
         }
@@ -144,7 +149,7 @@ namespace Equilobe.DailyReport.SL
             if (!string.IsNullOrEmpty(context.SharedSecret))
                 return JiraClient.CreateWithJwt(context.BaseUrl, context.SharedSecret, ConfigurationService.GetAddonKey());
             else
-                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, EncryptionService.Decrypt(context.JiraPassword));      
+                return JiraClient.CreateWithBasicAuth(context.BaseUrl, context.JiraUsername, EncryptionService.Decrypt(context.JiraPassword));
         }
     }
 }

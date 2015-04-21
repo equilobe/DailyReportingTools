@@ -22,7 +22,7 @@ namespace Equilobe.DailyReport.SL
         public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public SimpleResult SendReport(ExecutionContext context)
-        {            
+        {
             if (context.Date.Date != DateTime.Today)
                 return SimpleResult.Error("Cannot confirm report for another date");
 
@@ -94,7 +94,7 @@ namespace Equilobe.DailyReport.SL
 
             context.Scope = SendScope.SendIndividualDraft;
             SetReportExecutionInstance(context);
-            
+
             if (!TryRunReport(context))
                 return SimpleResult.Error("Error in sending individual draft");
 
@@ -125,7 +125,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
-                var individualReports = report.IndividualDraftConfirmations.Where(dr=>dr.ReportDate.Value == context.Date.Date).ToList();
+                var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate.Value == context.Date.Date).ToList();
 
                 if (report.SerializedAdvancedSettings == null)
                     return false;
@@ -154,7 +154,7 @@ namespace Equilobe.DailyReport.SL
         SimpleResult CanSendIndividualDraft(ExecutionContext context)
         {
             var reportSettings = new BasicSettings();
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
                 report.CopyPropertiesOnObjects(reportSettings);
@@ -227,7 +227,7 @@ namespace Equilobe.DailyReport.SL
             if (basicSettings.IndividualDraftConfirmations == null)
                 return SimpleResult.Success("Can confirm");
 
-            if(IsIndividualDraftConfirmed(context, basicSettings.IndividualDraftConfirmations))
+            if (IsIndividualDraftConfirmed(context, basicSettings.IndividualDraftConfirmations))
                 return SimpleResult.Error("Individual draft report already confirmed!");
 
             return SimpleResult.Success("Can confirm");
@@ -285,9 +285,6 @@ namespace Equilobe.DailyReport.SL
         void UpdateIndividualDraftConfirmation(IndividualDraftConfirmation individualDraft, IndividualDraftInfo draft)
         {
             draft.CopyPropertiesOnObjects(individualDraft);
-           // individualDraft.IsProjectLead = draft.IsLead;
-           // individualDraft.UniqueUserKey = draft.UserKey;
-          //  individualDraft.ReportDate = draft.ReportDate;
         }
 
         bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports)
@@ -299,7 +296,7 @@ namespace Equilobe.DailyReport.SL
         {
             var individualDrafts = new List<IndividualDraftConfirmation>();
 
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var settings = db.BasicSettings.SingleOrDefault(bs => bs.UniqueProjectKey == context.Id);
                 return FindLead(context.DraftKey, settings.IndividualDraftConfirmations);

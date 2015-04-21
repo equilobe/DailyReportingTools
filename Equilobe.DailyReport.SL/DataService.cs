@@ -95,26 +95,35 @@ namespace Equilobe.DailyReport.SL
 
         public string GetSharedSecret(string baseUrl)
         {
-            return new ReportsDb().InstalledInstances
-                .Where(x => x.BaseUrl == baseUrl)
-                .Select(x => x.SharedSecret)
-                .FirstOrDefault();
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                    .Where(x => x.BaseUrl == baseUrl)
+                    .Select(x => x.SharedSecret)
+                    .FirstOrDefault();
+            }
         }
 
         public string GetPassword(string baseUrl, string username)
         {
-            return new ReportsDb().InstalledInstances
-                .Where(ii => ii.BaseUrl == baseUrl && ii.JiraUsername == username)
-                .Select(ii => ii.JiraPassword)
-                .FirstOrDefault();
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                    .Where(ii => ii.BaseUrl == baseUrl && ii.JiraUsername == username)
+                    .Select(ii => ii.JiraPassword)
+                    .FirstOrDefault();
+            }
         }
 
         public string GetReportTime(string baseUrl, long projectId)
         {
-            return new ReportsDb().BasicSettings
+            using (var db = new ReportsDb())
+            {
+                return db.BasicSettings
                 .Where(qr => qr.ProjectId == projectId && qr.BaseUrl == baseUrl)
                 .Select(qr => qr.ReportTime)
                 .FirstOrDefault();
+            }
         }
 
         public List<string> GetUniqueProjectsKey(string pluginKey)
@@ -144,7 +153,9 @@ namespace Equilobe.DailyReport.SL
             var userId = new UserContext().UserId;
             var instances = new List<Instance>();
 
-            new ReportsDb().InstalledInstances
+            using (var db = new ReportsDb())
+            {
+                db.InstalledInstances
                            .Where(ii => ii.UserId == userId)
                            .ToList()
                            .ForEach(installedInstance =>
@@ -156,21 +167,28 @@ namespace Equilobe.DailyReport.SL
                                    TimeZone = installedInstance.TimeZone
                                });
                            });
+            }
 
             return instances;
         }
 
         public long GetNumberOfReportsGenerated()
         {
-            return new ReportsDb().ReportExecutionInstances.ToList().Last().Id;
+            using (var db = new ReportsDb())
+            {
+                return db.ReportExecutionInstances.ToList().Last().Id;
+            }
         }
 
         public string GetBaseUrl(long id)
         {
-            return new ReportsDb().InstalledInstances
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
                 .Where(installedInstance => installedInstance.Id == id)
                 .Select(installedInstance => installedInstance.BaseUrl)
                 .FirstOrDefault();
+            }
         }
 
 
