@@ -77,13 +77,19 @@ namespace Equilobe.DailyReport.SL
             using (var taskService = new TaskService())
             {
                 var taskFolder = GetTaskFolder(taskService);
-                var tasksNames = taskFolder.AllTasks.Select(qr => qr.Name).ToList();
-
                 context.UniqueProjectKeys.ForEach(uniqueProjectKey =>
                 {
-                    if (tasksNames.Contains(GetTaskKey(uniqueProjectKey)))
-                        taskFolder.DeleteTask(GetTaskKey(uniqueProjectKey));
+                    taskFolder.DeleteTask(GetTaskKey(uniqueProjectKey), false);
                 });
+            }
+        }
+
+        public void DeleteTask(string uniqueProjectKey)
+        {
+            using (var taskService = new TaskService())
+            {
+                var taskFolder = GetTaskFolder(taskService);
+                taskFolder.DeleteTask(GetTaskKey(uniqueProjectKey), false);
             }
         }
 

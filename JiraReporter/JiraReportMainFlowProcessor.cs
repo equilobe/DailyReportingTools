@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
@@ -26,21 +27,51 @@ namespace JiraReporter
         public IReportExecutionService ReportExecutionService { get; set; }
         public IReportGeneratorService ReportGeneratorService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
-
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public void Execute(string[] args)
         {
             var options = new JiraOptions();
             new CommandLineParser().ParseArguments(args, options);
 
+            var jiraRequestContext = new JiraRequestContext();
+            long projectId;
+            using (var db = new ReportsDb())
+            {
+                var basicSettings = db.BasicSettings.Where(bs => bs.UniqueProjectKey == options.UniqueProjectKey).SingleOrDefault();
+                if (basicSettings == null)
+                    throw new ApplicationException("Unable to run report tool due to incorrect Project Key.");
+
+                projectId = basicSettings.ProjectId;
+                basicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
+            }
+
+            try
+            {
+                JiraService.GetProject(jiraRequestContext, projectId);
+            }
+            catch (Exception)
+            {
+                using (var db = new ReportsDb())
+                {
+                    var basicSettings = db.BasicSettings.Where(bs => bs.UniqueProjectKey == options.UniqueProjectKey).Single();
+                    db.BasicSettings.Remove(basicSettings);
+
+                    db.SaveChanges();
+                }
+
+                TaskSchedulerService.DeleteTask(options.UniqueProjectKey);
+
+                throw new ApplicationException("Unable to run report tool due to Project no longer being available in JIRA.");
+            }
+
             var policy = DataService.GetPolicy(options.UniqueProjectKey);
             var report = new JiraReport(policy, options);
             report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
             SetLastReportDatesFromSettings(report);
-            report.JiraRequestContext = JiraReportHelpers.GetJiraRequestContext(report);
+            report.JiraRequestContext = jiraRequestContext;
 
             SetExecutionInstance(report);
-
 
             var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
@@ -83,7 +114,7 @@ namespace JiraReporter
             {
                 _report.ExecutionInstance = new ExecutionInstance();
                 unexecutedInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);
-                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext (unexecutedInstance.Id));
+                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(unexecutedInstance.Id));
             }
             else
                 _report.IsOnSchedule = true;
