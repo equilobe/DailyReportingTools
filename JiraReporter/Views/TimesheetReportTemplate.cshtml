@@ -22,7 +22,7 @@
                     @Partial("Views/summary.cshtml", Model.Summary)
                 </table>
 
-                <div style="margin-top:40px; line-height:1.4em;">
+                <table style="padding-top:20px; line-height:1.4em;">
                     @if (Model.Authors.Count > 0)
                     {
                         foreach (var author in Model.Authors)
@@ -30,7 +30,7 @@
                             @Partial("Views/author.cshtml", author)
                         }
                     }
-                </div>
+                </table>
                 @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
                 {
                     @Partial("Views/unassignedSection.cshtml", Model)

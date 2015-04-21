@@ -15,16 +15,30 @@ namespace SourceControlLogReporter.RazorEngine
     {
         public string Partial<TPartialModel>(string path, TPartialModel model)
         {
-            var template = File.ReadAllText(path);
-            var partialViewResult = Razor.Parse(template, model);
-            return partialViewResult;
+            try
+            {
+                var template = File.ReadAllText(path);
+                var partialViewResult = Razor.Parse(template, model);
+                return partialViewResult;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public string Partial(string path)
         {
-            var template = File.ReadAllText(path);
-            var partialViewResult = Razor.Parse(template, typeof(object));
-            return partialViewResult;
+            try
+            {
+                var template = File.ReadAllText(path);
+                var partialViewResult = Razor.Parse(template, typeof(object));
+                return partialViewResult;
+            }
+          catch(Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public string Dot()
@@ -42,7 +56,7 @@ namespace SourceControlLogReporter.RazorEngine
             return Partial("Views/square.cshtml", new Square(color));
         }
 
-        public string ChartBar(string color, string width, string barMaxWidth, string text)
+        public string ChartBar(string color, double width, double barMaxWidth, string text)
         {
             var model = new ChartBar(color, width, barMaxWidth, text);
 
