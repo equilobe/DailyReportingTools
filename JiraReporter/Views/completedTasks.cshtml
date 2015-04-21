@@ -6,10 +6,7 @@
     <tr>
         <td>
             <h3 style="color:black; margin-bottom:0px; padding-bottom:5px">Completed last 7 days</h3>
-        </td>
-    </tr>
-    <tr>
-        <td>
+
             @foreach (var completedTasks in Model.CompletedTasks)
             {
                 <i style="color:sienna">Completed @completedTasks.Key (@completedTasks.Value.Count)</i>
@@ -18,7 +15,7 @@
                         @foreach (var task in completedTasks.Value)
                         {
                             <tr>
-                                <td style="vertical-align:middle">
+                                <td style="vertical-align:top">
                                     <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
                                 </td>
                                 <td>
@@ -31,7 +28,7 @@
                                         <span style="color:black; padding:1.5px;">@task.Status</span>
                                     }
                                     <a style="text-decoration: none; color:#15C;" href="@task.Link">@task.Summary</a>
-                                    <span style="color: #B8B8B8;"> @Dot() @task.Key </span>
+                                    <span style="color: #ABABAB;"> @Dot() @task.Key </span>
                                     @if (task.TimeSpentTotal > 0)
                                     {
                                         color = "black";

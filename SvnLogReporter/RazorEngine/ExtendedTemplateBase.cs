@@ -15,30 +15,16 @@ namespace SourceControlLogReporter.RazorEngine
     {
         public string Partial<TPartialModel>(string path, TPartialModel model)
         {
-            try
-            {
-                var template = File.ReadAllText(path);
-                var partialViewResult = Razor.Parse(template, model);
-                return partialViewResult;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            var template = File.ReadAllText(path);
+            var partialViewResult = Razor.Parse(template, model);
+            return partialViewResult;
         }
 
         public string Partial(string path)
         {
-            try
-            {
-                var template = File.ReadAllText(path);
-                var partialViewResult = Razor.Parse(template, typeof(object));
-                return partialViewResult;
-            }
-          catch(Exception ex)
-            {
-                return ex.Message;
-            }
+            var template = File.ReadAllText(path);
+            var partialViewResult = Razor.Parse(template, typeof(object));
+            return partialViewResult;
         }
 
         public string Dot()

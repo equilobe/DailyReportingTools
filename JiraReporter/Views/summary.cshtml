@@ -162,7 +162,7 @@ else
             @if (Model.HasSprint)
             {
                 <tr>
-                    <td width="75" height="55" style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                         <img src="https://dailyreport.equilobe.com/content/images/report/sprint.png" />
                         <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
                     </td>
@@ -211,7 +211,7 @@ else
             @if (Model.HasMonth)
             {
                 <tr>
-                    <td style="width:75px; height:55px; max-width:55px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <td width="75" height="55" style="max-width:55px; max-height:55px; border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                         <img src="https://dailyreport.equilobe.com/content/images/report/calendar_month.png" />
                         <span style="color:black; display:inline-block; padding-top:5px">Month</span>
                     </td>
@@ -303,11 +303,11 @@ else
             @foreach (var author in Model.Authors)
             {
                 <tr>
-                    <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                         <img src="cid:@author.AvatarId" />
                         <span style="color:black; display:inline-block; padding-top:5px">@author.ShortName</span>
                     </td>
-                    <td style="padding:0px; padding-bottom:10px; height:55px">
+                    <td height="55" style="padding:0px; padding-bottom:10px;">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
                         @if (author.Timing.AverageWorkedHours >= 0.1)
                         {
@@ -356,7 +356,7 @@ else
             @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1)
             {
                 <tr>
-                    <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #B8B8B8; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                         <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
                         <span style="color:black; display:inline-block; padding-top:5px">Unassigned</span>
                     </td>

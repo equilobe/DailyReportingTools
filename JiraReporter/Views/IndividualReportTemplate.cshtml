@@ -163,20 +163,31 @@ else
 
     </div>
 
-    <div style="margin-top:40px; line-height:1.4em">
+    <table style="padding-top:40px; line-height:1.4em">
+        <tr>
+            <td>
+                @if (Model.Author.IsEmpty)
+                {
+                    <h3 style="color:orange">There is no logged work or assigned issues</h3>
+                }
+                else
+                {
+                    @Partial("Views/author.cshtml", Model.Author)
+                }
+            </td>
+        </tr>
 
-        @if (Model.Author.IsEmpty)
-        {
-            <h3 style="color:orange">There is no logged work or assigned issues</h3>
-        }
-        else
-        {
-            @Partial("Views/author.cshtml", Model.Author)
-        }
-
-    </div>
+    </table>
 
     @Partial("Views/individualDraftButtons.cshtml", Model.Author)
+
+    <table>
+        <tr>
+            <td height="50">
+                &nbsp;
+            </td>
+        </tr>
+    </table>
 
     @Partial("Views/footer.cshtml", Model)
 </div>
