@@ -1,4 +1,4 @@
 ﻿@foreach (var pullRequest in Model)
  {
-    <span style="color:green"> &#x25cf; <a style="text-decoration:none; color:green; font-weight:bold" href="@pullRequest.GithubPullRequest.HtmlUrl"> pull request </a> </span>   
+    <span style="color:green"> @Dot() <a style="text-decoration:none; color:green;" href="@pullRequest.GithubPullRequest.HtmlUrl"> pull request </a> </span>   
  }       

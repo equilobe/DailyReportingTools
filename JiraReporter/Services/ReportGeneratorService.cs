@@ -32,6 +32,8 @@ namespace JiraReporter
 
             report.Sprint = GenerateSprint(report);
 
+            SetIssueSearchUrl(report);
+
             SetReportTasks(report);
 
             report.Authors = GetReportAuthors(report);
@@ -41,6 +43,11 @@ namespace JiraReporter
             report.Title = JiraReportHelpers.GetReportTitle(report);
 
             return report;
+        }
+
+        private void SetIssueSearchUrl(JiraReport report)
+        {
+            report.IssueSearchUrl = new Uri(report.Settings.BaseUrl + "/issues/");
         }
 
         private static void SetSourceControlLogs(JiraReport report)
@@ -84,23 +91,10 @@ namespace JiraReporter
 
         public JiraReport GetIndividualReport(JiraReport report, JiraAuthor author)
         {
-            var individualReport = new JiraReport(report.Policy, report.Options)
-            {
-                Author = author,
-                Summary = report.Summary,
-                OffsetFromUtc = report.OffsetFromUtc,
-                PullRequests = report.PullRequests,
-                Sprint = report.Sprint,
-                ReportTasks = report.ReportTasks,
-                Commits = report.Commits,
-                JiraRequestContext = report.JiraRequestContext,
-                ProjectName = report.ProjectName,
-                IsFinalDraft = report.IsFinalDraft,
-                IsIndividualDraft = report.IsIndividualDraft,
-                IsFinalReport = report.IsFinalReport,
-                UniqueProjectKey = report.UniqueProjectKey,
-                HasSprint = report.HasSprint
-            };
+            var individualReport = new JiraReport(report.Policy, report.Options);
+            report.CopyPropertiesOnObjects(individualReport);
+            individualReport.Author = author;
+
             individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
 
             return individualReport;
@@ -115,7 +109,7 @@ namespace JiraReporter
 
         Sprint GenerateSprint(JiraReport report)
         {
-            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
+            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.ToDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
             var sprint = JiraService.GetProjectSprintForDate(projectDateFilter);
             if (sprint != null)
                 report.HasSprint = true;

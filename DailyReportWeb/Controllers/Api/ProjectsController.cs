@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
@@ -22,26 +23,9 @@ namespace DailyReportWeb.Controllers.Api
             return SettingsService.GetAllBasicReportSettings(new ItemContext(id));
         }
 
-        public void Post([FromBody]BasicReportSettings updatedBasicSettings)
+        public List<List<BasicReportSettings>> Get()
         {
-            if (!Validations.Time(updatedBasicSettings.ReportTime))
-                throw new ArgumentException();
-
-            using (var db = new ReportsDb())
-            {
-                var basicSettings = db.BasicSettings.Single(qr => qr.Id == updatedBasicSettings.Id);
-                if (basicSettings.ReportTime == updatedBasicSettings.ReportTime)
-                    return;
-
-                basicSettings.ReportTime = updatedBasicSettings.ReportTime;
-                TaskSchedulerService.SetTask(new ScheduledTaskContext
-                {
-                    ReportTime = updatedBasicSettings.ReportTime,
-                    UniqueProjectKey = updatedBasicSettings.UniqueProjectKey
-                });
-
-                db.SaveChanges();
-            }
+            return SettingsService.GetAllBasicReportSettings(new UserContext());
         }
     }
 }

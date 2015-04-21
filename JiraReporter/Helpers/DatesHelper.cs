@@ -22,6 +22,8 @@ namespace JiraReporter.Helpers
 
         public void LoadDates()
         {
+            Context.FullReportDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
+
             if (Options.HasToDate)
                 Options.ToDate = Options.GetDate(Options.StringToDate).Date;
 

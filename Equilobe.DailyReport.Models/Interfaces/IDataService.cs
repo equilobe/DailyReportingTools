@@ -10,15 +10,17 @@ namespace Equilobe.DailyReport.Models.Interfaces
     {
         void SaveInstance(InstalledInstance instanceData);
         void SaveInstance(RegisterModel modelData);
-        void DeleteInstance(string baseUrl);
+        void DeleteInstance(long id);
+        void DeleteInstance(string pluginKey);
         List<Instance> GetInstances();
         long GetNumberOfReportsGenerated();
         string GetBaseUrl(long id);
         string GetSharedSecret(string baseUrl);
         string GetPassword(string baseUrl, string username);
         string GetReportTime(string baseUrl, long projectId);
-        System.Collections.Generic.List<string> GetUniqueProjectsKey(string baseUrl);
-        void SetReportFromDb(Equilobe.DailyReport.Models.ReportFrame.JiraReport report);
+        List<string> GetUniqueProjectsKey(long id);
+        List<string> GetUniqueProjectsKey(string pluginKey);
+        BasicSettings GetReportSettingsWithDetails(string uniqueProjectKey);
         JiraPolicy GetPolicy(string uniqueProjectKey);
         byte[] GetUserImageByKey(string key);
         void AddUserImage(UserImageContext context);

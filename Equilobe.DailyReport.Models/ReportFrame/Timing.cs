@@ -24,16 +24,39 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public int SprintSecondsWorked { get; set; }
 
         public double AverageWorked { get; set; }
+        public double AverageWorkedHours
+        {
+            get
+            {
+                return AverageWorked / 3600;
+            }
+        }
         public string AverageWorkedString { get; set; }
         public double AverageWorkedSprint { get; set; }
+        public double AverageWorkedSprintHours
+        {
+            get
+            {
+                return AverageWorkedSprint / 3600;
+            }
+        }
         public string AverageWorkedSprintString { get; set; }
         public double AverageWorkedMonth { get; set; }
+        public double AverageWorkedMonthHours
+        {
+            get
+            {
+                return AverageWorkedMonth / 3600;
+            }
+        }
         public string AverageWorkedMonthString { get; set; }
 
         public int InProgressTasksTimeLeftSeconds { get; set; }
         public string InProgressTasksTimeLeftString { get; set; }
         public int OpenTasksTimeLeftSeconds { get; set; }
         public string OpenTasksTimeLeftString { get; set; }
+        public int RemainingTasksTimeLeftSeconds { get; set; }
+        public string RemainingTasksTimeLeftString { get; set; }
 
         public int TotalRemainingSeconds { get; set; }
         public double TotalRemainingHours { get; set; }

@@ -20,6 +20,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             UniqueProjectKey = Options.UniqueProjectKey;
         }
 
+        public JiraReport() { }
+
         public BasicSettings Settings { get; set; }
 
         private TimeSpan? _offsetFromUtc;
@@ -48,6 +50,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
                 return _reportDate.Value;
             }
         }
+
+        public DateTime FullReportDate { get; set; }
 
         private string _title;
         public string Title
@@ -173,6 +177,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public Uri SendDraftUrl { get; set; }
         public Uri IndividualDraftConfirmationUrl { get; set; }
         public Uri SendIndividualDraftUrl { get; set; }
+
+        public Uri IssueSearchUrl { get; set; }
 
         public string ProjectManager { get; set; }
 

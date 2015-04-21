@@ -118,9 +118,9 @@ namespace JiraReporter
                     report.ReportExecutionSummary = new ReportExecutionSummary();
 
                 if(Report.IsFinalDraft)
-                    report.ReportExecutionSummary.LastDraftSentDate = Report.Options.ToDate;
+                    report.ReportExecutionSummary.LastDraftSentDate = Report.FullReportDate;
                 if (Report.IsFinalReport)
-                    report.ReportExecutionSummary.LastFinalReportSentDate = Report.Options.ToDate;
+                    report.ReportExecutionSummary.LastFinalReportSentDate = Report.FullReportDate;
 
                 db.SaveChanges();
             }

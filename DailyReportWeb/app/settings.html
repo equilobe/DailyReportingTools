@@ -1,13 +1,19 @@
-﻿<div class="container" ng-if="status == 'loading'">
-    <h3>
-        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
-    </h3>
+﻿<div class="jumbotron jumbo" ng-if="status == 'loading'">
+    <div class="container">
+        <h1>
+            Settings
+        </h1>
+        <p class="help-block">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+        </p>
+    </div>
 </div>
+
 <form name="form" ng-if="status == 'loaded'">
     <div class="jumbotron jumbo">
         <div class="container">
             <h1>
-                {{policy.projectName}}
+                {{data.projectName}}
             </h1>
             <p class="help-block">
                 Use this page to configure all options for the Daily Report
@@ -19,7 +25,7 @@
                             Send at:
                         </label>
                         <div ng-form="reportTimeForm">
-                            <input name="reportTime" type="text" class="form-control" placeholder="e.g. 08:00" ng-model="policy.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false" ng-pattern=regex.Time />
+                            <input name="reportTime" type="text" class="form-control" placeholder="e.g. 08:00" ng-model="data.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false" ng-pattern=regex.Time />
                             <span class="form-notification" ng-show="reportTimeForm.reportTime.$error.pattern && !reportTime.focus"><b>Enter valid time</b> (23:59)</span>
                         </div>
                     </div>
@@ -28,9 +34,6 @@
         </div>
     </div>
     <div class="container">
-        <h1>
-            Advanced options
-        </h1>
         <div class="container-alternate">
             <h3>
                 Recipients
@@ -43,25 +46,25 @@
                         </label>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToAllUsers" />
+                                <input type="checkbox" ng-model="data.advancedOptions.sendDraftToAllUsers" />
                                 Send final draft to all users
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToProjectManager" ng-checked="policy.advancedOptions.sendDraftToProjectManager || policy.advancedOptions.sendDraftToAllUsers" ng-disabled="policy.advancedOptions.sendDraftToAllUsers" />
+                                <input type="checkbox" ng-model="data.advancedOptions.sendDraftToProjectManager" ng-checked="data.advancedOptions.sendDraftToProjectManager || data.advancedOptions.sendDraftToAllUsers" ng-disabled="data.advancedOptions.sendDraftToAllUsers" />
                                 Send final draft to project manager
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendDraftToOthers" />
+                                <input type="checkbox" ng-model="data.advancedOptions.sendDraftToOthers" />
                                 Send final draft to others
                             </label>
                         </div>
                         <div class="form-group">
                             <div ng-form="emailDraftForm">
-                                <input name="emailDraft" type="text" class="form-control" placeholder="e.g. dan@equilobe.com; catalin@equilobe.com" ng-model="policy.draftEmails" ng-focus="emailDraft.focus = true" ng-blur="emailDraft.focus = false" ng-pattern=regex.Mails ng-disabled="!policy.advancedOptions.sendDraftToOthers" />
+                                <input name="emailDraft" type="text" class="form-control" placeholder="e.g. dan@equilobe.com; catalin@equilobe.com" ng-model="data.draftEmails" ng-focus="emailDraft.focus = true" ng-blur="emailDraft.focus = false" ng-pattern=regex.Mails ng-disabled="!data.advancedOptions.sendDraftToOthers" />
                                 <span class="form-notification" ng-show="emailDraftForm.emailDraft.$error.pattern && !emailDraft.focus && !emailDraft.disabled"><b>Enter valid email</b> (dan@eq.com)</span>
                             </div>
                         </div>
@@ -74,20 +77,20 @@
                         </label>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendFinalToAllUsers" />
+                                <input type="checkbox" ng-model="data.advancedOptions.sendFinalToAllUsers" />
                                 Send report to all users
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.sendFinalToOthers" />
+                                <input type="checkbox" ng-model="data.advancedOptions.sendFinalToOthers" />
                                 Send report to others
                             </label>
                         </div>
                         <label class="hidden-sm hidden-xs">&nbsp;</label>
                         <div class="form-group">
                             <div ng-form="emailFinalForm">
-                                <input name="emailFinal" type="text" class="form-control" placeholder="e.g. dan@equilobe.com; catalin@equilobe.com" ng-model="policy.emails" ng-focus="emailFinal.focus = true" ng-blur="emailFinal.focus = false" ng-pattern=regex.Mails ng-disabled="!policy.advancedOptions.sendFinalToOthers" />
+                                <input name="emailFinal" type="text" class="form-control" placeholder="e.g. dan@equilobe.com; catalin@equilobe.com" ng-model="data.emails" ng-focus="emailFinal.focus = true" ng-blur="emailFinal.focus = false" ng-pattern=regex.Mails ng-disabled="!data.advancedOptions.sendFinalToOthers" />
                                 <span class="form-notification" ng-show="emailFinalForm.emailFinal.$error.pattern && !emailFinal.focus"><b>Enter valid email</b> (dan@eq.com)</span>
                             </div>
                         </div>
@@ -107,7 +110,7 @@
                             Expected daily team work rate (hours/day):
                         </label>
                         <div ng-form="hoursDayPlanningForm">
-                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="e.g. 24" ng-model="policy.allocatedHoursPerDay" ng-focus="hoursDayPlanning.focus = true" ng-blur="hoursDayPlanning = false" ng-pattern=regex.Digits />
+                            <input name="hoursDayPlanning" type="text" class="form-control" placeholder="e.g. 24" ng-model="data.allocatedHoursPerDay" ng-focus="hoursDayPlanning.focus = true" ng-blur="hoursDayPlanning = false" ng-pattern=regex.Digits />
                             <span class="form-notification" ng-show="hoursDayPlanningForm.hoursDayPlanning.$error.pattern && !hoursDayPlanning.focus"><b>Enter valid number</b> (84)</span>
                         </div>
                     </div>
@@ -118,7 +121,7 @@
                             Monthly hour limit:
                         </label>
                         <div ng-form="hoursMonthPlanningForm">
-                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="e.g. 400" ng-model="policy.allocatedHoursPerMonth" ng-focus="hoursMonthPlanning.focus = true" ng-blur="hoursMonthPlanning = false" ng-pattern=regex.Digits />
+                            <input name="hoursMonthPlanning" type="text" class="form-control" placeholder="e.g. 400" ng-model="data.allocatedHoursPerMonth" ng-focus="hoursMonthPlanning.focus = true" ng-blur="hoursMonthPlanning = false" ng-pattern=regex.Digits />
                             <span class="form-notification" ng-show="hoursMonthPlanningForm.hoursMonthPlanning.$error.pattern && !hoursMonthPlanning.focus"><b>Enter valid number</b> (584)</span>
                         </div>
                     </div>
@@ -137,25 +140,25 @@
                         </label>
                         <div class="form-group">
                             <label class="radio-inline">
-                                <input type="radio" value="None" ng-model="policy.sourceControlOptions.type" />
+                                <input type="radio" value="None" ng-model="data.sourceControlOptions.type" />
                                 None
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" value="GitHub" ng-model="policy.sourceControlOptions.type" />
+                                <input type="radio" value="GitHub" ng-model="data.sourceControlOptions.type" />
                                 GitHub
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" value="SVN" ng-model="policy.sourceControlOptions.type" />
+                                <input type="radio" value="SVN" ng-model="data.sourceControlOptions.type" />
                                 SVN
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" ng-if="policy.sourceControlOptions.type == 'GitHub'">
+            <div class="panel panel-default" ng-if="data.sourceControlOptions.type == 'GitHub'">
                 <div class="panel-heading">
                     <h4>
-                        {{policy.sourceControlOptions.type}}
+                        {{data.sourceControlOptions.type}}
                         <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid && sourceControlForm.$dirty">
                             <a role="button" ng-click="updateContributors(this)">
                                 Check availability:
@@ -175,7 +178,7 @@
                                     Repository Owner:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitRepoOwner" class="form-control" ng-model="policy.sourceControlOptions.repoOwner" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="text" name="gitRepoOwner" class="form-control" ng-model="data.sourceControlOptions.repoOwner" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -185,7 +188,7 @@
                                     Repository Name:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitRepoName" class="form-control" ng-model="policy.sourceControlOptions.repo" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="text" name="gitRepoName" class="form-control" ng-model="data.sourceControlOptions.repo" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -195,7 +198,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitUsername" class="form-control" ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="text" name="gitUsername" class="form-control" ng-model="data.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -205,17 +208,17 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input type="text" name="gitPassword" class="form-control" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="password" name="gitPassword" class="form-control" ng-model="data.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default" ng-if="policy.sourceControlOptions.type == 'SVN'">
+            <div class="panel panel-default" ng-if="data.sourceControlOptions.type == 'SVN'">
                 <div class="panel-heading">
                     <h4>
-                        {{policy.sourceControlOptions.type}}
+                        {{data.sourceControlOptions.type}}
                         <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid && sourceControlForm.$dirty">
                             <a role="button" ng-click="updateContributors(this)">
                                 Check availability:
@@ -235,7 +238,7 @@
                                     Repository Url:
                                 </label>
                                 <div ng-form="svnRepoUrlForm">
-                                    <input name="svnRepoUrl" type="text" class="form-control" placeholder="e.g. http://drt.equilobe.com/" ng-model="policy.sourceControlOptions.repo" ng-focus="svnRepoUrl.focus = true" ng-blur="svnRepoUrl.focus = false; sourceControlStatus = 'changed'" ng-pattern=regex.Url />
+                                    <input name="svnRepoUrl" type="text" class="form-control" placeholder="e.g. http://drt.equilobe.com/" ng-model="data.sourceControlOptions.repo" ng-focus="svnRepoUrl.focus = true" ng-blur="svnRepoUrl.focus = false; sourceControlStatus = 'changed'" ng-pattern=regex.Url />
                                     <span class="form-notification" ng-show="svnRepoUrlForm.svnRepoUrl.$error.pattern && !svnRepoUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                                 </div>
                             </div>
@@ -246,7 +249,7 @@
                                     Username:
                                 </label>
                                 <div>
-                                    <input name="svnUsername" type="text" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input name="svnUsername" type="text" class="form-control" placeholder="" ng-model="data.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -256,7 +259,7 @@
                                     Password:
                                 </label>
                                 <div>
-                                    <input name="svnPassword" type="text" class="form-control" placeholder="" ng-model="policy.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                    <input type="password" name="svnPassword" class="form-control" placeholder="" ng-model="data.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>
@@ -274,7 +277,7 @@
                         <label>
                             Select user:
                         </label>
-                        <select class="form-control" ng-model="user" ng-options="user as user.jiraDisplayName for user in policy.userOptions"></select>
+                        <select class="form-control" ng-model="user" ng-options="user as user.jiraDisplayName for user in data.userOptions"></select>
                     </div>
                 </div>
             </div>
@@ -315,7 +318,7 @@
                                     Source control account:
                                 </label>
                                 <div class="input-group">
-                                    <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in policy.sourceControlUsernames"></select>
+                                    <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in data.sourceControlUsernames"></select>
                                     <span class="input-group-btn">
                                         <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames != null && user.sourceControlUsernames.indexOf(sourceControlUsername) != -1 }" ng-disabled="sourceControlUsername == null"><span class="glyphicon glyphicon-plus"></span></a>
                                         <a role="button" class="btn btn-default" ng-click="removeSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames == null || user.sourceControlUsernames.indexOf(sourceControlUsername) == -1 }"><span class="glyphicon glyphicon-minus"></span></a>
@@ -335,7 +338,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Select month:</label>
-                        <select class="form-control" ng-model="month" ng-options="month as month.monthName for month in policy.monthlyOptions"></select>
+                        <select class="form-control" ng-model="month" ng-options="month as month.monthName for month in data.monthlyOptions"></select>
                     </div>
                 </div>
             </div>
@@ -392,9 +395,9 @@
                         <label>
                             Report title:
                         </label>
-                        <input type="text" class="form-control" placeholder="e.g. {{policy.projectName}} Daily Report" ng-model="policy.advancedOptions.reportTitle" />
+                        <input type="text" class="form-control" placeholder="e.g. {{data.projectName}} Daily Report" ng-model="data.advancedOptions.reportTitle" />
                         <p class="help-block">
-                            If left blank the default will be used: {{policy.projectName}} Daily Report
+                            If left blank the default will be used: {{data.projectName}} Daily Report
                         </p>
                     </div>
                 </div>
@@ -403,7 +406,7 @@
                         <label>
                             Reopened tasks status:
                         </label>
-                        <input type="text" class="form-control" placeholder="e.g. Reopened" ng-model="policy.advancedOptions.reopenedStatus" />
+                        <input type="text" class="form-control" placeholder="e.g. Reopened" ng-model="data.advancedOptions.reopenedStatus" />
                         <p class="help-block">
                             If left blank the default will be used: Reopened.
                         </p>
@@ -414,7 +417,7 @@
                         <label>
                             Label used for permanent tasks:
                         </label>
-                        <input type="text" class="form-control" placeholder="e.g. permanent" ng-model="policy.advancedOptions.permanentTaskLabel" />
+                        <input type="text" class="form-control" placeholder="e.g. permanent" ng-model="data.advancedOptions.permanentTaskLabel" />
                         <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
                     </div>
                 </div>
@@ -427,13 +430,13 @@
                         </label>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.noDraft" />
+                                <input type="checkbox" ng-model="data.advancedOptions.noDraft" />
                                 Do not send a draft report
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="policy.advancedOptions.noIndividualDraft" ng-checked="policy.advancedOptions.noIndividualDraft || policy.advancedOptions.noDraft" ng-disabled="policy.advancedOptions.noDraft" />
+                                <input type="checkbox" ng-model="data.advancedOptions.noIndividualDraft" ng-checked="data.advancedOptions.noIndividualDraft || data.advancedOptions.noDraft" ng-disabled="data.advancedOptions.noDraft" />
                                 Do not send a draft report to each user
                             </label>
                         </div>
@@ -456,20 +459,32 @@
                     <label>
                         Workflow statuses:
                     </label>
-                    <div class="form-group" ng-repeat="additionalWorkflowStatus in policy.advancedOptions.additionalWorkflowStatuses track by $index">
-                        <input type="text" class="form-control" placeholder="e.g. To Do" ng-model="policy.advancedOptions.additionalWorkflowStatuses[$index]" workflow-status />
+                    <div class="form-group" ng-repeat="additionalWorkflowStatus in data.advancedOptions.additionalWorkflowStatuses track by $index">
+                        <input type="text" class="form-control" placeholder="e.g. To Do" ng-model="data.advancedOptions.additionalWorkflowStatuses[$index]" workflow-status />
                     </div>
                 </div>
             </div>
         </div>
         <div class="container-alternate">
-            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="updatePolicy(this)">
-                Save advanced options
+            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="saveSettings(this)">
+                Save settings
             </button>
-            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="form.$dirty"></span>
-            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-            <span class="alert-success glyphicon glyphicon-ok" ng-show="status == 'success' && form.$pristine"></span>
-            <span class="alert-danger glyphicon glyphicon-remove" ng-show="status == 'error' && form.$pristine"></span>
+            <span class="status-message" ng-show="form.$dirty">
+                <span class="alert-warning glyphicon glyphicon-share-alt"></span>
+                <span>Unsaved changes</span>
+            </span>
+            <span class="status-message" ng-show="status == 'saving'">
+                <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                <span>Loading</span>
+            </span>
+            <span class="status-message" ng-show="status == 'success' && form.$pristine">
+                <span class="alert-success glyphicon glyphicon-ok"></span>
+                <span>Changes saved</span>
+            </span>
+            <span class="status-message" ng-show="status == 'error' && form.$pristine">
+                <span class="alert-danger glyphicon glyphicon-remove"></span>
+                <span>{{message}}</span>
+            </span>
         </div>
     </div>
 </form>

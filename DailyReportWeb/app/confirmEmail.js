@@ -8,6 +8,7 @@ angular.module('app')
         });
     }])
     .controller("ConfirmEmailController", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+        $("body").attr("data-page", "confirmEmail");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 

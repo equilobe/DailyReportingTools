@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Security;
 
 namespace Equilobe.DailyReport.SL
@@ -21,7 +22,7 @@ namespace Equilobe.DailyReport.SL
         public ISourceControlService SourceControlService { get; set; }
         public IJiraService JiraService { get; set; }
 
-        public void SetAllBasicSettings(ItemContext context)
+        public void SyncAllBasicSettings(ItemContext context)
         {
             using (var db = new ReportsDb())
             {
@@ -33,13 +34,14 @@ namespace Equilobe.DailyReport.SL
                 JiraService.GetProjectsInfo(jiraRequestContext)
                            .ForEach(jiraProject =>
                            {
-                               installedInstance.BasicSettings.Add(new BasicSettings
-                               {
-                                   InstalledInstanceId = installedInstance.Id,
-                                   BaseUrl = installedInstance.BaseUrl,
-                                   ProjectId = jiraProject.ProjectId,
-                                   UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
-                               });
+                               if (installedInstance.BasicSettings.Where(bs => bs.ProjectId == jiraProject.ProjectId).SingleOrDefault() == null)
+                                   installedInstance.BasicSettings.Add(new BasicSettings
+                                   {
+                                       InstalledInstanceId = installedInstance.Id,
+                                       BaseUrl = installedInstance.BaseUrl,
+                                       ProjectId = jiraProject.ProjectId,
+                                       UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
+                                   });
                            });
 
                 db.SaveChanges();
@@ -79,21 +81,71 @@ namespace Equilobe.DailyReport.SL
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
                               .Select(projectInfo =>
+                              {
+                                  var basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
+                                  if (basicSettings == null)
                                   {
-                                      var basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
-                                      return new BasicReportSettings
-                                      {
-                                          Id = basicSettings.Id,
-                                          InstalledInstanceId = basicSettings.InstalledInstanceId,
-                                          BaseUrl = installedInstance.BaseUrl,
-                                          ProjectId = basicSettings.ProjectId,
-                                          ProjectKey = projectInfo.ProjectKey,
-                                          UniqueProjectKey = basicSettings.UniqueProjectKey,
-                                          ProjectName = projectInfo.ProjectName,
-                                          ReportTime = basicSettings.ReportTime
-                                      };
-                                  })
-                                  .ToList();
+                                      SyncAllBasicSettings(context);
+                                      basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
+                                  }
+
+                                  return new BasicReportSettings
+                                  {
+                                      Id = basicSettings.Id,
+                                      InstalledInstanceId = basicSettings.InstalledInstanceId,
+                                      BaseUrl = installedInstance.BaseUrl,
+                                      ProjectId = basicSettings.ProjectId,
+                                      ProjectKey = projectInfo.ProjectKey,
+                                      UniqueProjectKey = basicSettings.UniqueProjectKey,
+                                      ProjectName = projectInfo.ProjectName,
+                                      ReportTime = basicSettings.ReportTime
+                                  };
+                              })
+                              .ToList();
+        }
+
+        public List<List<BasicReportSettings>> GetAllBasicReportSettings(UserContext context)
+        {
+            var installedInstances = new ReportsDb().InstalledInstances
+                                                   .Where(i => i.UserId == context.UserId)
+                                                   .ToList();
+            if (installedInstances.Count == 0)
+                return null;
+
+            var instances = new List<List<BasicReportSettings>>();
+            foreach (var installedInstance in installedInstances)
+            {
+                var icontext = new ItemContext(installedInstance.Id);
+                var jiraRequestContext = new JiraRequestContext(installedInstance);
+
+                var projects = JiraService.GetProjectsInfo(jiraRequestContext)
+                                          .Select(projectInfo =>
+                                          {
+                                              var basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
+                                              if (basicSettings == null)
+                                              {
+                                                  SyncAllBasicSettings(icontext);
+                                                  basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
+                                              }
+
+                                              return new BasicReportSettings
+                                              {
+                                                  Id = basicSettings.Id,
+                                                  InstalledInstanceId = basicSettings.InstalledInstanceId,
+                                                  BaseUrl = UrlExtensions.GetAuthority(installedInstance.BaseUrl),
+                                                  ProjectId = basicSettings.ProjectId,
+                                                  ProjectKey = projectInfo.ProjectKey,
+                                                  UniqueProjectKey = basicSettings.UniqueProjectKey,
+                                                  ProjectName = projectInfo.ProjectName,
+                                                  ReportTime = basicSettings.ReportTime
+                                              };
+                                          })
+                                          .ToList();
+
+                instances.Add(projects);
+            }
+
+            return instances;
         }
 
         public AdvancedReportSettings GetAdvancedReportSettings(ItemContext context)

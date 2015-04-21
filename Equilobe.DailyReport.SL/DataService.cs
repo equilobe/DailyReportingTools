@@ -10,6 +10,9 @@ using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
+using System.Net.Http;
+
 
 namespace Equilobe.DailyReport.SL
 {
@@ -34,7 +37,7 @@ namespace Equilobe.DailyReport.SL
                 instanceId = installedInstance.Id;
             }
 
-            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
+            SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void SaveInstance(RegisterModel modelData)
@@ -65,14 +68,25 @@ namespace Equilobe.DailyReport.SL
             }
 
             if (instanceId != 0)
-                SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
+                SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
-        public void DeleteInstance(string baseUrl)
+        public void DeleteInstance(string pluginKey)
         {
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.SingleOrDefault(qr => qr.BaseUrl == baseUrl);
+                var installedInstance = db.InstalledInstances.Single(qr => qr.ClientKey == pluginKey);
+                db.InstalledInstances.Remove(installedInstance);
+
+                db.SaveChanges();
+            }
+        }
+
+        public void DeleteInstance(long id)
+        {
+            using (var db = new ReportsDb())
+            {
+                var installedInstance = db.InstalledInstances.Single(qr => qr.Id == id);
                 db.InstalledInstances.Remove(installedInstance);
 
                 db.SaveChanges();
@@ -103,13 +117,26 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
-        public List<string> GetUniqueProjectsKey(string baseUrl)
+        public List<string> GetUniqueProjectsKey(string pluginKey)
         {
-            return new ReportsDb().InstalledInstances
-                .Where(installedInstance => installedInstance.BaseUrl == baseUrl)
-                .SelectMany(installedInstance => installedInstance.BasicSettings
-                .Select(reportSettings => reportSettings.UniqueProjectKey))
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                         .Where(installedInstance => installedInstance.ClientKey == pluginKey)
+                         .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
                 .ToList();
+        }
+        }
+
+        public List<string> GetUniqueProjectsKey(long id)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                         .Where(installedInstance => installedInstance.Id == id)
+                         .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
+                         .ToList();
+            }
         }
 
         public List<Instance> GetInstances()
@@ -122,11 +149,13 @@ namespace Equilobe.DailyReport.SL
                            .ToList()
                            .ForEach(installedInstance =>
                 {
-                    var instance = new Instance();
-                    instance.CopyFrom<IInstance>(installedInstance);
-
-                    instances.Add(instance);
-                });
+                               instances.Add(new Instance
+                               {
+                                   Id = installedInstance.Id,
+                                   BaseUrl = installedInstance.BaseUrl,
+                                   TimeZone = installedInstance.TimeZone
+                               });
+                           });
 
             return instances;
         }
@@ -144,29 +173,23 @@ namespace Equilobe.DailyReport.SL
                 .FirstOrDefault();
         }
 
-        public void SetReportFromDb(JiraReport _report)
+
+        // TODO: refactor to return a different object that is not tied to the Storage layer
+        public BasicSettings GetReportSettingsWithDetails(string uniqueProjectKey)
         {
             using (var db = new ReportsDb())
             {
-                var reportSettings = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == _report.UniqueProjectKey);
-                _report.Settings = new BasicSettings();
-                reportSettings.CopyTo<BasicSettings>(_report.Settings);
-                reportSettings.InstalledInstance.CopyTo<InstalledInstance>(_report.Settings.InstalledInstance);
-                reportSettings.InstalledInstance.UserImages.CopyTo<ICollection<UserImage>>(_report.Settings.InstalledInstance.UserImages);
-
-                if (reportSettings.ReportExecutionSummary != null)
-                {
-                    if (reportSettings.ReportExecutionSummary.LastDraftSentDate != null)
-                        _report.LastDraftSentDate = reportSettings.ReportExecutionSummary.LastDraftSentDate.Value;
-                    if (reportSettings.ReportExecutionSummary.LastFinalReportSentDate != null)
-                        _report.LastReportSentDate = reportSettings.ReportExecutionSummary.LastFinalReportSentDate.Value;
+                return db.BasicSettings
+                    .Include(s => s.InstalledInstance.User)
+                    .Include(s => s.ReportExecutionSummary)
+                    .Include(s => s.FinalDraftConfirmation)
+                    .Include(s => s.IndividualDraftConfirmations)
+                    .Include(s => s.ReportExecutionInstances)
+                    .SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
                 }
-
-                if (reportSettings.FinalDraftConfirmation != null)
-                    if (reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null)
-                        _report.LastFinalDraftConfirmationDate = reportSettings.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value;
             }
-        }
+
+
 
         FullReportSettings GetPolicyBufferFromDb(string uniqueProjectKey)
         {

@@ -136,7 +136,7 @@ namespace Equilobe.DailyReport.SL
         public Sprint GetProjectSprintForDate(ProjectDateFilter filter)
         {
             var client = GetClient(filter.Context);
-            return new SprintLoader(filter, client).GetLatestSprint();
+            return new SprintLoader(filter, client).GetLatestSprint(filter.Date);
         }
 
         public byte[] GetUserAvatar(JiraRequestContext context, string url)

@@ -14,6 +14,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> Issues { get; set; }
         public List<JiraCommit> Commits { get; set; }
         public string Title { get; set; }
+        public string AuthorName { get; set; }
 
         public List<JiraCommit> UnsyncedCommits { get; set; }
     }

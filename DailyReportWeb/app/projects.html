@@ -1,54 +1,64 @@
-﻿<div class="jumbotron jumbo">
+﻿<div class="jumbotron jumbo" ng-if="status == 'loading'">
     <div class="container">
         <h1>
             Projects
         </h1>
         <p class="help-block">
-            {{projects[0].baseUrl}}
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
         </p>
     </div>
 </div>
 
-<div class="table">
-    <div class="container" ng-if="status == 'loading'">
-        <h3>
-            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
-        </h3>
+<div ng-if="status == 'loaded'">
+    <div class="jumbotron jumbo">
+        <div class="container">
+            <h1>
+                Projects
+            </h1>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    {{instance[0].baseUrl}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="instance in instances"><a href="#" ng-click="setInstance()">{{instance[0].baseUrl}}</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/app/instances"><span class="glyphicon glyphicon-cog"></span> Manage JIRA servers</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="container" ng-if="status == 'loaded' && !projects.length">
+    <div class="container" ng-if="!instances.length">
         <h2>
             <span class="alert-danger">
-                No projects available
+                No instances available
             </span>
         </h2>
         <p class="help-block">
-            Daily Report tool is unable to find any project.
+            Daily Report is unable to find any instance.
         </p>
     </div>
-    <div class="container" ng-if="status == 'loaded' && projects.length">
-        <div class="row">
-            <label class="col-sm-6 col-md-6">
-                Project name
-            </label>
-            <label class="col-sm-4 col-md-4">
-                Report time
-            </label>
-            <label class="col-sm-2 col-md-2">
-                Options
-            </label>
+    <div ng-if="instances.length">
+        <div class="container" ng-if="!instance.length">
+            <h2>
+                <span class="alert-danger">
+                    No projects available
+                </span>
+            </h2>
+            <p class="help-block">
+                Daily Report is unable to find any project.
+            </p>
         </div>
-        <div class="row project" ng-repeat="project in projects">
-            <div class="col-sm-6 col-md-6">
-                {{project.projectName}}
-            </div>
-            <div class="col-sm-4 col-md-4">
-                <div ng-form="reportForm">
-                    <input name="reportTime" type="text" class="form-control" placeholder="e.g. 08:00" ng-model="project.reportTime" ng-focus="reportTime.focus = true" ng-blur="reportTime.focus = false; updateReportTime(this)" ng-pattern=regex.Time />
-                    <span class="form-notification" ng-show="reportForm.reportTime.$error.pattern && !reportTime.focus"><b>Enter valid time</b> (23:59)</span>
+        <div class="container projects" ng-if="instance.length">
+            <div ng-repeat="project in instance">
+                <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/">
+                    <h3>
+                        {{project.projectName}}
+                    </h3>
+                </a>
+                <div class="help-block">
+                    <span class="alert-success" ng-if="project.reportTime">Sending report at {{project.reportTime}}</span>
+                    <span class="alert-danger" ng-if="!project.reportTime">Not sending report</span>
                 </div>
-            </div>
-            <div class="col-sm-2 col-md-2">
-                <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/" class="btn btn-default">Details</a>
             </div>
         </div>
     </div>

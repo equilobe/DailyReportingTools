@@ -122,7 +122,7 @@ namespace DailyReportWeb.Controllers.Api
                                         .InstalledInstances
                                         .Single()
                                         .Id;
-            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
+            SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
 
             return new AccountResponse() { Success = true };
         }
