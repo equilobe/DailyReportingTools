@@ -59,7 +59,7 @@
                     Instance Url
                 </label>
                 <div ng-form="instanceUrlForm">
-                    <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url ng-disabled="editingInstance" />
+                    <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" ng-required="true" ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url ng-disabled="editingInstance" />
                     <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                     Username
                 </label>
                 <div>
-                    <input type="text" class="form-control" required placeholder="JIRA username" ng-model="form.jiraUsername" />
+                    <input type="text" class="form-control" ng-required="true" placeholder="JIRA username" ng-model="form.jiraUsername" />
                 </div>
             </div>
             <div class="form-group">
@@ -84,7 +84,7 @@
                     Password
                 </label>
                 <div>
-                    <input type="password" class="form-control" required placeholder="Jira password" ng-model="form.jiraPassword" />
+                    <input type="password" class="form-control" ng-required="true" placeholder="Jira password" ng-model="form.jiraPassword" />
                 </div>
             </div>
             <div>
