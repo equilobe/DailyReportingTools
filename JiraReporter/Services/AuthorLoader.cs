@@ -387,7 +387,14 @@ namespace JiraReporter.Services
 
         private void SetUserAvatar(byte[] image)
         {
-            DataService.AddUserImage(_currentAuthor.Username, _context.Settings.InstalledInstanceId, image);
+            var context = new UserImageContext
+            {
+                Username = _currentAuthor.Username,
+                InstanceId = _context.Settings.InstalledInstanceId,
+                Image = image
+            };
+
+            DataService.AddUserImage(context);
             var key = DataService.GetUserImageKey(_currentAuthor.Username);
             SetUserAvatarLink(key);
         }

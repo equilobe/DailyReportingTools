@@ -204,20 +204,20 @@ namespace Equilobe.DailyReport.SL
             return policy;
         }
 
-        public void AddUserImage(string username, long instanceId, byte[] image)
+        public void AddUserImage(UserImageContext context)
         {
             using (var db = new ReportsDb())
             {
-                var avatar = db.UserImages.SingleOrDefault(userImage => userImage.Username == username);
+                var avatar = db.UserImages.SingleOrDefault(userImage => userImage.Username == context.Username);
                 if (avatar != null)
                     return;
 
                 db.UserImages.Add(new UserImage
                 {
-                    ImageContent = image,
+                    ImageContent = context.Image,
                     Key = RandomString.Get(),
-                    Username = username,
-                    InstalledInstanceId = instanceId
+                    Username = context.Username,
+                    InstalledInstanceId = context.InstanceId
                 });
 
                 db.SaveChanges();
