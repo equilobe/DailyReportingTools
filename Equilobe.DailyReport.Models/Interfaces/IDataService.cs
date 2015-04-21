@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using System.Collections.Generic;
@@ -21,5 +22,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<string> GetUniqueProjectsKey(string pluginKey);
         BasicSettings GetReportSettingsWithDetails(string uniqueProjectKey);
         JiraPolicy GetPolicy(string uniqueProjectKey);
+        byte[] GetUserImageByKey(string key);
+        void AddUserImage(UserImageContext context);
+        string GetUserImageKey(string username);
     }
 }

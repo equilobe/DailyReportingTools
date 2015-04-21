@@ -72,6 +72,7 @@
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />
+    <Compile Include="ReportFrame\AuthorizationContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="ReportFrame\TimesheetContext.cs" />
     <Compile Include="ReportFrame\Timing.cs" />
     <Compile Include="ReportFrame\TimingDetailed.cs" />
+    <Compile Include="ReportFrame\UserImageContext.cs" />
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
     <Compile Include="Jira\Avatar.cs" />
     <Compile Include="Jira\Entries.cs" />

@@ -1,6 +1,5 @@
 ﻿@{
     var day = string.Empty;
-    var imgSrc = string.Empty;
 }
 
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
@@ -58,87 +57,84 @@ else
         }
         @if (!Model.Author.IsEmpty)
         {
-            <div style="margin-top:50px">
-                <h3 style="margin-top:15px; color:black">Work summary</h3>
-                <div style="margin-top:20px">
-                    <span style="margin-left:5px">
-                        <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
-                    </span>
+        <div style="margin-top:50px">
+            <h3 style="margin-top:15px; color:black">Work summary</h3>
+            <div style="margin-top:20px">
+                <span style="margin-left:5px">
+                    <a style="width:10px; height:10px; background-color:#5CB85C; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">@day</span>
+                </span>
                     @if (Model.HasSprint)
                     {
-                        <span style="margin-left:5px">
-                            <a style="width:10px; height:10px; background-color:#F60; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
-                        </span>
+                <span style="margin-left:5px">
+                    <a style="width:10px; height:10px; background-color:#F60; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Sprint avg.</span>
+                </span>
                     }
-                    <span style="margin-left:5px">
-                        <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
-                    </span>
-                    <span style="margin-left:5px">
-                        <a style="width:10px; height:10px; background-color:#337AB7; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Remaining avg.</span>
-                    </span>
-                </div>
-                <table cellspacing="0" style="margin-top:20px">
-                    <tbody>
-                        @{
-            imgSrc = "cid:" + Model.Author.AvatarId;
-                        }
-                        <tr>
-                            <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@imgSrc" alt="@Model.Author.FirstName" /></td>
-                            <td style="padding:0px; padding-bottom:5px">
-                                @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
-                                @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                        <div style="display:inline-block; background-color:#5CB85C; width:@Model.Author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedString</div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                    </div>
-                                }
-                                @if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                        <div style="display:inline-block; background-color:#F60; width:@Model.Author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedSprintString</div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                    </div>
-                                }
-                                @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                        <div style="display:inline-block; background-color:#F0AD4E; width:@Model.Author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Author.Timing.AverageWorkedMonthString</div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                    </div>
-                                }
-                                @if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                        <div style="display:inline-block; background-color:#337AB7; width:@Model.Author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
-                                        <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Author.Timing.TotalRemainingString</div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
-                                    </div>
-                                }
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <span style="margin-left:5px">
+                    <a style="width:10px; height:10px; background-color:#F0AD4E; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Month avg.</span>
+                </span>
+                <span style="margin-left:5px">
+                    <a style="width:10px; height:10px; background-color:#337AB7; display:inline-block"></a><span style="color:black; font-size:12px; padding-left:2px">Remaining avg.</span>
+                </span>
             </div>
+            <table cellspacing="0" style="margin-top:20px">
+                <tbody>
+                    <tr>
+                            <td style="width:55px; height:55px; max-width:55px; max-height:55px; border-right:1px solid grey; padding-right:10px; text-align:center; vertical-align:middle; color:black"><img src="@Model.Author.ReportAvatarLink" alt="@Model.Author.FirstName" /></td>
+                        <td style="padding:0px; padding-bottom:5px">
+                            @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
+                                @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                    <div style="display:inline-block; background-color:#5CB85C; width:@Model.Author.DayChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                    <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedString</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                </div>
+                            }
+                                @if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                    <div style="display:inline-block; background-color:#F60; width:@Model.Author.SprintChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                    <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left; color:black">@Model.Author.Timing.AverageWorkedSprintString</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                </div>
+                            }
+                                @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                    <div style="display:inline-block; background-color:#F0AD4E; width:@Model.Author.MonthChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                    <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Author.Timing.AverageWorkedMonthString</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                </div>
+                            }
+                                @if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
+                            { 
+                            <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                <div style="display:inline-block; background-color:#337AB7; width:@Model.Author.RemainingChartPixelWidthString; height:14px; float:left; margin:0"></div>
+                                <div style="width:45px; height:14px; line-height:14px; display:inline-block; font-size:12px; padding-left:5px; float:left;color:black">@Model.Author.Timing.TotalRemainingString</div>
+                            </div>
+                            }
+                            else
+                            {
+                                <div style="width: @Model.Summary.ChartMaxWidthString; max-width:@Model.Summary.ChartMaxWidthString; height:14px; overflow:hidden; padding-bottom:2px">
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         }
 
     </div>
@@ -149,12 +145,12 @@ else
         {
             <h3 style="color:orange">There is no logged work or assigned issues</h3>
         }
-        else
-        {
+                                                        else
+                                                        {
             @Partial("Views/author.cshtml", Model.Author)
-        }
+                                                        }
 
-    </div>
+                    </div>
 
     @Partial("Views/individualDraftButtons.cshtml", Model.Author)
 
