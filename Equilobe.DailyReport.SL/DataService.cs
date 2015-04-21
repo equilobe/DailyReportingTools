@@ -37,7 +37,7 @@ namespace Equilobe.DailyReport.SL
                 instanceId = installedInstance.Id;
             }
 
-            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
+            SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void SaveInstance(RegisterModel modelData)
@@ -68,7 +68,7 @@ namespace Equilobe.DailyReport.SL
             }
 
             if (instanceId != 0)
-                SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
+                SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
         public void DeleteInstance(string baseUrl)

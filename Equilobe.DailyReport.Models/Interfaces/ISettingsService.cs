@@ -9,7 +9,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         BasicReportSettings GetBasicReportSettings(ItemContext context);
         List<List<BasicReportSettings>> GetAllBasicReportSettings(UserContext context);
         List<BasicReportSettings> GetAllBasicReportSettings(ItemContext context);
-        void SetAllBasicSettings(ItemContext context);
+        void SyncAllBasicSettings(ItemContext context);
 
         AdvancedReportSettings GetAdvancedReportSettings(ItemContext context);
 

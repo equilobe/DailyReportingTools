@@ -22,7 +22,7 @@ namespace Equilobe.DailyReport.SL
         public ISourceControlService SourceControlService { get; set; }
         public IJiraService JiraService { get; set; }
 
-        public void SetAllBasicSettings(ItemContext context)
+        public void SyncAllBasicSettings(ItemContext context)
         {
             using (var db = new ReportsDb())
             {
@@ -34,13 +34,14 @@ namespace Equilobe.DailyReport.SL
                 JiraService.GetProjectsInfo(jiraRequestContext)
                            .ForEach(jiraProject =>
                            {
-                               installedInstance.BasicSettings.Add(new BasicSettings
-                               {
-                                   InstalledInstanceId = installedInstance.Id,
-                                   BaseUrl = installedInstance.BaseUrl,
-                                   ProjectId = jiraProject.ProjectId,
-                                   UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
-                               });
+                               if (installedInstance.BasicSettings.Where(bs => bs.ProjectId == jiraProject.ProjectId).SingleOrDefault() == null)
+                                   installedInstance.BasicSettings.Add(new BasicSettings
+                                   {
+                                       InstalledInstanceId = installedInstance.Id,
+                                       BaseUrl = installedInstance.BaseUrl,
+                                       ProjectId = jiraProject.ProjectId,
+                                       UniqueProjectKey = RandomString.Get(jiraProject.ProjectKey)
+                                   });
                            });
 
                 db.SaveChanges();
@@ -82,6 +83,12 @@ namespace Equilobe.DailyReport.SL
                               .Select(projectInfo =>
                               {
                                   var basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
+                                  if (basicSettings == null)
+                                  {
+                                      SyncAllBasicSettings(context);
+                                      basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
+                                  }
+
                                   return new BasicReportSettings
                                   {
                                       Id = basicSettings.Id,
@@ -115,6 +122,12 @@ namespace Equilobe.DailyReport.SL
                                           .Select(projectInfo =>
                                           {
                                               var basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
+                                              if (basicSettings == null)
+                                              {
+                                                  SyncAllBasicSettings(icontext);
+                                                  basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
+                                              }
+
                                               return new BasicReportSettings
                                               {
                                                   Id = basicSettings.Id,
