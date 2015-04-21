@@ -133,8 +133,8 @@ namespace Equilobe.DailyReport.SL
                 return db.InstalledInstances
                          .Where(installedInstance => installedInstance.ClientKey == pluginKey)
                          .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
-                         .ToList();
-            }
+                .ToList();
+        }
         }
 
         public List<string> GetUniqueProjectsKey(long id)
@@ -159,7 +159,7 @@ namespace Equilobe.DailyReport.SL
                            .Where(ii => ii.UserId == userId)
                            .ToList()
                            .ForEach(installedInstance =>
-                           {
+                {
                                instances.Add(new Instance
                                {
                                    Id = installedInstance.Id,
@@ -204,8 +204,8 @@ namespace Equilobe.DailyReport.SL
                     .Include(s => s.IndividualDraftConfirmations)
                     .Include(s => s.ReportExecutionInstances)
                     .SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
+                }
             }
-        }
 
 
 
@@ -229,12 +229,50 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public byte[] GetUserImageByKey(string key)
+        {
+            using (var db = new Equilobe.DailyReport.DAL.ReportsDb())
+            {
+                return db.UserImages.Single(i => i.Key == key).ImageContent;
+            }
+        }
+
         public JiraPolicy GetPolicy(string uniqueProjectKey)
         {
             var policyBuffer = GetPolicyBufferFromDb(uniqueProjectKey);
             var policy = new JiraPolicy();
             policyBuffer.CopyPropertiesOnObjects(policy);
             return policy;
+        }
+
+        public void AddUserImage(UserImageContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                var avatar = db.UserImages.SingleOrDefault(userImage => userImage.Username == context.Username);
+                if (avatar != null)
+                    return;
+
+                db.UserImages.Add(new UserImage
+                {
+                    ImageContent = context.Image,
+                    Key = RandomString.Get(),
+                    Username = context.Username,
+                    InstalledInstanceId = context.InstanceId
+                });
+
+                db.SaveChanges();
+            }
+        }
+
+        public string GetUserImageKey(string username)
+        {
+            using (var db = new ReportsDb())
+            {
+                var avatar = db.UserImages.Single(im => im.Username == username);
+
+                return avatar.Key;
+            }
         }
     }
 }

@@ -194,6 +194,7 @@
     <Compile Include="Controllers\Api\SourceControlController.cs" />
     <Compile Include="Controllers\Api\TimezoneController.cs" />
     <Compile Include="Controllers\Api\WelcomeController.cs" />
+    <Compile Include="Controllers\AvatarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PluginController.cs" />
     <Compile Include="DependencyInjection.cs" />
@@ -398,6 +399,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Views\Avatar\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
