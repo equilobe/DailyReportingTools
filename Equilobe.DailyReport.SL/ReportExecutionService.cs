@@ -48,7 +48,7 @@ namespace Equilobe.DailyReport.SL
                 return SimpleResult.Error("Cannot resend full draft report for another date!");
 
             if (!CanSendFullDraft(context) && !IsForcedByLead(context))
-                return SimpleResult.Error("Not all individual draft reports were confirmed!");
+                return SimpleResult.Error("Error in resending full draft report!");
 
             context.Scope = SendScope.SendFinalDraft;
             SetReportExecutionInstance(context);
@@ -193,6 +193,9 @@ namespace Equilobe.DailyReport.SL
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate.Value == context.Date.Date).ToList();
+
+                if (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today)
+                    return false;
 
                 if (report.SerializedAdvancedSettings == null)
                     return false;

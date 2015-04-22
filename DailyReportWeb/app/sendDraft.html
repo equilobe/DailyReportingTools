@@ -20,6 +20,9 @@
                 <h3 class="confirmation-result alert" ng-class="data.status.hasError ? 'alert-danger' : 'alert-success'">
                     {{data.status.message}}
                 </h3>
+                <p>
+                    {{data.details}}
+                </p>
             </div>
 
             <div ng-if="error">

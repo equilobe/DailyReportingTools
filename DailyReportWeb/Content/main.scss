@@ -385,13 +385,10 @@ div.disabled {
 [data-page='sendIndividualDraft'],
 [data-page='confirmDraft'],
 [data-page='sendDraft'] {
+    margin-top: 0;
 
     header {
         display: none;
-    }
-
-    .data-page {
-        margin-top: 0;
     }
 
     .main-logo {
