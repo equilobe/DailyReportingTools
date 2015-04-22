@@ -18,7 +18,23 @@ angular.module('app')
 
         $http.get("/api/projects/")
             .success(function (instances) {
-                $scope.instance = instances ? ($routeParams.instanceId ? instances[$routeParams.instanceId - 1] : instances[0]) : {};
+
+                $scope.instance = {};
+                if (instances.length != 0) {
+                    if (!$routeParams.instanceId) {
+                        $scope.instance = instances[0];
+                    }
+                    else {
+                        instances.forEach(function (instance) {
+                            if (instance[0].installedInstanceId == $routeParams.instanceId)
+                                $scope.instance = instance;
+                        });
+
+                        if ($scope.instance[0].installedInstanceId != $routeParams.instanceId)
+                            $scope.instance = instances[0];
+                    }
+                }
+
                 $scope.instances = instances;
             })
             .finally(function () {

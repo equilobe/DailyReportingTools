@@ -37,7 +37,7 @@ angular.module('app')
 
                 $http.delete("/api/instances/" + $scope.instance.id)
                     .success(function (list) {
-                        $scope.instances = list;
+                        $scope.child.instances = list;
                     })
                     .finally(function () {
                         $scope.child.status = "loaded";
