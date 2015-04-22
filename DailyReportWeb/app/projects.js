@@ -20,7 +20,7 @@ angular.module('app')
             .success(function (instances) {
 
                 $scope.instance = {};
-                if (instances.length != 0) {
+                if (instances) {
                     if (!$routeParams.instanceId) {
                         $scope.instance = instances[0];
                     }
