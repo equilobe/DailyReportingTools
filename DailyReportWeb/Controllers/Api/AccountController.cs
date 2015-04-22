@@ -94,7 +94,7 @@ namespace DailyReportWeb.Controllers.Api
             return new AccountResponse()
             {
                 Success = true,
-                Message = "A message has been sent to your mail. Please confirm the account."
+                Message = "Account confirmation details has been sent to your mail."
             };
         }
 
@@ -144,7 +144,7 @@ namespace DailyReportWeb.Controllers.Api
 
             var user = await UserManager.FindAsync(model.Email, model.Password);
 
-            if (user == null)
+            if (user == null || UserManager.FindByEmail(model.Email) == null)
                 return new AccountResponse()
                 {
                     Success = false,
@@ -152,11 +152,11 @@ namespace DailyReportWeb.Controllers.Api
                     Message = "Invalid username or password."
                 };
 
-            if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+            if (!UserManager.IsEmailConfirmed(user.Id))
                 return new AccountResponse()
                 {
                     Success = false,
-                    Message = "Account has not been activated yet. Please check the mail and proceed with account confirmation."
+                    Message = "Account has not been activated yet."
                 };
 
             await SignInAsync(user, model.RememberMe);
