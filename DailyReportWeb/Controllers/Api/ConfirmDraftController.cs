@@ -45,46 +45,26 @@ namespace DailyReportWeb.Controllers.Api
             };
         }
 
-        private static string GetDraftConfirmationDetails(ExecutionContext context, AdvancedReportSettings advancedSettings, bool confirmationHasError)
+        private string GetDraftConfirmationDetails(ExecutionContext context, AdvancedReportSettings advancedSettings, bool confirmationHasError)
         {
             if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
                 return "You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.";
 
-            var recipients = GetConfirmationRecipients(advancedSettings);
+            var recipients = ReportExecutionService.GetFinalReportRecipients(advancedSettings);
 
-            if (!confirmationHasError)
-                return string.Format("The final report will be sent shortly to {0}", recipients);
-
-            DateTime? reportSentDate;
             using (var db = new ReportsDb())
             {
-                var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
-                reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
+                var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
+                var draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
+
+                if (draftSentDate.Value.Date == DateTime.Today)
+                    return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
             }
 
-            if (reportSentDate.Value.Date == DateTime.Today)
-                return string.Format("The final report was already sent at {0} to {1}", reportSentDate.Value.ToShortTimeString(), recipients);
+            if (!confirmationHasError)
+                string.Format("The final report will be sent shortly to {0}", recipients);
 
-            return string.Format("The final report will be sent shortly to {0}", recipients);
-        }
-
-        private static string GetConfirmationRecipients(AdvancedReportSettings advancedSettings)
-        {
-            var fullDraftRecipients = new List<string>();
-
-            if (advancedSettings.AdvancedOptions.SendFinalToAllUsers)
-                fullDraftRecipients.Add("the entire team");
-            else
-                fullDraftRecipients.Add("the project lead");
-
-            if (advancedSettings.AdvancedOptions.SendFinalToOthers)
-            {
-                var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                         .ToList();
-                fullDraftRecipients.AddRange(emails);
-            }
-
-            return StringExtensions.GetNaturalLanguage(fullDraftRecipients);
+            return null;
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportExecution;
+using Equilobe.DailyReport.Models.Web;
 using System;
+using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
@@ -13,5 +16,9 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SaveIndividualDraftConfirmation(UserConfirmationContext context);
         void MarkExecutionInstanceAsExecuted(ItemContext context);
         bool CanSendFullDraft(ExecutionContext context);
+        bool IsForcedByLead(ExecutionContext context);
+        string GetFullDraftRecipients(AdvancedReportSettings advancedSettings);
+        string GetFinalReportRecipients(AdvancedReportSettings advancedSettings);
+        string GetRemainingUsersToConfirmIndividualDraft(ExecutionContext context, List<JiraUser> jiraUsers);
     }
 }

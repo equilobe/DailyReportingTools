@@ -17,22 +17,26 @@ namespace DailyReportWeb.Controllers.Api
 
         public DataReportOperation Post(ExecutionContext context)
         {
+            string username;
             long projectId;
             var jiraRequestContext = new JiraRequestContext();
 
             using (var db = new ReportsDb())
             {
-                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id);
-                basicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
+                var individualConfirmation = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey);
+                individualConfirmation.BasicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
 
-                projectId = basicSettings.ProjectId;
+                username = individualConfirmation.Username;
+                projectId = individualConfirmation.BasicSettings.ProjectId;
             }
 
+            var jiraDisplayName = JiraService.GetUser(jiraRequestContext, username).displayName;
             var jiraProject = JiraService.GetProject(jiraRequestContext, projectId);
             var confirmationResult = ReportExecutionService.SendIndividualDraft(context);
 
             return new DataReportOperation
             {
+                User = jiraDisplayName,
                 Project = jiraProject.Name,
                 Status = confirmationResult
             };

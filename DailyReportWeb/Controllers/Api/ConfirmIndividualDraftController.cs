@@ -20,7 +20,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public DataReportOperation Post(ExecutionContext context)
         {
-            var username = string.Empty;
+            string username;
             long projectId;
             var jiraRequestContext = new JiraRequestContext();
             var advancedSettings = new AdvancedReportSettings();
@@ -58,77 +58,27 @@ namespace DailyReportWeb.Controllers.Api
             if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
                 return "You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.";
 
-            var recipients = GetConfirmationRecipients(advancedSettings);
+            var recipients = ReportExecutionService.GetFullDraftRecipients(advancedSettings);
 
-            if (!ReportExecutionService.CanSendFullDraft(context))
+            using (var db = new ReportsDb())
             {
-                var usersToConfirm = GetUsersToConfirmIndividualDraft(context, jiraUsers);
+                var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
+                var draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
+
+                if (draftSentDate.Value.Date == DateTime.Today)
+                    return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
+            }
+
+            if (!ReportExecutionService.CanSendFullDraft(context) && !ReportExecutionService.IsForcedByLead(context))
+            {
+                var usersToConfirm = ReportExecutionService.GetRemainingUsersToConfirmIndividualDraft(context, jiraUsers);
                 return string.Format("{0} must confirm. After everyone confirms, the full draft will be sent to {1}", usersToConfirm, recipients);
             }
 
             if (!confirmationHasError)
                 return string.Format("You were the last one to confirm. The full draft will be sent shortly to {0}", recipients);
 
-            DateTime? draftSentDate;
-            using (var db = new ReportsDb())
-            {
-                var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
-                draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
-            }
-
-            if (draftSentDate.Value.Date == DateTime.Today)
-                return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
-
-            return string.Format("The full draft report will be sent shortly to {1}", recipients);
-        }
-
-        private static string GetUsersToConfirmIndividualDraft(ExecutionContext context, List<JiraUser> jiraUsers)
-        {
-            var usernamesToConfirm = new List<string>();
-            var usersToConfirm = new List<string>();
-
-            using (var db = new ReportsDb())
-            {
-                var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
-                usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
-                                                                                  idc.ReportDate == context.Date &&
-                                                                                  DbFunctions.TruncateTime(idc.LastDateConfirmed) != DateTime.Today)
-                                                                    .Select(qr => qr.Username)
-                                                                    .ToList();
-            }
-
-            usernamesToConfirm.ForEach(usernameToConfirm =>
-            {
-                jiraUsers.ForEach(jiraUser =>
-                {
-                    if (usernameToConfirm == jiraUser.name)
-                        usersToConfirm.Add(jiraUser.displayName);
-                });
-            });
-
-            return StringExtensions.GetNaturalLanguage(usersToConfirm);
-        }
-
-        private static string GetConfirmationRecipients(AdvancedReportSettings advancedSettings)
-        {
-            var fullDraftRecipients = new List<string>();
-
-            if (advancedSettings.AdvancedOptions.SendDraftToAllUsers)
-                fullDraftRecipients.Add("the entire team");
-            else
-            {
-                if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
-                    fullDraftRecipients.Add("the project lead");
-            }
-
-            if (advancedSettings.AdvancedOptions.SendDraftToOthers)
-            {
-                var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                         .ToList();
-                fullDraftRecipients.AddRange(emails);
-            }
-
-            return StringExtensions.GetNaturalLanguage(fullDraftRecipients);
+            return null;
         }
     }
 }

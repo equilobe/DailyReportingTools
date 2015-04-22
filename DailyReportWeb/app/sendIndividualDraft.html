@@ -15,7 +15,7 @@
         <div ng-if="status == 'loaded'">
             <div ng-if="!error">
                 <h3>
-                    {{data.project}}
+                    {{data.user}} - {{data.project}}
                 </h3>
                 <h3 class="confirmation-result alert" ng-class="data.status.hasError ? 'alert-danger' : 'alert-success'">
                     {{data.status.message}}

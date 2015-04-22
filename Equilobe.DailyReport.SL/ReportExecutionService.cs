@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using Equilobe.DailyReport.Models.Jira;
+using System.Data.Entity;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -24,10 +26,10 @@ namespace Equilobe.DailyReport.SL
         public SimpleResult SendReport(ExecutionContext context)
         {
             if (context.Date.Date != DateTime.Today)
-                return SimpleResult.Error("Cannot confirm report for another date");
+                return SimpleResult.Error("Cannot confirm full draft report for another date!");
 
             if (!CanSendFullDraft(context))
-                return SimpleResult.Error("Not all individual drafts were confirmed");
+                return SimpleResult.Error("Not all individual draft reports were confirmed!");
 
             SetFinalDraftConfirmation(context);
 
@@ -35,49 +37,46 @@ namespace Equilobe.DailyReport.SL
             SetReportExecutionInstance(context);
 
             if (TryRunReport(context))
-                return SimpleResult.Success("Full draft report successfully confirmed!");
-            else
-                return SimpleResult.Error("Error in sending the final report");
+                return SimpleResult.Success("Final report successfully sent!");
+
+            return SimpleResult.Error("Error in sending the final report!");
         }
 
         public SimpleResult SendDraft(ExecutionContext context)
         {
             if (context.Date.Date != DateTime.Today)
-                return SimpleResult.Error("Cannot resend draft for another date");
+                return SimpleResult.Error("Cannot resend full draft report for another date!");
 
             if (!CanSendFullDraft(context) && !IsForcedByLead(context))
-                return SimpleResult.Error("Cannot send report if not all individual drafts were confirmed");
+                return SimpleResult.Error("Not all individual draft reports were confirmed!");
 
             context.Scope = SendScope.SendFinalDraft;
             SetReportExecutionInstance(context);
 
             if (TryRunReport(context))
-                return SimpleResult.Success("Draft report was resent");
-            else
-                return SimpleResult.Error("Error in sending draft report");
+                return SimpleResult.Success("Full draft report successfully resent!");
 
+            return SimpleResult.Error("Error in resending full draft report!");
         }
 
         public SimpleResult ConfirmIndividualDraft(ExecutionContext context)
         {
             if (context.Date.Date != DateTime.Today)
-                return SimpleResult.Error("Cannot confirm report for another date!");
+                return SimpleResult.Error("Cannot confirm individual draft report for another date!");
 
             var canConfirm = CanConfirm(context);
             if (canConfirm.HasError)
                 return canConfirm;
 
             if (!MarkIndividualDraftAsConfirmed(context))
-                return SimpleResult.Error("Error in confirmation");
+                return SimpleResult.Error("Error in confirming individual draft report!");
 
             if (CanSendFullDraft(context))
             {
                 context.Scope = SendScope.SendFinalDraft;
                 SetReportExecutionInstance(context);
                 if (!TryRunReport(context))
-                    return SimpleResult.Error("Report confirmed. Error in sending full draft report");
-
-                return SimpleResult.Success("Individual draft report successfully confirmed!");
+                    return SimpleResult.Error("Individual draft report successfully confirmed. Error in sending full draft report!");
             }
 
             return SimpleResult.Success("Individual draft report successfully confirmed!");
@@ -86,7 +85,7 @@ namespace Equilobe.DailyReport.SL
         public SimpleResult SendIndividualDraft(ExecutionContext context)
         {
             if (context.Date.Date != DateTime.Today)
-                return SimpleResult.Error("Cannot resend report for another date");
+                return SimpleResult.Error("Cannot resend individual draft report for another date!");
 
             var result = CanSendIndividualDraft(context);
             if (result.HasError)
@@ -96,9 +95,9 @@ namespace Equilobe.DailyReport.SL
             SetReportExecutionInstance(context);
 
             if (!TryRunReport(context))
-                return SimpleResult.Error("Error in sending individual draft");
+                return SimpleResult.Error("Error in resending individual draft report!");
 
-            return SimpleResult.Success("Report resent");
+            return SimpleResult.Success("Individual draft report successfully resent!");
         }
 
         public void SaveIndividualDraftConfirmation(UserConfirmationContext context)
@@ -119,6 +118,74 @@ namespace Equilobe.DailyReport.SL
         }
 
         #region Helpers
+
+        public string GetFullDraftRecipients(AdvancedReportSettings advancedSettings)
+        {
+            var fullDraftRecipients = new List<string>();
+
+            if (advancedSettings.AdvancedOptions.SendDraftToAllUsers)
+                fullDraftRecipients.Add("the entire team");
+            else
+            {
+                if (advancedSettings.AdvancedOptions.SendDraftToProjectManager)
+                    fullDraftRecipients.Add("the project lead");
+            }
+
+            if (advancedSettings.AdvancedOptions.SendDraftToOthers)
+            {
+                var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                         .ToList();
+                fullDraftRecipients.AddRange(emails);
+            }
+
+            return StringExtensions.GetNaturalLanguage(fullDraftRecipients);
+        }
+
+        public string GetFinalReportRecipients(AdvancedReportSettings advancedSettings)
+        {
+            var fullDraftRecipients = new List<string>();
+
+            if (advancedSettings.AdvancedOptions.SendFinalToAllUsers)
+                fullDraftRecipients.Add("the entire team");
+            else
+                fullDraftRecipients.Add("the project lead");
+
+            if (advancedSettings.AdvancedOptions.SendFinalToOthers)
+            {
+                var emails = advancedSettings.DraftEmails.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                         .ToList();
+                fullDraftRecipients.AddRange(emails);
+            }
+
+            return StringExtensions.GetNaturalLanguage(fullDraftRecipients);
+        }
+
+        public string GetRemainingUsersToConfirmIndividualDraft(ExecutionContext context, List<JiraUser> jiraUsers)
+        {
+            var usernamesToConfirm = new List<string>();
+            var usersToConfirm = new List<string>();
+
+            using (var db = new ReportsDb())
+            {
+                var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
+                usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
+                                                                                  idc.ReportDate == context.Date &&
+                                                                                  DbFunctions.TruncateTime(idc.LastDateConfirmed) != DateTime.Today)
+                                                                    .Select(qr => qr.Username)
+                                                                    .ToList();
+            }
+
+            usernamesToConfirm.ForEach(usernameToConfirm =>
+            {
+                jiraUsers.ForEach(jiraUser =>
+                {
+                    if (usernameToConfirm == jiraUser.name)
+                        usersToConfirm.Add(jiraUser.displayName);
+                });
+            });
+
+            return StringExtensions.GetNaturalLanguage(usersToConfirm);
+        }
 
         public bool CanSendFullDraft(ExecutionContext context)
         {
@@ -161,10 +228,10 @@ namespace Equilobe.DailyReport.SL
             }
 
             if (WasFinalDraftSentToday(reportSettings.ReportExecutionSummary, context.Date.Date))
-                return SimpleResult.Error("Can't resend individual draft if final draft was already sent");
+                return SimpleResult.Error("Cannot resend individual draft if full draft was already sent!");
 
             if (IsIndividualDraftConfirmed(context, reportSettings.IndividualDraftConfirmations))
-                return SimpleResult.Error("Can't resend draft after confirmation");
+                return SimpleResult.Error("Cannot resend individual draft if it's confirmed!");
 
             return SimpleResult.Success("");
         }
@@ -292,7 +359,7 @@ namespace Equilobe.DailyReport.SL
             return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date != DateTime.Today);
         }
 
-        bool IsForcedByLead(ExecutionContext context)
+        public bool IsForcedByLead(ExecutionContext context)
         {
             var individualDrafts = new List<IndividualDraftConfirmation>();
 
