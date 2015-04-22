@@ -13,11 +13,11 @@ namespace JiraReporter.Helpers
 {
     public static class JiraReportHelpers
     {
-        public static string GetReportTitle(JiraReport report)
+        public static string GetReportTitle(JiraReport report, bool isIndividualReportTitle = false)
         {
             var title = string.Empty;
-            
-            if(report.IsIndividualDraft)
+
+            if (isIndividualReportTitle)
             {
                 title += report.Author.Name + " - ";
             }
@@ -30,15 +30,15 @@ namespace JiraReporter.Helpers
         public static string GetReportSubject(JiraReport report)
         {
             var subject = "DailyReport | ";
-            if(report.IsIndividualDraft || report.IsFinalDraft)
+            if (report.IsIndividualDraft || report.IsFinalDraft)
             {
                 subject += "DRAFT | ";
             }
-            if(report.IsIndividualDraft)
+            if (report.IsIndividualDraft)
             {
                 subject += report.Author.Name + " - ";
             }
-            subject += " " + report.ProjectName + " | " + report.ToDate.ToString("ddd, dd MMM yyyy");
+            subject += " " + report.ProjectName + " | " + report.Date;
 
             return subject;
         }

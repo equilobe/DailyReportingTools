@@ -1,16 +1,16 @@
-﻿<table width="250" height="50">
+﻿<table cellpadding="0" cellspacing="0">
     <tbody>
         <tr>
-            <td width="100" height="40" style="padding:0px; line-height:40px;" title="This will confirm the draft ONLY for this particular user and send the draft report to the project manager &#013; Only click the button after: &#013; - errors have been corrected &#013; - all work has been logged">
+            <td width="90" height="30" valign="middle" style="padding:0px; text-align:center;background-color:#5CB85C; border-radius:5px;" title="This will confirm the draft ONLY for this particular user and send the draft report to the project manager &#013; Only click the button after: &#013; - errors have been corrected &#013; - all work has been logged">
                 @Partial("Views/confirmationButton.cshtml", Model.IndividualDraftInfo.ConfirmationDraftUrl)
             </td>
 
-            <td width="30" height="40" style="display:inline-block;font-size:12px; line-height:40px;padding:0px; text-align:center">
-                or
+            <td width="30" height="30" valign="middle" style="font-size:12px; padding:0px; text-align:center;">
+               <span style="color:black">or</span>
             </td>
 
-            <td width="100px" height="40" style="padding:0px; line-height:40px;">
-                <a style="color:#0000FF; text-decoration:none; font-size:12px; line-height:40px" href="@Model.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
+            <td width="100px" height="30" valign="middle" style="padding:0px;">
+                <a style="color:#0000FF; text-decoration:none; font-size:12px;" href="@Model.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
             </td>
         </tr>
     </tbody>
@@ -20,8 +20,15 @@
 {
     <table>
         <tr>
-            <td height="40">
-                <hr style="width:250px; margin-left:0px" />
+            <td height="16" width="250">
+                <hr style="margin-left:0px; padding:0px;" />
+            </td>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
                 <span style="font-size:12px; color:black;">
                     If not everyone from your team has confirmed their report, you can also <a style="color:#0000FF; font-weight:bold; text-decoration:none;" href="@Model.IndividualDraftInfo.ForceDraftUrl">force the full draft</a>.
                 </span>

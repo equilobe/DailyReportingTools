@@ -42,16 +42,18 @@ namespace JiraReporter
 
             SetDetails(report);
 
+            report.NotHideContentId = RandomString.Get();
+
             return report;
         }
 
         private static void SetDetails(JiraReport report)
         {
             report.Title = JiraReportHelpers.GetReportTitle(report);
-
-            report.EmailSubject = JiraReportHelpers.GetReportSubject(report);
-
             report.Date = ReportDateFormatter.GetReportDate(report.FromDate, report.ToDate);
+
+            if (!report.IsIndividualDraft)
+                report.EmailSubject = JiraReportHelpers.GetReportSubject(report);
         }
 
         private void SetIssueSearchUrl(JiraReport report)
@@ -95,7 +97,8 @@ namespace JiraReporter
             report.CopyPropertiesOnObjects(individualReport);
             individualReport.Author = author;
 
-            individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport);
+            individualReport.Title = JiraReportHelpers.GetReportTitle(individualReport, true);
+            individualReport.EmailSubject = JiraReportHelpers.GetReportSubject(individualReport);
 
             return individualReport;
         }

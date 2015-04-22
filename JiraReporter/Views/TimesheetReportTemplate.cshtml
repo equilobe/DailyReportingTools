@@ -12,7 +12,7 @@
     var tooltipWorked = "";
     var tooltipCommit = "";
 }
-<table style="width:100%; font-family:'Segoe UI', Arial, sans-serif">
+<table width="600" style="font-family:'Segoe UI', Arial, sans-serif">
     <tbody>
         <tr>
             <td>
@@ -40,6 +40,14 @@
                 {
                     @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
                 }
+                
+                <table>
+                    <tr>
+                        <td height="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
 
                 @if (Model.IsFinalDraft)
                 {

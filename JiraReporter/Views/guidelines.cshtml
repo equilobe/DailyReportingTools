@@ -1,10 +1,9 @@
 ﻿@{
     var guideNumber = Model.GuidelinesRate;
-    var border = "1px solid #ABABAB;";
     var widthNoBorder = 0.0;
 }
 
-<table width="@Model.ChartMaxWidth" cellspacing="0" cellpadding="0" height="10" style="overflow:hidden; padding-bottom:2px; border-collapse:collapse;">
+<table width="@Model.ChartMaxWidth" cellspacing="0" cellpadding="0" height="10" style="overflow:hidden; border-collapse:collapse;">
     <tbody>
         <tr>
             <td width="@Model.ChartMaxWidth" style="overflow:hidden">
@@ -21,16 +20,15 @@
                             <td width="@Model.GuidelineWidthSmall" style="overflow:hidden; font-size:5px">
                                 &nbsp;
                             </td>
-
                         </tr>
                         <tr>
-                            <td width="@Model.GuidelineWidthSmall" style="overflow:hidden; font-size:5px; line-height:5px">
+                            <td width="@Model.GuidelineWidthSmall" height="5" style="overflow:hidden; font-size:5px; line-height:5px">
                                 &nbsp;
                             </td>
                             @for (int i = 0; i < Model.GuidelinesCount; i++)
                             {
 
-                                <td colspan="2" height="5" style="font-size:9px; text-align:center; color:black;  overflow:hidden">
+                                <td colspan="2" height="10" style="font-size:9px; text-align:center; color:black;  overflow:hidden">
                                     @guideNumber
                                 </td>
 
@@ -44,18 +42,24 @@
 
                             @for (int i = 0; i < Model.GuidelinesCount; i++)
                             {
-                                if (i == Model.GuidelinesCount - 1)
-                                {
-                                    border = "";
-                                }
                                 widthNoBorder = @Model.GuidelineWidthSmall - 1;
 
                                 <td width="@widthNoBorder" height="5" style="border-right:1px solid #ABABAB; border-bottom:1px solid #ABABAB; overflow:hidden; font-size:5px; line-height:5px;">
                                     &nbsp;
                                 </td>
-                                <td width="@Model.GuidelineWidthSmall" height="5" style="border-bottom:@border;overflow:hidden; font-size:5px; line-height:5px">
-                                    &nbsp;
-                                </td>
+
+                                if (i == Model.GuidelinesCount - 1)
+                                {
+                                    <td width="@Model.GuidelineWidthSmall" height="5" style="line-height:5px; font-size:5px;">
+                                        &nbsp;
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td width="@Model.GuidelineWidthSmall" height="5" style="line-height:5px; font-size:5px; border-bottom:1px solid #ABABAB">
+                                        &nbsp;
+                                    </td>
+                                }
                             }
                         </tr>
                     </table>

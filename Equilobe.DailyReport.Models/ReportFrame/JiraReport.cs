@@ -63,19 +63,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _title = value; }
         }
 
-        private string _emailSubject;
-        public string EmailSubject
-        {
-            get
-            {
-                if (_emailSubject == null)
-                    throw new InvalidOperationException("You must first set a value on this property to be able to get it!");
-                return _emailSubject;
-            }
-            set { _emailSubject = value; }
-        }
-
-
+        public string EmailSubject { get; set; }
 
         private List<JiraAuthor> _authors;
         public List<JiraAuthor> Authors
@@ -172,6 +160,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string ProjectKey { get; set; }
         public string ProjectName { get; set; }
         public string UniqueProjectKey { get; set; }
+
+        public string NotHideContentId { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
         public ExecutionInstance ExecutionInstance { get; set; }
