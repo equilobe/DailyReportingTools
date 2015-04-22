@@ -123,33 +123,41 @@ div.disabled {
 
 .steps-row {
     margin-top: 50px;
-}
 
-.step-number {
-    background-color: white;
-    border-radius: 10px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-    font-weight: bold;
-    display: inline-block;
-}
+    .step {
+        text-align: center;
 
-.step {
-    text-align: center;
+        .step-number {
+            background-color: white;
+            border-radius: 10px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: inline-block;
+        }
 
-    h4 {
-        margin-bottom: 0;
+        .step-icon {
+            padding-top: 40px;
+            padding-bottom: 30px;
+            padding-left: 20px;
+            padding-right: 20px;
+            text-align: center;
+        }
+
+        h4 {
+            margin-bottom: 0;
+        }
+
+        p.step-facts {
+            font-weight: 500;
+
+            i {
+                font-weight: lighter;
+            }
+        }
     }
-}
-
-.step-icon {
-    padding-top: 40px;
-    padding-bottom: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
-    text-align: center;
 }
 
 .daily-report {
@@ -245,10 +253,6 @@ div.disabled {
         font-weight: normal;
     }
 
-    h3 {
-        font-weight: bold;
-    }
-
     h4,
     .help-block {
         display: inline-block;
@@ -285,16 +289,12 @@ div.disabled {
         }
     }
 
-    .step-number {
-        background-color: white;
+    .step .step-number {
         border-radius: 25px;
         width: 50px;
         height: 50px;
         line-height: 50px;
-        text-align: center;
-        font-weight: bold;
         font-size: 18pt;
-        display: inline-block;
         margin-top: 20px;
     }
 
@@ -312,14 +312,13 @@ div.disabled {
 
         h4 {
             font-weight: normal;
+            max-width: 490px;
         }
     }
 
     .report-summary {
 
-        .row {
-            margin: 0;
-            margin-top: 80px;
+        > div:not(:first-of-type) {
             background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(238,238,238,0.45) 100%);
             background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(238,238,238,0.45)));
             background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
@@ -329,11 +328,20 @@ div.disabled {
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6eeeeee',GradientType=0 );
         }
 
+        .row {
+            margin: 0;
+            margin-top: 80px;
+        }
+
         img {
             max-width: 100%;
             border-left: 1px solid #b13818;
             border-right: 1px solid #b13818;
         }
+    }
+
+    .reasons-to-join {
+        padding-bottom: 50px;
     }
 
     .how-it-works {
@@ -436,6 +444,13 @@ div.disabled {
 
     to {
         -moz-transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 992px) {
+
+    .hcenter-xs {
+        text-align: center;
     }
 }
 
