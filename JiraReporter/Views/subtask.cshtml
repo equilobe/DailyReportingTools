@@ -9,49 +9,12 @@
         {
             <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
         }
-        @if (Model.StatusCategory.name == "In Progress")
-        {
-            <span style="font-size: 10.5pt; font-family: Wolfram Alpha; color:black">&#9658;</span>
-        }
-        @if (Model.StatusType == "Open")
+        else
         {
             <span style="font-size: 10.5pt; font-family: Segoe UI Symbol; color:black; font-weight:normal">&#10065;</span>
         }
     </td>
     <td>
-        @if (Model.StatusCategory.name == "Done")
-        {
-            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
-            {
-                <span style="color:black; padding:1.5px">@Model.Resolution</span>
-            }
-        }
-        @if (Model.IsNew)
-        {
-            <span style="color:black"> NEW: </span>
-        }
-        @if (Model.StatusCategory.name == "In Progress")
-        {
-            if (Model.ExistsInTimesheet == true)
-            {
-                <span style="color:black">Continue:</span>
-            }
-        }
-        else
-        {
-            if (Model.Status == Model.PolicyReopenedStatus)
-            {
-                <span style="color:black">Reopened:</span>
-            }
-            else if (Model.TimeSpent > 0)
-            {
-                <span style="color:black">Paused:</span>
-            }
-        }
-        @if (Model.DisplayStatus == true)
-        {
-            <b style="color:black; padding:1.5px;">@Model.Status</b>
-        }
 
         @{
             title = Model.Key;
@@ -84,6 +47,42 @@
             {
                 <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
             }
+        }
+        
+        @if (Model.IsNew)
+        {
+            <span style="color:#ABABAB"> (NEW)</span>
+        }
+        @if (Model.StatusCategory.name == "In Progress")
+        {
+            if (Model.ExistsInTimesheet == true)
+            {
+                <span style="color:#ABABAB"> (Continue)</span>
+            }
+        }
+        else
+        {
+            if (Model.Status == Model.PolicyReopenedStatus)
+            {
+                <span style="color:#ABABAB"> (Reopened)</span>
+            }
+            else if (Model.TimeSpent > 0)
+            {
+                <span style="color:#ABABAB"> (Paused)</span>
+            }
+        }
+        
+        @if (Model.StatusCategory.name == "Done")
+        {
+            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
+            {
+                <span style="color:#ABABAB; padding:1.5px"> (@Model.Resolution)</span>
+            }
+        }
+        
+        @if (Model.DisplayStatus == true)
+        {
+            <b style="color:#ABABAB; padding:1.5px;"> (@Model.Status)</b>
         }
     </td>
 </tr>

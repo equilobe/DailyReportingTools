@@ -29,12 +29,21 @@
                         <table cellpadding="1">
                             <tbody>
                                 @Partial("Views/tasks.cshtml", Model.RemainingTasks)
+                                @if (Model.AdditionalUncompletedTasksCount > 0)
+                                {
+                                    <tr>
+                                        <td width="15">
+                                            &nbsp;
+                                        </td>
+                                        <td>
+                                            + <a href="@Model.IssueSearchUrl" style="text-decoration:none; color:black">
+                                                @Model.AdditionalUncompletedTasksCount more
+                                            </a> 
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
-                        @if (Model.AdditionalUncompletedTasksCount > 0)
-                        {
-                            <span> + <a href="@Model.IssueSearchUrl" style="text-decoration:none">@Model.AdditionalUncompletedTasksCount more</a> </span>
-                        }
                 }
             }
         </td>

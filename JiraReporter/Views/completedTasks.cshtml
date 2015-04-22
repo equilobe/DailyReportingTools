@@ -9,7 +9,7 @@
 
             @foreach (var completedTasks in Model.CompletedTasks)
             {
-                <i style="color:sienna">Completed @completedTasks.Key (@completedTasks.Value.Count)</i>
+                <i style="color:sienna; font-size:12px">Completed @completedTasks.Key (@completedTasks.Value.Count)</i>
                 <table cellpadding="1">
                     <tbody>
                         @foreach (var task in completedTasks.Value)
@@ -19,19 +19,11 @@
                                     <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black">&#10004;</span>
                                 </td>
                                 <td>
-                                    @if (task.Resolution != "Fixed" && task.Resolution != "Done")
-                                    {
-                                        <span style="color:black; padding:1.5px">@task.Resolution</span>
-                                    }
-                                    @if (task.DisplayStatus == true)
-                                    {
-                                        <span style="color:black; padding:1.5px;">@task.Status</span>
-                                    }
                                     <a style="text-decoration: none; color:#15C;" href="@task.Link">@task.Summary</a>
                                     <span style="color: #ABABAB;"> @Dot() @task.Key </span>
                                     @if (task.TimeSpentTotal > 0)
                                     {
-                                        color = "black";
+                                        color = "#ABABAB";
                                     }
                                     else
                                     {
@@ -48,11 +40,19 @@
                                     }
                                     @if (task.Assignee != null)
                                     {
-                                        <span style="color:black"> @Dot() @task.Assignee </span>
+                                        <span style="color:#ABABAB"> @Dot() @task.Assignee </span>
                                     }
                                     else
                                     {
-                                        <span style="color:black"> @Dot() Unassigned </span>
+                                        <span style="color:#ABABAB"> @Dot() Unassigned </span>
+                                    }
+                                    @if (task.Resolution != "Fixed" && task.Resolution != "Done")
+                                    {
+                                        <span style="color:#ABABAB; padding:1.5px">(@task.Resolution)</span>
+                                    }
+                                    @if (task.DisplayStatus == true)
+                                    {
+                                        <span style="color:#ABABAB; padding:1.5px;">(@task.Status)</span>
                                     }
                                 </td>
                             </tr>

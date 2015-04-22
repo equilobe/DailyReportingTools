@@ -4,28 +4,13 @@
             {
                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
             }
-            else if (Model.StatusCategory.name == "In Progress")
-            {
-                <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
-            }
-            else if (Model.Resolution == null)
+            else 
             {
                 <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal">&#10065;</span>
             }
         </td>
         <td colspan="2">
-            @if(Model.StatusCategory.name == "Done")
-            {
-                if(Model.Resolution != "Fixed" && Model.Resolution != "Done")
-                {
-                    <span style="color:black; padding:1.5px">@Model.Resolution</span>
-                }
-            }
-            @if (Model.DisplayStatus == true)
-            {
-                <span style="color:black; padding:1.5px;">@Model.Status</span>
-            }
-            
+    
             @{
                 var title = Model.Key;
                 if (Model.Assignee == null)
@@ -47,8 +32,19 @@
                     <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
                 }
             }
-        </td>
-        <td>
+            
+            @if (Model.StatusCategory.name == "Done")
+            {
+                if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
+                {
+                    <span style="color:#ABABAB; padding:1.5px">(@Model.Resolution) </span>
+                }
+            }
+            @if (Model.DisplayStatus == true)
+            {
+                <span style="color:#ABABAB; padding:1.5px;">(@Model.Status)</span>
+            }
+
 
         </td>
     </tr>

@@ -4,15 +4,8 @@
     var title = string.Empty;
 }
 <tr>
-    <td style="vertical-align:top; width:15px">
-        @if (Model.StatusType == "In Progress")
-        {
-            <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black">&#9658;</span>
-        }
-        else if (Model.StatusType == "Open")
-        {
-            <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal; color:black">&#10065;</span>
-        }
+    <td width="15" style="vertical-align:top;">
+        <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; font-weight:normal; color:black">&#10065;</span>
     </td>
     <td colspan="2">
         @{
@@ -35,32 +28,6 @@
             {
                 title += "\n" + " has sub-tasks in progress ";
             }
-
-            if (Model.IsNew)
-            {
-                <span style="color:black"> NEW: </span>
-            }
-            if (Model.Status == Model.PolicyReopenedStatus && Model.StatusType == "Open")
-            {
-                <span style="color:black">Reopened: </span>
-            }
-            else
-            {
-                if (Model.TimeSpent > 0)
-                {
-                    <span style="color:black">Paused: </span>
-                }
-            }
-        }
-
-        @if (Model.ExistsInTimesheet == true && Model.StatusCategory.name == "In Progress")
-        {
-            <span style="color:black">Continue:</span>
-        }
-
-        @if (Model.DisplayStatus == true)
-        {
-            <span style="color:black; padding:1.5px;">@Model.Status</span>
         }
 
         <a style="text-decoration: none; color:#15C;" title="@title" href="@Model.Link">@Model.Summary</a>
@@ -72,6 +39,34 @@
                 <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
             }
         }
+        
+        @if (Model.IsNew)
+        {
+            <span style="color:#ABABAB"> (NEW)</span>
+        }
+
+        @if (Model.Status == Model.PolicyReopenedStatus && Model.StatusType == "Open")
+        {
+            <span style="color:#ABABAB"> (Reopened)</span>
+        }
+        else
+        {
+            if (Model.TimeSpent > 0)
+            {
+                <span style="color:#ABABAB"> (Paused)</span>
+            }
+        }
+
+        @if (Model.ExistsInTimesheet == true && Model.StatusCategory.name == "In Progress")
+        {
+            <span style="color:#ABABAB"> (Continue)</span>
+        }
+
+        @if (Model.DisplayStatus == true)
+        {
+            <span style="color:#ABABAB; padding:1.5px;"> (@Model.Status)</span>
+        }
+
     </td>
     @*<td></td>*@
 </tr>
