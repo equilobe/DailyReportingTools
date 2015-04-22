@@ -267,7 +267,7 @@ namespace Equilobe.DailyReport.SL
                                   .Single()
                                   .BasicSettings
                                   .Where(bs => bs.ProjectId == projectId)
-                                  .Single();
+                                  .SingleOrDefault();
             }
         }
     }
