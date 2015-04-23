@@ -28,9 +28,7 @@ namespace DailyReportWeb.Controllers.Api
 
             using (var db = new ReportsDb())
             {
-                var userId = new UserContext().UserId;
-                var individualConfirmation = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettings.InstalledInstance.UserId == userId)
-                                                                            .Single(idc => idc.UniqueUserKey == context.DraftKey);
+                var individualConfirmation = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey);
                 individualConfirmation.BasicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
 
                 Deserialization.XmlDeserialize<AdvancedReportSettings>(individualConfirmation.BasicSettings.SerializedAdvancedSettings.PolicyString)

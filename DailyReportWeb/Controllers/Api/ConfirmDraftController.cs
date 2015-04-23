@@ -25,9 +25,7 @@ namespace DailyReportWeb.Controllers.Api
 
             using (var db = new ReportsDb())
             {
-                var userId = new UserContext().UserId;
-                var basicSettings = db.BasicSettings.Where(bs => bs.InstalledInstance.UserId == userId)
-                                                    .Single(bs => bs.UniqueProjectKey == context.Id);
+                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id);
                 basicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
 
                 Deserialization.XmlDeserialize<AdvancedReportSettings>(basicSettings.SerializedAdvancedSettings.PolicyString)
