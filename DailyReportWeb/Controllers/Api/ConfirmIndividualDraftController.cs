@@ -65,7 +65,7 @@ namespace DailyReportWeb.Controllers.Api
                 var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
                 var draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
 
-                if (draftSentDate.Value.Date == DateTime.Today)
+                if (draftSentDate != null && draftSentDate.Value.Date == DateTime.Today)
                     return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
             }
 
