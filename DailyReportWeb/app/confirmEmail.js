@@ -19,8 +19,7 @@ angular.module('app')
 
         $http.post("/api/account/confirmEmail", confirmationDetails)
             .success(function (response) {
-                if (response.success)
-                    $scope.isConfirmed = true;
+                $scope.data = response;
             })
             .finally(function () {
                 $scope.status = "loaded";

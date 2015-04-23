@@ -349,6 +349,14 @@ div.disabled {
     }
 }
 
+[data-page='confirmEmail'] {
+
+    .alert-success,
+    .alert-danger {
+        background-color: #fff;
+    }
+}
+
 [data-page='signin'] {
 
     form {

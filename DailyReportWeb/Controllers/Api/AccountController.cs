@@ -108,14 +108,18 @@ namespace DailyReportWeb.Controllers.Api
                 return new AccountResponse() { Success = false };
 
             if (UserManager.FindById(userId).EmailConfirmed)
-                return new AccountResponse() { Success = true };
+                return new AccountResponse()
+                {
+                    Success = false,
+                    Message = "Your account was already activated."
+                };
 
             IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
             if (!result.Succeeded)
                 return new AccountResponse()
                 {
                     Success = false,
-                    ErrorList = result.Errors.ToList()
+                    Message = result.Errors.First()
                 };
 
             var instanceId = UserManager.FindById(userId)
@@ -124,7 +128,11 @@ namespace DailyReportWeb.Controllers.Api
                                         .Id;
             SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
 
-            return new AccountResponse() { Success = true };
+            return new AccountResponse()
+            {
+                Success = true,
+                Message = "Your account was activated. You can now sign in."
+            };
         }
 
         [AllowAnonymous]
