@@ -2,7 +2,7 @@
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
-using Equilobe.DailyReport.Utilsr;
+using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

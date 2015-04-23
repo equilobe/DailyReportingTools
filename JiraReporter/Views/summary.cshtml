@@ -170,7 +170,7 @@ else
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
                         @if (Model.Timing.AverageWorked >= 0.1)
                         {
-                            @ChartBar("#5CB85C", @Model.SprintWidths.DayWidth, @Model.ChartMaxWidth, @Model.Timing.AverageWorkedString)
+                            @ChartBar("#5CB85C", @Model.SprintDay.Width, @Model.ChartMaxWidth, @Model.SprintDay.ActualValue)
                         }
                         else
                         {
@@ -178,7 +178,7 @@ else
                         }
                         @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.SprintAverageEstimate >= 0.1)
                         {
-                            @ChartBar("#999", @Model.SprintWidths.EstimatedWidth, @Model.ChartMaxWidth, @Model.Timing.SprintAverageEstimateString)
+                            @ChartBar("#999", @Model.SprintEstimated.Width, @Model.ChartMaxWidth, @Model.SprintEstimated.ActualValue)
                         }
                         else
                         {
@@ -186,7 +186,7 @@ else
                         }
                         @if (Model.Timing.AverageWorkedSprint >= 0.1)
                         {
-                            @ChartBar("#FF6600", @Model.SprintWidths.DoneWidth, @Model.ChartMaxWidth, @Model.Timing.AverageWorkedSprintString)
+                            @ChartBar("#FF6600", @Model.SprintDone.Width, @Model.ChartMaxWidth, @Model.SprintDone.ActualValue)
                         }
                         else
                         {
@@ -194,7 +194,7 @@ else
                         }
                         @if (Model.Timing.RemainingSprintAverage >= 0.1)
                         {
-                            @ChartBar("#337AB7", @Model.SprintWidths.RemainingWidth, @Model.ChartMaxWidth, @Model.Timing.RemainingSprintAverageString)
+                            @ChartBar("#337AB7", @Model.SprintRemaining.Width, @Model.ChartMaxWidth, @Model.SprintRemaining.ActualValue)
                         }
                         else
                         {
@@ -222,7 +222,7 @@ else
 
                         @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.MonthAverageEstimated >= 0.1)
                         {
-                            @ChartBar("#999", @Model.MonthWidths.EstimatedWidth, @Model.ChartMaxWidth, @Model.Timing.MonthAverageEstimatedString)
+                            @ChartBar("#999", @Model.MonthEstimated.Width, @Model.ChartMaxWidth, @Model.MonthEstimated.ActualValue)
                         }
                         else
                         {
@@ -230,7 +230,7 @@ else
                         }
                         @if (Model.Timing.AverageWorkedMonth >= 0.1)
                         {
-                            @ChartBar("#FF6600", @Model.MonthWidths.DoneWidth, @Model.ChartMaxWidth, @Model.Timing.AverageWorkedMonthString)
+                            @ChartBar("#FF6600", @Model.MonthDone.Width, @Model.ChartMaxWidth, @Model.MonthDone.ActualValue)
                         }
                         else
                         {
@@ -238,7 +238,7 @@ else
                         }
                         @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage >= 0.1)
                         {
-                            @ChartBar("#337AB7", @Model.MonthWidths.RemainingWidth, @Model.ChartMaxWidth, @Model.Timing.RemainingMonthAverageString)
+                            @ChartBar("#337AB7", @Model.MonthRemaining.Width, @Model.ChartMaxWidth, @Model.MonthRemaining.ActualValue)
                         }
                         else
                         {
@@ -366,7 +366,7 @@ else
                         @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
                         @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
                         @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
-                        @ChartBar("#337AB7", @Model.UnassignedRemainingChartPixelWidth, @Model.ChartMaxWidth, @Model.Timing.UnassignedTasksTimeLeftString)
+                        @ChartBar("#337AB7", @Model.UnassignedRemaining.Width, @Model.ChartMaxWidth, @Model.UnassignedRemaining.ActualValue)
                     </td>
                 </tr>
             }

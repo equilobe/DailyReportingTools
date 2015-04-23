@@ -15,7 +15,7 @@ using JiraReporter.Helpers;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Autofac;
-using Equilobe.DailyReport.Utilsr;
+using Equilobe.DailyReport.Utils;
 namespace JiraReporter
 {
     class ReportGeneratorService : IReportGeneratorService

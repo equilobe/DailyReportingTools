@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Utilsr
+namespace Equilobe.DailyReport.Utils
 {
     public class ReportDateFormatter
     {

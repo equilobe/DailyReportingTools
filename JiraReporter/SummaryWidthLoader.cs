@@ -28,7 +28,10 @@ namespace JiraReporter
 
         private void SetRemainingUnassignedWidths(Summary summary, int workSummaryMax)
         {
-            summary.UnassignedRemainingChartPixelWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, workSummaryMax, summary.Timing.UnassignedTasksHoursAverageLeft);
+            summary.UnassignedRemaining = new ChartElement();
+            summary.UnassignedRemaining.ActualValueSeconds = summary.Timing.UnassignedTasksHoursAverageLeft;
+            summary.UnassignedRemaining.ActualValue = summary.Timing.UnassignedTasksTimeLeftString;
+            SetChartElementWidth(workSummaryMax, summary.UnassignedRemaining);
         }
 
         private void SetAuthorsWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax, bool isIndividualDraft)
@@ -40,18 +43,21 @@ namespace JiraReporter
                     AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, workSummaryMax);
         }
 
-        public void SetStatusChartWidths(int maxStatusWidth, StatusChartWidths sprint, StatusChartWidths month)
+        public void SetStatusElementsWidth(Summary summary)
         {
-            SetStatusElementWidths(maxStatusWidth, sprint);
-            SetStatusElementWidths(maxStatusWidth, month);
+            SetChartElementWidth(summary.StatusMaxValue, summary.SprintDay);
+            SetChartElementWidth(summary.StatusMaxValue, summary.SprintDone);
+            SetChartElementWidth(summary.StatusMaxValue, summary.SprintEstimated);
+            SetChartElementWidth(summary.StatusMaxValue, summary.SprintRemaining);
+
+            SetChartElementWidth(summary.StatusMaxValue, summary.MonthDone);
+            SetChartElementWidth(summary.StatusMaxValue, summary.MonthEstimated);
+            SetChartElementWidth(summary.StatusMaxValue, summary.MonthRemaining);
         }
 
-        private void SetStatusElementWidths(int maxStatusWidth, StatusChartWidths statusElement)
+        private void SetChartElementWidth(int maxWidth, ChartElement chartElement)
         {
-            statusElement.DayWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, maxStatusWidth, (statusElement.DaySeconds / 3600));
-            statusElement.DoneWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, maxStatusWidth, (statusElement.DoneSeconds / 3600));
-            statusElement.EstimatedWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, maxStatusWidth, (statusElement.EstimatedSeconds / 3600));
-            statusElement.RemainingWidth = MathHelpers.RuleOfThree(ChartMaxBarWidth, maxStatusWidth, (statusElement.RemainingSeconds / 3600));
+            chartElement.Width = MathHelpers.RuleOfThree(ChartMaxBarWidth, maxWidth, (chartElement.ActualValueSeconds / 3600));
         }
     }
 }

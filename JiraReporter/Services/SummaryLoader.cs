@@ -80,7 +80,7 @@ namespace JiraReporter.Services
             SetHealthStatuses();
 
             SetMaxValues();
-            SetWidths();
+            SetCharts();
             CheckSummaryCharts();
             SetGuidelines();
 
@@ -444,13 +444,13 @@ namespace JiraReporter.Services
             return maxHours;
         }
 
-        private void SetWidths()
+        private void SetCharts()
         {
             var widthHelper = new SummaryWidthLoader(_summary.ChartMaxBarWidth);
             widthHelper.SetWorkSummaryChartWidths(_summary, _summary.WorkSummaryMaxValue, _report.IsIndividualDraft);
 
             GetStatusValues();
-            widthHelper.SetStatusChartWidths(_summary.StatusMaxValue, _summary.SprintWidths, _summary.MonthWidths);
+            widthHelper.SetStatusElementsWidth(_summary);
         }
 
         private void GetStatusValues()
@@ -461,19 +461,36 @@ namespace JiraReporter.Services
 
         private void GetStatusSprintValues()
         {
-            _summary.SprintWidths = new StatusChartWidths();
-            _summary.SprintWidths.DaySeconds = _summary.Timing.AverageWorked;
-            _summary.SprintWidths.EstimatedSeconds = _summary.Timing.SprintAverageEstimate;
-            _summary.SprintWidths.DoneSeconds = _summary.Timing.AverageWorkedSprint;
-            _summary.SprintWidths.RemainingSeconds = _summary.Timing.RemainingSprintAverage;
+            _summary.SprintDay = new ChartElement();
+            _summary.SprintDay.ActualValueSeconds = _summary.Timing.AverageWorked;
+            _summary.SprintDay.ActualValue = _summary.Timing.AverageWorkedString;
+
+            _summary.SprintEstimated = new ChartElement();
+            _summary.SprintEstimated.ActualValueSeconds = _summary.Timing.SprintAverageEstimate;
+            _summary.SprintEstimated.ActualValue = _summary.Timing.SprintAverageEstimateString;
+
+            _summary.SprintDone = new ChartElement();
+            _summary.SprintDone.ActualValueSeconds = _summary.Timing.AverageWorkedSprint;
+            _summary.SprintDone.ActualValue = _summary.Timing.AverageWorkedSprintString;
+
+            _summary.SprintRemaining = new ChartElement();
+            _summary.SprintRemaining.ActualValueSeconds = _summary.Timing.RemainingSprintAverage;
+            _summary.SprintRemaining.ActualValue = _summary.Timing.RemainingSprintAverageString;
         }
 
         private void GetStatusMonthValues()
-        {
-            _summary.MonthWidths = new StatusChartWidths();
-            _summary.MonthWidths.EstimatedSeconds = _summary.Timing.MonthAverageEstimated;
-            _summary.MonthWidths.DoneSeconds = _summary.Timing.AverageWorkedMonth;
-            _summary.MonthWidths.RemainingSeconds = _summary.Timing.RemainingMonthAverage;
+        {            
+            _summary.MonthEstimated = new ChartElement();
+            _summary.MonthEstimated.ActualValueSeconds = _summary.Timing.MonthAverageEstimated;
+            _summary.MonthEstimated.ActualValue = _summary.Timing.MonthAverageEstimatedString;
+
+            _summary.MonthDone = new ChartElement();
+            _summary.MonthDone.ActualValueSeconds = _summary.Timing.AverageWorkedMonth;
+            _summary.MonthDone.ActualValue = _summary.Timing.AverageWorkedMonthString;
+
+            _summary.MonthRemaining = new ChartElement();
+            _summary.MonthRemaining.ActualValueSeconds = _summary.Timing.RemainingMonthAverage;
+            _summary.MonthRemaining.ActualValue = _summary.Timing.RemainingMonthAverageString;
         }
 
         private WorkingDaysInfo LoadWorkingDaysInfo()

@@ -72,6 +72,7 @@
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />
+    <Compile Include="ReportFrame\ChartElement.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
