@@ -20,7 +20,7 @@
                     {{instance[0].baseUrl}} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li ng-repeat="instance in instances"><a href="#" ng-click="setInstance()">{{instance[0].baseUrl}}</a></li>
+                    <li ng-repeat="instance in instances"><a href="#" ng-click="setInstance(this.instance)">{{instance[0].baseUrl}}</a></li>
                     <li class="divider"></li>
                     <li><a href="/app/instances"><span class="glyphicon glyphicon-cog"></span> Manage JIRA servers</a></li>
                 </ul>

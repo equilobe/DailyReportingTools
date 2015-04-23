@@ -23,6 +23,7 @@ angular.module('app')
                 if (instances) {
                     if (!$routeParams.instanceId) {
                         $scope.instance = instances[0];
+                        $location.path('/app/instances/' + instances[0][0].installedInstanceId + '/projects', false);
                     }
                     else {
                         instances.forEach(function (instance) {
@@ -41,7 +42,8 @@ angular.module('app')
                 $scope.status = "loaded";
             });
 
-        $scope.setInstance = function () {
-            $scope.instance = this.instance;
+        $scope.setInstance = function (instance) {
+            $scope.instance = instance;
+            $location.path('/app/instances/' + instance[0].installedInstanceId + '/projects', false);
         }
     }]);
