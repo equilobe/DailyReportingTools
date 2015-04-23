@@ -35,41 +35,41 @@ else
                         <tbody>
                             @if (Model.CompletedWithEstimateErrors.Count > 0)
                             {
-                            <tr>
-                                <td style="vertical-align:top; width:15px">
-                                    @Dot()
-                                </td>
-                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
-                            </tr>
+                                <tr>
+                                    <td style="vertical-align:top; width:15px">
+                                        @Dot()
+                                    </td>
+                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                                </tr>
                             }
                             @if (Model.CompletedWithNoWorkErrors.Count > 0)
                             {
-                            <tr>
-                                <td style="vertical-align:top; width:15px">
-                                    @Dot()
-                                </td>
-                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
-                            </tr>
+                                <tr>
+                                    <td style="vertical-align:top; width:15px">
+                                        @Dot()
+                                    </td>
+                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed items with no work logged</b></td>
+                                </tr>
                             }
                             @if (Model.UnassignedErrors.Count > 0)
                             {
-                            <tr>
-                                <td style="vertical-align:top; width:15px">
-                                    @Dot()
-                                </td>
-                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
-                            </tr>
+                                <tr>
+                                    <td style="vertical-align:top; width:15px">
+                                        @Dot()
+                                    </td>
+                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
+                                </tr>
                             }
                             @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
                             {
                                 foreach (var author in Model.AuthorsWithErrors)
                                 {
-                            <tr>
-                                <td style="vertical-align:top; width:15px">
-                                    @Dot()
-                                </td>
-                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
-                            </tr>
+                                    <tr>
+                                        <td style="vertical-align:top; width:15px">
+                                            @Dot()
+                                        </td>
+                                        <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
+                                    </tr>
                                 }
                             }
                             @if (Model.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
@@ -78,14 +78,14 @@ else
                                 {
                                     foreach (var author in Model.AuthorsNotConfirmed)
                                     {
-                            <tr>
-                                <td style="vertical-align:top; width:15px">
-                                    @Dot()
-                                </td>
-                                <td colspan="1" style="text-align: left">
-                                    <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
-                                </td>
-                            </tr>
+                                        <tr>
+                                            <td style="vertical-align:top; width:15px">
+                                                @Dot()
+                                            </td>
+                                            <td colspan="1" style="text-align: left">
+                                                <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
+                                            </td>
+                                        </tr>
                                     }
                                 }
                             }
@@ -174,7 +174,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                         }
                         @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.SprintAverageEstimate >= 0.1)
                         {
@@ -182,7 +182,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                         }
                         @if (Model.Timing.AverageWorkedSprint >= 0.1)
                         {
@@ -190,7 +190,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                         }
                         @if (Model.Timing.RemainingSprintAverage >= 0.1)
                         {
@@ -198,7 +198,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                         }
                     </td>
                 </tr>
@@ -218,7 +218,7 @@ else
                     <td style="padding:0px; padding-bottom:10px; height:55px;">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
 
-                        @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
 
                         @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.MonthAverageEstimated >= 0.1)
                         {
@@ -226,7 +226,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
                         @if (Model.Timing.AverageWorkedMonth >= 0.1)
                         {
@@ -234,7 +234,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
                         @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage >= 0.1)
                         {
@@ -242,7 +242,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
                     </td>
                 </tr>
@@ -315,7 +315,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
 
                         @if (author.Timing.AverageWorkedSprintHours >= 0.1)
@@ -324,7 +324,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
 
                         @if (author.Timing.AverageWorkedMonthHours >= 0.1)
@@ -333,7 +333,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
 
                         @if (author.Timing.TotalRemainingAverage >= 0.1)
@@ -342,7 +342,7 @@ else
                         }
                         else
                         {
-                            @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
                     </td>
                 </tr>
@@ -363,9 +363,9 @@ else
                     <td style="padding:0px; padding-bottom:10px; height:55px">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
 
-                        @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
-                        @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
-                        @ChartBar("white", @Model.ChartMaxBarWidth, @Model.ChartMaxWidth, "")
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         @ChartBar("#337AB7", @Model.UnassignedRemaining.Width, @Model.ChartMaxWidth, @Model.UnassignedRemaining.ActualValue)
                     </td>
                 </tr>

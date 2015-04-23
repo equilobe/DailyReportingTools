@@ -76,16 +76,27 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
-        public readonly int ChartMaxBarWidth = 250;
-        public readonly int ChartMaxWidth = 300;
-        public readonly int GuidelinesOptimalNumber = 12;
+        //public int ChartMaxBarWidth = 250;
+        public readonly int ChartMaxWidth = 350;
 
-        public string ChartMaxWidthString
-        {
-            get
-            {
-                return ChartMaxWidth.ToString() + "px";
-            }
-        }
+        public int StatusChartWidth { get; set; }
+        //public int StatusChartValueWidth
+        //{
+        //    get
+        //    {
+        //        return ChartMaxWidth - StatusChartWidth - 5;
+        //    }
+        //}
+
+        public int SummaryChartWidth { get; set; }
+        //public int SummaryChartValueWidth
+        //{
+        //    get
+        //    {
+        //        return ChartMaxWidth - SummaryChartWidth - 5;
+        //    }
+        //}
+
+        public readonly int GuidelinesOptimalNumber = 12;
     }
 }

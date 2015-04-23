@@ -27,6 +27,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public ChartElement Month { get; set; }
         public ChartElement Remaining { get; set; }
 
+        public int MaxBarWidth { get; set; }
+
         public List<IssueDetailed> Issues { get; set; }
         public List<IssueDetailed> MonthIssues { get; set; }
         public List<IssueDetailed> SprintIssues { get; set; }
