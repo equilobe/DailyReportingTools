@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportExecution;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -24,7 +25,9 @@ namespace DailyReportWeb.Controllers.Api
 
             using (var db = new ReportsDb())
             {
-                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id);
+                var userId = new UserContext().UserId;
+                var basicSettings = db.BasicSettings.Where(bs => bs.InstalledInstance.UserId == userId)
+                                                    .Single(bs => bs.UniqueProjectKey == context.Id);
                 basicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
 
                 Deserialization.XmlDeserialize<AdvancedReportSettings>(basicSettings.SerializedAdvancedSettings.PolicyString)

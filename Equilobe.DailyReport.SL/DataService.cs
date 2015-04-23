@@ -86,7 +86,8 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var installedInstance = db.InstalledInstances.Single(qr => qr.Id == id);
+                var userId = new UserContext().UserId;
+                var installedInstance = db.InstalledInstances.Where(ii => ii.UserId == userId && ii.Id == id).Single();
                 db.InstalledInstances.Remove(installedInstance);
 
                 db.SaveChanges();

@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.ReportExecution;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -23,7 +24,9 @@ namespace DailyReportWeb.Controllers.Api
 
             using (var db = new ReportsDb())
             {
-                var individualConfirmation = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey);
+                var userId = new UserContext().UserId;
+                var individualConfirmation = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettings.InstalledInstance.UserId == userId)
+                                                                            .Single(idc => idc.UniqueUserKey == context.DraftKey);
                 individualConfirmation.BasicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
 
                 username = individualConfirmation.Username;

@@ -6,6 +6,7 @@ using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using System;
@@ -21,13 +22,15 @@ namespace Equilobe.DailyReport.SL
     {
         public ISourceControlService SourceControlService { get; set; }
         public IJiraService JiraService { get; set; }
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public void SyncAllBasicSettings(ItemContext context)
         {
             using (var db = new ReportsDb())
             {
+                var userId = new UserContext().UserId;
                 var installedInstance = db.InstalledInstances
-                                          .Where(ii => ii.Id == context.Id)
+                                          .Where(ii => ii.UserId == userId && ii.Id == context.Id)
                                           .Single();
 
                 var jiraRequestContext = new JiraRequestContext(installedInstance);
@@ -55,8 +58,9 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
+                var userId = new UserContext().UserId;
                 var basicSettings = db.BasicSettings
-                                      .Where(bs => bs.Id == context.Id)
+                                      .Where(bs => bs.InstalledInstance.UserId == userId && bs.Id == context.Id)
                                       .SingleOrDefault();
 
                 if (basicSettings == null)
@@ -86,9 +90,8 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances
-                  .Where(i => i.Id == context.Id)
-                  .Single();
+                var userId = new UserContext().UserId;
+                var instance = db.InstalledInstances.Where(i => i.UserId == userId && i.Id == context.Id).Single();
 
                 instance.CopyPropertiesOnObjects(jiraRequestContext);
                 baseUrl = instance.BaseUrl;
@@ -124,8 +127,9 @@ namespace Equilobe.DailyReport.SL
             List<InstalledInstance> installedInstances;
             using (var db = new ReportsDb())
             {
+                var userId = new UserContext().UserId;
                 installedInstances = db.InstalledInstances
-                                       .Where(i => i.UserId == context.UserId)
+                                       .Where(i => i.UserId == userId && i.UserId == context.UserId)
                                        .ToList();
                 if (installedInstances.Count == 0)
                     return null;
@@ -171,8 +175,10 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
+                var userId = new UserContext().UserId;
                 var serializedAdvancedSettings = db.BasicSettings
-                                                   .Single(bs => bs.Id == context.Id)
+                                                   .Where(bs => bs.InstalledInstance.UserId == userId && bs.Id == context.Id)
+                                                   .Single()
                                                    .SerializedAdvancedSettings;
                 if (serializedAdvancedSettings != null)
                     return Deserialization.XmlDeserialize<AdvancedReportSettings>(serializedAdvancedSettings.PolicyString);
@@ -211,6 +217,34 @@ namespace Equilobe.DailyReport.SL
             advancedSettings.CopyPropertiesOnObjects(fullReportSettings);
 
             return fullReportSettings;
+        }
+
+        public void SetFullReportSettings(FullReportSettings updatedFullSettings)
+        {
+            using (var db = new ReportsDb())
+            {
+                var userId = new UserContext().UserId;
+                var basicSettings = db.BasicSettings.Where(bs => bs.InstalledInstance.UserId == userId && bs.UniqueProjectKey == updatedFullSettings.UniqueProjectKey).Single();
+
+                if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
+                {
+                    basicSettings.ReportTime = updatedFullSettings.ReportTime;
+                    TaskSchedulerService.SetTask(new ScheduledTaskContext
+                    {
+                        ReportTime = updatedFullSettings.ReportTime,
+                        UniqueProjectKey = updatedFullSettings.UniqueProjectKey
+                    });
+                }
+
+                var advancedSettings = new AdvancedReportSettings();
+                updatedFullSettings.CopyTo<IAdvancedSettings>(advancedSettings);
+
+                if (basicSettings.SerializedAdvancedSettings == null)
+                    basicSettings.SerializedAdvancedSettings = new SerializedAdvancedSettings();
+                basicSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(advancedSettings);
+
+                db.SaveChanges();
+            }
         }
 
         public FullReportSettings GetSyncedReportSettings(ItemContext context)
@@ -262,8 +296,9 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
+                var userId = new UserContext().UserId;
                 return db.InstalledInstances
-                                  .Where(ii => ii.Id == context.Id)
+                                  .Where(ii => ii.UserId == userId && ii.Id == context.Id)
                                   .Single()
                                   .BasicSettings
                                   .Where(bs => bs.ProjectId == projectId)
