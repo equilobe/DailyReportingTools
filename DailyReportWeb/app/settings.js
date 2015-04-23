@@ -49,6 +49,9 @@ angular.module('app')
             $http.post("/api/sourcecontrol", $scope.data.sourceControlOptions)
                 .success(function (sourceControlUsernames) {
                     $scope.sourceControlStatus = "success";
+                    if (sourceControlUsernames == null)
+                        $scope.sourceControlStatus = "error";
+
                     $scope.data.sourceControlUsernames = sourceControlUsernames;
                 })
                 .error(function () {

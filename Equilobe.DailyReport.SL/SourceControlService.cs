@@ -38,7 +38,7 @@ namespace Equilobe.DailyReport.SL
             {
             }
 
-            return new List<string>();
+            return null;
         }
     }
 }
