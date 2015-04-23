@@ -6,9 +6,6 @@ angular.module('app')
             .when('/app/instances/:instanceId/projects', {
                 templateUrl: 'app/projects.html',
                 controller: 'ProjectsController'
-            }).when('/app/projects', {
-                templateUrl: 'app/projects.html',
-                controller: 'ProjectsController'
             });
     }])
     .controller("ProjectsController", ['$scope', '$http', "$location", '$routeParams', function ($scope, $http, $location, $routeParams) {
@@ -21,7 +18,7 @@ angular.module('app')
 
                 $scope.instance = {};
                 if (instances) {
-                    if (!$routeParams.instanceId) {
+                    if ($routeParams.instanceId == 0) {
                         $scope.instance = instances[0];
                         $location.path('/app/instances/' + instances[0][0].installedInstanceId + '/projects', false);
                     }

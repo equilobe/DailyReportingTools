@@ -9,7 +9,7 @@ angular.module('app')
     }])
     .controller("WelcomeController", ["$scope", "$http", "$location", function ($scope, $http, $location) {
         if ($scope.$root.isAuth) {
-            $location.url('/app/projects');
+            $location.path('/app/instances/0/projects');
             return;
         }
 
