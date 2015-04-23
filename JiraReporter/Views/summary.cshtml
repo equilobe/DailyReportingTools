@@ -311,7 +311,7 @@ else
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
                         @if (author.Timing.AverageWorkedHours >= 0.1)
                         {
-                            @ChartBar("#5CB85C", @author.DayChartPixelWidth, @Model.ChartMaxWidth, @author.Timing.AverageWorkedString)
+                            @ChartBar("#5CB85C", @author.Day.Width, @Model.ChartMaxWidth, @author.Day.ActualValue)
                         }
                         else
                         {
@@ -320,7 +320,7 @@ else
 
                         @if (author.Timing.AverageWorkedSprintHours >= 0.1)
                         {
-                            @ChartBar("#F60", @author.SprintChartPixelWidth, @Model.ChartMaxWidth, @author.Timing.AverageWorkedSprintString)
+                            @ChartBar("#F60", @author.Sprint.Width, @Model.ChartMaxWidth, @author.Sprint.ActualValue)
                         }
                         else
                         {
@@ -329,7 +329,7 @@ else
 
                         @if (author.Timing.AverageWorkedMonthHours >= 0.1)
                         {
-                            @ChartBar("#F0AD4E", @author.MonthChartPixelWidth, @Model.ChartMaxWidth, @author.Timing.AverageWorkedMonthString)
+                            @ChartBar("#F0AD4E", @author.Month.Width, @Model.ChartMaxWidth, @author.Month.ActualValue)
                         }
                         else
                         {
@@ -338,7 +338,7 @@ else
 
                         @if (author.Timing.TotalRemainingAverage >= 0.1)
                         {
-                            @ChartBar("#337AB7", @author.RemainingChartPixelWidth, @Model.ChartMaxWidth, @author.Timing.TotalRemainingString)
+                            @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
                         }
                         else
                         {

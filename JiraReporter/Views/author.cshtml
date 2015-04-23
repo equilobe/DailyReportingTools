@@ -12,6 +12,14 @@
                 }
             }
             
+            <table>
+                <tr>
+                    <td height="10" style="line-height:10px; font-size:10px;">
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+            
             @if (Model.HasSprint)
             {
                 if (Model.RemainingTasksCount > 0)
@@ -26,8 +34,19 @@
                         {
                             <i style="color:sienna; font-size:12px;"> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                         }
-                        <table cellpadding="1">
+                        <table cellpadding="1" cellspacing="0">
                             <tbody>
+                                <tr>
+                                    <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                                        &nbsp;
+                                    </td>
+                                    <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                                        &nbsp;
+                                    </td>
+                                    <td width="250" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                                        &nbsp;
+                                    </td>
+                                </tr>
                                 @Partial("Views/tasks.cshtml", Model.RemainingTasks)
                                 @if (Model.AdditionalUncompletedTasksCount > 0)
                                 {
@@ -35,7 +54,7 @@
                                         <td width="15">
                                             &nbsp;
                                         </td>
-                                        <td>
+                                        <td colspan="2">
                                             + <a href="@Model.IssueSearchUrl" style="text-decoration:none; color:black">
                                                 @Model.AdditionalUncompletedTasksCount more
                                             </a> 

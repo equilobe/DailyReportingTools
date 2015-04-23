@@ -109,7 +109,7 @@ else
                                                     @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
                                                     @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
                                                     {
-                                                        @ChartBar("#5CB85C", @Model.Author.DayChartPixelWidth, @Model.Summary.ChartMaxWidth, @Model.Author.Timing.AverageWorkedString)
+                                                        @ChartBar("#5CB85C", @Model.Author.Day.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Day.ActualValue)
                                                     }
                                                     else
                                                     {
@@ -118,7 +118,7 @@ else
 
                                                     @if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
                                                     {
-                                                        @ChartBar("#F60", @Model.Author.SprintChartPixelWidth, @Model.Summary.ChartMaxWidth, @Model.Author.Timing.AverageWorkedSprintString)
+                                                        @ChartBar("#F60", @Model.Author.Sprint.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Sprint.ActualValue)
                                                     }
                                                     else
                                                     {
@@ -127,7 +127,7 @@ else
 
                                                     @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
                                                     {
-                                                        @ChartBar("#F0AD4E", @Model.Author.MonthChartPixelWidth, @Model.Summary.ChartMaxWidth, @Model.Author.Timing.AverageWorkedMonthString)
+                                                        @ChartBar("#F0AD4E", @Model.Author.Month.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Month.ActualValue)
                                                     }
                                                     else
                                                     {
@@ -136,7 +136,7 @@ else
 
                                                     @if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
                                                     {
-                                                        @ChartBar("#337AB7", @Model.Author.RemainingChartPixelWidth, @Model.Summary.ChartMaxWidth, @Model.Author.Timing.TotalRemainingString)
+                                                        @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
                                                     }
                                                     else
                                                     {

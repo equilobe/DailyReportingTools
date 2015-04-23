@@ -80,12 +80,47 @@ namespace JiraReporter.Helpers
             return Math.Max(max, author.Timing.TotalRemainingAverage * 3600);
         }
 
-        public static void SetAuthorWorkSummaryWidths(JiraAuthor author, int maxWidth, int maxValue)
+        public static void SetAuthorCharts(JiraAuthor author, int maxWidth, int maxValue)
         {
-            author.SprintChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedSprint / 3600));
-            author.MonthChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedMonth / 3600));
-            author.DayChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.Timing.AverageWorked / 3600));
-            author.RemainingChartPixelWidth = MathHelpers.RuleOfThree(maxWidth, maxValue, author.Timing.TotalRemainingAverage);
+            SetDayChart(author, maxWidth, maxValue);
+
+            SetSprintChart(author, maxWidth, maxValue);
+
+            SetMonthChart(author, maxWidth, maxValue);
+
+            SetRemainingChart(author, maxWidth, maxValue);
+        }
+
+        private static void SetDayChart(JiraAuthor author, int maxWidth, int maxValue)
+        {
+            author.Day = new ChartElement();
+            author.Day.ActualValueSeconds = author.Timing.AverageWorked;
+            author.Day.ActualValue = author.Timing.AverageWorkedString;
+            author.Day.Width = MathHelpers.RuleOfThree(maxWidth, maxValue, ((double)author.Timing.AverageWorked / 3600));
+        }
+
+        private static void SetSprintChart(JiraAuthor author, int maxWidth, int maxValue)
+        {
+            author.Sprint = new ChartElement();
+            author.Sprint.ActualValueSeconds = author.Timing.AverageWorkedSprint;
+            author.Sprint.ActualValue = author.Timing.AverageWorkedSprintString;
+            author.Sprint.Width = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedSprint / 3600));
+        }
+
+        private static void SetMonthChart(JiraAuthor author, int maxWidth, int maxValue)
+        {
+            author.Month = new ChartElement();
+            author.Month.ActualValueSeconds = author.Timing.AverageWorkedMonth;
+            author.Month.ActualValue = author.Timing.AverageWorkedMonthString;
+            author.Month.Width = MathHelpers.RuleOfThree(maxWidth, maxValue, (author.Timing.AverageWorkedMonth / 3600));
+        }
+
+        private static void SetRemainingChart(JiraAuthor author, int maxWidth, int maxValue)
+        {
+            author.Remaining = new ChartElement();
+            author.Remaining.ActualValueSeconds = author.Timing.TotalRemainingAverage * 3600;
+            author.Remaining.ActualValue = author.Timing.TotalRemainingString;
+            author.Remaining.Width = MathHelpers.RuleOfThree(maxWidth, maxValue, author.Timing.TotalRemainingAverage);
         }
     }
 }

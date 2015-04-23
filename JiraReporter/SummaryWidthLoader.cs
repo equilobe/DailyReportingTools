@@ -20,7 +20,7 @@ namespace JiraReporter
 
         public void SetWorkSummaryChartWidths(Summary summary, int workSummaryMax, bool isIndividualDraft)
         {
-            SetAuthorsWorkSummaryChartWidths(summary.Authors, workSummaryMax, isIndividualDraft);
+            SetAuthorCharts(summary.Authors, workSummaryMax, isIndividualDraft);
 
             if (!isIndividualDraft)
                 SetRemainingUnassignedWidths(summary, workSummaryMax);
@@ -34,13 +34,13 @@ namespace JiraReporter
             SetChartElementWidth(workSummaryMax, summary.UnassignedRemaining);
         }
 
-        private void SetAuthorsWorkSummaryChartWidths(List<JiraAuthor> authors, int workSummaryMax, bool isIndividualDraft)
+        private void SetAuthorCharts(List<JiraAuthor> authors, int workSummaryMax, bool isIndividualDraft)
         {
             foreach (var author in authors)
                 if (isIndividualDraft)
-                    AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, author.MaxHourValue);
+                    AuthorHelpers.SetAuthorCharts(author, ChartMaxBarWidth, author.MaxHourValue);
                 else
-                    AuthorHelpers.SetAuthorWorkSummaryWidths(author, ChartMaxBarWidth, workSummaryMax);
+                    AuthorHelpers.SetAuthorCharts(author, ChartMaxBarWidth, workSummaryMax);
         }
 
         public void SetStatusElementsWidth(Summary summary)

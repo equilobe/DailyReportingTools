@@ -27,7 +27,9 @@ else
 <tr>
     @if (test == true)
     {
-        <td></td>
+        <td width="15">
+            &nbsp;
+        </td>
     }
 
     <td width="15" style="vertical-align:top;">
@@ -82,7 +84,7 @@ else
                 }
             }
         }
-        <a href=@Model.Link style="text-decoration: none;" title="@title"> @Model.Summary</a>
+        <a href=@Model.Link style="text-decoration: none; color:#15C;" title="@title"> @Model.Summary</a>
 
         @if (Model.Commits != null && Model.Commits.Count>0)
         {
@@ -119,9 +121,11 @@ else
             <span style="color:#ABABAB; padding:1.5px;"> (@Model.Status)</span>
         }
     </td>
-    @if (test == false)
+    @*@if (test == false)
     {
-        <td></td>
-    }
+        <td>
+            &nbsp;
+        </td>
+    }*@
 </tr>
 
