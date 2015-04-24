@@ -50,6 +50,7 @@
     <Compile Include="Ensure.cs" />
     <Compile Include="RandomString.cs" />
     <Compile Include="ReflectionExtensions.cs" />
+    <Compile Include="ReportDateFormatter.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />

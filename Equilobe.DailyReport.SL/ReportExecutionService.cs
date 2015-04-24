@@ -255,7 +255,7 @@ namespace Equilobe.DailyReport.SL
                 var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
                 if (report.FinalDraftConfirmation == null)
                     report.FinalDraftConfirmation = new FinalDraftConfirmation();
-                report.FinalDraftConfirmation.LastFinalDraftConfirmationDate = DateTime.Today;
+                report.FinalDraftConfirmation.LastFinalDraftConfirmationDate = DateTime.Now;
 
                 db.SaveChanges();
             }

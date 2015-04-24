@@ -37,24 +37,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasWorkSummary { get; set; }
         public bool HasSprint { get; set; }
 
-        public int MonthEstimatedPixelWidth { get; set; }
-        public string MonthEstimatedPixelWidthString
-        {
-            get
-            {
-                return MonthEstimatedPixelWidth.ToString() + "px";
-            }
-        }
-
-        public double UnassignedRemainingChartPixelWidth { get; set; }
-        public string UnassignedRemainingChartPixelWidthString
-        {
-            get
-            {
-                return UnassignedRemainingChartPixelWidth.ToString() + "px";
-            }
-        }
-
         public List<Error> Errors { get; set; }
         public List<Error> CompletedWithEstimateErrors { get; set; }
         public List<Error> CompletedWithNoWorkErrors { get; set; }
@@ -74,8 +56,16 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string SprintStatus { get; set; }
         public string MonthStatus { get; set; }
 
-        public StatusChartWidths SprintWidths { get; set; }
-        public StatusChartWidths MonthWidths { get; set; }
+        public ChartElement SprintDay { get; set; }
+        public ChartElement SprintEstimated { get; set; }
+        public ChartElement SprintDone { get; set; }
+        public ChartElement SprintRemaining { get; set; }
+
+        public ChartElement MonthEstimated { get; set; }
+        public ChartElement MonthDone { get; set; }
+        public ChartElement MonthRemaining { get; set; }
+
+        public ChartElement UnassignedRemaining { get; set; }
 
         public SummaryGuidelineInfo GuidelineInfoStatus { get; set; }
         public SummaryGuidelineInfo GuidelineInfoWorkSummary { get; set; }
@@ -86,16 +76,27 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
-        public readonly int ChartMaxBarWidth = 250;
-        public readonly int ChartMaxWidth = 300;
-        public readonly int GuidelinesOptimalNumber = 12;
+        //public int ChartMaxBarWidth = 250;
+        public readonly int ChartMaxWidth = 350;
 
-        public string ChartMaxWidthString
-        {
-            get
-            {
-                return ChartMaxWidth.ToString() + "px";
-            }
-        }
+        public int StatusChartWidth { get; set; }
+        //public int StatusChartValueWidth
+        //{
+        //    get
+        //    {
+        //        return ChartMaxWidth - StatusChartWidth - 5;
+        //    }
+        //}
+
+        public int SummaryChartWidth { get; set; }
+        //public int SummaryChartValueWidth
+        //{
+        //    get
+        //    {
+        //        return ChartMaxWidth - SummaryChartWidth - 5;
+        //    }
+        //}
+
+        public readonly int GuidelinesOptimalNumber = 12;
     }
 }

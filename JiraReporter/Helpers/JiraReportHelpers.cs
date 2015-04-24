@@ -2,6 +2,7 @@
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,42 @@ namespace JiraReporter.Helpers
 {
     public static class JiraReportHelpers
     {
-        public static string GetReportTitle(JiraReport report, bool individualReport = false)
+        public static string GetReportTitle(JiraReport report, bool isIndividualReportTitle = false)
         {
             var title = string.Empty;
-            var reportDate = SourceControlLogReporter.ReportDateFormatter.GetReportDate(report.Options.FromDate, report.Options.ToDate);
-            if (report.IsFinalDraft || report.IsIndividualDraft)
-                title += "DRAFT | ";
-            if (individualReport)
-                title += report.Author.Name + " | ";
-            title += report.ProjectName + " Daily Report | " + reportDate;
+
+            if (isIndividualReportTitle)
+            {
+                title += report.Author.Name + " - ";
+            }
+
+            title += report.ProjectName;
 
             return title;
+        }
+
+        public static string GetReportSubject(JiraReport report)
+        {
+            var subject = "DailyReport | ";
+            if (report.IsIndividualDraft || report.IsFinalDraft)
+            {
+                subject += "DRAFT | ";
+            }
+            if (report.IsIndividualDraft)
+            {
+                subject += report.Author.Name + " - ";
+            }
+            subject += " " + report.ProjectName + " | " + report.Date;
+
+            return subject;
+        }
+
+        public static JiraRequestContext GetJiraRequestContext(JiraReport report)
+        {
+            report.Policy.Username = report.Settings.InstalledInstance.JiraUsername;
+            report.Policy.Password = report.Settings.InstalledInstance.JiraPassword;
+
+            return new JiraRequestContext(report.Settings.InstalledInstance);
         }
     }
 }

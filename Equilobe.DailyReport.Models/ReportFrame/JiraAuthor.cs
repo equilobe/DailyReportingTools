@@ -22,38 +22,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string EmailAdress { get; set; }
         public Timing Timing { get; set; }
 
-        public double DayChartPixelWidth { get; set; }
-        public string DayChartPixelWidthString
-        {
-            get
-            {
-                return DayChartPixelWidth.ToString() + "px";
-            }
-        }
-        public double SprintChartPixelWidth { get; set; }
-        public string SprintChartPixelWidthString
-        {
-            get
-            {
-                return SprintChartPixelWidth.ToString() + "px";
-            }
-        }
-        public double MonthChartPixelWidth { get; set; }
-        public string MonthChartPixelWidthString
-        {
-            get
-            {
-                return MonthChartPixelWidth.ToString() + "px";
-            }
-        }
-        public double RemainingChartPixelWidth { get; set; }
-        public string RemainingChartPixelWidthString
-        {
-            get
-            {
-                return RemainingChartPixelWidth.ToString() + "px";
-            }
-        }
+        public ChartElement Day { get; set; }
+        public ChartElement Sprint { get; set; }
+        public ChartElement Month { get; set; }
+        public ChartElement Remaining { get; set; }
+
+        public int MaxBarWidth { get; set; }
 
         public List<IssueDetailed> Issues { get; set; }
         public List<IssueDetailed> MonthIssues { get; set; }

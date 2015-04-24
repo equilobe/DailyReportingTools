@@ -12,17 +12,17 @@
     var tooltipWorked = "";
     var tooltipCommit = "";
 }
-<table style="width:100%; font-family:'Segoe UI', Arial, sans-serif">
+<table width="600" style="font-family:'Segoe UI', Arial, sans-serif">
     <tbody>
         <tr>
             <td>
-                <h3 style="color:black">@Model.Title</h3>
+                @Partial("Views/header.cshtml", Model)
 
-                <div>
+                <table style="padding-top:30px">
                     @Partial("Views/summary.cshtml", Model.Summary)
-                </div>
+                </table>
 
-                <div style="margin-top:40px; line-height:1.4em;">
+                <table style="padding-top:20px; line-height:1.4em;">
                     @if (Model.Authors.Count > 0)
                     {
                         foreach (var author in Model.Authors)
@@ -30,7 +30,7 @@
                             @Partial("Views/author.cshtml", author)
                         }
                     }
-                </div>
+                </table>
                 @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
                 {
                     @Partial("Views/unassignedSection.cshtml", Model)
@@ -40,12 +40,26 @@
                 {
                     @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
                 }
+                
+                <table>
+                    <tr>
+                        <td height="20">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
 
                 @if (Model.IsFinalDraft)
                 {
                     @Partial("Views/fullDraftButtons.cshtml", Model)
                 }
-
+                <table>
+                    <tr>
+                        <td height="50">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
                 @Partial("Views/footer.cshtml", Model)
             </td>
         </tr>

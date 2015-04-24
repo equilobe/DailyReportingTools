@@ -65,7 +65,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _title = value; }
         }
 
-
+        public string EmailSubject { get; set; }
 
         private List<JiraAuthor> _authors;
         public List<JiraAuthor> Authors
@@ -79,9 +79,10 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _authors = value; }
         }
 
-        public DateTime Date { get { return Options.FromDate; } }
+        //public DateTime Date { get { return Options.FromDate; } }
         public DateTime FromDate { get { return Options.FromDate; } }
         public DateTime ToDate { get { return Options.ToDate; } }
+        public string Date { get; set; }
 
         private Summary _summary;
         public Summary Summary
@@ -161,6 +162,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string ProjectKey { get; set; }
         public string ProjectName { get; set; }
         public string UniqueProjectKey { get; set; }
+
+        public string NotHideContentId { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
         public ExecutionInstance ExecutionInstance { get; set; }

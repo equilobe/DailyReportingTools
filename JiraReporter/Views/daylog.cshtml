@@ -1,35 +1,45 @@
-﻿<div style="margin-top:10px; line-height:1.4em">
-    @Partial("Views/workedHeader.cshtml", Model)
-    @if (Model.Issues != null)
+﻿@Partial("Views/workedHeader.cshtml", Model)
+@if (Model.Issues != null)
+{
+    if (Model.Issues.Count > 0)
     {
-        if (Model.Issues.Count > 0)
-        {
-            <table style="margin-left:10px;" cellpadding="1.5px">
-                <tbody>
-                    @foreach (var issue in Model.Issues)
+        <table cellpadding="1">
+            <tbody>
+                <tr>
+                    <td width="15" height="1" style="font-size:1px; line-height:1px; padding:0px">
+                        &nbsp;
+                    </td>
+                    <td width="15" height="1" style="font-size:1px; line-height:1px; padding:0px">
+                        &nbsp;
+                    </td>
+                    <td width="250" height="1" style="font-size:1px; line-height:1px; padding:0px">
+                        &nbsp;
+                    </td>
+                </tr>
+                @foreach (var issue in Model.Issues)
+                {
+                    if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.AuthorName)
                     {
-                        if (issue.ExistsInTimesheet == true && issue.LoggedAuthor == Model.AuthorName)
+                        @Partial("Views/workedTask.cshtml", issue)
+                    }
+                    else
+                    {
+                        @Partial("Views/parentTask.cshtml", issue)
+                    }
+
+                    if (issue.SubtasksDetailed != null)
+                    {
+                        foreach (var subtask in issue.SubtasksDetailed)
                         {
-                            @Partial("Views/workedTask.cshtml", issue)
-                        }
-                        else
-                        {
-                            @Partial("Views/parentTask.cshtml", issue)
-                        }
-                        
-                        if (issue.SubtasksDetailed != null)
-                        {
-                            foreach (var subtask in issue.SubtasksDetailed)
-                            {
-                                @Partial("Views/workedTask.cshtml", subtask)
-                            }
+                            @Partial("Views/workedTask.cshtml", subtask)
                         }
                     }
-                </tbody>
-            </table>
-        }
+                }
+            </tbody>
+        </table>
     }
-</div>
+}
+
 
 @if (Model.UnsyncedCommits.Count > 0)
 {

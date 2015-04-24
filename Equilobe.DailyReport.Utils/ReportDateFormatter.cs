@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SourceControlLogReporter
+namespace Equilobe.DailyReport.Utils
 {
     public class ReportDateFormatter
     {
-
         public static string GetReportDate(DateTime fromDate, DateTime toDate)
         {
             if ((toDate - fromDate).Days == 1)

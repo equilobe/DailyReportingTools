@@ -85,7 +85,7 @@ namespace JiraReporter
 
         public override string GetReportSubject(string reportPath)
         {
-            return Report.Title;
+            return Report.EmailSubject;
         }
 
         protected override void SendEmails()

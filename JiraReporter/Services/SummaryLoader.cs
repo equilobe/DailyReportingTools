@@ -80,9 +80,10 @@ namespace JiraReporter.Services
             SetHealthStatuses();
 
             SetMaxValues();
-            SetWidths();
-            CheckSummaryCharts();
             SetGuidelines();
+            
+            SetCharts();
+            CheckSummaryCharts();
 
             SetErrors();
         }
@@ -102,12 +103,14 @@ namespace JiraReporter.Services
             if (!_report.HasSprint)
                 return;
 
+            var unassignedTasksHoursLeft = ((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600);
+
             _summary.Timing.OpenUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.OpenTasks, null);
             _summary.Timing.OpenUnassignedTasksTimeLeftString = _summary.Timing.OpenUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.InProgressUnassignedTasksSecondsLeft = TaskLoader.GetTimeLeftForSpecificAuthorTasks(_sprintTasks.InProgressTasks, null);
             _summary.Timing.InProgressUnassignedTasksTimeLeftString = _summary.Timing.InProgressUnassignedTasksSecondsLeft.SetTimeFormat8Hour();
             _summary.Timing.UnassignedTasksSecondsLeft = _summary.Timing.OpenUnassignedTasksSecondsLeft + _summary.Timing.InProgressUnassignedTasksSecondsLeft;
-            _summary.Timing.UnassignedTasksHoursAverageLeft = _summary.WorkingDays.SprintWorkingDaysLeft !=0 ?((double)_summary.Timing.UnassignedTasksSecondsLeft / 3600) / _summary.WorkingDays.SprintWorkingDaysLeft : 0;
+            _summary.Timing.UnassignedTasksHoursAverageLeft = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? unassignedTasksHoursLeft / _summary.WorkingDays.SprintWorkingDaysLeft : unassignedTasksHoursLeft;
             _summary.Timing.UnassignedTasksTimeLeftString = _summary.Timing.UnassignedTasksHoursAverageLeft.RoundDoubleOneDecimal();
         }
 
@@ -188,9 +191,13 @@ namespace JiraReporter.Services
         {
             if (_summary.WorkingDays.MonthWorkingDaysLeft != 0)
                 _summary.Timing.RemainingMonthAverage = (_summary.Timing.RemainingMonthHours * 3600) / _summary.WorkingDays.MonthWorkingDaysLeft;
+            else
+                _summary.Timing.RemainingMonthAverage = _summary.Timing.RemainingMonthHours;
 
             if (_summary.WorkingDays.SprintWorkingDaysLeft != 0)
                 _summary.Timing.RemainingSprintAverage = _summary.Timing.TotalRemainingSeconds / _summary.WorkingDays.SprintWorkingDaysLeft;
+            else
+                _summary.Timing.RemainingSprintAverage = (double)(_summary.Timing.TotalRemainingSeconds / 3600);
 
             TimingHelpers.SetAverageRemainingStringFormat(_summary.Timing);
         }
@@ -239,7 +246,7 @@ namespace JiraReporter.Services
             _summary.Timing.OpenTasksTimeLeftString = _summary.Timing.OpenTasksTimeLeftSeconds.SetTimeFormat8Hour();
 
             _summary.Timing.TotalRemainingSeconds = _summary.Timing.OpenTasksTimeLeftSeconds + _summary.Timing.InProgressTasksTimeLeftSeconds;
-            _summary.Timing.TotalRemainingAverage = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft : 0;
+            _summary.Timing.TotalRemainingAverage = _summary.WorkingDays.SprintWorkingDaysLeft != 0 ? _summary.Timing.TotalRemainingHours / _summary.WorkingDays.SprintWorkingDaysLeft : _summary.Timing.TotalRemainingHours;
             _summary.Timing.TotalRemainingString = _summary.Timing.TotalRemainingAverage.RoundDoubleOneDecimal();
         }
 
@@ -438,13 +445,16 @@ namespace JiraReporter.Services
             return maxHours;
         }
 
-        private void SetWidths()
+        private void SetCharts()
         {
-            var widthHelper = new SummaryWidthLoader(_summary.ChartMaxBarWidth);
+            var widthHelper = new SummaryWidthLoader(_summary.SummaryChartWidth, _summary.StatusChartWidth);
             widthHelper.SetWorkSummaryChartWidths(_summary, _summary.WorkSummaryMaxValue, _report.IsIndividualDraft);
 
+            if (_report.IsIndividualDraft)
+                return;
+
             GetStatusValues();
-            widthHelper.SetStatusChartWidths(_summary.StatusMaxValue, _summary.SprintWidths, _summary.MonthWidths);
+            widthHelper.SetStatusElementsWidth(_summary);
         }
 
         private void GetStatusValues()
@@ -455,19 +465,36 @@ namespace JiraReporter.Services
 
         private void GetStatusSprintValues()
         {
-            _summary.SprintWidths = new StatusChartWidths();
-            _summary.SprintWidths.DaySeconds = _summary.Timing.AverageWorked;
-            _summary.SprintWidths.EstimatedSeconds = _summary.Timing.SprintAverageEstimate;
-            _summary.SprintWidths.DoneSeconds = _summary.Timing.AverageWorkedSprint;
-            _summary.SprintWidths.RemainingSeconds = _summary.Timing.RemainingSprintAverage;
+            _summary.SprintDay = new ChartElement();
+            _summary.SprintDay.ActualValueSeconds = _summary.Timing.AverageWorked;
+            _summary.SprintDay.ActualValue = _summary.Timing.AverageWorkedString;
+
+            _summary.SprintEstimated = new ChartElement();
+            _summary.SprintEstimated.ActualValueSeconds = _summary.Timing.SprintAverageEstimate;
+            _summary.SprintEstimated.ActualValue = _summary.Timing.SprintAverageEstimateString;
+
+            _summary.SprintDone = new ChartElement();
+            _summary.SprintDone.ActualValueSeconds = _summary.Timing.AverageWorkedSprint;
+            _summary.SprintDone.ActualValue = _summary.Timing.AverageWorkedSprintString;
+
+            _summary.SprintRemaining = new ChartElement();
+            _summary.SprintRemaining.ActualValueSeconds = _summary.Timing.RemainingSprintAverage;
+            _summary.SprintRemaining.ActualValue = _summary.Timing.RemainingSprintAverageString;
         }
 
         private void GetStatusMonthValues()
-        {
-            _summary.MonthWidths = new StatusChartWidths();
-            _summary.MonthWidths.EstimatedSeconds = _summary.Timing.MonthAverageEstimated;
-            _summary.MonthWidths.DoneSeconds = _summary.Timing.AverageWorkedMonth;
-            _summary.MonthWidths.RemainingSeconds = _summary.Timing.RemainingMonthAverage;
+        {            
+            _summary.MonthEstimated = new ChartElement();
+            _summary.MonthEstimated.ActualValueSeconds = _summary.Timing.MonthAverageEstimated;
+            _summary.MonthEstimated.ActualValue = _summary.Timing.MonthAverageEstimatedString;
+
+            _summary.MonthDone = new ChartElement();
+            _summary.MonthDone.ActualValueSeconds = _summary.Timing.AverageWorkedMonth;
+            _summary.MonthDone.ActualValue = _summary.Timing.AverageWorkedMonthString;
+
+            _summary.MonthRemaining = new ChartElement();
+            _summary.MonthRemaining.ActualValueSeconds = _summary.Timing.RemainingMonthAverage;
+            _summary.MonthRemaining.ActualValue = _summary.Timing.RemainingMonthAverageString;
         }
 
         private WorkingDaysInfo LoadWorkingDaysInfo()
@@ -507,6 +534,9 @@ namespace JiraReporter.Services
             _summary.GuidelineInfoStatus.GuidelinesRate = GetGuidelinesRate(_summary.StatusMaxValue);
             _summary.GuidelineInfoStatus.GuidelinesCount = GetGuidelinesCount(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
             _summary.GuidelineInfoStatus.GuidelineWidth = GetGuidelineWidth(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
+
+            _summary.StatusChartWidth = (int)(_summary.GuidelineInfoStatus.GuidelinesCount * _summary.GuidelineInfoStatus.GuidelineWidth);
+            _summary.StatusMaxValue = _summary.GuidelineInfoStatus.GuidelinesRate * _summary.GuidelineInfoStatus.GuidelinesCount;
         }
 
         private void SetWorkSummaryGuidelines()
@@ -515,6 +545,9 @@ namespace JiraReporter.Services
             _summary.GuidelineInfoWorkSummary.GuidelinesRate = GetGuidelinesRate(_summary.WorkSummaryMaxValue);
             _summary.GuidelineInfoWorkSummary.GuidelinesCount = GetGuidelinesCount(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
             _summary.GuidelineInfoWorkSummary.GuidelineWidth = GetGuidelineWidth(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
+
+            _summary.SummaryChartWidth = (int)(_summary.GuidelineInfoWorkSummary.GuidelinesCount * _summary.GuidelineInfoWorkSummary.GuidelineWidth);
+            _summary.WorkSummaryMaxValue = _summary.GuidelineInfoWorkSummary.GuidelinesRate * _summary.GuidelineInfoWorkSummary.GuidelinesCount;
         }
 
         private void SetGuidelinesForAuthors()
@@ -525,13 +558,15 @@ namespace JiraReporter.Services
                 author.GuidelineInfo.GuidelinesRate = GetGuidelinesRate(author.MaxHourValue);
                 author.GuidelineInfo.GuidelinesCount = GetGuidelinesCount(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
                 author.GuidelineInfo.GuidelineWidth = GetGuidelineWidth(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
+                author.MaxBarWidth = (int)(author.GuidelineInfo.GuidelinesCount * author.GuidelineInfo.GuidelineWidth);
+                author.MaxHourValue = author.GuidelineInfo.GuidelinesCount * author.GuidelineInfo.GuidelinesRate;
             }
         }
 
         private int GetGuidelinesRate(int maxValue)
         {
             var integer = 2;
-            while (maxValue / integer >= _summary.GuidelinesOptimalNumber)
+            while (maxValue / integer > _summary.GuidelinesOptimalNumber)
                 integer = integer * 2;
             return integer;
         }
@@ -546,7 +581,8 @@ namespace JiraReporter.Services
 
         private double GetGuidelineWidth(int maxValue, int guidelinesRate)
         {
-            return MathHelpers.RuleOfThree(_summary.ChartMaxBarWidth, maxValue, guidelinesRate);
+            var width = MathHelpers.RuleOfThree(250, maxValue, guidelinesRate);
+            return MathHelpers.RoundToNextEvenInteger(width);
         }
 
     }

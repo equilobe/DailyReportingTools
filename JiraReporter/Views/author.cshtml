@@ -1,41 +1,70 @@
 ﻿@if (Model.HasDayLogs || Model.HasAssignedIssues)
 {
-    <div style="margin-top:20px;">
-        <h3 style="color:black; line-height:1.4em; margin-bottom:0px">@Model.Name</h3>
+    <tr>
+        <td>
+            <h3 style="color:black; line-height:1.4em; margin-bottom:0px; padding-bottom:5px">@Model.Name</h3>
 
-        @if (Model.DayLogs.Count > 0)
-        {
-            foreach (var dayLog in Model.DayLogs)
+            @if (Model.DayLogs.Count > 0)
             {
-                @Partial("Views/daylog.cshtml", dayLog)
+                foreach (var dayLog in Model.DayLogs)
+                {
+                    @Partial("Views/daylog.cshtml", dayLog)
+                }
             }
-        }
-        @if (Model.HasSprint)
-        {
-            if (Model.RemainingTasksCount > 0)
+
+            @if (Model.HasSprint)
             {
-                <div style="margin-top:10px; line-height:1.4em;">
+                if (Model.RemainingTasksCount > 0)
+                {
+                    <table>
+                        <tr>
+                            <td height="10" style="line-height:10px; font-size:10px;">
+                                &nbsp;
+                            </td>
+                        </tr>
+                    </table>
+
                     <i style="color:sienna; font-size:12px;">Next</i>
 
-                    @if (Model.Timing.RemainingTasksTimeLeftSeconds == 0)
+                    if (Model.Timing.RemainingTasksTimeLeftSeconds == 0)
                     {
-                        <i style="color:red; font-size:12px;">@Dot(); @Model.Timing.RemainingTasksTimeLeftString left</i>
+                        <i style="color:red; font-size:12px;">@Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                     else
                     {
                         <i style="color:sienna; font-size:12px;"> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
-                    <table style="margin-left:10px;" cellpadding="1.5">
+                    <table cellpadding="1" cellspacing="0">
                         <tbody>
+                            <tr>
+                                <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                                    &nbsp;
+                                </td>
+                                <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                                    &nbsp;
+                                </td>
+                                <td width="250" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                                    &nbsp;
+                                </td>
+                            </tr>
                             @Partial("Views/tasks.cshtml", Model.RemainingTasks)
+                            @if (Model.AdditionalUncompletedTasksCount > 0)
+                            {
+                                <tr>
+                                    <td width="15">
+                                        &nbsp;
+                                    </td>
+                                    <td colspan="2">
+                                        + <a href="@Model.IssueSearchUrl" style="text-decoration:none; color:black">
+                                            @Model.AdditionalUncompletedTasksCount more
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
-                    @if(Model.AdditionalUncompletedTasksCount > 0)
-                    {
-                       <span> + <a href="@Model.IssueSearchUrl" style="text-decoration:none">@Model.AdditionalUncompletedTasksCount more</a> </span> 
-                    }
-                </div>
+                }
             }
-        }
-    </div>
+        </td>
+    </tr>
 }

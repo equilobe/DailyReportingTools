@@ -72,6 +72,7 @@
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />
+    <Compile Include="ReportFrame\ChartElement.cs" />
     <Compile Include="ReportFrame\AuthorizationContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
@@ -150,6 +151,8 @@
     <Compile Include="SourceControl\Report.cs" />
     <Compile Include="Storage\BasicSettings.cs" />
     <Compile Include="TimeZone\TimeZone.cs" />
+    <Compile Include="Views\ChartBar.cs" />
+    <Compile Include="Views\Square.cs" />
     <Compile Include="Web\AccountModel.cs" />
     <Compile Include="Web\DataWelcome.cs" />
     <Compile Include="Web\ReportSettings.cs" />

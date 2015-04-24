@@ -27,19 +27,17 @@ else
 <tr>
     @if (test == true)
     {
-        <td></td>
+        <td width="15">
+            &nbsp;
+        </td>
     }
 
-    <td style="vertical-align:top; width:15px">
+    <td width="15" style="vertical-align:top;">
         @if (Model.Resolution != null && Model.StatusCategory.name == "Done")
         {
             <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black;">&#10004;</span>
         }
-        else if (Model.StatusCategory.name == "In Progress")
-        {
-            <span style="font-family: Wolfram Alpha; font-size:10.5pt; color:black;">&#9658;</span>
-        }
-        else if (Model.Resolution == null)
+        else 
         {
             <span style="font-family: Segoe UI Symbol; font-size: 10.5pt; color:black; font-weight:normal">&#10065;</span>
         }
@@ -55,18 +53,6 @@ else
                     entryComments += entry.Comment;
                 }
             }
-        }
-
-        @if (Model.StatusCategory.name == "Done")
-        {
-            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
-            {
-                <span style="color:black; padding:1.5px">@Model.Resolution</span>
-            }
-        }
-        @if (Model.DisplayStatus == true)
-        {
-            <span style="color:black; padding:1.5px;">@Model.Status</span>
         }
         @{
             title = Model.Key;
@@ -98,7 +84,7 @@ else
                 }
             }
         }
-        <a href=@Model.Link style="text-decoration: none;" title="@title"> @Model.Summary</a>
+        <a href=@Model.Link style="text-decoration: none; color:#15C;" title="@title"> @Model.Summary</a>
 
         @if (Model.Commits != null && Model.Commits.Count>0)
         {
@@ -108,7 +94,7 @@ else
         
         @if (Model.TimeSpent > 0)
         {
-            <span style="color:black" title="@entryComments"> @Dot() @Model.TimeLogged worked</span>
+            <span style="color:#ABABAB" title="@entryComments"> @Dot() @Model.TimeLogged worked</span>
         }
         else
         {
@@ -122,10 +108,24 @@ else
                 <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
             }
         }
+        
+        @if (Model.StatusCategory.name == "Done")
+        {
+            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
+            {
+                <span style="color:#ABABAB; padding:1.5px"> (@Model.Resolution)</span>
+            }
+        }
+        @if (Model.DisplayStatus == true)
+        {
+            <span style="color:#ABABAB; padding:1.5px;"> (@Model.Status)</span>
+        }
     </td>
-    @if (test == false)
+    @*@if (test == false)
     {
-        <td></td>
-    }
+        <td>
+            &nbsp;
+        </td>
+    }*@
 </tr>
 
