@@ -535,7 +535,8 @@ namespace JiraReporter.Services
             _summary.GuidelineInfoStatus.GuidelinesCount = GetGuidelinesCount(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
             _summary.GuidelineInfoStatus.GuidelineWidth = GetGuidelineWidth(_summary.StatusMaxValue, _summary.GuidelineInfoStatus.GuidelinesRate);
 
-            _summary.StatusChartWidth = (int)(_summary.GuidelineInfoStatus.GuidelinesCount * _summary.GuidelineInfoStatus.GuidelinesRate);
+            _summary.StatusChartWidth = (int)(_summary.GuidelineInfoStatus.GuidelinesCount * _summary.GuidelineInfoStatus.GuidelineWidth);
+            _summary.StatusMaxValue = _summary.GuidelineInfoStatus.GuidelinesRate * _summary.GuidelineInfoStatus.GuidelinesCount;
         }
 
         private void SetWorkSummaryGuidelines()
@@ -545,7 +546,8 @@ namespace JiraReporter.Services
             _summary.GuidelineInfoWorkSummary.GuidelinesCount = GetGuidelinesCount(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
             _summary.GuidelineInfoWorkSummary.GuidelineWidth = GetGuidelineWidth(_summary.WorkSummaryMaxValue, _summary.GuidelineInfoWorkSummary.GuidelinesRate);
 
-            _summary.SummaryChartWidth = (int)(_summary.GuidelineInfoWorkSummary.GuidelinesCount * _summary.GuidelineInfoStatus.GuidelinesRate);
+            _summary.SummaryChartWidth = (int)(_summary.GuidelineInfoWorkSummary.GuidelinesCount * _summary.GuidelineInfoWorkSummary.GuidelineWidth);
+            _summary.WorkSummaryMaxValue = _summary.GuidelineInfoWorkSummary.GuidelinesRate * _summary.GuidelineInfoWorkSummary.GuidelinesCount;
         }
 
         private void SetGuidelinesForAuthors()
@@ -557,13 +559,14 @@ namespace JiraReporter.Services
                 author.GuidelineInfo.GuidelinesCount = GetGuidelinesCount(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
                 author.GuidelineInfo.GuidelineWidth = GetGuidelineWidth(author.MaxHourValue, author.GuidelineInfo.GuidelinesRate);
                 author.MaxBarWidth = (int)(author.GuidelineInfo.GuidelinesCount * author.GuidelineInfo.GuidelineWidth);
+                author.MaxHourValue = author.GuidelineInfo.GuidelinesCount * author.GuidelineInfo.GuidelinesRate;
             }
         }
 
         private int GetGuidelinesRate(int maxValue)
         {
             var integer = 2;
-            while (maxValue / integer >= _summary.GuidelinesOptimalNumber)
+            while (maxValue / integer > _summary.GuidelinesOptimalNumber)
                 integer = integer * 2;
             return integer;
         }
