@@ -31,6 +31,7 @@ namespace JiraReporter
         {
             Report = report;
         }
+
         public void AddAttachementImage(Image image, string id, MailMessage mailMessage)
         {
             MemoryStream stream = new MemoryStream();
@@ -69,9 +70,7 @@ namespace JiraReporter
                 Subject = GetReportSubject(reportPath),
                 Body = File.ReadAllText(reportPath),
                 IsBodyHtml = true
-            };
-
-            AddMailAttachments(message);
+            };;
 
             AddMailRecipients(message);
 
@@ -82,19 +81,6 @@ namespace JiraReporter
         {
             foreach (string addr in Policy.EmailCollection)
                 message.To.Add(addr);
-        }
-
-        private void AddMailAttachments(MailMessage message)
-        {
-            if (Report.IsIndividualDraft)
-                AddAttachementImage(Author.Image, Author.AvatarId, message);
-            else
-            {
-                foreach (var author in Authors)
-                    if(!author.IsEmpty)
-                       AddAttachementImage(author.Image, author.AvatarId, message);
-            //    AddAttachementImageFromDisk(message);
-            }
         }
 
         public override string GetReportSubject(string reportPath)
@@ -132,9 +118,9 @@ namespace JiraReporter
                     report.ReportExecutionSummary = new ReportExecutionSummary();
 
                 if(Report.IsFinalDraft)
-                    report.ReportExecutionSummary.LastDraftSentDate = Report.Options.ToDate;
+                    report.ReportExecutionSummary.LastDraftSentDate = Report.FullReportDate;
                 if (Report.IsFinalReport)
-                    report.ReportExecutionSummary.LastFinalReportSentDate = Report.Options.ToDate;
+                    report.ReportExecutionSummary.LastFinalReportSentDate = Report.FullReportDate;
 
                 db.SaveChanges();
             }

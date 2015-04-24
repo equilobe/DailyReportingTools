@@ -19,7 +19,7 @@ angular.module('app')
                 .success(function (response) {
                     if (response.success) {
                         $scope.$root.isAuth = true;
-                        $location.path('/app/instances');
+                        $location.path('/app/instances/0/projects');
                     }
                     else {
                         $scope.message = response.message;

@@ -1,0 +1,35 @@
+﻿<div class="full-page vcenter-parent">
+    <div class="container hcenter vcenter">
+        <div class="main-logo">
+            <a href="/">
+                <img src="../Content/Images/logo-main.PNG" />
+            </a>
+        </div>
+
+        <div ng-if="status == 'loading'">
+            <h3>
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+            </h3>
+        </div>
+
+        <div ng-if="status == 'loaded'">
+            <div ng-if="!error">
+                <h3>
+                    {{data.user}} - {{data.project}}
+                </h3>
+                <h3 class="confirmation-result alert" ng-class="data.status.hasError ? 'alert-danger' : 'alert-success'">
+                    {{data.status.message}}
+                </h3>
+                <p>
+                    {{data.details}}
+                </p>
+            </div>
+
+            <div ng-if="error">
+                <h3>
+                    {{error}}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,7 +11,7 @@ namespace System
     {
         public static string Get()
         {
-            return Path.GetRandomFileName().Replace(".",string.Empty);
+            return Guid.NewGuid().ToString().Replace("-", string.Empty) + Path.GetRandomFileName().Replace(".", string.Empty);
         }
 
         public static string Get(string prefix)

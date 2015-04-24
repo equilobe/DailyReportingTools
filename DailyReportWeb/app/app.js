@@ -1,5 +1,5 @@
 ﻿angular
-    .module("app", ['ngRoute', 'ng-breadcrumbs'])
+    .module("app", ['ngRoute'])
     .config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
 
@@ -21,10 +21,9 @@
                 redirectTo: '/'
             });
     }])
-    .controller("AppController", ['$scope', '$http', '$location', 'breadcrumbs', function ($scope, $http, $location, breadcrumbs) {
+    .controller("AppController", ['$scope', '$http', '$location', function ($scope, $http, $location) {
         $scope.$root.isAuth = isAuth;
         $scope.$root.isPlugin = isPlugin;
-        $scope.breadcrumbs = breadcrumbs;
         $scope.child = {};
 
         (function jsRegex() {
@@ -111,4 +110,17 @@
                 }, 0);
             }
         };
-    });
+    })
+    .run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
+        var original = $location.path;
+        $location.path = function (path, reload) {
+            if (reload === false) {
+                var lastRoute = $route.current;
+                var un = $rootScope.$on('$locationChangeSuccess', function () {
+                    $route.current = lastRoute;
+                    un();
+                });
+            }
+            return original.apply($location, [path]);
+        };
+    }]);

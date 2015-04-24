@@ -73,6 +73,7 @@
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />
     <Compile Include="ReportFrame\ChartElement.cs" />
+    <Compile Include="ReportFrame\AuthorizationContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="ReportFrame\TimesheetContext.cs" />
     <Compile Include="ReportFrame\Timing.cs" />
     <Compile Include="ReportFrame\TimingDetailed.cs" />
+    <Compile Include="ReportFrame\UserImageContext.cs" />
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
     <Compile Include="Jira\Avatar.cs" />
     <Compile Include="Jira\Entries.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
+    <Compile Include="Web\DataReportOperation.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
     <Compile Include="Policy\User.cs" />
     <Compile Include="Interfaces\IJiraService.cs" />

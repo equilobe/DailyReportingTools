@@ -94,7 +94,7 @@ namespace DailyReportWeb.Controllers.Api
             return new AccountResponse()
             {
                 Success = true,
-                Message = "A message has been sent to your mail. Please confirm the account."
+                Message = "Account confirmation details has been sent to your mail."
             };
         }
 
@@ -108,23 +108,31 @@ namespace DailyReportWeb.Controllers.Api
                 return new AccountResponse() { Success = false };
 
             if (UserManager.FindById(userId).EmailConfirmed)
-                return new AccountResponse() { Success = true };
+                return new AccountResponse()
+                {
+                    Success = false,
+                    Message = "Your account was already activated."
+                };
 
             IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
             if (!result.Succeeded)
                 return new AccountResponse()
                 {
                     Success = false,
-                    ErrorList = result.Errors.ToList()
+                    Message = result.Errors.First()
                 };
 
             var instanceId = UserManager.FindById(userId)
                                         .InstalledInstances
                                         .Single()
                                         .Id;
-            SettingsService.SetAllBasicSettings(new ItemContext(instanceId));
+            SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
 
-            return new AccountResponse() { Success = true };
+            return new AccountResponse()
+            {
+                Success = true,
+                Message = "Your account was activated. You can now sign in."
+            };
         }
 
         [AllowAnonymous]
@@ -144,7 +152,7 @@ namespace DailyReportWeb.Controllers.Api
 
             var user = await UserManager.FindAsync(model.Email, model.Password);
 
-            if (user == null)
+            if (user == null || UserManager.FindByEmail(model.Email) == null)
                 return new AccountResponse()
                 {
                     Success = false,
@@ -152,11 +160,11 @@ namespace DailyReportWeb.Controllers.Api
                     Message = "Invalid username or password."
                 };
 
-            if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+            if (!UserManager.IsEmailConfirmed(user.Id))
                 return new AccountResponse()
                 {
                     Success = false,
-                    Message = "Account has not been activated yet. Please check the mail and proceed with account confirmation."
+                    Message = "Account has not been activated yet."
                 };
 
             await SignInAsync(user, model.RememberMe);

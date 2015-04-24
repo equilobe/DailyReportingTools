@@ -3,7 +3,6 @@
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/instances', {
-            label: 'Instances',
             templateUrl: 'app/instances.html',
             controller: 'InstancesController'
         });
@@ -32,6 +31,20 @@ angular.module('app')
             $scope.form.timeZone = $scope.instance.timeZone;
         };
 
+        $scope.deleteInstance = function ($scope) {
+            if (confirm("Are you sure you want to remove instance ?\n" + $scope.instance.baseUrl) == true) {
+                $scope.child.status = "loading";
+
+                $http.delete("/api/instances/" + $scope.instance.id)
+                    .success(function (list) {
+                        $scope.child.instances = list;
+                    })
+                    .finally(function () {
+                        $scope.child.status = "loaded";
+                    });
+            }
+        };
+
         $scope.clearInstanceForm = function ($scope) {
             $scope.form.$setPristine();
             $scope.form.baseUrl = "";
@@ -50,12 +63,10 @@ angular.module('app')
                      $scope.$parent.instances = list;
                      $scope.clearInstanceForm($scope);
                      $scope.status = "success";
-                     console.log("success");
                  })
                  .error(function () {
                      $scope.status = "error";
                      $scope.message = "Invalid JIRA username or password";
-                     console.log("error");
                  });
         };
     }]);

@@ -41,9 +41,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<JiraCommit> Commits { get; set; }
         public List<JiraDayLog> DayLogs { get; set; }
         public List<Error> Errors { get; set; }
-        public Uri AvatarLink { get; set; }
-        public string AvatarId { get; set; }
-        public Image Image { get; set; }
+        public Uri JiraAvatarLink { get; set; }
+        public Uri ReportAvatarLink { get; set; }
         public IndividualDraftInfo IndividualDraftInfo { get; set; }
         public bool IsProjectLead { get; set; }
         public bool IsEmpty { get; set; }
@@ -71,7 +70,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             EmailAdress = user.emailAddress;
             Username = user.name;
             UserKey = user.key;
-            AvatarLink = user.avatarUrls.Big;
+            JiraAvatarLink = user.avatarUrls.Big;
         }
 
         public bool HasIssues()

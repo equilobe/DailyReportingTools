@@ -4,7 +4,7 @@
             Daily Report
         </h1>
         <p class="help-block">
-            Use this page to confirm the email upon registration
+            Email registration confirmation
         </p>
     </div>
 </div>
@@ -15,24 +15,17 @@
             <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
         </h3>
     </div>
-    <div class="container" ng-if="status == 'loaded' && isConfirmed">
+    <div class="container" ng-if="status == 'loaded'">
         <h1>
-            <span class="alert-success">
+            <span class="alert-success" ng-if="data.success == true">
                 Confirm successful
             </span>
-        </h1>
-        <p class="help-block">
-            Your account was activated. You can now sign in.
-        </p>
-    </div>
-    <div class="container" ng-if="status == 'loaded' && !isConfirmed">
-        <h1>
-            <span class="alert-danger">
+            <span class="alert-danger" ng-if="data.success == false">
                 Confirm not successful
             </span>
         </h1>
         <p class="help-block">
-            Something went wrong. Please try again later.
+            {{data.message}}
         </p>
     </div>
 </div>

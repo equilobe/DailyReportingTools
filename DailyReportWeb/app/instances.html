@@ -20,97 +20,96 @@
             </p>
         </div>
     </div>
-    <div class="table">
-        <div class="container" ng-if="!instances.length">
-            <h2>
-                <span class="alert-danger">
-                    No instances available
-                </span>
-            </h2>
-            <p class="help-block">
-                Daily Report tool is unable to find any instance.
-            </p>
-        </div>
-        <div class="container" ng-if="instances.length">
-            <div class="row">
-                <label class="col-lg-10 col-md-9 col-sm-9 col-xs-7">
-                    Instance name
-                </label>
-                <label class="col-lg-2 col-md-3 col-sm-3 col-xs-5">
-                    Options
-                </label>
-            </div>
-            <div class="row project" ng-repeat="instance in instances">
-                <div class="col-lg-9 col-md-8 col-sm-8">
-                    {{instance.baseUrl}}
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
-                    <div class="pull-right">
-                        <a ng-href="app/instances/{{instance.id}}/projects/" class="btn btn-default">View Projects</a>
-                        <button class="btn btn-default" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance">Edit Instance</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <form name="form" class="container">
-            <div class="row project" ng-show="addingInstance || editingInstance">
-                <div class="panel-heading">
+    <div class="container" ng-if="!instances.length">
+        <h2>
+            <span class="alert-danger">
+                No instances available
+            </span>
+        </h2>
+        <p class="help-block">
+            Daily Report tool is unable to find any instance.
+        </p>
+    </div>
+    <div class="container" ng-if="instances.length">
+        <div class="row" ng-repeat="instance in instances">
+            <div class="col-sm-8">
+                <a ng-href="app/instances/{{instance.id}}/projects/">
                     <h3>
-                        JIRA
+                        {{instance.baseUrl.substring(instance.baseUrl.lastIndexOf('/') + 1)}}
+                    </h3>
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <div class="pull-right">
+                    <h3>
+                        <button class="btn btn-default glyphicon glyphicon-cog" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance" title="Edit Instance"></button>
+                        <button class="btn btn-default glyphicon glyphicon-trash" ng-click="deleteInstance(this)" ng-disabled="addingInstance || editingInstance" title="Delete Instance"></button>
                     </h3>
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="form-group">
-                            <label>
-                                Instance Url
-                            </label>
-                            <div ng-form="instanceUrlForm">
-                                <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" ng-required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url ng-disabled="editingInstance" />
-                                <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                Time Zone
-                            </label>
-                            <div>
-                                <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                Username
-                            </label>
-                            <div>
-                                <input type="text" class="form-control" placeholder="JIRA username" ng-required ng-model="form.jiraUsername" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                Password
-                            </label>
-                            <div>
-                                <input type="password" class="form-control" placeholder="Jira password" ng-required ng-model="form.jiraPassword" />
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" ng-show="addingInstance || editingInstance">
+        <form name="form" novalidate>
+            <h3>
+                JIRA
+            </h3>
+            <div class="form-group">
+                <label>
+                    Instance Url
+                </label>
+                <div ng-form="instanceUrlForm">
+                    <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" ng-required="true" ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url ng-disabled="editingInstance" />
+                    <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-danger" ng-click="clearInstanceForm(this)">Cancel</button>
-                        <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="saveInstance(this)">Save</button>
-                        <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="form.$dirty"></span>
-                        <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="status == 'saving'"></span>
-                        <span class="alert-danger glyphicon glyphicon-remove message" ng-show="status == 'error' && form.$pristine"><span>{{message}}</span></span>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Time Zone
+                </label>
+                <div>
+                    <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
                 </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Username
+                </label>
+                <div>
+                    <input type="text" class="form-control" ng-required="true" placeholder="JIRA username" ng-model="form.jiraUsername" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Password
+                </label>
+                <div>
+                    <input type="password" class="form-control" ng-required="true" placeholder="Jira password" ng-model="form.jiraPassword" />
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-danger" ng-click="clearInstanceForm(this)">
+                    Cancel
+                </button>
+                <button class="btn btn-success" ng-disabled="form.$invalid" ng-click="saveInstance(this)">
+                    Save
+                </button>
+                <span class="status-message" ng-show="status == 'saving'">
+                    <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    <span>Saving</span>
+                </span>
+                <span class="status-message" ng-show="status == 'error' && form.$pristine">
+                    <span class="alert-danger glyphicon glyphicon-remove"></span>
+                    <span>{{message}}</span>
+                </span>
             </div>
         </form>
-        <div class="container">
-            <div class="row project" ng-show="!addingInstance && !editingInstance">
-                <button class="btn btn-default pull-right" ng-click="addInstance(this)">Add New Instance</button>
-            </div>
+    </div>
+    <div class="container">
+        <div ng-show="!addingInstance && !editingInstance">
+            <h3>
+                <button class="btn btn-default glyphicon glyphicon-plus pull-right" ng-click="addInstance(this)" title="Add New Instance"></button>
+            </h3>
         </div>
     </div>
 </div>

@@ -2,34 +2,45 @@
 
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/app/instances/:instanceId/projects', {
-            label: 'Projects',
-            templateUrl: 'app/projects.html',
-            controller: 'ProjectsController'
-        });
+        $routeProvider
+            .when('/app/instances/:instanceId/projects', {
+                templateUrl: 'app/projects.html',
+                controller: 'ProjectsController'
+            });
     }])
-    .controller("ProjectsController", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+    .controller("ProjectsController", ['$scope', '$http', "$location", '$routeParams', function ($scope, $http, $location, $routeParams) {
         $("body").attr("data-page", "projects");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
 
-        $http.get("/api/projects/" + $routeParams.instanceId)
-            .success(function (list) {
-                $scope.projects = list;
+        $http.get("/api/projects/")
+            .success(function (instances) {
+
+                $scope.instance = {};
+                if (instances) {
+                    if ($routeParams.instanceId == 0) {
+                        $scope.instance = instances[0];
+                        $location.path('/app/instances/' + instances[0][0].installedInstanceId + '/projects', false);
+                    }
+                    else {
+                        instances.forEach(function (instance) {
+                            if (instance[0].installedInstanceId == $routeParams.instanceId)
+                                $scope.instance = instance;
+                        });
+
+                        if ($scope.instance[0].installedInstanceId != $routeParams.instanceId)
+                            $scope.instance = instances[0];
+                    }
+                }
+
+                $scope.instances = instances;
             })
             .finally(function () {
                 $scope.status = "loaded";
             });
 
-        $scope.updateReportTime = function ($scope) {
-            if ($scope.reportForm.reportTime.$invalid || $scope.reportForm.reportTime.$pristine)
-                return;
-
-            $http.post("/api/projects", $scope.project
-            ).success(function () {
-                console.log("success");
-            }).error(function () {
-                console.log("error");
-            });
-        };
+        $scope.setInstance = function (instance) {
+            $scope.instance = instance;
+            $location.path('/app/instances/' + instance[0].installedInstanceId + '/projects', false);
+        }
     }]);

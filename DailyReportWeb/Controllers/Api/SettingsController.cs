@@ -3,7 +3,6 @@ using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
-using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using System;
@@ -16,7 +15,6 @@ namespace DailyReportWeb.Controllers.Api
     public class SettingsController : ApiController
     {
         public ISettingsService SettingsService { get; set; }
-        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public FullReportSettings Get(long id)
         {
@@ -31,29 +29,7 @@ namespace DailyReportWeb.Controllers.Api
                 (updatedFullSettings.SourceControlOptions.Type == SourceControlType.SVN && !Validations.Url(updatedFullSettings.SourceControlOptions.Repo)))
                 throw new ArgumentException();
 
-            using (var db = new ReportsDb())
-            {
-                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == updatedFullSettings.UniqueProjectKey);
-
-                if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
-                {
-                    basicSettings.ReportTime = updatedFullSettings.ReportTime;
-                    TaskSchedulerService.SetTask(new ScheduledTaskContext
-                    {
-                        ReportTime = updatedFullSettings.ReportTime,
-                        UniqueProjectKey = updatedFullSettings.UniqueProjectKey
-                    });
-                }
-
-                var advancedSettings = new AdvancedReportSettings();
-                updatedFullSettings.CopyTo<IAdvancedSettings>(advancedSettings);
-
-                if (basicSettings.SerializedAdvancedSettings == null)
-                    basicSettings.SerializedAdvancedSettings = new SerializedAdvancedSettings();
-                basicSettings.SerializedAdvancedSettings.PolicyString = Serialization.XmlSerialize(advancedSettings);
-
-                db.SaveChanges();
-            }
+            SettingsService.SetFullReportSettings(updatedFullSettings);
         }
     }
 }

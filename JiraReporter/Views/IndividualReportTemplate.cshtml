@@ -1,6 +1,5 @@
 ﻿@{
     var day = string.Empty;
-    var imgSrc = string.Empty;
 }
 
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
@@ -98,12 +97,9 @@ else
 
                                     <table cellspacing="0" style="padding-top:20px">
                                         <tbody>
-                                            @{
-                    imgSrc = "cid:" + Model.Author.AvatarId;
-                                            }
                                             <tr>
                                                 <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                                                    <img src="@imgSrc" alt="@Model.Author.FirstName" />
+                                                    <img src="@Model.Author.ReportAvatarLink" alt="@Model.Author.FirstName" />
                                                 </td>
                                                 <td height="55" style="padding:0px; padding-bottom:10px;">
                                                     @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)

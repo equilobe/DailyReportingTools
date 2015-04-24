@@ -184,15 +184,19 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
+    <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
+    <Compile Include="Controllers\Api\ConfirmIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\InstancesController.cs" />
+    <Compile Include="Controllers\Api\SendDraftController.cs" />
+    <Compile Include="Controllers\Api\SendIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\SettingsController.cs" />
     <Compile Include="Controllers\Api\ProjectsController.cs" />
     <Compile Include="Controllers\Api\SourceControlController.cs" />
     <Compile Include="Controllers\Api\TimezoneController.cs" />
     <Compile Include="Controllers\Api\WelcomeController.cs" />
+    <Compile Include="Controllers\AvatarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PluginController.cs" />
-    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="DependencyInjection.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -203,8 +207,43 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\confirmDraft.html" />
+    <Content Include="app\confirmDraft.js">
+      <DependentUpon>confirmDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\confirmDraft.test.js">
+      <DependentUpon>confirmDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\confirmIndividualDraft.html" />
+    <Content Include="app\confirmIndividualDraft.js">
+      <DependentUpon>confirmIndividualDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\confirmIndividualDraft.test.js">
+      <DependentUpon>confirmIndividualDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\contact.html" />
+    <Content Include="app\contact.js">
+      <DependentUpon>contact.html</DependentUpon>
+    </Content>
+    <Content Include="app\contact.test.js">
+      <DependentUpon>contact.html</DependentUpon>
+    </Content>
+    <Content Include="app\eula.html" />
+    <Content Include="app\eula.js">
+      <DependentUpon>eula.html</DependentUpon>
+    </Content>
+    <Content Include="app\eula.test.js">
+      <DependentUpon>eula.html</DependentUpon>
+    </Content>
     <Content Include="app\footer.html" />
     <Content Include="app\header.html" />
+    <Content Include="app\howItWorks.html" />
+    <Content Include="app\howItWorks.js">
+      <DependentUpon>howItWorks.html</DependentUpon>
+    </Content>
+    <Content Include="app\howItWorks.test.js">
+      <DependentUpon>howItWorks.html</DependentUpon>
+    </Content>
     <Content Include="app\instances.html" />
     <Content Include="app\instances.js">
       <DependentUpon>instances.html</DependentUpon>
@@ -220,6 +259,20 @@
       <DependentUpon>confirmEmail.html</DependentUpon>
     </Content>
     <Content Include="app\app.js" />
+    <Content Include="app\sendDraft.html" />
+    <Content Include="app\sendDraft.js">
+      <DependentUpon>sendDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\sendDraft.test.js">
+      <DependentUpon>sendDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\sendIndividualDraft.html" />
+    <Content Include="app\sendIndividualDraft.js">
+      <DependentUpon>sendIndividualDraft.html</DependentUpon>
+    </Content>
+    <Content Include="app\sendIndividualDraft.test.js">
+      <DependentUpon>sendIndividualDraft.html</DependentUpon>
+    </Content>
     <Content Include="app\settings.html" />
     <Content Include="app\settings.js">
       <DependentUpon>settings.html</DependentUpon>
@@ -322,7 +375,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\ng-breadcrumbs.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
@@ -348,6 +400,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Views\Avatar\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

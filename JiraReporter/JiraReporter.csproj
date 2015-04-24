@@ -80,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyInjection.cs" />
-    <Compile Include="Services\AuthorizationService.cs" />
     <Compile Include="Helpers\JiraOffsetHelper.cs" />
     <Compile Include="Helpers\DatesHelper.cs" />
     <Compile Include="Helpers\TimingHelpers.cs" />

@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using Microsoft.AspNet.Identity.Owin;
@@ -15,6 +16,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public IDataService DataService { get; set; }
         public IJiraService JiraService { get; set; }
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public List<Instance> Get()
         {
@@ -32,6 +34,19 @@ namespace DailyReportWeb.Controllers.Api
 
             instance.Email = User.GetUsername();
             DataService.SaveInstance(instance);
+
+            return DataService.GetInstances();
+        }
+
+        public List<Instance> Delete(long id)
+        {
+            var projectKeys = DataService.GetUniqueProjectsKey(id);
+            TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
+            {
+                UniqueProjectKeys = projectKeys
+            });
+
+            DataService.DeleteInstance(id);
 
             return DataService.GetInstances();
         }

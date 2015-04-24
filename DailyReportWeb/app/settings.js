@@ -3,7 +3,6 @@
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/instances/:instanceId/projects/:projectId/settings', {
-            label: 'Settings',
             templateUrl: 'app/settings.html',
             controller: 'SettingsController'
         });
@@ -14,49 +13,50 @@ angular.module('app')
         $scope.status = "loading";
 
         $http.get("/api/settings/" + $routeParams.projectId)
-            .success(function (policy) {
-                $scope.user = policy.userOptions ? policy.userOptions[0] : null;
-                $scope.sourceControlUsername = policy.sourceControlUsernames ? policy.sourceControlUsernames[0] : null;
-                $scope.month = policy.monthlyOptions ? policy.monthlyOptions[0] : null;
+            .success(function (data) {
+                $scope.user = data.userOptions ? data.userOptions[0] : null;
+                $scope.sourceControlUsername = data.sourceControlUsernames ? data.sourceControlUsernames[0] : null;
+                $scope.month = data.monthlyOptions ? data.monthlyOptions[0] : null;
                 $scope.days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-                if (!policy.sourceControlOptions)
-                    policy.sourceControlOptions = { type: "None" };
+                if (!data.sourceControlOptions)
+                    data.sourceControlOptions = { type: "None" };
 
-                if (!policy.advancedOptions.additionalWorkflowStatuses)
-                    policy.advancedOptions.additionalWorkflowStatuses = [''];
+                if (!data.advancedOptions.additionalWorkflowStatuses)
+                    data.advancedOptions.additionalWorkflowStatuses = [''];
 
-                $scope.policy = policy;
+                $scope.data = data;
             })
             .finally(function () {
                 $scope.status = "loaded";
             });
 
-        $scope.updatePolicy = function ($scope) {
+        $scope.saveSettings = function ($scope) {
             $scope.status = 'saving';
             $scope.form.$setPristine();
 
-            $http.post("/api/settings/", $scope.policy
+            $http.post("/api/settings/", $scope.data
                 ).success(function () {
                     $scope.status = "success";
-                    console.log("success");
                 }).error(function () {
                     $scope.status = "error";
-                    console.log("error");
                 });
         };
 
         $scope.updateContributors = function ($scope) {
             $scope.sourceControlStatus = "loading";
 
-            $http.post("/api/sourcecontrol", $scope.policy.sourceControlOptions)
+            $http.post("/api/sourcecontrol", $scope.data.sourceControlOptions)
                 .success(function (sourceControlUsernames) {
                     $scope.sourceControlStatus = "success";
-                    $scope.policy.sourceControlUsernames = sourceControlUsernames;
+                    if (sourceControlUsernames == null)
+                        $scope.sourceControlStatus = "error";
+
+                    $scope.data.sourceControlUsernames = sourceControlUsernames;
                 })
                 .error(function () {
                     $scope.sourceControlStatus = "error";
-                    $scope.policy.sourceControlUsernames = null;
+                    $scope.data.sourceControlUsernames = null;
                 });
         };
 
@@ -79,21 +79,21 @@ angular.module('app')
     }])
     .directive("weekendDays", function () {
         return function ($scope, $elem) {
-            if ($scope.policy.advancedOptions.weekendDaysList.indexOf($scope.day) !== -1) {
+            if ($scope.data.advancedOptions.weekendDaysList.indexOf($scope.day) !== -1) {
                 $elem[0].checked = true;
             }
 
             $elem.bind('click', function () {
-                var index = $scope.policy.advancedOptions.weekendDaysList.indexOf($scope.day);
+                var index = $scope.data.advancedOptions.weekendDaysList.indexOf($scope.day);
 
                 if ($elem[0].checked) {
-                    if (index === -1) $scope.policy.advancedOptions.weekendDaysList.push($scope.day);
+                    if (index === -1) $scope.data.advancedOptions.weekendDaysList.push($scope.day);
                 }
                 else {
-                    if (index !== -1) $scope.policy.advancedOptions.weekendDaysList.splice(index, 1);
+                    if (index !== -1) $scope.data.advancedOptions.weekendDaysList.splice(index, 1);
                 }
 
-                $scope.$apply($scope.policy.advancedOptions.weekendDaysList);
+                $scope.$apply($scope.data.advancedOptions.weekendDaysList);
                 $scope.$apply($scope.form.$setDirty());
             });
         }
@@ -102,16 +102,16 @@ angular.module('app')
         return function ($scope, $elem) {
             $elem.bind('blur', function () {
                 if (!$scope.$last && $elem[0].value == "") {
-                    $scope.policy.advancedOptions.additionalWorkflowStatuses.splice($scope.$index, 1);
+                    $scope.data.advancedOptions.additionalWorkflowStatuses.splice($scope.$index, 1);
                 }
 
                 if (($scope.$last && $elem[0].value != "") ||
-                    !$scope.policy.advancedOptions.additionalWorkflowStatuses.length) {
-                    $scope.policy.advancedOptions.additionalWorkflowStatuses.push('');
+                    !$scope.data.advancedOptions.additionalWorkflowStatuses.length) {
+                    $scope.data.advancedOptions.additionalWorkflowStatuses.push('');
 
                 }
 
-                $scope.$apply($scope.policy.advancedOptions.additionalWorkflowStatuses);
+                $scope.$apply($scope.data.advancedOptions.additionalWorkflowStatuses);
             });
         }
     });

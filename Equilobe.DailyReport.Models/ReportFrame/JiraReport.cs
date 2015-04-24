@@ -51,6 +51,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
 
+        public DateTime FullReportDate { get; set; }
+
         private string _title;
         public string Title
         {
