@@ -61,8 +61,8 @@ namespace Equilobe.DailyReport.BL.Jira
 
             var sprint = GetSprint(sprints, date, rapidViewId);
 
-            if (sprint != null && sprint.state == "CLOSED")
-                return null;
+            //if (sprint != null && sprint.state == "CLOSED")
+            //    return null;
 
             return sprint;
         }

@@ -33,8 +33,6 @@ namespace JiraReporter
 
             report.Sprint = GenerateSprint(report);
 
-            SetIssueSearchUrl(report);
-
             SetReportTasks(report);
 
             report.Authors = GetReportAuthors(report);
@@ -55,11 +53,6 @@ namespace JiraReporter
 
             if (!report.IsIndividualDraft)
                 report.EmailSubject = JiraReportHelpers.GetReportSubject(report);
-        }
-
-        private void SetIssueSearchUrl(JiraReport report)
-        {
-            report.IssueSearchUrl = new Uri(report.Settings.BaseUrl + "/issues/");
         }
 
         private static void SetSourceControlLogs(JiraReport report)

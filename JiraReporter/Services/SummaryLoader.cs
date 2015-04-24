@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
+using System.Globalization;
 
 namespace JiraReporter.Services
 {
@@ -56,6 +57,7 @@ namespace JiraReporter.Services
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
             _summary.IsFinalDraft = _report.IsFinalDraft;
+            _summary.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_report.Options.ToDate.Month);
 
             SetDates();
             SetReportDate();
@@ -81,11 +83,49 @@ namespace JiraReporter.Services
 
             SetMaxValues();
             SetGuidelines();
-            
+
             SetCharts();
             CheckSummaryCharts();
 
+            SetStatuses();
             SetErrors();
+        }
+
+        private void SetStatuses()
+        {
+            SetMonthStatus();
+            SetSprintStatus();
+        }
+
+        private void SetSprintStatus()
+        {
+
+            if (_summary.Sprint.state != "ACTIVE")
+            {
+                _summary.SprintStatus = _summary.Sprint.state;
+                return;
+            }
+
+            if (_summary.WorkingDays.SprintWorkingDaysLeft == 0)
+            {
+                _summary.SprintStatus = "Expired";
+                return;
+            }
+
+            var daysLeft = _summary.WorkingDays.SprintWorkingDaysLeft == 1 ? "day left" : "days left";
+            _summary.SprintStatus = _summary.WorkingDays.SprintWorkingDaysLeft + " " + daysLeft;
+        }
+
+        private void SetMonthStatus()
+        {
+            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Today.Month != _report.Options.ToDate.Month)
+            {
+                _summary.MonthStatus = "Finished";
+                return;
+            }
+
+            var daysLeft = _summary.WorkingDays.MonthWorkingDaysLeft == 1 ? "day left" : "days left";
+            _summary.MonthStatus = _summary.WorkingDays.MonthWorkingDaysLeft + " " + daysLeft;
         }
 
         private void CheckSummaryCharts()
@@ -307,8 +347,8 @@ namespace JiraReporter.Services
         private void SetHealthStatuses()
         {
             if (_report.HasSprint)
-                _summary.SprintStatus = HealthInspector.GetSprintStatus(_summary.SprintHealth, _summary.SprintHourRateVariance);
-            _summary.MonthStatus = HealthInspector.GetMonthStatus(_summary.MonthHealth, _summary.MonthHourRateVariance);
+                _summary.SprintHealthStatus = HealthInspector.GetSprintStatus(_summary.SprintHealth, _summary.SprintHourRateVariance);
+            _summary.MonthHealthStatus = HealthInspector.GetMonthStatus(_summary.MonthHealth, _summary.MonthHourRateVariance);
         }
 
         private void SetErrors()
@@ -355,7 +395,7 @@ namespace JiraReporter.Services
             _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
             _summary.ConfirmationErrors = new List<Error>();
             var notConfirmed = _report.Settings.IndividualDraftConfirmations
-                .Where(d=>d.ReportDate == _report.ToDate)
+                .Where(d => d.ReportDate == _report.ToDate)
                 .Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != _report.ToDate)
                 .ToList();
 
@@ -483,7 +523,7 @@ namespace JiraReporter.Services
         }
 
         private void GetStatusMonthValues()
-        {            
+        {
             _summary.MonthEstimated = new ChartElement();
             _summary.MonthEstimated.ActualValueSeconds = _summary.Timing.MonthAverageEstimated;
             _summary.MonthEstimated.ActualValue = _summary.Timing.MonthAverageEstimatedString;
@@ -503,7 +543,7 @@ namespace JiraReporter.Services
             var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
             var reportDate = _report.ToDate.AddDays(-1);
             workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, reportDate.AddDays(1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions);
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions); ;
             workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions);
             workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.AddDays(1), _policy.MonthlyOptions);
             if (_sprint != null)

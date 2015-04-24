@@ -81,7 +81,7 @@ namespace JiraReporter.Services
         {
             this._currentAuthor = a;
             a.HasSprint = _context.HasSprint;
-            a.IssueSearchUrl = _context.IssueSearchUrl;
+            SetIssuesSearchUrl();
             SetTimesheets();
             SetCommits();
             OrderIssues();
@@ -97,6 +97,11 @@ namespace JiraReporter.Services
             SetOverrideEmail();
             SetAuthorIsEmpty();
             SetImage();
+        }
+
+        private void SetIssuesSearchUrl()
+        {
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "'and project=" + _context.ProjectKey);
         }
 
         private void SetName()

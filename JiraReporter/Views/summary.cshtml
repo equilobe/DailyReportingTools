@@ -162,9 +162,24 @@ else
             @if (Model.HasSprint)
             {
                 <tr>
-                    <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <img src="https://dailyreport.equilobe.com/content/images/report/sprint.png" />
-                        <span style="color:black; display:inline-block; padding-top:5px">Sprint</span>
+                    <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                        <table>
+                            <tr>
+                                <td align="center" width="90" height="48" style="text-align:center">
+                                    <img src="https://dailyreport.equilobe.com/content/images/report/sprint.png" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" align="center" style="text-align:center">
+                                    <span style="color:black; font-size:12px">@Model.Sprint.name</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" align="center" style="text-align:center">
+                                    <span style="color:black; font-size:12px">@Model.SprintStatus</span>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                     <td style="padding:0px; padding-bottom:10px; height:75px">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
@@ -211,9 +226,24 @@ else
             @if (Model.HasMonth)
             {
                 <tr>
-                    <td width="75" height="55" style="max-width:55px; max-height:55px; border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <img src="https://dailyreport.equilobe.com/content/images/report/calendar_month.png" />
-                        <span style="color:black; display:inline-block; padding-top:5px">Month</span>
+                    <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                        <table>
+                            <tr>
+                                <td align="center" width="90" height="48" style="text-align:center">
+                                    <img src="https://dailyreport.equilobe.com/content/images/report/calendar_month.png" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" align="center" style="text-align:center">
+                                    <span style="color:black;; font-size:12px">@Model.MonthName</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" align="center" style="text-align:center">
+                                    <span style="color:black; font-size:12px">@Model.MonthStatus</span>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                     <td style="padding:0px; padding-bottom:10px; height:55px;">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
