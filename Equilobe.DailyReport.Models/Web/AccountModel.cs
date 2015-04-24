@@ -24,22 +24,6 @@ namespace Equilobe.DailyReport.Models.Web
         public bool RememberMe { get; set; }
     }
 
-    public class AccountResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; }
-        public List<string> ErrorList { get; set; }
-        public bool HasErrors
-        {
-            get
-            {
-                if (ErrorList == null)
-                    return false;
-                return ErrorList.Count > 0;
-            }
-        }
-    }
-
     public class EmailConfirmation
     {
         public string userId { get; set; }

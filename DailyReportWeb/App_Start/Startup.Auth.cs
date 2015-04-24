@@ -30,7 +30,7 @@ namespace DailyReportWeb
 				{
 					OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
 						validateInterval: TimeSpan.FromMinutes(30),
-						regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+						regenerateIdentity: (manager, user) => manager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie))
 				}
 			});
 

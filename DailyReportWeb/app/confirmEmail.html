@@ -17,10 +17,10 @@
     </div>
     <div class="container" ng-if="status == 'loaded'">
         <h1>
-            <span class="alert-success" ng-if="data.success == true">
+            <span class="alert-success" ng-if="!data.hasError">
                 Confirm successful
             </span>
-            <span class="alert-danger" ng-if="data.success == false">
+            <span class="alert-danger" ng-if="data.hasError">
                 Confirm not successful
             </span>
         </h1>

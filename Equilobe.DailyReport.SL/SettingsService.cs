@@ -28,9 +28,8 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var userId = new UserContext().UserId;
                 var installedInstance = db.InstalledInstances
-                                          .Where(ii => ii.UserId == userId && ii.Id == context.Id)
+                                          .Where(ii => ii.Id == context.Id)
                                           .Single();
 
                 var jiraRequestContext = new JiraRequestContext(installedInstance);

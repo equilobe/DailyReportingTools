@@ -23,6 +23,14 @@ namespace DailyReportWeb.Controllers.Api
         public ISettingsService SettingsService { get; set; }
         public IJiraService JiraService { get; set; }
 
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.Current.GetOwinContext().Authentication;
+            }
+        }
+
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -38,7 +46,7 @@ namespace DailyReportWeb.Controllers.Api
 
 
         [AllowAnonymous]
-        public async Task<AccountResponse> Register(RegisterModel model)
+        public SimpleResult Register(RegisterModel model)
         {
             if (!Validations.Mail(model.Email) ||
                 !Validations.Password(model.Password) ||
@@ -47,80 +55,51 @@ namespace DailyReportWeb.Controllers.Api
 
             var credentialsValid = JiraService.CredentialsValid(model, false);
             if (!credentialsValid)
-                return new AccountResponse()
-                {
-                    Success = false,
-                    Message = "Invalid JIRA username or password"
-                };
-
-            List<string> errors = new List<string>();
-
-            if (errors.Count != 0)
-            {
-                return new AccountResponse()
-                {
-                    Success = false,
-                    ErrorList = errors,
-                    Message = "Correct errors first."
-                };
-            }
+                return SimpleResult.Error("Invalid JIRA username or password");
 
             var user = new ApplicationUser()
             {
                 UserName = model.Email,
                 Email = model.Email
             };
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
+            IdentityResult result = UserManager.Create(user, model.Password);
             if (!result.Succeeded)
-                return new AccountResponse()
-                {
-                    Success = false,
-                    Message = result.Errors.FirstOrDefault(),
-                    ErrorList = result.Errors.ToList()
-                };
+                return SimpleResult.Error(result.Errors.First());
 
             DataService.SaveInstance(model);
 
             // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-            string code = HttpUtility.UrlEncode(await UserManager.GenerateEmailConfirmationTokenAsync(user.Id));
+            string code = HttpUtility.UrlEncode(UserManager.GenerateEmailConfirmationToken(user.Id));
             var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}",
                                              UrlExtensions.GetHostUrl(Request.RequestUri.OriginalString),
                                              user.Id,
                                              code);
 
-            await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-            return new AccountResponse()
-            {
-                Success = true,
-                Message = "Account confirmation details has been sent to your mail."
-            };
+            return SimpleResult.Success("Account confirmation details has been sent to your mail.");
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<AccountResponse> ConfirmEmail([FromBody]EmailConfirmation emailConfirmation)
+        public SimpleResult ConfirmEmail([FromBody]EmailConfirmation emailConfirmation)
         {
             string userId = emailConfirmation.userId;
             string code = HttpUtility.UrlDecode(emailConfirmation.code);
+
             if (userId == null || code == null)
-                return new AccountResponse() { Success = false };
+                return SimpleResult.Error("Invalid activation token.");
 
-            if (UserManager.FindById(userId).EmailConfirmed)
-                return new AccountResponse()
-                {
-                    Success = false,
-                    Message = "Your account was already activated."
-                };
+            var user = UserManager.FindById(userId);
+            if (user == null)
+                return SimpleResult.Error("Invalid activation token.");
+            if (user.EmailConfirmed)
+                return SimpleResult.Error("Your account was already activated.");
 
-            IdentityResult result = await UserManager.ConfirmEmailAsync(userId, code);
+            IdentityResult result = UserManager.ConfirmEmail(userId, code);
             if (!result.Succeeded)
-                return new AccountResponse()
-                {
-                    Success = false,
-                    Message = result.Errors.First()
-                };
+                return SimpleResult.Error(result.Errors.First());
 
             var instanceId = UserManager.FindById(userId)
                                         .InstalledInstances
@@ -128,74 +107,37 @@ namespace DailyReportWeb.Controllers.Api
                                         .Id;
             SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
 
-            return new AccountResponse()
-            {
-                Success = true,
-                Message = "Your account was activated. You can now sign in."
-            };
+            return SimpleResult.Success("Your account was activated. You can now sign in.");
         }
 
         [AllowAnonymous]
-        public async Task<AccountResponse> Login(LoginModel model)
+        public SimpleResult Login(LoginModel model)
         {
             if (!Validations.Mail(model.Email))
                 throw new ArgumentException();
 
-            List<string> errors = new List<string>();
-            if (errors.Count != 0)
-                return new AccountResponse()
-                {
-                    Success = false,
-                    ErrorList = errors,
-                    Message = "Correct errors first."
-                };
-
-            var user = await UserManager.FindAsync(model.Email, model.Password);
+            var user = UserManager.Find(model.Email, model.Password);
 
             if (user == null || UserManager.FindByEmail(model.Email) == null)
-                return new AccountResponse()
-                {
-                    Success = false,
-                    ErrorList = errors,
-                    Message = "Invalid username or password."
-                };
+                return SimpleResult.Error("Invalid username or password.");
 
-            if (!UserManager.IsEmailConfirmed(user.Id))
-                return new AccountResponse()
-                {
-                    Success = false,
-                    Message = "Account has not been activated yet."
-                };
+            if (!user.EmailConfirmed)
+                return SimpleResult.Error("Account has not been activated yet.");
 
-            await SignInAsync(user, model.RememberMe);
-            return new AccountResponse()
-            {
-                Success = true
-            };
+            SignIn(user, model.RememberMe);
+
+            return SimpleResult.Success("");
         }
 
-        public AccountResponse Logout()
+        private void SignIn(ApplicationUser user, bool isPersistent)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return new AccountResponse()
-            {
-                Success = true
-            };
+            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie));
         }
 
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.Current.GetOwinContext().Authentication;
-            }
-        }
-
-        private async Task SignInAsync(ApplicationUser user, bool isPersistent)
+        public void Logout()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, await user.GenerateUserIdentityAsync(UserManager));
         }
-
     }
 }
