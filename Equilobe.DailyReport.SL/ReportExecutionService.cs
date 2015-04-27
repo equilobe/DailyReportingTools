@@ -194,9 +194,6 @@ namespace Equilobe.DailyReport.SL
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate.Value == context.Date.Date).ToList();
 
-                if (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today)
-                    return false;
-
                 if (report.SerializedAdvancedSettings == null)
                     return false;
 
@@ -206,9 +203,6 @@ namespace Equilobe.DailyReport.SL
                     return false;
 
                 if (policy.AdvancedOptions.NoIndividualDraft)
-                    return true;
-
-                if (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today)
                     return true;
 
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
