@@ -49,17 +49,17 @@ namespace DailyReportWeb.Controllers.Api
         private string GetDraftConfirmationDetails(ExecutionContext context, AdvancedReportSettings advancedSettings, bool confirmationHasError)
         {
             if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
-                return "You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.";
+                return "You are trying to confirm a full draft report sent another day, but you can only confirm reports that were sent today.";
 
             var recipients = ReportExecutionService.GetFinalReportRecipients(advancedSettings);
 
             using (var db = new ReportsDb())
             {
-                var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
-                var draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
+                var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
+                var reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
 
-                if (draftSentDate.Value.Date == DateTime.Today)
-                    return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
+                if (reportSentDate != null && reportSentDate.Value.Date == DateTime.Today)
+                    return string.Format("The final report was already sent at {0} to {1}", reportSentDate.Value.ToShortTimeString(), recipients);
             }
 
             if (!confirmationHasError)
