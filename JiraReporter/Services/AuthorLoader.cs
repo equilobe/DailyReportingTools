@@ -328,8 +328,8 @@ namespace JiraReporter.Services
 
         private void SetAuthorIsEmpty()
         {
-            var hasInProgress = !_currentAuthor.InProgressTasks.Issues.IsEmpty();
-            var hasOpenTasks = !_currentAuthor.OpenTasks.Issues.IsEmpty();
+            var hasInProgress = _currentAuthor.InProgressTasks != null && !_currentAuthor.InProgressTasks.Issues.IsEmpty();
+            var hasOpenTasks = _currentAuthor.OpenTasks != null && !_currentAuthor.OpenTasks.Issues.IsEmpty();
             var hasDayLogs = !_currentAuthor.DayLogs.IsEmpty();
             var hasIssues = (!_currentAuthor.MonthIssues.IsEmpty()
                 || !_currentAuthor.SprintIssues.IsEmpty());

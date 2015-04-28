@@ -1,5 +1,6 @@
 ﻿@{
     var day = string.Empty;
+    var colspanAtr = "";
 }
 
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
@@ -89,7 +90,7 @@ else
                                                         @Square("#F60")
                                                     </td>
                                                     <td style="padding-left:2px">
-                                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
+                                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.Sprint.name (h/day)</span>
                                                     </td>
                                                 }
 
@@ -99,7 +100,7 @@ else
                                                     @Square("#F0AD4E")
                                                 </td>
                                                 <td style="padding-left:2px">
-                                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
+                                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.MonthName (h/day)</span>
                                                 </td>
                                                 <td>
                                                     @Square("#337AB7")
