@@ -42,24 +42,24 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>
-                            Final Draft options:
+                            Full Draft options:
                         </label>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.sendDraftToAllUsers" />
-                                Send final draft to all users
+                                Send full draft to all users
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.sendDraftToProjectManager" ng-checked="data.advancedOptions.sendDraftToProjectManager || data.advancedOptions.sendDraftToAllUsers" ng-disabled="data.advancedOptions.sendDraftToAllUsers" />
-                                Send final draft to project manager
+                                Send full draft to project manager
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.sendDraftToOthers" />
-                                Send final draft to others
+                                Send full draft to others
                             </label>
                         </div>
                         <div class="form-group">
@@ -73,18 +73,18 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>
-                            Report options:
+                            Final Report options:
                         </label>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.sendFinalToAllUsers" />
-                                Send report to all users
+                                Send final report to all users
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.sendFinalToOthers" />
-                                Send report to others
+                                Send final report to others
                             </label>
                         </div>
                         <label class="hidden-sm hidden-xs">&nbsp;</label>
@@ -431,13 +431,13 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.noDraft" />
-                                Do not send a draft report
+                                Do not send full draft report
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="data.advancedOptions.noIndividualDraft" ng-checked="data.advancedOptions.noIndividualDraft || data.advancedOptions.noDraft" ng-disabled="data.advancedOptions.noDraft" />
-                                Do not send a draft report to each user
+                                Do not send individual draft report
                             </label>
                         </div>
                     </div>

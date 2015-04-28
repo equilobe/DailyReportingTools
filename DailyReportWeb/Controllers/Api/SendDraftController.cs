@@ -51,7 +51,7 @@ namespace DailyReportWeb.Controllers.Api
         private string GetDraftConfirmationDetails(ExecutionContext context, AdvancedReportSettings advancedSettings, List<JiraUser> jiraUsers, bool sendHasError)
         {
             if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
-                return "You are trying to resend a report sent another day, but you can only resend reports that were sent today.";
+                return "You are trying to resend a full draft report sent another day, but you can only resend reports that were sent today.";
 
             var recipients = ReportExecutionService.GetFullDraftRecipients(advancedSettings);
 
@@ -60,7 +60,7 @@ namespace DailyReportWeb.Controllers.Api
                 var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
                 var reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
 
-                if (reportSentDate.Value.Date == DateTime.Today)
+                if (reportSentDate != null && reportSentDate.Value.Date == DateTime.Today)
                     return string.Format("The final report was already sent at {0} to {1}", reportSentDate.Value.ToShortTimeString(), recipients);
             }
 

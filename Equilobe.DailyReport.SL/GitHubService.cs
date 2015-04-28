@@ -9,6 +9,9 @@ namespace Equilobe.DailyReport.SL
     {
         private GithubClient GetClient(ICredentials context)
         {
+            if (context == null)
+                context = new Models.Credentials();
+
             return new GithubClient(context.Username, context.Password);
         }
 

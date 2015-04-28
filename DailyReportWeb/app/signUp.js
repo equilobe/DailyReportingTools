@@ -17,16 +17,16 @@ angular.module('app')
                 $interval.cancel($scope.setTimeZone);
             }
         }, 300);
-        
+
         $scope.signUp = function ($scope) {
             $scope.status = "saving";
             $scope.form.$setPristine();
 
             $http.post("/api/account/register", $scope.form)
                 .success(function (response) {
-                    if (response.success) {
-                        $scope.status = "success";
+                    if (!response.hasError) {
                         $scope.message = response.message;
+                        $scope.status = "success";
                     }
                     else {
                         $scope.message = response.message;
