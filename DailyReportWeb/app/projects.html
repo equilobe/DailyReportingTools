@@ -50,7 +50,7 @@
         </div>
         <div class="container projects" ng-if="instance.length">
             <div ng-repeat="project in instance">
-                <a ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/">
+                <a class="project" ng-href="app/instances/{{project.installedInstanceId}}/projects/{{project.id}}/settings/">
                     <h3>
                         {{project.projectName}}
                     </h3>

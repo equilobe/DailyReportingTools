@@ -225,16 +225,6 @@ div.disabled {
     padding-bottom: 20px;
 }
 
-.project {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-top: 1px solid #ddd;
-
-    > div:first-of-type {
-        padding-top: 7px;
-    }
-}
-
 .form-notification {
     position: absolute;
     right: 0;
@@ -411,6 +401,10 @@ div.disabled {
     form {
         max-width: 500px;
     }
+
+    .instance {
+        display: inline-block;
+    }
 }
 
 [data-page='projects'] {
@@ -421,6 +415,10 @@ div.disabled {
         & > span {
             background-color: transparent;
         }
+    }
+
+    .project {
+        display: inline-block;
     }
 }
 

@@ -33,7 +33,7 @@
     <div class="container" ng-if="instances.length">
         <div class="row" ng-repeat="instance in instances">
             <div class="col-sm-8">
-                <a ng-href="app/instances/{{instance.id}}/projects/">
+                <a class="instance" ng-href="app/instances/{{instance.id}}/projects/">
                     <h3>
                         {{instance.hostname}}
                     </h3>
