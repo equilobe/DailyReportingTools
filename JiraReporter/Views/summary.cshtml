@@ -2,14 +2,15 @@
     var day = string.Empty;
     var imgSrc = string.Empty;
     var items = "items";
+    var colspanAtr = "";
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
-    day = "Day avg.";
+    day = "Avg. work logged during report days (h/day)";
 }
 else
 {
-    day = Model.FromDate.DayOfWeek.ToString();
+    day = "Work logged on " + Model.FromDate.DayOfWeek.ToString();
 }
 
 @if (Model.Errors != null && Model.Errors.Count > 0)
@@ -142,19 +143,21 @@ else
                                     @Square("#999")
                                 </td>
                                 <td style="padding-right:5px">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Estimated avg.</span>
+                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. estimated work (h/day)</span>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td>
                                     @Square("#FF6600")
                                 </td>
                                 <td style="padding-right:5px;">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Done avg.</span>
+                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged (h/day)</span>
                                 </td>
                                 <td>
                                     @Square("#337AB7")
                                 </td>
                                 <td style="padding-right:5px;">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Remaining avg.</span>
+                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -300,10 +303,14 @@ else
                 <td colspan="2">
                     <table>
                         <tr>
+                            @if(Model.Sprint == null)
+                            {
+                                colspanAtr = "2";
+                            }
                             <td>
                                 @Square("#5CB85C")
                             </td>
-                            <td style="padding-right:5px">
+                            <td colspan="@colspanAtr" style="padding-right:5px">
                                 <span style="color:black; font-size:11px; padding-left:2px">@day</span>
                             </td>
 
@@ -313,20 +320,23 @@ else
                                     @Square("#F60")
                                 </td>
                                 <td style="padding-left:2px">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Sprint avg.</span>
+                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
                                 </td>
                             }
+
+                        </tr>
+                        <tr>
                             <td>
                                 @Square("#F0AD4E")
                             </td>
                             <td style="padding-left:2px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Month avg.</span>
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
                             </td>
                             <td>
                                 @Square("#337AB7")
                             </td>
                             <td style="padding-left:2px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Remaining avg.</span>
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
                             </td>
                         </tr>
                     </table>

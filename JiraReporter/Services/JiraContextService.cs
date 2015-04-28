@@ -161,6 +161,8 @@ namespace JiraReporter.Services
         {
             if (Policy.AdvancedOptions == null)
                 Policy.AdvancedOptions = new AdvancedOptions();
+            if (string.IsNullOrEmpty(Policy.AdvancedOptions.ReportTitle))
+                Policy.AdvancedOptions.ReportTitle = Context.ProjectName;
         }
 
         private void SetReportType()
