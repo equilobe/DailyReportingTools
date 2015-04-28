@@ -1,6 +1,7 @@
 ﻿@{
     var day = string.Empty;
     var imgSrc = string.Empty;
+    var items = "items";
 }
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
 {
@@ -57,18 +58,22 @@ else
                                     <td style="vertical-align:top; width:15px">
                                         @Dot()
                                     </td>
-                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned items with no estimate</b></td>
+                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned items with no remaining estimate</b></td>
                                 </tr>
                             }
                             @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
                             {
                                 foreach (var author in Model.AuthorsWithErrors)
                                 {
+                                    if(author.Errors.Count == 1)
+                                    {
+                                        items = "item";
+                                    }
                                     <tr>
                                         <td style="vertical-align:top; width:15px">
                                             @Dot()
                                         </td>
-                                        <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count items with no estimate</b></td>
+                                        <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</b></td>
                                     </tr>
                                 }
                             }
