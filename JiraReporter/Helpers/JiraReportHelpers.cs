@@ -22,7 +22,7 @@ namespace JiraReporter.Helpers
                 title += report.Author.Name + " - ";
             }
 
-            title += report.ProjectName;
+            title += report.Policy.AdvancedOptions.ReportTitle;
 
             return title;
         }
@@ -38,7 +38,7 @@ namespace JiraReporter.Helpers
             {
                 subject += report.Author.Name + " - ";
             }
-            subject += " " + report.ProjectName + " | " + report.Date;
+            subject += " " + report.Policy.AdvancedOptions.ReportTitle + " | " + report.Date;
 
             return subject;
         }
