@@ -31,7 +31,7 @@ namespace JiraReporter
         private void SetRemainingUnassignedWidths(Summary summary, int workSummaryMax)
         {
             summary.UnassignedRemaining = new ChartElement();
-            summary.UnassignedRemaining.ActualValueSeconds = summary.Timing.UnassignedTasksHoursAverageLeft;
+            summary.UnassignedRemaining.ActualValueSeconds = summary.Timing.UnassignedTasksHoursAverageLeft * 3600;
             summary.UnassignedRemaining.ActualValue = summary.Timing.UnassignedTasksTimeLeftString;
             SetChartElementWidth(summary.SummaryChartWidth, workSummaryMax, summary.UnassignedRemaining);
         }

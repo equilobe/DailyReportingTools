@@ -32,6 +32,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string RemainingMonthAverageString { get; set; }
 
         public double RemainingSprintAverage { get; set; }
+        public double RemainingSprintAverageHours
+        {
+            get
+            {
+                return RemainingSprintAverage / 3600;
+            }
+        }
         public string RemainingSprintAverageString { get; set; }
     }
 }

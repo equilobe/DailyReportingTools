@@ -207,7 +207,7 @@ else
                         {
                             @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                         }
-                        @if (Model.Timing.RemainingSprintAverage >= 0.1)
+                        @if (Model.Timing.RemainingSprintAverageHours >= 0.1)
                         {
                             @ChartBar("#337AB7", @Model.SprintRemaining.Width, @Model.ChartMaxWidth, @Model.SprintRemaining.ActualValue)
                         }
