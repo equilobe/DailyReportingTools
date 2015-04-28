@@ -70,7 +70,7 @@ namespace DailyReportWeb.Controllers.Api
                     return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
             }
 
-            if (!ReportExecutionService.CanSendFullDraft(context) && !ReportExecutionService.IsForcedByLead(context))
+            if (!ReportExecutionService.CanSendFullDraft(context))
             {
                 var usersToConfirm = ReportExecutionService.GetRemainingUsersToConfirmIndividualDraft(context, jiraUsers);
                 return string.Format("{0} must confirm. After everyone confirms, the full draft will be sent to {1}", usersToConfirm, recipients);
