@@ -12,11 +12,19 @@ else
 }
 
 
-<table width="600" style="font-family:'Segoe UI', Arial, sans-serif; font-size:12px">
+<table width="600" style="min-width:0 !important; font-family:'Segoe UI', Arial, sans-serif; font-size:12px">
     <tbody>
         <tr>
             <td>
                 @Partial("Views/header.cshtml", Model)
+
+                <table>
+                    <tr>
+                        <td height="15" style="font-size:15px; line-height:15px">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
 
                 @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
                 {
@@ -41,7 +49,7 @@ else
                                         <tbody>
                                             <tr>
                                                 <td width="15" style="vertical-align:top;">
-                                                    @Dot();
+                                                    @Dot()
                                                 </td>
                                                 <td style="text-align: left">
                                                     <b style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no remaining estimate</b>
