@@ -14,6 +14,10 @@ angular.module('app')
 
         $http.get("/api/instances")
             .success(function (list) {
+                list.forEach(function (item) {
+                    item.hostname = item.baseUrl.substring(item.baseUrl.indexOf('/') + 2, item.baseUrl.length).split('/')[0];
+                });
+
                 $scope.instances = list;
             })
             .finally(function () {
@@ -58,6 +62,18 @@ angular.module('app')
             $scope.status = 'saving';
             $scope.form.$setPristine();
 
+            var newInstanceHostname = $scope.form.baseUrl.substring($scope.form.baseUrl.indexOf('/') + 2, $scope.form.baseUrl.length).split('/')[0];
+            $scope.instances.forEach(function (instance) {
+                if (instance.baseUrl.indexOf(newInstanceHostname) != -1) {
+                    $scope.message = "Jira server is already present!";
+                    $scope.status = "error";
+                    return;
+                }
+            });
+
+            if ($scope.status == "error")
+                return;
+
             $http.post("/api/instances/", $scope.form)
                  .success(function (list) {
                      $scope.$parent.instances = list;
@@ -65,8 +81,8 @@ angular.module('app')
                      $scope.status = "success";
                  })
                  .error(function () {
-                     $scope.status = "error";
                      $scope.message = "Invalid JIRA username or password";
+                     $scope.status = "error";
                  });
         };
     }]);
