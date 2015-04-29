@@ -99,6 +99,8 @@ namespace JiraReporter.Services
 
         private void SetSprintStatus()
         {
+            if (!_report.HasSprint)
+                return;
 
             if (_summary.Sprint.state != "ACTIVE")
             {

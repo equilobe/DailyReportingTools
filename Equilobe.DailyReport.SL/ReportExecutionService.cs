@@ -194,6 +194,12 @@ namespace Equilobe.DailyReport.SL
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate.Value == context.Date.Date).ToList();
 
+                if (WasFinalReportSent(context, report))
+                    return false;
+
+                if (WasFullDraftReportSent(context, report))
+                    return true;
+
                 if (report.SerializedAdvancedSettings == null)
                     return false;
 
@@ -215,6 +221,16 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        private bool WasFinalReportSent(ExecutionContext context, BasicSettings report)
+        {
+            return (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == context.Date.Date);
+        }
+
+        private bool WasFullDraftReportSent(ExecutionContext context, BasicSettings report)
+        {
+            return (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == context.Date.Date);
+        }
+
         SimpleResult CanSendIndividualDraft(ExecutionContext context)
         {
             var reportSettings = new BasicSettings();
@@ -224,22 +240,13 @@ namespace Equilobe.DailyReport.SL
                 report.CopyPropertiesOnObjects(reportSettings);
             }
 
-            if (WasFinalDraftSentToday(reportSettings.ReportExecutionSummary, context.Date.Date))
+            if (WasFullDraftReportSent(context, reportSettings))
                 return SimpleResult.Error("Cannot resend individual draft if full draft was already sent!");
 
             if (IsIndividualDraftConfirmed(context, reportSettings.IndividualDraftConfirmations))
                 return SimpleResult.Error("Cannot resend individual draft if it's confirmed!");
 
             return SimpleResult.Success("");
-        }
-
-        bool WasFinalDraftSentToday(ReportExecutionSummary summary, DateTime reportDate)
-        {
-            if (summary != null)
-                if (summary.LastDraftSentDate != null && summary.LastDraftSentDate.Value.Date == reportDate)
-                    return true;
-
-            return false;
         }
 
         void SetFinalDraftConfirmation(ExecutionContext context)
@@ -285,7 +292,7 @@ namespace Equilobe.DailyReport.SL
                 report.CopyPropertiesOnObjects(basicSettings);
             }
 
-            if (WasFinalDraftSentToday(basicSettings.ReportExecutionSummary, context.Date.Date))
+            if (WasFullDraftReportSent(context, basicSettings))
                 return SimpleResult.Error("Individual draft report already confirmed!");
 
             if (basicSettings.IndividualDraftConfirmations == null)

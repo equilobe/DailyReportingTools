@@ -101,7 +101,10 @@ namespace JiraReporter.Services
 
         private void SetIssuesSearchUrl()
         {
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "'and project=" + _context.ProjectKey);
+            if (!_context.HasSprint)
+                return;
+
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey +" and sprint=" + _context.Sprint.id);
         }
 
         private void SetName()
