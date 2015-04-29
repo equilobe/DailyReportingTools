@@ -14,205 +14,191 @@ else
 
 
 <table width="600" style="min-width:0 !important; font-family:'Segoe UI', Arial, sans-serif; font-size:12px">
-    <tbody>
-        <tr>
-            <td>
-                @Partial("Views/header.cshtml", Model)
 
-                <table>
+    <tr>
+        <td>
+            @Partial("Views/header.cshtml", Model)
+
+            <br />
+            <br />
+            <br />
+
+            @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
+            {
+                <table style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
+
                     <tr>
-                        <td height="15" style="font-size:15px; line-height:15px">
-                            &nbsp;
-                        </td>
+                        <th>
+                            <table>
+
+                                <tr>
+                                    <td>
+                                        @ErrorIcon()
+                                    </td>
+                                    <td>
+                                        <b style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</b>
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <table style="color:#D9534F;">
+
+                                <tr>
+                                    <td width="15" style="vertical-align:top;">
+                                        @Dot()
+                                    </td>
+                                    <td style="text-align: left">
+                                        <b style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no remaining estimate</b>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </th>
                     </tr>
+
                 </table>
+            }
+            @if (!Model.Author.IsEmpty)
+            {
+                <table style="padding-top:15px">
 
-                @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
-                {
-                    <table style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
-                        <tbody>
-                            <tr>
-                                <th>
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    @ErrorIcon()
-                                                </td>
-                                                <td>
-                                                    <b style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</b>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table style="color:#D9534F;">
-                                        <tbody>
-                                            <tr>
-                                                <td width="15" style="vertical-align:top;">
-                                                    @Dot()
-                                                </td>
-                                                <td style="text-align: left">
-                                                    <b style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no remaining estimate</b>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </th>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-                @if (!Model.Author.IsEmpty)
-                {
-                    <table style="padding-top:15px">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <h3 style="padding-top:15px; color:black; margin-bottom:0px">Work summary</h3>
-                                    <table>
-                                        <tbody>
-                                            @if (!Model.HasSprint)
-                                            {
-                                                colspanAtr = "2";
-                                            }
-                                            <tr>
-                                                <td>
-                                                    @Square("#5CB85C")
-                                                </td>
-                                                <td colspan="@colspanAtr" style="padding-right:5px">
-                                                    <span style="color:black; font-size:11px; padding-left:2px">@day</span>
-                                                </td>
-
-                                                @if (Model.HasSprint)
-                                                {
-                                                    <td>
-                                                        @Square("#F60")
-                                                    </td>
-                                                    <td style="padding-left:2px">
-                                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.Sprint.name (h/day)</span>
-                                                    </td>
-                                                }
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    @Square("#F0AD4E")
-                                                </td>
-                                                <td colspan="@colspanAtr" style="padding-left:2px">
-                                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.MonthName (h/day)</span>
-                                                </td>
-
-                                                @if (Model.HasSprint)
-                                                {
-                                                    <td>
-                                                        @Square("#337AB7")
-                                                    </td>
-                                                    <td style="padding-left:2px">
-                                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                                                    </td>
-                                                }
-
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table cellspacing="0" style="padding-top:20px">
-                                        <tbody>
-                                            <tr>
-                                                <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                                                    <img src="@Model.Author.ReportAvatarLink" alt="@Model.Author.FirstName" />
-                                                </td>
-                                                <td height="55" style="padding:0px; padding-bottom:10px;">
-                                                    @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
-                                                    @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
-                                                    {
-                                                        @ChartBar("#5CB85C", @Model.Author.Day.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Day.ActualValue)
-                                                    }
-                                                    else
-                                                    {
-                                                        @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
-                                                    }
-
-                                                    @if (Model.HasSprint)
-                                                    {
-                                                        if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
-                                                        {
-                                                            @ChartBar("#F60", @Model.Author.Sprint.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Sprint.ActualValue)
-                                                        }
-                                                        else
-                                                        {
-                                                            @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
-                                                        }
-                                                    }
-
-                                                    @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
-                                                    {
-                                                        @ChartBar("#F0AD4E", @Model.Author.Month.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Month.ActualValue)
-                                                    }
-                                                    else
-                                                    {
-                                                        @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
-                                                    }
-                                                    @if (Model.HasSprint)
-                                                    {
-                                                        if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
-                                                        {
-                                                            @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
-                                                        }
-                                                        else
-                                                        {
-                                                            @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
-                                                        }
-                                                    }
-
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-
-                <table style="line-height:1.4em">
                     <tr>
                         <td>
-                            @if (Model.Author.IsEmpty)
-                            {
-                                <h3 style="color:orange">There is no logged work or assigned issues</h3>
-                            }
-                            else
-                            {
-                                @Partial("Views/author.cshtml", Model.Author)
-                            }
+                            <h3 style="padding-top:15px; color:black; margin-bottom:0px">Work summary</h3>
+                            <table>
+
+                                @if (!Model.HasSprint)
+                                {
+                                    colspanAtr = "2";
+                                }
+                                <tr>
+                                    <td>
+                                        @Square("#5CB85C")
+                                    </td>
+                                    <td colspan="@colspanAtr" style="padding-right:5px">
+                                        <span style="color:black; font-size:11px; padding-left:2px">@day</span>
+                                    </td>
+
+                                    @if (Model.HasSprint)
+                                    {
+                                        <td>
+                                            @Square("#F60")
+                                        </td>
+                                        <td style="padding-left:2px">
+                                            <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.Sprint.name (h/day)</span>
+                                        </td>
+                                    }
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @Square("#F0AD4E")
+                                    </td>
+                                    <td colspan="@colspanAtr" style="padding-left:2px">
+                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.MonthName (h/day)</span>
+                                    </td>
+
+                                    @if (Model.HasSprint)
+                                    {
+                                        <td>
+                                            @Square("#337AB7")
+                                        </td>
+                                        <td style="padding-left:2px">
+                                            <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                                        </td>
+                                    }
+
+                                </tr>
+
+                            </table>
+
+                            <table cellspacing="0" style="padding-top:20px">
+
+                                <tr>
+                                    <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                                        <img src="@Model.Author.ReportAvatarLink" alt="@Model.Author.FirstName" />
+                                    </td>
+                                    <td height="55" style="padding:0px; padding-bottom:10px;">
+                                        @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
+                                        @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
+                                        {
+                                            @ChartBar("#5CB85C", @Model.Author.Day.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Day.ActualValue)
+                                        }
+                                        else
+                                        {
+                                            @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                        }
+
+                                        @if (Model.HasSprint)
+                                        {
+                                            if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
+                                            {
+                                                @ChartBar("#F60", @Model.Author.Sprint.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Sprint.ActualValue)
+                                            }
+                                            else
+                                            {
+                                                @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                            }
+                                        }
+
+                                        @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
+                                        {
+                                            @ChartBar("#F0AD4E", @Model.Author.Month.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Month.ActualValue)
+                                        }
+                                        else
+                                        {
+                                            @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                        }
+                                        @if (Model.HasSprint)
+                                        {
+                                            if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
+                                            {
+                                                @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
+                                            }
+                                            else
+                                            {
+                                                @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                            }
+                                        }
+
+                                    </td>
+                                </tr>
+
+                            </table>
                         </td>
                     </tr>
 
                 </table>
+            }
 
-                <table>
-                    <tr>
-                        <td height="20">
-                            &nbsp;
-                        </td>
-                    </tr>
-                </table>
+            <table style="line-height:1.4em">
+                <tr>
+                    <td>
+                        @if (Model.Author.IsEmpty)
+                        {
+                            <h3 style="color:orange">There is no logged work or assigned issues</h3>
+                        }
+                        else
+                        {
+                            @Partial("Views/author.cshtml", Model.Author)
+                        }
+                    </td>
+                </tr>
 
-                @Partial("Views/individualDraftButtons.cshtml", Model.Author)
+            </table>
 
-                <table>
-                    <tr>
-                        <td height="25">
-                            &nbsp;
-                        </td>
-                    </tr>
-                </table>
+            <br />
+            <br />
 
-                @Partial("Views/footer.cshtml", Model)
+            @Partial("Views/individualDraftButtons.cshtml", Model.Author)
 
-            </td>
-        </tr>
-    </tbody>
+            <br />
+            <br />
+
+            @Partial("Views/footer.cshtml", Model)
+
+        </td>
+    </tr>
+
 </table>

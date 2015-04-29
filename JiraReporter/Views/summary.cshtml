@@ -16,324 +16,315 @@ else
 @if (Model.Errors != null && Model.Errors.Count > 0)
 {
     <table cellpadding="0" cellspacing="0" style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
-        <tbody>
-            <tr>
-                <td>
-                    <table>
-                        <tbody>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            @ErrorIcon()
+                        </td>
+                        <td>
+                            <b style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</b>
+                        </td>
+                    </tr>
+                </table>
+
+                <table cellpadding="0" cellspacing="0" style="margin-top:5px; color:#D9534F;">
+
+                    @if (Model.CompletedWithEstimateErrors.Count > 0)
+                    {
+                        <tr>
+                            <td style="vertical-align:top; width:15px">
+                                @Dot()
+                            </td>
+                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                        </tr>
+                    }
+                    @if (Model.CompletedWithNoWorkErrors.Count > 0)
+                    {
+                        if (Model.CompletedWithNoWorkErrors.Count == 1)
+                        {
+                            items = "item";
+                        }
+                        else
+                        {
+                            items = "items";
+                        }
+                        <tr>
+                            <td style="vertical-align:top; width:15px">
+                                @Dot()
+                            </td>
+                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed @items with no work logged</b></td>
+                        </tr>
+                    }
+                    @if (Model.UnassignedErrors.Count > 0)
+                    {
+                        if (Model.UnassignedErrors.Count == 1)
+                        {
+                            items = "item";
+                        }
+                        else
+                        {
+                            items = "items";
+                        }
+                        <tr>
+                            <td style="vertical-align:top; width:15px">
+                                @Dot()
+                            </td>
+                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned @items with no remaining estimate</b></td>
+                        </tr>
+                    }
+                    @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
+                    {
+                        foreach (var author in Model.AuthorsWithErrors)
+                        {
+                            if (author.Errors.Count == 1)
+                            {
+                                items = "item";
+                            }
+                            else
+                            {
+                                items = "items";
+                            }
                             <tr>
-                                <td>
-                                    @ErrorIcon()
+                                <td style="vertical-align:top; width:15px">
+                                    @Dot()
                                 </td>
-                                <td>
-                                    <b style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</b>
-                                </td>
+                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</b></td>
                             </tr>
-                        </tbody>
-                    </table>
+                        }
+                    }
+                    @if (Model.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
+                    {
+                        if (Model.AuthorsNotConfirmed.Count > 0)
+                        {
+                            foreach (var author in Model.AuthorsNotConfirmed)
+                            {
+                                <tr>
+                                    <td style="vertical-align:top; width:15px">
+                                        @Dot()
+                                    </td>
+                                    <td colspan="1" style="text-align: left">
+                                        <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
 
-
-                    <table cellpadding="0" cellspacing="0" style="margin-top:5px; color:#D9534F;">
-                        <tbody>
-                            @if (Model.CompletedWithEstimateErrors.Count > 0)
-                            {
-                                <tr>
-                                    <td style="vertical-align:top; width:15px">
-                                        @Dot()
-                                    </td>
-                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
-                                </tr>
-                            }
-                            @if (Model.CompletedWithNoWorkErrors.Count > 0)
-                            {
-                                if (Model.CompletedWithNoWorkErrors.Count == 1)
-                                {
-                                    items = "item";
-                                }
-                                else
-                                {
-                                    items = "items";
-                                }
-                                <tr>
-                                    <td style="vertical-align:top; width:15px">
-                                        @Dot()
-                                    </td>
-                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed @items with no work logged</b></td>
-                                </tr>
-                            }
-                            @if (Model.UnassignedErrors.Count > 0)
-                            {
-                                if (Model.UnassignedErrors.Count == 1)
-                                {
-                                    items = "item";
-                                }
-                                else
-                                {
-                                    items = "items";
-                                }
-                                <tr>
-                                    <td style="vertical-align:top; width:15px">
-                                        @Dot()
-                                    </td>
-                                    <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned @items with no remaining estimate</b></td>
-                                </tr>
-                            }
-                            @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
-                            {
-                                foreach (var author in Model.AuthorsWithErrors)
-                                {
-                                    if (author.Errors.Count == 1)
-                                    {
-                                        items = "item";
-                                    }
-                                    else
-                                    {
-                                        items = "items";
-                                    }
-                                    <tr>
-                                        <td style="vertical-align:top; width:15px">
-                                            @Dot()
-                                        </td>
-                                        <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</b></td>
-                                    </tr>
-                                }
-                            }
-                            @if (Model.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
-                            {
-                                if (Model.AuthorsNotConfirmed.Count > 0)
-                                {
-                                    foreach (var author in Model.AuthorsNotConfirmed)
-                                    {
-                                        <tr>
-                                            <td style="vertical-align:top; width:15px">
-                                                @Dot()
-                                            </td>
-                                            <td colspan="1" style="text-align: left">
-                                                <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
+                </table>
+            </td>
+        </tr>
     </table>
 }
 
 <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px;">
-    <tbody>
-        @if (Model.UnrelatedPullRequests.Count > 0)
-        {
-            <tr>
-                <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                    <b style="color:black; font-size:14px">Unrelated pull requests</b>
-                </th>
-                <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
-                    @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
-                </td>
-            </tr>
-        }
-    </tbody>
+
+    @if (Model.UnrelatedPullRequests.Count > 0)
+    {
+        <tr>
+            <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
+                <b style="color:black; font-size:14px">Unrelated pull requests</b>
+            </th>
+            <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
+                @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
+            </td>
+        </tr>
+    }
+
 </table>
 
 @if (Model.HasStatus)
 {
     <table cellspacing="0" style="padding-top:30px">
-        <tbody>
+
+        <tr>
+            <td colspan="2">
+                <h3 style="margin-top:15px; color:black">Status (h / day)</h3>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table>
+                    <tr>
+                        @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
+                        {
+                            colspanAtr = "";
+                        }
+                        else
+                        {
+                            colspanAtr = "2";
+                        }
+                        <td>
+                            @Square("#5CB85C")
+                        </td>
+                        <td colspan="@colspanAtr" style="padding-right:5px;">
+                            <span style="color:black; font-size:11px; padding-left:2px">@day</span>
+                        </td>
+                        @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
+                        {
+                            <td>
+                                @Square("#999")
+                            </td>
+                            <td style="padding-right:5px">
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. estimated work (h/day)</span>
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
+                        {
+                            colspanAtr = "";
+                        }
+                        else
+                        {
+                            colspanAtr = "2";
+                        }
+                        <td>
+                            @Square("#FF6600")
+                        </td>
+                        <td colspan="@colspanAtr" style="padding-right:5px;">
+                            <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged (h/day)</span>
+                        </td>
+                        @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
+                        {
+                            <td>
+                                @Square("#337AB7")
+                            </td>
+                            <td style="padding-right:5px;">
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" width="75px" height="20px"></td>
+        </tr>
+        @if (Model.HasSprint)
+        {
             <tr>
-                <td colspan="2">
-                    <h3 style="margin-top:15px; color:black">Status (h / day)</h3>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
+                <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                     <table>
-                        <tbody>
-                            <tr>
-                                @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
-                                {
-                                    colspanAtr = "";
-                                }
-                                else
-                                {
-                                    colspanAtr = "2";
-                                }
-                                <td>
-                                    @Square("#5CB85C")
-                                </td>
-                                <td colspan="@colspanAtr" style="padding-right:5px;">
-                                    <span style="color:black; font-size:11px; padding-left:2px">@day</span>
-                                </td>
-                                @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
-                                {
-                                    <td>
-                                        @Square("#999")
-                                    </td>
-                                    <td style="padding-right:5px">
-                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. estimated work (h/day)</span>
-                                    </td>
-                                }
-                            </tr>
-                            <tr>
-                                @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
-                                {
-                                    colspanAtr = "";
-                                }
-                                else
-                                {
-                                    colspanAtr = "2";
-                                }
-                                <td>
-                                    @Square("#FF6600")
-                                </td>
-                                <td colspan="@colspanAtr" style="padding-right:5px;">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged (h/day)</span>
-                                </td>
-                                @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
-                                {
-                                    <td>
-                                        @Square("#337AB7")
-                                    </td>
-                                    <td style="padding-right:5px;">
-                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                                    </td>
-                                }
-                            </tr>
-                        </tbody>
+                        <tr>
+                            <td align="center" width="90" height="48" style="text-align:center">
+                                <img src="https://dailyreport.equilobe.com/content/images/report/sprint.png" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="90" align="center" style="text-align:center">
+                                <span style="color:black; font-size:12px">@Model.Sprint.name</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="90" align="center" style="text-align:center">
+                                <span style="color:black; font-size:12px">@Model.SprintStatus</span>
+                            </td>
+                        </tr>
                     </table>
+                </td>
+                <td style="padding:0px; padding-bottom:10px; height:75px">
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
+                    @if (Model.Timing.AverageWorked >= 0.1)
+                    {
+                        @ChartBar("#5CB85C", @Model.SprintDay.Width, @Model.ChartMaxWidth, @Model.SprintDay.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
+                    }
+                    @if (Model.Policy.AllocatedHoursPerMonth > 0)
+                    {
+                        if (Model.Timing.SprintAverageEstimate >= 0.1)
+                        {
+                            @ChartBar("#999", @Model.SprintEstimated.Width, @Model.ChartMaxWidth, @Model.SprintEstimated.ActualValue)
+                        }
+                        else
+                        {
+                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
+                        }
+                    }
+                    @if (Model.Timing.AverageWorkedSprint >= 0.1)
+                    {
+                        @ChartBar("#FF6600", @Model.SprintDone.Width, @Model.ChartMaxWidth, @Model.SprintDone.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
+                    }
+                    @if (Model.Timing.RemainingSprintAverageHours >= 0.1)
+                    {
+                        @ChartBar("#337AB7", @Model.SprintRemaining.Width, @Model.ChartMaxWidth, @Model.SprintRemaining.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
+                    }
                 </td>
             </tr>
             <tr>
                 <td colspan="2" width="75px" height="20px"></td>
             </tr>
-            @if (Model.HasSprint)
-            {
-                <tr>
-                    <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <table>
-                            <tr>
-                                <td align="center" width="90" height="48" style="text-align:center">
-                                    <img src="https://dailyreport.equilobe.com/content/images/report/sprint.png" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="90" align="center" style="text-align:center">
-                                    <span style="color:black; font-size:12px">@Model.Sprint.name</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="90" align="center" style="text-align:center">
-                                    <span style="color:black; font-size:12px">@Model.SprintStatus</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td style="padding:0px; padding-bottom:10px; height:75px">
-                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
-                        @if (Model.Timing.AverageWorked >= 0.1)
+        }
+
+        @if (Model.HasMonth)
+        {
+            <tr>
+                <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <table>
+                        <tr>
+                            <td align="center" width="90" height="48" style="text-align:center">
+                                <img src="https://dailyreport.equilobe.com/content/images/report/calendar_month.png" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="90" align="center" style="text-align:center">
+                                <span style="color:black;; font-size:12px">@Model.MonthName</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="90" align="center" style="text-align:center">
+                                <span style="color:black; font-size:12px">@Model.MonthStatus</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="padding:0px; padding-bottom:10px; height:55px;">
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
+
+                    @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+
+                    @if (Model.Policy.AllocatedHoursPerMonth > 0)
+                    {
+                        if (Model.Timing.MonthAverageEstimated >= 0.1)
                         {
-                            @ChartBar("#5CB85C", @Model.SprintDay.Width, @Model.ChartMaxWidth, @Model.SprintDay.ActualValue)
+                            @ChartBar("#999", @Model.MonthEstimated.Width, @Model.ChartMaxWidth, @Model.MonthEstimated.ActualValue)
                         }
                         else
                         {
-                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
-                        @if (Model.Policy.AllocatedHoursPerMonth > 0)
-                        {
-                            if (Model.Timing.SprintAverageEstimate >= 0.1)
-                            {
-                                @ChartBar("#999", @Model.SprintEstimated.Width, @Model.ChartMaxWidth, @Model.SprintEstimated.ActualValue)
-                            }
-                            else
-                            {
-                                @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
-                            }
-                        }
-                        @if (Model.Timing.AverageWorkedSprint >= 0.1)
-                        {
-                            @ChartBar("#FF6600", @Model.SprintDone.Width, @Model.ChartMaxWidth, @Model.SprintDone.ActualValue)
-                        }
-                        else
-                        {
-                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
-                        }
-                        @if (Model.Timing.RemainingSprintAverageHours >= 0.1)
-                        {
-                            @ChartBar("#337AB7", @Model.SprintRemaining.Width, @Model.ChartMaxWidth, @Model.SprintRemaining.ActualValue)
-                        }
-                        else
-                        {
-                            @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
-                        }
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" width="75px" height="20px"></td>
-                </tr>
-
-            }
-
-            @if (Model.HasMonth)
-            {
-                <tr>
-                    <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <table>
-                            <tr>
-                                <td align="center" width="90" height="48" style="text-align:center">
-                                    <img src="https://dailyreport.equilobe.com/content/images/report/calendar_month.png" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="90" align="center" style="text-align:center">
-                                    <span style="color:black;; font-size:12px">@Model.MonthName</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="90" align="center" style="text-align:center">
-                                    <span style="color:black; font-size:12px">@Model.MonthStatus</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td style="padding:0px; padding-bottom:10px; height:55px;">
-                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
-
+                    }
+                    @if (Model.Timing.AverageWorkedMonth >= 0.1)
+                    {
+                        @ChartBar("#FF6600", @Model.MonthDone.Width, @Model.ChartMaxWidth, @Model.MonthDone.ActualValue)
+                    }
+                    else
+                    {
                         @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-
-                        @if (Model.Policy.AllocatedHoursPerMonth > 0)
-                        {
-                            if (Model.Timing.MonthAverageEstimated >= 0.1)
-                            {
-                                @ChartBar("#999", @Model.MonthEstimated.Width, @Model.ChartMaxWidth, @Model.MonthEstimated.ActualValue)
-                            }
-                            else
-                            {
-                                @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                            }
-                        }
-                        @if (Model.Timing.AverageWorkedMonth >= 0.1)
-                        {
-                            @ChartBar("#FF6600", @Model.MonthDone.Width, @Model.ChartMaxWidth, @Model.MonthDone.ActualValue)
-                        }
-                        else
-                        {
-                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        }
-                        @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage >= 0.1)
-                        {
-                            @ChartBar("#337AB7", @Model.MonthRemaining.Width, @Model.ChartMaxWidth, @Model.MonthRemaining.ActualValue)
-                        }
-                        else
-                        {
-                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
+                    }
+                    @if (Model.Policy.AllocatedHoursPerMonth > 0 && Model.Timing.RemainingMonthAverage >= 0.1)
+                    {
+                        @ChartBar("#337AB7", @Model.MonthRemaining.Width, @Model.ChartMaxWidth, @Model.MonthRemaining.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    }
+                </td>
+            </tr>
+        }
     </table>
 
 }
@@ -341,142 +332,142 @@ else
 @if (Model.HasWorkSummary)
 {
     <table cellspacing="0" style="padding-top:30px">
-        <tbody>
-            <tr>
-                <td colspan="2">
-                    <h3 style="color:black">Team summary (h / day)</h3>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <table>
-                        @if (Model.Sprint == null)
+
+        <tr>
+            <td colspan="2">
+                <h3 style="color:black">Team summary (h / day)</h3>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table>
+                    @if (Model.Sprint == null)
+                    {
+                        colspanAtr = "2";
+                    }
+                    else
+                    {
+                        colspanAtr = "";
+                    }
+                    <tr>
+                        <td>
+                            @Square("#5CB85C")
+                        </td>
+                        <td colspan="@colspanAtr" style="padding-right:5px">
+                            <span style="color:black; font-size:11px; padding-left:2px">@day</span>
+                        </td>
+
+                        @if (Model.Sprint != null)
                         {
-                            colspanAtr = "2";
+                            <td>
+                                @Square("#F60")
+                            </td>
+                            <td style="padding-left:2px">
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
+                            </td>
+                        }
+
+                    </tr>
+                    <tr>
+                        <td>
+                            @Square("#F0AD4E")
+                        </td>
+                        <td colspan="@colspanAtr" style="padding-left:2px">
+                            <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
+                        </td>
+                        @if (Model.Sprint != null)
+                        {
+                            <td>
+                                @Square("#337AB7")
+                            </td>
+                            <td style="padding-left:2px">
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" width="75px" height="20px"></td>
+        </tr>
+        @foreach (var author in Model.Authors)
+        {
+            <tr>
+                <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <img src="@author.ReportAvatarLink" />
+                    <span style="color:black; display:inline-block; padding-top:5px; font-size:12px">@author.ShortName</span>
+                </td>
+                <td height="55" style="padding:0px; padding-bottom:10px;">
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
+                    @if (author.Timing.AverageWorkedHours >= 0.1)
+                    {
+                        @ChartBar("#5CB85C", @author.Day.Width, @Model.ChartMaxWidth, @author.Day.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    }
+
+                    @if (Model.Sprint != null)
+                    {
+                        if (author.Timing.AverageWorkedSprintHours >= 0.1)
+                        {
+                            @ChartBar("#F60", @author.Sprint.Width, @Model.ChartMaxWidth, @author.Sprint.ActualValue)
                         }
                         else
                         {
-                            colspanAtr = "";
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
-                        <tr>
-                            <td>
-                                @Square("#5CB85C")
-                            </td>
-                            <td colspan="@colspanAtr" style="padding-right:5px">
-                                <span style="color:black; font-size:11px; padding-left:2px">@day</span>
-                            </td>
+                    }
 
-                            @if (Model.Sprint != null)
-                            {
-                                <td>
-                                    @Square("#F60")
-                                </td>
-                                <td style="padding-left:2px">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
-                                </td>
-                            }
+                    @if (author.Timing.AverageWorkedMonthHours >= 0.1)
+                    {
+                        @ChartBar("#F0AD4E", @author.Month.Width, @Model.ChartMaxWidth, @author.Month.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    }
 
-                        </tr>
-                        <tr>
-                            <td>
-                                @Square("#F0AD4E")
-                            </td>
-                            <td colspan="@colspanAtr" style="padding-left:2px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
-                            </td>
-                            @if (Model.Sprint != null)
-                            {
-                                <td>
-                                    @Square("#337AB7")
-                                </td>
-                                <td style="padding-left:2px">
-                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                                </td>
-                            }
-                        </tr>
-                    </table>
+                    @if (Model.Sprint != null)
+                    {
+                        if (author.Timing.TotalRemainingAverage >= 0.1)
+                        {
+                            @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
+                        }
+                        else
+                        {
+                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                        }
+                    }
+
                 </td>
             </tr>
             <tr>
                 <td colspan="2" width="75px" height="20px"></td>
             </tr>
-            @foreach (var author in Model.Authors)
-            {
-                <tr>
-                    <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <img src="@author.ReportAvatarLink" />
-                        <span style="color:black; display:inline-block; padding-top:5px; font-size:12px">@author.ShortName</span>
-                    </td>
-                    <td height="55" style="padding:0px; padding-bottom:10px;">
-                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
-                        @if (author.Timing.AverageWorkedHours >= 0.1)
-                        {
-                            @ChartBar("#5CB85C", @author.Day.Width, @Model.ChartMaxWidth, @author.Day.ActualValue)
-                        }
-                        else
-                        {
-                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        }
-
-                        @if (Model.Sprint != null)
-                        {
-                            if (author.Timing.AverageWorkedSprintHours >= 0.1)
-                            {
-                                @ChartBar("#F60", @author.Sprint.Width, @Model.ChartMaxWidth, @author.Sprint.ActualValue)
-                            }
-                            else
-                            {
-                                @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                            }
-                        }
-                   
-                        @if (author.Timing.AverageWorkedMonthHours >= 0.1)
-                        {
-                            @ChartBar("#F0AD4E", @author.Month.Width, @Model.ChartMaxWidth, @author.Month.ActualValue)
-                        }
-                        else
-                        {
-                            @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        }
-
-                        @if (Model.Sprint != null)
-                        {
-                            if (author.Timing.TotalRemainingAverage >= 0.1)
-                            {
-                                @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
-                            }
-                            else
-                            {
-                                @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                            }
-                        }
-           
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" width="75px" height="20px"></td>
-                </tr>
-            }
+        }
 
 
 
-            @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1)
-            {
-                <tr>
-                    <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                        <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
-                        <span style="color:black; display:inline-block; padding-top:5px; font-size:12px">Unassigned</span>
-                    </td>
-                    <td style="padding:0px; padding-bottom:10px; height:55px">
-                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
+        @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1)
+        {
+            <tr>
+                <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                    <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
+                    <span style="color:black; display:inline-block; padding-top:5px; font-size:12px">Unassigned</span>
+                </td>
+                <td style="padding:0px; padding-bottom:10px; height:55px">
+                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
 
-                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                        @ChartBar("#337AB7", @Model.UnassignedRemaining.Width, @Model.ChartMaxWidth, @Model.UnassignedRemaining.ActualValue)
-                    </td>
-                </tr>
-            }
-        </tbody>
+                    @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    @ChartBar("#337AB7", @Model.UnassignedRemaining.Width, @Model.ChartMaxWidth, @Model.UnassignedRemaining.ActualValue)
+                </td>
+            </tr>
+        }
+
     </table>
 }

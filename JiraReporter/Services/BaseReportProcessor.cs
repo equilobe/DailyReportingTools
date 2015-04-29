@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace JiraReporter
 {
@@ -47,6 +48,7 @@ namespace JiraReporter
         protected void SaveReportToFile(string reportPath, string viewPath)
         {
             var repCont = SourceControlLogReporter.ReportBase.ProcessReport(Report, viewPath);
+            repCont = Regex.Replace(repCont, @"\s+", " ");
             WriteReport(Report, repCont, reportPath);
         }
 

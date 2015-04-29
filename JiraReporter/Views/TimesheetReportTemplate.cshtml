@@ -13,71 +13,58 @@
     var tooltipCommit = "";
 }
 <table width="600" style="min-width:0 !important; font-family:'Segoe UI', Arial, sans-serif; font-size:12px">
-    <tbody>
-        <tr>
-            <td>
-                @Partial("Views/header.cshtml", Model)
 
-                <table>
-                    <tr>
-                        <td height="15" style="font-size:15px; line-height:15px">
-                            &nbsp;
-                        </td>
-                    </tr>
-                </table>
+    <tr>
+        <td>
+            @Partial("Views/header.cshtml", Model)
 
-                <table style="padding-top:30px">
-                    @Partial("Views/summary.cshtml", Model.Summary)
-                </table>
+            <br />
+            <br />
+            <br />
 
-                <table style="padding-top:20px; line-height:1.4em;">
-                    @if (Model.Authors.Count > 0)
+            <table>
+                @Partial("Views/summary.cshtml", Model.Summary)
+            </table>
+
+            <table style="line-height:1.4em;">
+                @if (Model.Authors.Count > 0)
+                {
+                    foreach (var author in Model.Authors)
                     {
-                        foreach (var author in Model.Authors)
-                        {
-                            @Partial("Views/author.cshtml", author)
-                        }
+                        @Partial("Views/author.cshtml", author)
                     }
-                    else
-                    {
-                        <tr>
-                            <td style="color: orange">
-                                There is no work logged or assigned issues.
-                            </td>
-                        </tr>
-                    }
-                </table>
-                @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
-                {
-                    @Partial("Views/unassignedSection.cshtml", Model)
                 }
-
-                @if (Model.ReportTasks.CompletedTasks != null && Model.ReportTasks.CompletedTasks.Count > 0)
+                else
                 {
-                    @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
-                }
-                
-                <table>
                     <tr>
-                        <td height="20">
-                            &nbsp;
+                        <td style="color: orange">
+                            There is no work logged or assigned issues.
                         </td>
                     </tr>
-                </table>
-
-                @if (Model.IsFinalDraft)
-                {
-                    @Partial("Views/fullDraftButtons.cshtml", Model)
                 }
-                <table>
-                    <tr>
-                        <td height="25">
-                            &nbsp;
-                        </td>
-                    </tr>
-                </table>
-                @Partial("Views/footer.cshtml", Model)
-            </td>
-        </tr>
-    </tbody>
+            </table>
+            @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
+            {
+                @Partial("Views/unassignedSection.cshtml", Model)
+            }
+
+            @if (Model.ReportTasks.CompletedTasks != null && Model.ReportTasks.CompletedTasks.Count > 0)
+            {
+                @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
+            }
+
+            <br />
+            <br />
+
+            @if (Model.IsFinalDraft)
+            {
+                @Partial("Views/fullDraftButtons.cshtml", Model)
+            }
+            <br />
+            <br />
+
+            @Partial("Views/footer.cshtml", Model)
+        </td>
+    </tr>
+
 </table>
