@@ -1,7 +1,7 @@
 ﻿<table cellpadding="0" cellspacing="0">
     <tbody>
         <tr>
-            <td>
+            <td colspan="2">
                 <table cellpadding="0" cellspacing="0">
                     <tr>
                         <td width="120" height="30" style="line-height:35px">
@@ -14,12 +14,17 @@
             </td>
         </tr>
         <tr>
-            <td>
-                <h1 style="color:black; font-family:'Segoe UI', sans-serif, Arial; font-weight:normal; margin:0; padding-top:10px; padding-bottom:10px;">@Model.Title</h1>
+            <td colspan="2" height="20" style="line-height:20px; font-size:20px">
+                &nbsp;
             </td>
         </tr>
         <tr>
-            <td style="color:black; font-family:'Segoe UI', sans-serif, Arial; padding:0">
+            <td colspan="2">
+                <h1 style="color:black; font-family:'Segoe UI', sans-serif, Arial; font-weight:normal; margin:0;">@Model.Title</h1>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="color:black; font-family:'Segoe UI', sans-serif, Arial; padding:0">
                 @Model.Date
             </td>
         </tr>
@@ -27,13 +32,16 @@
         @if (Model.IsIndividualDraft || Model.IsFinalDraft)
         {
             <tr>
-                <td height="20">
+                <td colspan="2" height="20">
                     &nbsp;
                 </td>
             </tr>
             <tr>
-                <td height="30" width="400" valign="middle" align="center" style="background-color:#FEFAC0; text-align:center; padding-top:5px; padding-bottom:5px; padding-left:2px; padding-right:2px">
-                    <span style="color:#A77A23; font-family:'Segoe UI', sans-serif, Arial; font-size:12px">This is a DRAFT report. Please confirm it using the button at the end</span>
+                <td height="30" width="440" valign="middle" align="center" style="background-color:#FEFAC0; text-align:center; padding-top:5px; padding-bottom:5px; padding-left:2px; padding-right:2px">
+                    <span style="color:#A77A23; font-family:'Segoe UI', sans-serif, Arial; font-size:14px">This is a DRAFT report. Please confirm it using the button at the end</span>
+                </td>
+                <td>
+                    &nbsp;
                 </td>
             </tr>
         }

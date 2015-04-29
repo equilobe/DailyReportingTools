@@ -72,11 +72,11 @@ else
                                     <h3 style="padding-top:15px; color:black; margin-bottom:0px">Work summary</h3>
                                     <table>
                                         <tbody>
+                                            @if (!Model.HasSprint)
+                                            {
+                                                colspanAtr = "2";
+                                            }
                                             <tr>
-                                                @if (!Model.HasSprint)
-                                                {
-                                                    colspanAtr = "2";
-                                                }
                                                 <td>
                                                     @Square("#5CB85C")
                                                 </td>
@@ -99,15 +99,20 @@ else
                                                 <td>
                                                     @Square("#F0AD4E")
                                                 </td>
-                                                <td style="padding-left:2px">
+                                                <td colspan="@colspanAtr" style="padding-left:2px">
                                                     <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.MonthName (h/day)</span>
                                                 </td>
-                                                <td>
-                                                    @Square("#337AB7")
-                                                </td>
-                                                <td style="padding-left:2px">
-                                                    <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                                                </td>
+
+                                                @if (Model.HasSprint)
+                                                {
+                                                    <td>
+                                                        @Square("#337AB7")
+                                                    </td>
+                                                    <td style="padding-left:2px">
+                                                        <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                                                    </td>
+                                                }
+
                                             </tr>
                                         </tbody>
                                     </table>
@@ -129,13 +134,16 @@ else
                                                         @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
                                                     }
 
-                                                    @if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
+                                                    @if (Model.HasSprint)
                                                     {
-                                                        @ChartBar("#F60", @Model.Author.Sprint.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Sprint.ActualValue)
-                                                    }
-                                                    else
-                                                    {
-                                                        @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                                        if (Model.Author.Timing.AverageWorkedSprintHours >= 0.1)
+                                                        {
+                                                            @ChartBar("#F60", @Model.Author.Sprint.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Sprint.ActualValue)
+                                                        }
+                                                        else
+                                                        {
+                                                            @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                                        }
                                                     }
 
                                                     @if (Model.Author.Timing.AverageWorkedMonthHours >= 0.1)
@@ -146,15 +154,18 @@ else
                                                     {
                                                         @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
                                                     }
+                                                    @if (Model.HasSprint)
+                                                    {
+                                                        if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
+                                                        {
+                                                            @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
+                                                        }
+                                                        else
+                                                        {
+                                                            @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
+                                                        }
+                                                    }
 
-                                                    @if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
-                                                    {
-                                                        @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
-                                                    }
-                                                    else
-                                                    {
-                                                        @ChartBar("white", @Model.Author.MaxBarWidth, @Model.Summary.ChartMaxWidth, "")
-                                                    }
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -165,7 +176,7 @@ else
                     </table>
                 }
 
-                <table style="padding-top:40px; line-height:1.4em">
+                <table style="line-height:1.4em">
                     <tr>
                         <td>
                             @if (Model.Author.IsEmpty)
@@ -193,7 +204,7 @@ else
 
                 <table>
                     <tr>
-                        <td height="50">
+                        <td height="25">
                             &nbsp;
                         </td>
                     </tr>

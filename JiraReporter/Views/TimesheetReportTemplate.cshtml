@@ -12,7 +12,7 @@
     var tooltipWorked = "";
     var tooltipCommit = "";
 }
-<table width="600" style="min-width:0 !important; font-family:'Segoe UI', Arial, sans-serif; ">
+<table width="600" style="min-width:0 !important; font-family:'Segoe UI', Arial, sans-serif; font-size:12px">
     <tbody>
         <tr>
             <td>
@@ -37,6 +37,14 @@
                         {
                             @Partial("Views/author.cshtml", author)
                         }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td style="color: orange">
+                                There is no work logged or assigned issues.
+                            </td>
+                        </tr>
                     }
                 </table>
                 @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
@@ -63,7 +71,7 @@
                 }
                 <table>
                     <tr>
-                        <td height="50">
+                        <td height="25">
                             &nbsp;
                         </td>
                     </tr>

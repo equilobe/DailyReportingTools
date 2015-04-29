@@ -1,15 +1,21 @@
 ﻿@{
     string[] delim = { "<br />" };
 }
-<div style="margin-top:25px;">
-    <span style="color:black">@Model.Count</span>
-    @if (Model.Count > 1)
-    {
-        <span style="color:black"> unrelated commits </span>
-    }
-    else
-    { 
-        <span style="color:black"> unrelated commit </span>
-    }
-    <b>@Partial("Views/commitsList.cshtml", Model)</b>
-</div>
+<tr>
+    <td width="15">
+        &nbsp;
+    </td>
+    <td colspan="2">
+        <span style="color:#ABABAB">+ @Model.Count</span>
+        @if (Model.Count > 1)
+        {
+            <span style="color:black"> unrelated commits </span>
+        }
+        else
+        {
+            <span style="color:black"> unrelated commit </span>
+        }
+        <span>@Partial("Views/commitsList.cshtml", Model)</span>
+    </td>
+</tr>
+
