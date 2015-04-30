@@ -54,6 +54,8 @@ angular.module('app')
             $scope.form.baseUrl = "";
             $scope.form.jiraUsername = "";
             $scope.form.jiraPassword = "";
+            $scope.status = "";
+            $scope.message = "";
             $scope.addingInstance = false;
             $scope.editingInstance = false;
         };
