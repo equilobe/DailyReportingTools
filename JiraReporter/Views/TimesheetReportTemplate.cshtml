@@ -26,7 +26,18 @@
                 @Partial("Views/summary.cshtml", Model.Summary)
             </table>
 
-            <table style="line-height:1.4em;">
+            <table width="600" cellpadding="0" cellspacing="0" style="line-height:1.4em;">
+                <tr>
+                    <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                        &nbsp;
+                    </td>
+                    <td width="400" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                        &nbsp;
+                    </td>
+                    <td width="185" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                        &nbsp;
+                    </td>
+                </tr>
                 @if (Model.Authors.Count > 0)
                 {
                     foreach (var author in Model.Authors)
@@ -37,21 +48,23 @@
                 else
                 {
                     <tr>
-                        <td style="color: orange">
+                        <td colspan="3" style="color: orange">
                             There is no work logged or assigned issues.
                         </td>
                     </tr>
                 }
-            </table>
-            @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
-            {
-                @Partial("Views/unassignedSection.cshtml", Model)
-            }
 
-            @if (Model.ReportTasks.CompletedTasks != null && Model.ReportTasks.CompletedTasks.Count > 0)
-            {
-                @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
-            }
+                @if (Model.HasSprint && Model.Summary.UnassignedTasksCount > 0)
+                {
+                    @Partial("Views/unassignedSection.cshtml", Model)
+                }
+                
+                @if (Model.ReportTasks.CompletedTasks != null && Model.ReportTasks.CompletedTasks.Count > 0)
+                {
+                    @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
+                }
+                
+            </table>
 
             <br />
             <br />

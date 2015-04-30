@@ -48,5 +48,12 @@ namespace SourceControlLogReporter.RazorEngine
 
             return Partial("Views/chartBar.cshtml", model);
         }
+
+        public string Spacing(int height, int colspan)
+        {
+            var model = new Spacing(height, colspan);
+
+            return Partial("Views/spacing.cshtml", model);
+        }
     }
 }
