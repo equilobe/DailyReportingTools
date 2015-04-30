@@ -20,12 +20,10 @@ else
             @Partial("Views/header.cshtml", Model)
 
             <br />
-            <br />
-            <br />
 
             @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
             {
-                <table style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
+                <table width="440" style="padding:5px; background-color:#FAD6C6">
 
                     <tr>
                         <th>
@@ -36,7 +34,7 @@ else
                                         @ErrorIcon()
                                     </td>
                                     <td>
-                                        <b style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</b>
+                                        <span style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</span>
                                     </td>
                                 </tr>
 
@@ -49,7 +47,7 @@ else
                                         @Dot()
                                     </td>
                                     <td style="text-align: left">
-                                        <b style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no remaining estimate</b>
+                                        <span style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no remaining estimate</span>
                                     </td>
                                 </tr>
 

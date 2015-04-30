@@ -15,7 +15,7 @@ else
 
 @if (Model.Errors != null && Model.Errors.Count > 0)
 {
-    <table cellpadding="0" cellspacing="0" style="border:1px solid #D43F3A; min-width:250px; border-radius:3px; padding:5px; background-color:#FAEAEA">
+    <table width="440" cellpadding="0" cellspacing="0" style="padding:5px; background-color:#FAD6C6">
         <tr>
             <td>
                 <table>
@@ -24,7 +24,7 @@ else
                             @ErrorIcon()
                         </td>
                         <td>
-                            <b style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</b>
+                            <span style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</span>
                         </td>
                     </tr>
                 </table>
@@ -37,7 +37,7 @@ else
                             <td style="vertical-align:top; width:15px">
                                 @Dot()
                             </td>
-                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</b></td>
+                            <td colspan="1" style="text-align: left"><span style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</span></td>
                         </tr>
                     }
                     @if (Model.CompletedWithNoWorkErrors.Count > 0)
@@ -54,7 +54,7 @@ else
                             <td style="vertical-align:top; width:15px">
                                 @Dot()
                             </td>
-                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed @items with no work logged</b></td>
+                            <td colspan="1" style="text-align: left"><span style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed @items with no work logged</span></td>
                         </tr>
                     }
                     @if (Model.UnassignedErrors.Count > 0)
@@ -71,7 +71,7 @@ else
                             <td style="vertical-align:top; width:15px">
                                 @Dot()
                             </td>
-                            <td colspan="1" style="text-align: left"><b style="font-size:14px;">@Model.UnassignedErrors.Count unassigned @items with no remaining estimate</b></td>
+                            <td colspan="1" style="text-align: left"><span style="font-size:14px;">@Model.UnassignedErrors.Count unassigned @items with no remaining estimate</span></td>
                         </tr>
                     }
                     @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
@@ -90,7 +90,7 @@ else
                                 <td style="vertical-align:top; width:15px">
                                     @Dot()
                                 </td>
-                                <td colspan="1" style="text-align: left"><b style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</b></td>
+                                <td colspan="1" style="text-align: left"><span style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</span></td>
                             </tr>
                         }
                     }
@@ -105,7 +105,7 @@ else
                                         @Dot()
                                     </td>
                                     <td colspan="1" style="text-align: left">
-                                        <b style="font-size:14px;">@author.FirstName has not confirmed draft</b>
+                                        <span style="font-size:14px;">@author.FirstName has not confirmed draft</span>
                                     </td>
                                 </tr>
                             }
@@ -124,7 +124,7 @@ else
     {
         <tr>
             <th colspan="1" style="background-color:#F0F0F0; padding:5px; vertical-align:top; text-align:left; border:1px solid #DDD">
-                <b style="color:black; font-size:14px">Unrelated pull requests</b>
+                <span style="color:black; font-size:14px">Unrelated pull requests</span>
             </th>
             <td colspan="1" style="vertical-align: top; text-align: left; padding:5px; border:1px solid #DDD">
                 @Partial("Views/UnrelatedPullRequests.cshtml", Model.UnrelatedPullRequests)
