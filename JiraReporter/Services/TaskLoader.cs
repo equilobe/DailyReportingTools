@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.BL;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter.Services
 {
@@ -20,7 +22,7 @@ namespace JiraReporter.Services
         public void SetReportTasks(JiraReport context)
         {
             context.ReportTasks = new SprintTasks();
-            if(context.HasSprint)
+            if (context.HasSprint)
             {
                 var unfinishedTasks = GetUnfinishedTasks(context);
                 SetUnfinishedTasks(unfinishedTasks, context);
@@ -28,32 +30,31 @@ namespace JiraReporter.Services
                 SortTasks(context.ReportTasks);
                 SetUnassignedTasksErrors(context);
             }
-           
-            var completedTasks = GetCompletedTasks(context);
-            SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.ReportTasks);
+
+            context.ReportTasks.CompletedTasksAll = GetCompletedTasks(context);
+            SetVisibleCompletedTasks(context);
+            //   SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.ReportTasks);
             SetCompletedTasksErrors(context);
         }
 
-        private void SetCompletedTasksErrors(JiraReport report)
+        void SetCompletedTasksErrors(JiraReport report)
         {
             int completedErrors = 0;
-            foreach (var list in report.ReportTasks.CompletedTasks)
-            {
-                SetErrors(list.Value, report.Policy);
-                completedErrors += GetErrorsCount(list.Value);
-            }
+        //    SetErrors(report.ReportTasks.CompletedTasksVisible, report.Policy);
+            completedErrors += GetErrorsCount(report.ReportTasks.CompletedTasksVisible);
             report.ReportTasks.CompletedTasksErrorCount = completedErrors;
         }
 
-        private static void SetUnassignedTasksErrors(JiraReport report)
+        static void SetUnassignedTasksErrors(JiraReport report)
         {
             SetErrors(report.ReportTasks.UnassignedTasks, report.Policy);
             report.ReportTasks.UnassignedTasksErrorCount = GetErrorsCount(report.ReportTasks.UnassignedTasks);
-        } 
+        }
 
-        public List<IssueDetailed> GetCompletedTasks(JiraReport context)
+        List<IssueDetailed> GetCompletedTasks(JiraReport context)
         {
             var issuesContext = GetIssuesContext(context);
+            context.ReportTasks.CompletedTasksSearchUrl = new Uri(context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.ResolvedIssues(issuesContext.ProjectKey, TimeFormatting.DateToISO(issuesContext.StartDate), TimeFormatting.DateToISO(issuesContext.EndDate)));
 
             var completedTasks = new List<IssueDetailed>();
             var issues = JiraService.GetCompletedIssues(issuesContext);
@@ -68,6 +69,15 @@ namespace JiraReporter.Services
             }
             completedTasks = completedTasks.OrderByDescending(d => d.ResolutionDate).ToList();
             return completedTasks;
+        }
+
+        void SetVisibleCompletedTasks(JiraReport context)
+        {
+            if (context.ReportTasks.CompletedTasksAll == null)
+                return;
+
+            context.ReportTasks.CompletedTasksVisible = context.ReportTasks.CompletedTasksAll.Take(5).ToList();
+            context.ReportTasks.AdditionalCompletedTasks = context.ReportTasks.CompletedTasksAll.Count - context.ReportTasks.CompletedTasksVisible.Count;
         }
 
         JiraIssues GetUnfinishedTasks(JiraReport context)
@@ -99,7 +109,7 @@ namespace JiraReporter.Services
             }
         }
 
-        private IssueDetailed GetCompleteIssue(JiraReport context, JiraIssue jiraIssue)
+        IssueDetailed GetCompleteIssue(JiraReport context, JiraIssue jiraIssue)
         {
             var issue = new IssueDetailed(jiraIssue);
             var issueProcessor = new IssueProcessor(context) { JiraService = JiraService };
@@ -109,27 +119,28 @@ namespace JiraReporter.Services
             return issue;
         }
 
-        IEnumerable<IGrouping<string, IssueDetailed>> GroupCompletedTasks(List<IssueDetailed> completedTasks, JiraReport context)
-        {
-            var tasks = from task in completedTasks
-                        group task by task.CompletedTimeAgo into newGroup
-                        orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone(context.OffsetFromUtc))
-                        select newGroup;
-            tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
-            return tasks;
-        }
+        // Mehtods not used at the moment
+        //IEnumerable<IGrouping<string, IssueDetailed>> GroupCompletedTasks(List<IssueDetailed> completedTasks, JiraReport context)
+        //{
+        //    var tasks = from task in completedTasks
+        //                group task by task.CompletedTimeAgo into newGroup
+        //                orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone(context.OffsetFromUtc))
+        //                select newGroup;
+        //    tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
+        //    return tasks;
+        //}
 
-        void SetCompletedTasks(IEnumerable<IGrouping<string, IssueDetailed>> tasks, SprintTasks sprintTasks)
-        {
-            var completedTasks = new Dictionary<string, List<IssueDetailed>>();
-            var issues = new List<IssueDetailed>();
-            foreach (var task in tasks)
-            {
-                issues = tasks.SelectMany(group => group).Where(group => group.CompletedTimeAgo == task.Key).ToList();
-                completedTasks.Add(task.Key, issues);
-            }
-            sprintTasks.CompletedTasks = completedTasks;
-        }
+        //void SetCompletedTasks(IEnumerable<IGrouping<string, IssueDetailed>> tasks, SprintTasks sprintTasks)
+        //{
+        //    var completedTasks = new Dictionary<string, List<IssueDetailed>>();
+        //    var issues = new List<IssueDetailed>();
+        //    foreach (var task in tasks)
+        //    {
+        //        issues = tasks.SelectMany(group => group).Where(group => group.CompletedTimeAgo == task.Key).ToList();
+        //        completedTasks.Add(task.Key, issues);
+        //    }
+        //    sprintTasks.CompletedTasks = completedTasks;
+        //}
 
         void SortTasks(SprintTasks sprintTasks)
         {
@@ -158,7 +169,7 @@ namespace JiraReporter.Services
             {
                 RequestContext = context.JiraRequestContext,
                 ProjectKey = context.ProjectKey,
-                StartDate = context.ReportDate.AddDays(-6),
+                StartDate = context.ReportDate.AddDays(-6).Date,
                 EndDate = context.ReportDate
             };
             return issuesContext;

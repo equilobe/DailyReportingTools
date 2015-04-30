@@ -104,7 +104,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey +" and sprint=" + _context.Sprint.id);
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id);
         }
 
         private void SetName()
@@ -232,8 +232,7 @@ namespace JiraReporter.Services
 
         private void AddCommitIssuesNotInTimesheet()
         {
-            foreach (var listOfTasks in _reportTasks.CompletedTasks.Values)
-                AddCommitIssuesNotInTimesheet(listOfTasks);
+            AddCommitIssuesNotInTimesheet(_reportTasks.CompletedTasksAll);
 
             if (!_context.HasSprint)
                 return;
@@ -315,8 +314,8 @@ namespace JiraReporter.Services
 
                         _currentTasksCount++;
                         newIssue.SubtasksDetailed.Add(subtask);
-                        if (_currentTasksCount == 3)                        
-                            return;                        
+                        if (_currentTasksCount == 3)
+                            return;
                     }
                 }
             }
@@ -373,18 +372,11 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            var inProgressTasksErrors = new List<Error>();
-            if (!_currentAuthor.InProgressTasks.Issues.IsEmpty())
-                inProgressTasksErrors = _currentAuthor.InProgressTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-            var openTasksErrors = new List<Error>();
-            if (!_currentAuthor.OpenTasks.Issues.IsEmpty())
-                openTasksErrors = _currentAuthor.OpenTasks.Issues.Where(e => e.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-
-            if (inProgressTasksErrors.Count > 0 || openTasksErrors.Count > 0)
+            if(!_currentAuthor.RemainingTasks.Issues.IsEmpty())
             {
-                _currentAuthor.Errors = new List<Error>();
-                _currentAuthor.Errors = _currentAuthor.Errors.Concat(inProgressTasksErrors).ToList();
-                _currentAuthor.Errors = _currentAuthor.Errors.Concat(openTasksErrors).ToList();
+                var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                if (errors.Count > 0)
+                    _currentAuthor.Errors = errors;
             }
         }
 
@@ -485,7 +477,7 @@ namespace JiraReporter.Services
 
         private void SetUserAvatarLink(string imageKey)
         {
-            _currentAuthor.ReportAvatarLink =  new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/image/" + imageKey);
+            _currentAuthor.ReportAvatarLink = new Uri(ConfigurationService.GetWebBaseUrl() + "/avatar/image/" + imageKey);
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿@if (Model.HasDayLogs || Model.HasAssignedIssues)
 {
-    @Spacing(15,3)
+    Spacing(5, 3);
     <tr>
         <td colspan="3">
             <h3 style="color:black; line-height:1.4em; margin-bottom:0px; padding-bottom:5px">@Model.Name</h3>
@@ -12,6 +12,7 @@
         foreach (var dayLog in Model.DayLogs)
         {
             @Partial("Views/daylog.cshtml", dayLog)
+            @Spacing(5, 3)
         }
     }
 

@@ -29,10 +29,10 @@
                     <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
                         &nbsp;
                     </td>
-                    <td width="400" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                    <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
                         &nbsp;
                     </td>
-                    <td width="185" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                    <td width="570" height="1" style="font-size:1px; line-height:1px;padding:0px">
                         &nbsp;
                     </td>
                 </tr>
@@ -57,7 +57,7 @@
                     @Partial("Views/unassignedSection.cshtml", Model)
                 }
                 
-                @if (Model.ReportTasks.CompletedTasks != null && Model.ReportTasks.CompletedTasks.Count > 0)
+                @if (Model.ReportTasks.CompletedTasksAll != null && Model.ReportTasks.CompletedTasksAll.Count > 0)
                 {
                     @Partial("Views/completedTasks.cshtml", Model.ReportTasks)
                 }

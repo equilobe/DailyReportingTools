@@ -1,6 +1,7 @@
 ﻿@{
     var day = string.Empty;
     var colspanAtr = "";
+    var items = "";
 }
 
 @if ((Model.ToDate - Model.FromDate).TotalDays > 1)
@@ -41,13 +42,20 @@ else
                             </table>
 
                             <table style="color:#D9534F;">
-
+                                @if (Model.Author.Errors.Count == 1)
+                                {
+                                    items = "item";
+                                }
+                                else
+                                {
+                                    items = "items";
+                                }
                                 <tr>
                                     <td width="15" style="vertical-align:top;">
                                         @Dot()
                                     </td>
                                     <td style="text-align: left">
-                                        <span style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count items with no remaining estimate</span>
+                                        <span style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count @items with no remaining estimate</span>
                                     </td>
                                 </tr>
 

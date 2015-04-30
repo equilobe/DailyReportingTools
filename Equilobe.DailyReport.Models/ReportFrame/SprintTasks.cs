@@ -8,7 +8,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class SprintTasks
     {
-        public Dictionary<string, List<IssueDetailed>> CompletedTasks { get; set; }
+       // public Dictionary<string, List<IssueDetailed>> CompletedTasks { get; set; } not used at the moment
+        public List<IssueDetailed> CompletedTasksAll { get; set; }
+        public List<IssueDetailed> CompletedTasksVisible { get; set; }
+        public int AdditionalCompletedTasks { get; set; }
+        public Uri CompletedTasksSearchUrl { get; set; }
+
         public List<IssueDetailed> InProgressTasks { get; set; }
         public List<IssueDetailed> OpenTasks { get; set; }
         public List<IssueDetailed> UnassignedTasks { get; set; }

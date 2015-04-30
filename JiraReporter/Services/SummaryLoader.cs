@@ -417,15 +417,14 @@ namespace JiraReporter.Services
         {
             _summary.CompletedWithEstimateErrors = new List<Error>();
             _summary.CompletedWithNoWorkErrors = new List<Error>();
-            if (_report.ReportTasks.CompletedTasks != null)
-                foreach (var completedTasks in _report.ReportTasks.CompletedTasks.Values)
-                {
-                    var tasksWithErrors = completedTasks.Where(t => t.ErrorsCount > 0);
-                    var errorsWithEstimate = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasRemaining)).ToList();
-                    var errorsWithNoTimeSpent = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasNoTimeSpent)).ToList();
-                    _summary.CompletedWithEstimateErrors = _summary.CompletedWithEstimateErrors.Concat(errorsWithEstimate).ToList();
-                    _summary.CompletedWithNoWorkErrors = _summary.CompletedWithNoWorkErrors.Concat(errorsWithNoTimeSpent).ToList();
-                }
+            if (_report.ReportTasks.CompletedTasksAll == null)
+                return;
+
+            var tasksWithErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0);
+            var errorsWithEstimate = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasRemaining)).ToList();
+            var errorsWithNoTimeSpent = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasNoTimeSpent)).ToList();
+            _summary.CompletedWithEstimateErrors = _summary.CompletedWithEstimateErrors.Concat(errorsWithEstimate).ToList();
+            _summary.CompletedWithNoWorkErrors = _summary.CompletedWithNoWorkErrors.Concat(errorsWithNoTimeSpent).ToList();
         }
 
         private void GetUnassignedErrors()
