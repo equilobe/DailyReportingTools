@@ -24,7 +24,7 @@ else
 
             @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
             {
-                <table width="440" style="padding:5px; background-color:#FAD6C6">
+                @*<table width="440" style="padding:5px; background-color:#FAD6C6">
 
                     <tr>
                         <th>
@@ -63,7 +63,8 @@ else
                         </th>
                     </tr>
 
-                </table>
+                </table>*@
+                @Partial("Views/errorsSection.cshtml", Model)
             }
             @if (!Model.Author.IsEmpty)
             {

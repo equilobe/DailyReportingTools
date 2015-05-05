@@ -1,0 +1,142 @@
+﻿@{
+    var items = "";
+}
+<table width="440" cellpadding="0" cellspacing="0" style="padding:5px; background-color:#FAD6C6; color:#D9534F;">
+    <tr>
+        <td width="20" height="1" style="line-height:1px;font-size:1px">
+            &nbsp;
+        </td>
+        <td width="10" height="1" style="line-height:1px;font-size:1px">
+            &nbsp;
+        </td>
+        <td width="410" height="1" style="line-height:1px;font-size:1px">
+            &nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td width="20" height="14" style="font-size:14px; line-height:14px">
+            @ErrorIcon()
+        </td>
+        <td width="10" height="14" style="font-size:14px; line-height:14px">
+            &nbsp;
+        </td>
+        <td height="14" style="font-size:14px; line-height:14px">
+            <span style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" height="5" style="line-height:5px; font-size:5px">
+            &nbsp;
+        </td>
+    </tr>
+    @if (Model.IsIndividualDraft)
+    {
+        if (Model.Author.Errors.Count == 1)
+        {
+            items = "item";
+        }
+        else
+        {
+            items = "items";
+        }
+        <tr>
+            <td style="vertical-align:top;">
+                @Dot()
+            </td>
+            <td colspan="2" style="text-align: left">
+                <span style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count @items with no remaining estimate</span>
+            </td>
+        </tr>
+    }
+    else
+    {
+        if (Model.Summary.CompletedWithEstimateErrors.Count > 0)
+        {
+            if (Model.Summary.CompletedWithEstimateErrors.Count == 1)
+            {
+                items = "item";
+            }
+            else
+            {
+                items = "items";
+            }
+            <tr>
+                <td style="vertical-align:top;">
+                    @Dot()
+                </td>
+                <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@Model.Summary.CompletedWithEstimateErrors.Count completed @items with remaining estimate</span></td>
+            </tr>
+        }
+        if (Model.Summary.CompletedWithNoWorkErrors.Count > 0)
+        {
+            if (Model.Summary.CompletedWithNoWorkErrors.Count == 1)
+            {
+                items = "item";
+            }
+            else
+            {
+                items = "items";
+            }
+            <tr>
+                <td style="vertical-align:top;">
+                    @Dot()
+                </td>
+                <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@Model.Summary.CompletedWithNoWorkErrors.Count completed @items with no work logged</span></td>
+            </tr>
+        }
+        if (Model.Summary.UnassignedErrors.Count > 0)
+        {
+            if (Model.Summary.UnassignedErrors.Count == 1)
+            {
+                items = "item";
+            }
+            else
+            {
+                items = "items";
+            }
+            <tr>
+                <td style="vertical-align:top;">
+                    @Dot()
+                </td>
+                <td colspan="2" style="text-align: left"><span style="font-size:14px; font-size:14px;">@Model.Summary.UnassignedErrors.Count unassigned @items with no remaining estimate</span></td>
+            </tr>
+        }
+        if (Model.Summary.AuthorsWithErrors != null && Model.Summary.AuthorsWithErrors.Count > 0)
+        {
+            foreach (var author in Model.Summary.AuthorsWithErrors)
+            {
+                if (author.Errors.Count == 1)
+                {
+                    items = "item";
+                }
+                else
+                {
+                    items = "items";
+                }
+                <tr>
+                    <td style="vertical-align:top;">
+                        @Dot()
+                    </td>
+                    <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</span></td>
+                </tr>
+            }
+        }
+        if (Model.Summary.IsFinalDraft && !Model.Summary.Policy.AdvancedOptions.NoIndividualDraft)
+        {
+            if (Model.Summary.AuthorsNotConfirmed.Count > 0)
+            {
+                foreach (var author in Model.Summary.AuthorsNotConfirmed)
+                {
+                    <tr>
+                        <td style="vertical-align:top;">
+                            @Dot()
+                        </td>
+                        <td colspan="2" style="text-align: left">
+                            <span style="font-size:14px;">@author.FirstName has not confirmed draft</span>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    }
+</table>

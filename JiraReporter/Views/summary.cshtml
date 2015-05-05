@@ -13,7 +13,7 @@ else
     day = "Work logged on " + Model.FromDate.DayOfWeek.ToString();
 }
 
-@if (Model.Errors != null && Model.Errors.Count > 0)
+@*@if (Model.Errors != null && Model.Errors.Count > 0)
 {
     <table width="440" cellpadding="0" cellspacing="0" style="padding:5px; background-color:#FAD6C6">
         <tr>
@@ -116,8 +116,8 @@ else
             </td>
         </tr>
     </table>
-}
-
+}*@
+<br />
 <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px;">
 
     @if (Model.UnrelatedPullRequests.Count > 0)
@@ -133,10 +133,10 @@ else
     }
 
 </table>
-
+<br />
 @if (Model.HasStatus)
 {
-    <table cellspacing="0" style="padding-top:30px">
+    <table cellspacing="0">
 
         <tr>
             <td colspan="2">

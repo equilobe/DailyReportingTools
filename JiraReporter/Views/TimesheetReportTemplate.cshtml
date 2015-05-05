@@ -19,7 +19,10 @@
             @Partial("Views/header.cshtml", Model)
 
             <br />
-
+            @if (Model.Summary.Errors != null && Model.Summary.Errors.Count > 0)
+            {
+                @Partial("Views/errorsSection.cshtml", Model)
+            }
             <table cellpadding="0" cellspacing="0">
                 @Partial("Views/summary.cshtml", Model.Summary)
             </table>
