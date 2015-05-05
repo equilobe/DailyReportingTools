@@ -293,7 +293,7 @@ namespace Equilobe.DailyReport.SL
             }
 
             if (WasFullDraftReportSent(context, basicSettings))
-                return SimpleResult.Error("Individual draft report already confirmed!");
+                return SimpleResult.Error("Full draft report already sent!");
 
             if (basicSettings.IndividualDraftConfirmations == null)
                 return SimpleResult.Success("Can confirm");

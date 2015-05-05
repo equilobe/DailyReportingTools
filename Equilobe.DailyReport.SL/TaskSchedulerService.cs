@@ -99,7 +99,7 @@ namespace Equilobe.DailyReport.SL
             var taskKey = GetTaskKey(context.UniqueProjectKey);
             using (var ts = new TaskService())
             {
-                var task = ts.AllTasks.Single(t => t.Name == taskKey);
+                var task = ts.GetTask(ConfigurationService.GetTaskSchedulerFolderName() + "\\" + taskKey);
                 task.Run();
             }
         }
