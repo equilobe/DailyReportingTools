@@ -4,21 +4,21 @@
             Sign Up
         </h1>
         <p class="help-block">
-            One account to manage all your JIRA projects reporting
+            and get a report every day
         </p>
     </div>
 </div>
 <div class="container">
     <form name="form">
         <h3>
-            Daily Report
+            Sign In Details
         </h3>
         <div class="form-group">
             <label>
                 Email
             </label>
             <div ng-form="emailForm">
-                <input name="email" type="text" class="form-control" placeholder="Daily Report email account" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
+                <input name="email" type="text" class="form-control" required ng-model="form.email" ng-focus="email.focus = true" ng-blur="email.focus = false" ng-pattern=regex.Mail />
                 <span class="form-notification" ng-show="emailForm.email.$error.pattern && !email.focus"><b>Enter valid email</b> (dan@eq.com)</span>
             </div>
         </div>
@@ -27,20 +27,20 @@
                 Password
             </label>
             <div ng-form="passwordForm">
-                <input name="password" type="password" class="form-control" placeholder="Daily Report password" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
+                <input name="password" type="password" class="form-control" required ng-model="form.password" ng-focus="password.focus = true" ng-blur="password.focus = false" ng-pattern=regex.Password />
                 <span class="form-notification" ng-show="passwordForm.password.$error.pattern && !password.focus"><b>Enter valid password</b> (min 8 chars)</span>
             </div>
         </div>
         <br />
         <h3>
-            JIRA
+            JIRA Details
         </h3>
         <div class="form-group">
             <label>
-                Instance Url
+                Server Url
             </label>
             <div ng-form="instanceUrlForm">
-                <input name="instanceUrl" type="text" class="form-control" placeholder="Jira Instance Url" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
+                <input name="instanceUrl" type="text" class="form-control" required ng-model="form.baseUrl" ng-focus="instanceUrl.focus = true" ng-blur="instanceUrl.focus = false" ng-pattern=regex.Url />
                 <span class="form-notification" ng-show="instanceUrlForm.instanceUrl.$error.pattern && !instanceUrl.focus"><b>Enter valid url</b> (http://drt.equilobe.com:33256/)</span>
             </div>
         </div>
@@ -57,7 +57,7 @@
                 Username
             </label>
             <div>
-                <input type="text" class="form-control" placeholder="JIRA username" required ng-model="form.jiraUsername" />
+                <input type="text" class="form-control" required ng-model="form.jiraUsername" />
             </div>
         </div>
         <div class="form-group">
@@ -65,7 +65,7 @@
                 Password
             </label>
             <div>
-                <input type="password" class="form-control" placeholder="Jira password" required ng-model="form.jiraPassword" />
+                <input type="password" class="form-control" required ng-model="form.jiraPassword" />
             </div>
         </div>
 
