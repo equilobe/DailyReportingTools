@@ -80,7 +80,10 @@ namespace JiraReporter
         private void AddMailRecipients(MailMessage message)
         {
             foreach (string addr in Policy.EmailCollection)
+            {
+                message.ReplyToList.Add(addr);
                 message.To.Add(addr);
+            }
         }
 
         public override string GetReportSubject(string reportPath)
