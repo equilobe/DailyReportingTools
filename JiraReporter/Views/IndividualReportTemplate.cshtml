@@ -55,8 +55,8 @@ else
                             <h3 style="color:black; margin:0px">Work summary</h3>
                         </td>
                     </tr>
-                    
-                    @Spacing(5,5)
+
+                    @Spacing(5, 5)
 
                     @if (!Model.HasSprint)
                     {
@@ -106,7 +106,7 @@ else
 
                     </tr>
 
-                    @Spacing(20,5)
+                    @Spacing(20, 5)
 
                     <tr>
                         <td width="90" height="55" colspan="2" style="border-right:1px solid #ABABAB;text-align:center; vertical-align:middle;">
@@ -159,23 +159,36 @@ else
 
                     </tr>
 
-                </table>              
+                </table>
             }
 
-            <table style="line-height:1.4em">
+            <table width="600" cellpadding="0" cellspacing="0" style="line-height:1.4em;">
                 <tr>
-                    <td>
-                        @if (Model.Author.IsEmpty)
-                        {
-                            <h3 style="color:orange">There is no logged work or assigned issues</h3>
-                        }
-                        else
-                        {
-                            @Partial("Views/author.cshtml", Model.Author)
-                        }
+                    <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                        &nbsp;
+                    </td>
+                    <td width="15" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                        &nbsp;
+                    </td>
+                    <td width="570" height="1" style="font-size:1px; line-height:1px;padding:0px">
+                        &nbsp;
                     </td>
                 </tr>
 
+                @if (Model.Author.IsEmpty)
+                {
+                    <tr>
+
+                        <td colspan="3">
+                            <h3 style="color:orange; margin:0px">There is no logged work or assigned issues</h3>
+
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @Partial("Views/author.cshtml", Model.Author)
+                }
             </table>
 
             <br />
