@@ -31,76 +31,88 @@ else
 <br />
 @if (Model.HasStatus)
 {
-    <table cellspacing="0">
+    <table width="480" cellspacing="0">
+        <tr>
+            <td width="10" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="80" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="150" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="10" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="230" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" height="16">
+                <h3 style="margin:0px; color:black">Status (h / day)</h3>
+            </td>
+        </tr>
+        @Spacing(5, 5)
 
         <tr>
-            <td colspan="2">
-                <h3 style="margin-top:15px; color:black">Status (h / day)</h3>
+            @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
+            {
+                colspanAtr = "colspan='2'";
+            }
+            else
+            {
+                colspanAtr = "colspan='4'";
+            }
+            <td>
+                @Square("#5CB85C")
             </td>
+            <td @colspanAtr>
+                <span style="color:black; font-size:11px; padding-left:2px">@day</span>
+            </td>
+            @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
+            {
+                <td>
+                    @Square("#999")
+                </td>
+                <td>
+                    <span style="color:black; font-size:11px; padding-left:2px">Avg. estimated work (h/day)</span>
+                </td>
+            }
         </tr>
         <tr>
-            <td colspan="2">
-                <table>
-                    <tr>
-                        @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
-                        {
-                            colspanAtr = "";
-                        }
-                        else
-                        {
-                            colspanAtr = "2";
-                        }
-                        <td>
-                            @Square("#5CB85C")
-                        </td>
-                        <td colspan="@colspanAtr" style="padding-right:5px;">
-                            <span style="color:black; font-size:11px; padding-left:2px">@day</span>
-                        </td>
-                        @if (Model.Policy.AllocatedHoursPerDay > 0 || Model.Policy.AllocatedHoursPerMonth > 0)
-                        {
-                            <td>
-                                @Square("#999")
-                            </td>
-                            <td style="padding-right:5px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Avg. estimated work (h/day)</span>
-                            </td>
-                        }
-                    </tr>
-                    <tr>
-                        @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
-                        {
-                            colspanAtr = "";
-                        }
-                        else
-                        {
-                            colspanAtr = "2";
-                        }
-                        <td>
-                            @Square("#FF6600")
-                        </td>
-                        <td colspan="@colspanAtr" style="padding-right:5px;">
-                            <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged (h/day)</span>
-                        </td>
-                        @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
-                        {
-                            <td>
-                                @Square("#337AB7")
-                            </td>
-                            <td style="padding-right:5px;">
-                                <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                            </td>
-                        }
-                    </tr>
-                </table>
+            @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
+            {
+                colspanAtr = "colspan='2'";
+            }
+            else
+            {
+                colspanAtr = "colspan='4'";
+            }
+            <td>
+                @Square("#FF6600")
             </td>
+            <td @colspanAtr>
+                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged (h/day)</span>
+            </td>
+            @if (Model.Sprint != null || Model.Policy.AllocatedHoursPerMonth > 0)
+            {
+                <td>
+                    @Square("#337AB7")
+                </td>
+                <td>
+                    <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                </td>
+            }
         </tr>
-        <tr>
-            <td colspan="2" width="75px" height="20px"></td>
-        </tr>
+
+        @Spacing(20, 4)
+
         @if (Model.HasSprint)
         {
             <tr>
-                <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                <td width="90" height="55" colspan="2" style="border-right:1px solid #ABABAB; text-align:center; vertical-align:middle; color:black">
                     <table>
                         <tr>
                             <td align="center" width="90" height="48" style="text-align:center">
@@ -109,17 +121,17 @@ else
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black; ">@Model.Sprint.name</span>
+                                <span style="color:black;">@Model.Sprint.name</span>
                             </td>
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black; ">@Model.SprintStatus</span>
+                                <span style="color:black;">@Model.SprintStatus</span>
                             </td>
                         </tr>
                     </table>
                 </td>
-                <td style="padding:0px; padding-bottom:10px; height:75px">
+                <td height="75" colspan="3" style="padding:0px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
                     @if (Model.Timing.AverageWorked >= 0.1)
                     {
@@ -158,15 +170,13 @@ else
                     }
                 </td>
             </tr>
-            <tr>
-                <td colspan="2" width="75px" height="20px"></td>
-            </tr>
+            @Spacing(20, 5)
         }
 
         @if (Model.HasMonth)
         {
             <tr>
-                <td width="90" height="55" style="border-right:1px solid #ABABAB; padding-right:10px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
+                <td width="90" height="55" colspan="2" style="border-right:1px solid #ABABAB; text-align:center; vertical-align:middle; color:black">
                     <table>
                         <tr>
                             <td align="center" width="90" height="48" style="text-align:center">
@@ -175,7 +185,7 @@ else
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black;; ">@Model.MonthName</span>
+                                <span style="color:black; ">@Model.MonthName</span>
                             </td>
                         </tr>
                         <tr>
@@ -185,7 +195,7 @@ else
                         </tr>
                     </table>
                 </td>
-                <td style="padding:0px; padding-bottom:10px; height:55px;">
+                <td height="55" colspan="3" style="padding:0px; padding-bottom:10px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
 
                     @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
@@ -226,74 +236,95 @@ else
 
 @if (Model.HasWorkSummary)
 {
-    <table cellspacing="0" style="padding-top:30px">
-
+    <table width="480" cellspacing="0">
         <tr>
-            <td colspan="2">
-                <h3 style="color:black">Team summary (h / day)</h3>
+            <td width="10" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="80" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="150" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="10" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
+            </td>
+            <td width="230" height="1" style="font-size:1px; line-height:1px">
+                &nbsp;
             </td>
         </tr>
+
+        @Spacing(20,5)
+
         <tr>
-            <td colspan="2">
-                <table>
-                    @if (Model.Sprint == null)
-                    {
-                        colspanAtr = "2";
-                    }
-                    else
-                    {
-                        colspanAtr = "";
-                    }
-                    <tr>
-                        <td>
-                            @Square("#5CB85C")
-                        </td>
-                        <td colspan="@colspanAtr" style="padding-right:5px">
-                            <span style="color:black; font-size:11px; padding-left:2px">@day</span>
-                        </td>
-
-                        @if (Model.Sprint != null)
-                        {
-                            <td>
-                                @Square("#F60")
-                            </td>
-                            <td style="padding-left:2px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
-                            </td>
-                        }
-
-                    </tr>
-                    <tr>
-                        <td>
-                            @Square("#F0AD4E")
-                        </td>
-                        <td colspan="@colspanAtr" style="padding-left:2px">
-                            <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
-                        </td>
-                        @if (Model.Sprint != null)
-                        {
-                            <td>
-                                @Square("#337AB7")
-                            </td>
-                            <td style="padding-left:2px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                            </td>
-                        }
-                    </tr>
-                </table>
+            <td colspan="5">
+                <h3 style="color:black; margin:0px">Team summary (h / day)</h3>
             </td>
         </tr>
+        @if (Model.Sprint == null)
+        {
+            colspanAtr = "colspan='4'";
+        }
+        else
+        {
+            colspanAtr = "colspan='2'";
+        }
         <tr>
-            <td colspan="2" width="75px" height="20px"></td>
+            <td>
+                @Square("#5CB85C")
+            </td>
+            <td @colspanAtr>
+                <span style="color:black; font-size:11px; padding-left:2px">@day</span>
+            </td>
+
+            @if (Model.Sprint != null)
+            {
+                <td>
+                    @Square("#F60")
+                </td>
+                <td>
+                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
+                </td>
+            }
+
         </tr>
+        <tr>
+            <td>
+                @Square("#F0AD4E")
+            </td>
+            <td @colspanAtr>
+                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
+            </td>
+            @if (Model.Sprint != null)
+            {
+                <td>
+                    @Square("#337AB7")
+                </td>
+                <td>
+                    <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                </td>
+            }
+        </tr>
+        @Spacing(20, 5)
         @foreach (var author in Model.Authors)
         {
             <tr>
-                <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                    <img src="@author.ReportAvatarLink" />
-                    <span style="color:black; display:inline-block; padding-top:5px; ">@author.ShortName</span>
+                <td width="90" colspan="2" style="border-right:1px solid #ABABAB; text-align:center; vertical-align:middle; color:black">
+                   <table>
+                       <tr>
+                           <td align="center" width="90" height="48" style="text-align:center">
+                               <img src="@author.ReportAvatarLink" />
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="90" align="center" style="text-align:center">
+                               <span style="color:black; ">@author.ShortName</span>
+                           </td>
+                       </tr>
+                   </table>
                 </td>
-                <td height="55" style="padding:0px; padding-bottom:10px;">
+                <td colspan="3" style="padding:0px; padding-bottom:10px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
                     @if (author.Timing.AverageWorkedHours >= 0.1)
                     {
@@ -339,9 +370,7 @@ else
 
                 </td>
             </tr>
-            <tr>
-                <td colspan="2" width="75px" height="20px"></td>
-            </tr>
+            @Spacing(20,5)
         }
 
 
@@ -349,11 +378,21 @@ else
         @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1)
         {
             <tr>
-                <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
-                    <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
-                    <span style="color:black; display:inline-block; padding-top:5px; ">Unassigned</span>
+                <td width="90" colspan="2" style="border-right:1px solid #ABABAB;text-align:center; vertical-align:middle; color:black">
+                    <table>
+                        <tr>
+                            <td align="center" width="90" height="48" style="text-align:center">
+                                <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="90" align="center" style="text-align:center">
+                                <span style="color:black;">Unassigned</span>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
-                <td style="padding:0px; padding-bottom:10px; height:55px">
+                <td colspan="3" style="padding:0px; padding-bottom:10px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
 
                     @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")

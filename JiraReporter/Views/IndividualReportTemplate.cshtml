@@ -32,39 +32,46 @@ else
 
             @if (!Model.Author.IsEmpty)
             {
-                <table width="410" cellspacing="0">
+                <table width="480" cellspacing="0">
                     <tr>
                         <td width="10" height="1" style="font-size:1px; line-height:1px">
                             &nbsp;
                         </td>
-                        <td width="195" height="1" style="font-size:1px; line-height:1px">
+                        <td width="80" height="1" style="font-size:1px; line-height:1px">
+                            &nbsp;
+                        </td>
+                        <td width="150" height="1" style="font-size:1px; line-height:1px">
                             &nbsp;
                         </td>
                         <td width="10" height="1" style="font-size:1px; line-height:1px">
                             &nbsp;
                         </td>
-                        <td width="195" height="1" style="font-size:1px; line-height:1px">
+                        <td width="230" height="1" style="font-size:1px; line-height:1px">
                             &nbsp;
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4" height="16">
+                        <td colspan="5" height="16">
                             <h3 style="color:black; margin:0px">Work summary</h3>
                         </td>
                     </tr>
                     
-                    @Spacing(5,4)
+                    @Spacing(5,5)
 
                     @if (!Model.HasSprint)
                     {
-                        colspanAtr = "3";
+                        colspanAtr = "colspan='4'";
+                    }
+                    else
+                    {
+                        colspanAtr = "colspan='2'";
                     }
 
                     <tr>
                         <td width="10" height="12" style="line-height:12px">
                             @Square("#5CB85C")
                         </td>
-                        <td height="12" colspan="@colspanAtr" style="line-height:12px">
+                        <td height="12" @colspanAtr style="line-height:12px">
                             <span style="color:black; font-size:11px; padding-left:2px">@day</span>
                         </td>
 
@@ -83,7 +90,7 @@ else
                         <td width="10" height="12" style="line-height:12px">
                             @Square("#F0AD4E")
                         </td>
-                        <td height="12" colspan="@colspanAtr" style="line-height:12px">
+                        <td height="12" @colspanAtr style="line-height:12px">
                             <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.MonthName (h/day)</span>
                         </td>
 
@@ -99,13 +106,13 @@ else
 
                     </tr>
 
-                    @Spacing(20,4)
+                    @Spacing(20,5)
 
                     <tr>
-                        <td width="60" height="55" colspan="2" style="border-right:1px solid #ABABAB;text-align:center; vertical-align:middle;">
+                        <td width="90" height="55" colspan="2" style="border-right:1px solid #ABABAB;text-align:center; vertical-align:middle;">
                             <img src="@Model.Author.ReportAvatarLink" alt="@Model.Author.FirstName" />
                         </td>
-                        <td height="55" colspan="2" style="padding:0px;">
+                        <td height="50" colspan="3" style="padding:0px; padding-bottom:5px">
                             @Partial("Views/guidelines.cshtml", Model.Author.GuidelineInfo)
                             @if (Model.Author.Timing.AverageWorkedHours >= 0.1)
                             {
