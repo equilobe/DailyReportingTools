@@ -26,9 +26,9 @@
                         <span style="color:sienna; "> @Dot() @Model.Timing.InProgressTasksTimeLeftString left</span>
                     }
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                        <tbody>
+                        
                             @Partial("Views/tasks.cshtml", Model.InProgressTasks)
-                        </tbody>
+                        
                     </table>
                 </div>
             }
@@ -46,9 +46,9 @@
                         <span style="color:red; ">@Dot() @Model.Timing.OpenTasksTimeLeftString left</span>
                     }
                     <table style="margin-left:10px; margin-top:5px" cellpadding="1.5px">
-                        <tbody>
+                        
                             @Partial("Views/tasks.cshtml", Model.OpenTasks)
-                        </tbody>
+                        
                     </table>
                 </div>
             }

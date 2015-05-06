@@ -1,15 +1,15 @@
 ﻿<table width="250" height="50" style="padding-top:50px;">
-    <tbody>
-        <tr>
-            <td width="90" height="30" valign="middle" style="padding:0px; text-align:center;background-color:#5CB85C; border-radius:5px;" title="This will confirm the draft for ALL users and send the final report &#013; Only click the button after: &#013; - errors have been corrected &#013; - everyone has logged their work &#013; - sprint scope has been adjusted (if necessary)">
-                @Partial("Views/confirmationButton.cshtml", Model.SendReportUrl)
-            </td>
-            <td width="30" height="30" valign="middle" style=" padding:0px; text-align:center;">
-                <span style="color:black">or</span>
-            </td>
-            <td width="100px" height="30" valign="middle" style="padding:0px;">
-                <a style="color:#0000FF;  text-decoration:none; " href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
-            </td>
-        </tr>
-    </tbody>
+
+    <tr>
+        <td width="90" height="30" valign="middle" style="padding:0px; text-align:center;background-color:#5CB85C; border-radius:5px;" title="This will confirm the draft for ALL users and send the final report &#013; Only click the button after: &#013; - errors have been corrected &#013; - everyone has logged their work &#013; - sprint scope has been adjusted (if necessary)">
+            @Partial("Views/confirmationButton.cshtml", Model.SendReportUrl)
+        </td>
+        <td width="30" height="30" valign="middle" style=" padding:0px; text-align:center;">
+            <span style="color:black">or</span>
+        </td>
+        <td width="100px" height="30" valign="middle" style="padding:0px;">
+            <a style="color:#0000FF;  text-decoration:none; " href="@Model.SendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
+        </td>
+    </tr>
+
 </table>
