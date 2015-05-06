@@ -5,12 +5,12 @@
                 @Partial("Views/confirmationButton.cshtml", Model.IndividualDraftInfo.ConfirmationDraftUrl)
             </td>
 
-            <td width="30" height="30" valign="middle" style="font-size:12px; padding:0px; text-align:center;">
+            <td width="30" height="30" valign="middle" style=" padding:0px; text-align:center;">
                <span style="color:black">or</span>
             </td>
 
             <td width="100px" height="30" valign="middle" style="padding:0px;">
-                <a style="color:#0000FF; text-decoration:none; font-size:12px;" href="@Model.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
+                <a style="color:#0000FF; text-decoration:none; " href="@Model.IndividualDraftInfo.ResendDraftUrl" title="If the information in the report has changed and you want to see how it looks now, before confirming it, you can get a new one.">Resend</a>
             </td>
         </tr>
     </tbody>
@@ -29,7 +29,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <span style="font-size:12px; color:black;">
+                <span style=" color:black;">
                     If not everyone from your team has confirmed their report, you can also <a style="color:#0000FF; font-weight:bold; text-decoration:none;" href="@Model.IndividualDraftInfo.ForceDraftUrl">force the full draft</a>.
                 </span>
             </td>

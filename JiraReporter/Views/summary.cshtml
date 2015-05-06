@@ -12,111 +12,6 @@ else
 {
     day = "Work logged on " + Model.FromDate.DayOfWeek.ToString();
 }
-
-@*@if (Model.Errors != null && Model.Errors.Count > 0)
-{
-    <table width="440" cellpadding="0" cellspacing="0" style="padding:5px; background-color:#FAD6C6">
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <td>
-                            @ErrorIcon()
-                        </td>
-                        <td>
-                            <span style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</span>
-                        </td>
-                    </tr>
-                </table>
-
-                <table cellpadding="0" cellspacing="0" style="margin-top:5px; color:#D9534F;">
-
-                    @if (Model.CompletedWithEstimateErrors.Count > 0)
-                    {
-                        <tr>
-                            <td style="vertical-align:top; width:15px">
-                                @Dot()
-                            </td>
-                            <td colspan="1" style="text-align: left"><span style="font-size:14px;">@Model.CompletedWithEstimateErrors.Count completed items with remaining estimate</span></td>
-                        </tr>
-                    }
-                    @if (Model.CompletedWithNoWorkErrors.Count > 0)
-                    {
-                        if (Model.CompletedWithNoWorkErrors.Count == 1)
-                        {
-                            items = "item";
-                        }
-                        else
-                        {
-                            items = "items";
-                        }
-                        <tr>
-                            <td style="vertical-align:top; width:15px">
-                                @Dot()
-                            </td>
-                            <td colspan="1" style="text-align: left"><span style="font-size:14px;">@Model.CompletedWithNoWorkErrors.Count completed @items with no work logged</span></td>
-                        </tr>
-                    }
-                    @if (Model.UnassignedErrors.Count > 0)
-                    {
-                        if (Model.UnassignedErrors.Count == 1)
-                        {
-                            items = "item";
-                        }
-                        else
-                        {
-                            items = "items";
-                        }
-                        <tr>
-                            <td style="vertical-align:top; width:15px">
-                                @Dot()
-                            </td>
-                            <td colspan="1" style="text-align: left"><span style="font-size:14px;">@Model.UnassignedErrors.Count unassigned @items with no remaining estimate</span></td>
-                        </tr>
-                    }
-                    @if (Model.AuthorsWithErrors != null && Model.AuthorsWithErrors.Count > 0)
-                    {
-                        foreach (var author in Model.AuthorsWithErrors)
-                        {
-                            if (author.Errors.Count == 1)
-                            {
-                                items = "item";
-                            }
-                            else
-                            {
-                                items = "items";
-                            }
-                            <tr>
-                                <td style="vertical-align:top; width:15px">
-                                    @Dot()
-                                </td>
-                                <td colspan="1" style="text-align: left"><span style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</span></td>
-                            </tr>
-                        }
-                    }
-                    @if (Model.IsFinalDraft && !Model.Policy.AdvancedOptions.NoIndividualDraft)
-                    {
-                        if (Model.AuthorsNotConfirmed.Count > 0)
-                        {
-                            foreach (var author in Model.AuthorsNotConfirmed)
-                            {
-                                <tr>
-                                    <td style="vertical-align:top; width:15px">
-                                        @Dot()
-                                    </td>
-                                    <td colspan="1" style="text-align: left">
-                                        <span style="font-size:14px;">@author.FirstName has not confirmed draft</span>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    }
-
-                </table>
-            </td>
-        </tr>
-    </table>
-}*@
 <br />
 <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px;">
 
@@ -214,12 +109,12 @@ else
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black; font-size:12px">@Model.Sprint.name</span>
+                                <span style="color:black; ">@Model.Sprint.name</span>
                             </td>
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black; font-size:12px">@Model.SprintStatus</span>
+                                <span style="color:black; ">@Model.SprintStatus</span>
                             </td>
                         </tr>
                     </table>
@@ -280,12 +175,12 @@ else
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black;; font-size:12px">@Model.MonthName</span>
+                                <span style="color:black;; ">@Model.MonthName</span>
                             </td>
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black; font-size:12px">@Model.MonthStatus</span>
+                                <span style="color:black; ">@Model.MonthStatus</span>
                             </td>
                         </tr>
                     </table>
@@ -396,7 +291,7 @@ else
             <tr>
                 <td width="75" height="55" style="max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                     <img src="@author.ReportAvatarLink" />
-                    <span style="color:black; display:inline-block; padding-top:5px; font-size:12px">@author.ShortName</span>
+                    <span style="color:black; display:inline-block; padding-top:5px; ">@author.ShortName</span>
                 </td>
                 <td height="55" style="padding:0px; padding-bottom:10px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
@@ -456,7 +351,7 @@ else
             <tr>
                 <td style="width:75px; height:55px; max-width:75px; max-height:55px; border-right:1px solid #ABABAB; padding-right:15px; padding-bottom:10px; text-align:center; vertical-align:middle; color:black">
                     <img src="https://dailyreport.equilobe.com/content/images/report/unassigned.png" />
-                    <span style="color:black; display:inline-block; padding-top:5px; font-size:12px">Unassigned</span>
+                    <span style="color:black; display:inline-block; padding-top:5px; ">Unassigned</span>
                 </td>
                 <td style="padding:0px; padding-bottom:10px; height:55px">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)

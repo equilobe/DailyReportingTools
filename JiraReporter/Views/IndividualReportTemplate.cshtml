@@ -14,7 +14,7 @@ else
 }
 
 
-<table width="600" style="min-width:0 !important; font-family:'Segoe UI', Arial, sans-serif; font-size:12px">
+<table width="600" style="min-width:0 !important; font-family:'Segoe UI', sans-serif, Arial; font-size:12px;">
 
     <tr>
         <td>
@@ -23,47 +23,7 @@ else
             <br />
 
             @if (Model.Author.Errors != null && Model.Author.Errors.Count > 0)
-            {
-                @*<table width="440" style="padding:5px; background-color:#FAD6C6">
-
-                    <tr>
-                        <th>
-                            <table>
-
-                                <tr>
-                                    <td>
-                                        @ErrorIcon()
-                                    </td>
-                                    <td>
-                                        <span style="color:#D9534F; font-size:14px; vertical-align:bottom">Report Errors</span>
-                                    </td>
-                                </tr>
-
-                            </table>
-
-                            <table style="color:#D9534F;">
-                                @if (Model.Author.Errors.Count == 1)
-                                {
-                                    items = "item";
-                                }
-                                else
-                                {
-                                    items = "items";
-                                }
-                                <tr>
-                                    <td width="15" style="vertical-align:top;">
-                                        @Dot()
-                                    </td>
-                                    <td style="text-align: left">
-                                        <span style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count @items with no remaining estimate</span>
-                                    </td>
-                                </tr>
-
-                            </table>
-                        </th>
-                    </tr>
-
-                </table>*@
+            {               
                 @Partial("Views/errorsSection.cshtml", Model)
             }
             @if (!Model.Author.IsEmpty)

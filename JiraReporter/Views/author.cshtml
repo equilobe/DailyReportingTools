@@ -22,14 +22,14 @@
         {
             <tr>
                 <td colspan="3">
-                    <i style="color:sienna; font-size:12px;">Next</i>
+                    <i style="color:sienna; ">Next</i>
                     @if (Model.Timing.RemainingTasksTimeLeftSeconds == 0)
                     {
-                    <i style="color:red; font-size:12px;">@Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
+                    <i style="color:red; ">@Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                     else
                     {
-                    <i style="color:sienna; font-size:12px;"> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
+                    <i style="color:sienna; "> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                 </td>
             </tr>          

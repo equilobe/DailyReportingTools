@@ -3,14 +3,14 @@
     var dayName = "";
 }
 
-    <i style="color:Sienna; font-size:12px; "> @Model.Date.DayOfWeek </i>
+    <i style="color:Sienna;"> @Model.Date.DayOfWeek </i>
     @if (Model.TimeSpent > 0)
     {
-        <i style="color:Sienna; font-size:12px;"> @Dot() @Model.TimeLogged worked </i>
+        <i style="color:Sienna;"> @Dot() @Model.TimeLogged worked </i>
     }
     else
     {
-        <i style="color:orange; font-size:12px;"> @Dot() no work logged </i>
+        <i style="color:orange;"> @Dot() no work logged </i>
     }
 
 
