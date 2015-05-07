@@ -145,7 +145,7 @@ else
                             }
                             @if (Model.HasSprint)
                             {
-                                if (Model.Author.Timing.TotalRemainingAverage >= 0.1)
+                                if (Model.Author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.state != "CLOSED")
                                 {
                                     @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
                                 }

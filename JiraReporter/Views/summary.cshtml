@@ -160,7 +160,7 @@ else
                     {
                         @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                     }
-                    @if (Model.Timing.RemainingSprintAverageHours >= 0.1)
+                    @if (Model.Timing.RemainingSprintAverageHours >= 0.1 && Model.Sprint.state != "CLOSED")
                     {
                         @ChartBar("#337AB7", @Model.SprintRemaining.Width, @Model.ChartMaxWidth, @Model.SprintRemaining.ActualValue)
                     }
@@ -361,7 +361,7 @@ else
 
                     @if (Model.Sprint != null)
                     {
-                        if (author.Timing.TotalRemainingAverage >= 0.1)
+                        if (author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.state != "CLOSED")
                         {
                             @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
                         }
@@ -378,7 +378,7 @@ else
 
 
 
-        @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1)
+        @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1 && Model.Sprint.state != "CLOSED")
         {
             <tr>
                 <td width="90" colspan="2" style="border-right:1px solid #ABABAB;text-align:center; vertical-align:middle; color:black">
