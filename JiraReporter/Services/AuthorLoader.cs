@@ -31,6 +31,7 @@ namespace JiraReporter.Services
         JiraAuthor _currentAuthor;
         JiraReport _context;
         int _currentTasksCount;
+        DateTime _startOfMonth;
 
         public AuthorLoader(JiraReport context)
         {
@@ -43,6 +44,7 @@ namespace JiraReporter.Services
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
+            _startOfMonth = GetStartOfMonth();
 
             SetProjectLead(authors);
             authors.ForEach(SetAuthorAdvancedProperties);
@@ -52,6 +54,14 @@ namespace JiraReporter.Services
             individualReportService.SetIndividualDraftInfo(authors, _context);
 
             return authors;
+        }
+
+        private DateTime GetStartOfMonth()
+        {
+            if (_options.FromDate.Month != _options.ToDate.AddDays(-1).Month)
+                return _options.ToDate.AddDays(-1).StartOfMonth();
+
+            return _options.FromDate.StartOfMonth();
         }
 
         public JiraAuthor CreateAuthorByKey(JiraReport context)
@@ -120,7 +130,7 @@ namespace JiraReporter.Services
             _currentAuthor.Issues = GetAuthorsTimesheetIssues(_options.FromDate, _options.ToDate);
             if (_sprint != null)
                 _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Date, _options.ToDate);
-            _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_options.ToDate.AddDays(-1).StartOfMonth(), _options.ToDate);
+            _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _options.ToDate);
         }
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
@@ -372,7 +382,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            if(!_currentAuthor.RemainingTasks.Issues.IsEmpty())
+            if (!_currentAuthor.RemainingTasks.Issues.IsEmpty())
             {
                 var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
                 if (errors.Count > 0)

@@ -82,7 +82,7 @@ namespace JiraReporter.Services
 
         JiraIssues GetUnfinishedTasks(JiraReport context)
         {
-            return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey);
+            return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey, context.Sprint.id.ToString());
         }
 
         void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)

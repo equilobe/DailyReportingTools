@@ -57,7 +57,7 @@ namespace JiraReporter.Services
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
             _summary.IsFinalDraft = _report.IsFinalDraft;
-            _summary.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_report.Options.ToDate.Month);
+            _summary.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_report.Options.ToDate.AddDays(-1).Month);
 
             SetDates();
             SetReportDate();
@@ -120,7 +120,7 @@ namespace JiraReporter.Services
 
         private void SetMonthStatus()
         {
-            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Today.Month != _report.Options.ToDate.Month)
+            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Today.Month != _report.Options.ToDate.AddDays(-1).Month)
             {
                 _summary.MonthStatus = "Finished";
                 return;
