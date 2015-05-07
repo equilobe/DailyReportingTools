@@ -72,6 +72,10 @@ header {
 
         .logo-image {
             width: 45px;
+
+            svg {
+                vertical-align: bottom;
+            }
         }
 
         .logo-text {
@@ -276,7 +280,7 @@ div.disabled {
         display: inline-block;
         max-width: 680px;
         line-height: 1.6em;
-        font-size: 1.2em;
+        font-size: 1em;
         color: black;
         font-weight: lighter;
     }
@@ -300,7 +304,7 @@ div.disabled {
 
         a {
             font-weight: 700;
-            font-size: 1.2em;
+            font-size: 1em;
             padding: 10px 10px;
             white-space: normal;
         }
@@ -319,17 +323,17 @@ div.disabled {
         margin-top: 50px;
 
         .main-logo {
-            font-size: 32px;
+            font-size: 25px;
             margin-bottom: 30px;
 
             .logo-image {
-                width: 150px;
+                width: 100px;
             }
         }
 
         h1 {
             font-weight: bold;
-            font-size: 28px;
+            font-size: 22px;
         }
 
         h4 {
@@ -431,8 +435,8 @@ div.disabled {
 
     .jumbo {
 
-        p{
-            color:#FFF;
+        p {
+            color: #FFF;
         }
     }
 }
@@ -573,6 +577,11 @@ div.disabled {
 
             .main-logo {
                 margin-bottom: 60px;
+                font-size: 32px;
+
+                .logo-image {
+                    width: 150px;
+                }
             }
 
             h1 {
@@ -594,6 +603,10 @@ div.disabled {
                 font-size: 1.6em;
                 padding: 10px 15px;
             }
+        }
+
+        h4 {
+            font-size: 1.2em;
         }
     }
 }
