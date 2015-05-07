@@ -25,11 +25,11 @@
             }
         }
     }
+}
 
-    if (Model.UnsyncedCommits.Count > 0)
-    {
-        @Partial("Views/unrelatedCommits.cshtml", Model.UnsyncedCommits)
-    }
+@if (Model.UnsyncedCommits.Count > 0)
+{
+    @Partial("Views/unrelatedCommits.cshtml", Model.UnsyncedCommits)
 }
 
 
