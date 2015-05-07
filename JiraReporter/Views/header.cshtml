@@ -1,49 +1,49 @@
-﻿<table cellpadding="0" cellspacing="0">
-    
+﻿<table width="600" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="40" height="1" style="font-size:0px; line-height:0px">
+            &nbsp;
+        </td>
+        <td width="400" height="1" style="font-size:0px; line-height:0px">
+            &nbsp;
+        </td>
+        <td width="160" height="1" style="font-size:0px; line-height:0px">
+            &nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td width="40" height="35" style="line-height:35px">
+            <a href="https://dailyreport.equilobe.com">
+                <img style="display:block" src="https://dailyreport.equilobe.com/content/images/logo.png" />
+            </a>
+        </td>
+        <td colspan="2" style="font-family:'Montserrat',sans-serif; vertical-align:bottom; padding-bottom:5px; font-size:14px">
+            <b style="color:#29A9E1">daily</b><b style="color:black">report</b>
+        </td>
+    </tr>
+    @Spacing(15, 3)
+    <tr>
+        <td colspan="3">
+            <h1 style="color:black; font-weight:normal; margin:0;">@Model.Title</h1>
+        </td>
+    </tr>
+    @Spacing(5, 3)
+    <tr>
+        <td colspan="3" style="color:black; padding:0">
+            @Model.Date
+        </td>
+    </tr>
+
+    @if (Model.IsIndividualDraft || Model.IsFinalDraft)
+    {
+        @Spacing(20, 3)
         <tr>
-            <td colspan="2">
-                <table cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td width="120" height="30" style="line-height:35px">
-                            <a href="https://dailyreport.equilobe.com">
-                                <img width="120" height="30" style="display:block" src="https://dailyreport.equilobe.com/content/images/logo-menu.PNG" />
-                            </a>
-                        </td>
-                    </tr>
-                </table>
+            <td colspan="2" height="30" width="440" valign="middle" align="center" style="background-color:#FEFAC0; text-align:center; padding-top:5px; padding-bottom:5px;">
+                <span style="color:#A77A23; font-size:14px">This is a DRAFT report. Please confirm it using the button at the end</span>
             </td>
-        </tr>
-        <tr>
-            <td colspan="2" height="20" style="line-height:20px; font-size:20px">
+            <td>
                 &nbsp;
             </td>
         </tr>
-        <tr>
-            <td colspan="2">
-                <h1 style="color:black;  font-weight:normal; margin:0;">@Model.Title</h1>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="color:black;  padding:0">
-                @Model.Date
-            </td>
-        </tr>
+    }
 
-        @if (Model.IsIndividualDraft || Model.IsFinalDraft)
-        {
-            <tr>
-                <td colspan="2" height="20">
-                    &nbsp;
-                </td>
-            </tr>
-            <tr>
-                <td height="30" width="440" valign="middle" align="center" style="background-color:#FEFAC0; text-align:center; padding-top:5px; padding-bottom:5px;">
-                    <span style="color:#A77A23;  font-size:14px">This is a DRAFT report. Please confirm it using the button at the end</span>
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-            </tr>
-        }
-    
 </table>
