@@ -123,9 +123,9 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context.RequestContext).GetCompletedIssues(context.ProjectKey, context.StartDate, context.EndDate);
         }
 
-        public JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey)
+        public JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId)
         {
-            return GetClient(context).GetSprintTasks(projectKey);
+            return GetClient(context).GetSprintTasks(projectKey, sprintId);
         }
 
         public ProjectInfo GetProjectInfo(JiraRequestContext context, long id)

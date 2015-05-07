@@ -68,6 +68,11 @@ namespace Equilobe.DailyReport.BL
             return string.Format("statusCategory = 'Done' AND resolved >= '{0}' AND resolved <= '{1}' AND project={2}", fromDate, endDate, projectKey);
         }
 
+        public static string IssueInCurrentSprint(string project, string sprintId)
+        {
+            return string.Format("project = '{0}' AND sprint = {1}", project, sprintId);
+        }
+
         public static string IssuesInOpenSprints(string project)
         {
             return string.Format("project = '{0}' AND sprint in openSprints()", project);

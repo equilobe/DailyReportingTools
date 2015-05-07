@@ -144,9 +144,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraIssues>(request);
         }
 
-        public JiraIssues GetSprintTasks(string projectKey)
+        public JiraIssues GetSprintTasks(string projectKey, string sprintId)
         {
-            var request = GetIssuesByJql(JiraApiUrls.IssuesInOpenSprints(projectKey));
+            var request = GetIssuesByJql(JiraApiUrls.IssueInCurrentSprint(projectKey, sprintId));
 
             return ResolveJiraRequest<JiraIssues>(request);
         }
