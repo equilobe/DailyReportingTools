@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Models.Views;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using Microsoft.AspNet.Identity;
@@ -8,8 +9,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -76,7 +79,8 @@ namespace DailyReportWeb.Controllers.Api
                                              user.Id,
                                              code);
 
-            UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            // UserManager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            SendEmail(user, callbackUrl);
 
             return SimpleResult.Success("Account confirmation details has been sent to your mail.");
         }
@@ -138,6 +142,27 @@ namespace DailyReportWeb.Controllers.Api
         public void Logout()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+        }
+
+        private void SendEmail(ApplicationUser user, string callbackUrl)
+        {
+            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml");
+            var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
+            var email = RazorEngine.Razor.Parse(template, emailModel);
+            var message = new MailMessage
+            {
+                Subject = "DailyReport | Account Confirmation",
+                Body = email,
+                IsBodyHtml = true
+            };
+            message.To.Add(user.Email);
+
+            var smtp = new SmtpClient
+            {
+                EnableSsl = true
+            };
+
+            smtp.Send(message);
         }
     }
 }

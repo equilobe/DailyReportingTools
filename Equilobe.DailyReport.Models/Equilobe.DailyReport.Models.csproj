@@ -138,6 +138,7 @@
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
+    <Compile Include="Views\ConfirmationMail.cs" />
     <Compile Include="Views\Spacing.cs" />
     <Compile Include="Web\DataReportOperation.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
