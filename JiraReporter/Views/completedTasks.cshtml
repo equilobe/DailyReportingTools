@@ -5,7 +5,7 @@
 
 <tr>
     <td colspan="3">
-        <h3 style="color:black; margin-bottom:0px; padding-bottom:5px">Completed last 7 days</h3>
+        <h3 style="color:black; margin-bottom:0px; padding-bottom:5px">Recently Completed</h3>
     </td>
 </tr>
 
@@ -17,8 +17,8 @@
             <span style="font-size: 10.5pt; color:black">&#10004;</span>
         </td>
         <td colspan="2">
-            <a style="text-decoration: none; color:black" href="@task.Link">@task.Summary</a>
-            <span style="color: #ABABAB;"> @Dot() @task.Key </span>
+            <a style="text-decoration: none; color:black" href="@task.Link" title="@task.Key">@task.Summary</a>
+            @*<span style="color: #ABABAB;"> @Dot() @task.Key </span>*@
             @if (task.TimeSpentTotal > 0)
             {
                 color = "#ABABAB";

@@ -31,7 +31,7 @@ else
 <br />
 @if (Model.HasStatus)
 {
-    <table width="480" cellspacing="0">
+    <table width="440" cellspacing="0">
         <tr>
             <td width="10" height="1" style="font-size:1px; line-height:1px">
                 &nbsp;
@@ -39,13 +39,13 @@ else
             <td width="80" height="1" style="font-size:1px; line-height:1px">
                 &nbsp;
             </td>
-            <td width="150" height="1" style="font-size:1px; line-height:1px">
+            <td width="130" height="1" style="font-size:1px; line-height:1px">
                 &nbsp;
             </td>
             <td width="10" height="1" style="font-size:1px; line-height:1px">
                 &nbsp;
             </td>
-            <td width="230" height="1" style="font-size:1px; line-height:1px">
+            <td width="210" height="1" style="font-size:1px; line-height:1px">
                 &nbsp;
             </td>
         </tr>
@@ -131,7 +131,7 @@ else
                         </tr>
                     </table>
                 </td>
-                <td height="75" colspan="3" style="padding:0px;">
+                <td width="350" height="75" colspan="3" style="padding:0px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
                     @if (Model.Timing.AverageWorked >= 0.1)
                     {
@@ -195,7 +195,7 @@ else
                         </tr>
                     </table>
                 </td>
-                <td height="55" colspan="3" style="padding:0px; padding-bottom:10px;">
+                <td width="440" height="55" colspan="3" style="padding:0px; padding-bottom:10px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
 
                     @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
