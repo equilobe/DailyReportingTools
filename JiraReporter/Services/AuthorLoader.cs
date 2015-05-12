@@ -36,6 +36,7 @@ namespace JiraReporter.Services
         public AuthorLoader(JiraReport context)
         {
             this._context = context;
+            _startOfMonth = GetStartOfMonth();
         }
 
         public List<JiraAuthor> GetAuthors()
@@ -43,8 +44,7 @@ namespace JiraReporter.Services
             var authors = JiraService.GetUsers(_context.JiraRequestContext, _context.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
-                            .ToList();
-            _startOfMonth = GetStartOfMonth();
+                            .ToList();           
 
             SetProjectLead(authors);
             authors.ForEach(SetAuthorAdvancedProperties);
