@@ -28,6 +28,7 @@ namespace JiraReporter
         public IReportGeneratorService ReportGeneratorService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public ITimeZoneService TimeZoneService { get; set; }
 
         public void Execute(string[] args)
         {
@@ -46,6 +47,31 @@ namespace JiraReporter
                 basicSettings.InstalledInstance.CopyPropertiesOnObjects(jiraRequestContext);
             }
 
+            SyncProject(options, jiraRequestContext, projectId);
+
+            var policy = DataService.GetPolicy(options.UniqueProjectKey);
+            var report = new JiraReport(policy, options);
+            report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
+            SetLastReportDatesFromSettings(report);
+            report.JiraRequestContext = jiraRequestContext;
+
+            SetExecutionInstance(report);
+
+            var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
+            SetProjectInfo(report, project);
+            LoadReportDates(report);
+
+            var contextService = new JiraContextService(report) { ConfigurationService = ConfigurationService };
+            contextService.SetPolicy();        
+
+            if (RunReport(report))
+                RunReportTool(report);
+            else
+                throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
+        }
+
+        private void SyncProject(JiraOptions options, JiraRequestContext jiraRequestContext, long projectId)
+        {
             try
             {
                 JiraService.GetProject(jiraRequestContext, projectId);
@@ -64,26 +90,6 @@ namespace JiraReporter
 
                 throw new ApplicationException("Unable to run report tool due to Project no longer being available in JIRA.");
             }
-
-            var policy = DataService.GetPolicy(options.UniqueProjectKey);
-            var report = new JiraReport(policy, options);
-            report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
-            SetLastReportDatesFromSettings(report);
-            report.JiraRequestContext = jiraRequestContext;
-
-            SetExecutionInstance(report);
-
-            var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
-            SetProjectInfo(report, project);
-            LoadReportDates(report);
-
-            var contextService = new JiraContextService(report) { ConfigurationService = ConfigurationService };
-            contextService.SetPolicy();
-
-            if (RunReport(report))
-                RunReportTool(report);
-            else
-                throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
         }
 
         private void SetLastReportDatesFromSettings(JiraReport _report)
@@ -124,7 +130,7 @@ namespace JiraReporter
         {
             var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
 
-            if (context.LastReportSentDate.Date == today)
+            if (context.LastReportSentDate.ToOriginalTimeZone(context.OffsetFromUtc).Date == today)
                 return false;
 
             if (DatesHelper.IsWeekend(context))
@@ -133,7 +139,7 @@ namespace JiraReporter
             if (CheckDayFromOverrides(context))
                 return false;
 
-            if (context.ExecutionInstance != null && context.ExecutionInstance.DateAdded.Date != DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
+            if (context.ExecutionInstance != null && context.ExecutionInstance.DateAdded.ToOriginalTimeZone(context.OffsetFromUtc).Date != DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date)
                 return false;
 
             return true;
@@ -187,7 +193,7 @@ namespace JiraReporter
 
         private void LoadReportDates(JiraReport context)
         {
-            context.OffsetFromUtc = new TimeSpan(2, 0, 0);
+            context.OffsetFromUtc = TimeZoneService.GetOffsetFromTimezoneId(context.Settings.InstalledInstance.TimeZone);
             new DatesHelper(context).LoadDates();
         }
 
