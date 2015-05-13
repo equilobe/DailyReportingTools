@@ -392,7 +392,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.DayLogs = new List<JiraDayLog>();
             foreach (var day in _options.ReportDates)
-                _currentAuthor.DayLogs.Add(DayLogLoader.CreateDayLog(_currentAuthor, day, _context));
+                _currentAuthor.DayLogs.Add(new DayLogLoader(_currentAuthor, day, _context).CreateDayLog());
             _currentAuthor.DayLogs = _currentAuthor.DayLogs.OrderBy(d => d.Date).ToList();
             _currentAuthor.DayLogs.RemoveAll(d => d.Commits.Count == 0 && (d.Issues.IsEmpty()));
         }
