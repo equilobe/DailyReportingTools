@@ -22,7 +22,7 @@ angular.module('app')
                 if (!data.sourceControlOptions)
                     data.sourceControlOptions = { type: "None" };
 
-                if (!data.advancedOptions.additionalWorkflowStatuses)
+                if (!data.advancedOptions.additionalWorkflowStatuses || !data.advancedOptions.additionalWorkflowStatuses.length)
                     data.advancedOptions.additionalWorkflowStatuses = [''];
 
                 $scope.data = data;
