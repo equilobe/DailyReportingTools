@@ -51,8 +51,9 @@ namespace SourceControlLogReporter
             {
                 SendEmails();
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -64,7 +65,7 @@ namespace SourceControlLogReporter
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
             }
         }
 

@@ -204,6 +204,13 @@ namespace JiraReporter
                 Key = issue.key,
                 Summary = issue.fields.summary
             };
+            GetEntriesFromJiraWorklogs(issue, basicIssue);
+
+            return basicIssue;
+        }
+
+        public static void GetEntriesFromJiraWorklogs(JiraIssue issue, IssueDetailed basicIssue)
+        {
             if (issue.fields.worklog != null && issue.fields.worklog.worklogs != null)
                 basicIssue.Entries = issue.fields.worklog.worklogs.Select(wk => new Entry
                 {
@@ -217,8 +224,6 @@ namespace JiraReporter
                     UpdateAuthor = wk.updateAuthor.name,
                     UpdateAuthorFullName = wk.updateAuthor.displayName
                 }).ToList();
-
-            return basicIssue;
         }
     }
 }

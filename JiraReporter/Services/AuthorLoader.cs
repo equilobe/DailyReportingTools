@@ -145,7 +145,7 @@ namespace JiraReporter.Services
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
                 fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
-                fullIssue.SubtasksDetailed.SelectMany(i => i.Entries).ToList().RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate);
+                fullIssue.SubtasksDetailed.ForEach(i=>i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
                 fullIssue.SubtasksDetailed.RemoveAll(s => s.Entries.IsEmpty());
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
                 completeIssues.Add(fullIssue);
@@ -232,11 +232,21 @@ namespace JiraReporter.Services
                             _currentAuthor.Issues = new List<IssueDetailed>();
                         issue.ExistsInTimesheet = true;
                         IssueAdapter.SetLoggedAuthor(issue, _currentAuthor.Name);
-                        issue.SubtasksDetailed.SelectMany(i => i.Entries).ToList().RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < _context.FromDate || e.StartDate > _context.ToDate);
+                        AdjustSubtasks(issue);
                         issue.SubtasksDetailed.RemoveAll(s => s.Entries.IsEmpty());
                         _currentAuthor.Issues.Add(new IssueDetailed(issue));
                     }
                 }
+            }
+        }
+
+        private void AdjustSubtasks(IssueDetailed issue)
+        {
+            foreach (var subtask in issue.SubtasksDetailed)
+            {
+                subtask.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < _context.FromDate || e.StartDate > _context.ToDate);
+                IssueAdapter.TimeSpentFromEntries(subtask);
+                IssueAdapter.SetTimeFormat(subtask);
             }
         }
 
