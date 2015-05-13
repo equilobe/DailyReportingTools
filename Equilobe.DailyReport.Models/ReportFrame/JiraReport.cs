@@ -40,14 +40,11 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         }
 
 
-        private DateTime? _reportDate;
         public DateTime ReportDate
         {
             get
             {
-                if (!_reportDate.HasValue)
-                    _reportDate = DateTime.Now.ToOriginalTimeZone(this.OffsetFromUtc);
-                return _reportDate.Value;
+                return ToDate;
             }
         }
 

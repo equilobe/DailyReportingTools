@@ -16,5 +16,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetWindowsTimeZoneIdByIanaTimeZone(ItemContext<string> itemContext);
 
         List<Equilobe.DailyReport.Models.TimeZone.TimeZone> GetSystemTimeZones();
+        TimeSpan GetOffsetFromTimezoneId(string timeZone);
     }
 }

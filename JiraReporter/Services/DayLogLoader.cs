@@ -28,10 +28,7 @@ namespace JiraReporter.Services
         {
             var dayLog = new JiraDayLog();
 
-            dayLog.Commits = AuthorHelpers.GetDayLogCommits(_author, _date, _context.OffsetFromUtc);
-            dayLog.Date = _date;
-            dayLog.Title = TimeFormatting.GetStringDay(_date, _context.ReportDate);
-            dayLog.AuthorName = _author.Name;
+            SetBasicProperties(dayLog);
 
             if (_author.Issues != null)
                 if (_author.Issues.Count > 0)
@@ -49,6 +46,14 @@ namespace JiraReporter.Services
             dayLog.TimeLogged = dayLog.TimeSpent.SetTimeFormat();
 
             return dayLog;
+        }
+
+        private void SetBasicProperties(JiraDayLog dayLog)
+        {
+            dayLog.Commits = AuthorHelpers.GetDayLogCommits(_author, _date, _context.OffsetFromUtc);
+            dayLog.Date = _date;
+            dayLog.Title = TimeFormatting.GetStringDay(_date, _context.ReportDate);
+            dayLog.AuthorName = _author.Name;
         }
 
         private void AddIssueToDaylog(JiraDayLog dayLog, IssueDetailed issue)

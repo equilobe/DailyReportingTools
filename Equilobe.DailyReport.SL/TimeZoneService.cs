@@ -29,6 +29,13 @@ namespace Equilobe.DailyReport.SL
             return timeZoneList;
         }
 
+        public TimeSpan GetOffsetFromTimezoneId(string timeZone)
+        {
+            var timeZoneName = timeZone;
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
+            return timeZoneInfo.GetUtcOffset(DateTime.Now.ToUniversalTime());
+        }
+
         public string GetWindowsTimeZoneIdByIanaTimeZone (ItemContext<string> itemContext)
         {
             var timeZoneMappingPath = ConfigurationService.GetTimeZoneMappingPath();
