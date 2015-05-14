@@ -22,10 +22,14 @@ namespace Equilobe.DailyReport.SL
     public class ReportExecutionService : IReportExecutionService
     {
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public ITimeZoneService TimeZoneService { get; set; }
+        public IDataService DataService { get; set; }
 
         public SimpleResult SendReport(ExecutionContext context)
         {
-            if (context.Date.Date != DateTime.Today)
+            var offsetFromUtc = GetOffsetFromProjectKey(context.Id);
+
+            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot confirm full draft report for another date!");
 
             if (!CanSendFullDraft(context))
@@ -164,13 +168,16 @@ namespace Equilobe.DailyReport.SL
         {
             var usernamesToConfirm = new List<string>();
             var usersToConfirm = new List<string>();
+            var individualDraftConfirmations = new List<IndividualDraftConfirmation>();
 
             using (var db = new ReportsDb())
             {
                 var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
-                usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
+                individualDraftConfirmations = db.IndividualDraftConfirmations.ToList();
+                usernamesToConfirm = individualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
                                                                                   idc.ReportDate == context.Date.DateToString() &&
-                                                                                  DbFunctions.TruncateTime(idc.LastDateConfirmed) != DateTime.Today)
+                                                                                  (idc.LastDateConfirmed == null || 
+                                                                                  idc.LastDateConfirmed.Value.Date.Date != DateTime.Today))
                                                                     .Select(qr => qr.Username)
                                                                     .ToList();
             }
@@ -395,6 +402,12 @@ namespace Equilobe.DailyReport.SL
         bool TryRunReport(ExecutionContext context)
         {
             return TaskSchedulerService.TryRunReportTask(new Models.TaskScheduling.ProjectContext { UniqueProjectKey = context.Id });
+        }
+
+        TimeSpan GetOffsetFromProjectKey(string key)
+        {
+            var timeZoneId = DataService.GetTimeZoneIdFromProjectKey(key);
+            return TimeZoneService.GetOffsetFromTimezoneId(timeZoneId);
         }
 
         #endregion

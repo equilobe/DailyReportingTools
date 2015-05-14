@@ -76,7 +76,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             set { _authors = value; }
         }
 
-        //public DateTime Date { get { return Options.FromDate; } }
         public DateTime FromDate { get { return Options.FromDate; } }
         public DateTime ToDate { get { return Options.ToDate; } }
         public string Date { get; set; }

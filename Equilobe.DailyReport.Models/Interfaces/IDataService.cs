@@ -25,5 +25,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         byte[] GetUserImageByKey(string key);
         void AddUserImage(UserImageContext context);
         string GetUserImageKey(string username);
+        string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey);
     }
 }

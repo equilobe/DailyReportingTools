@@ -35,7 +35,6 @@ namespace JiraReporter.Services
             Policy.CurrentOverride = GetCurrentOverride();
             Policy.IsThisMonthOverriden = IsThisMonthOverriden();
             Policy.Users = GetUsersDictionary();
-            Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
             SetReportType();
             SetMonthlyNonWorkingDays();
         }

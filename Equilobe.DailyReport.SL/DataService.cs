@@ -275,5 +275,14 @@ namespace Equilobe.DailyReport.SL
                 return avatar.Key;
             }
         }
+
+        public string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey)
+        {
+            using(var db = new ReportsDb())
+            {
+                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == uniqueProjcetKey);
+                return basicSettings.InstalledInstance.TimeZone;
+            }
+        }
     }
 }
