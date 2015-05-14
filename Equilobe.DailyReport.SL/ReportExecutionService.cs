@@ -27,7 +27,7 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult SendReport(ExecutionContext context)
         {
-            var offsetFromUtc = GetOffsetFromProjectKey(context.Id);
+            var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
 
             if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot confirm full draft report for another date!");
@@ -48,7 +48,9 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult SendDraft(ExecutionContext context)
         {
-            if (context.Date.Date != DateTime.Today)
+            var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
+
+            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot resend full draft report for another date!");
 
             if (!CanSendFullDraft(context) && !IsForcedByLead(context))
@@ -65,7 +67,9 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult ConfirmIndividualDraft(ExecutionContext context)
         {
-            if (context.Date.Date != DateTime.Today)
+            var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
+
+            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot confirm individual draft report for another date!");
 
             var canConfirm = CanConfirm(context);
@@ -88,7 +92,9 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult SendIndividualDraft(ExecutionContext context)
         {
-            if (context.Date.Date != DateTime.Today)
+            var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
+
+            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot resend individual draft report for another date!");
 
             var result = CanSendIndividualDraft(context);
@@ -177,7 +183,7 @@ namespace Equilobe.DailyReport.SL
                 usernamesToConfirm = individualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
                                                                                   idc.ReportDate == context.Date.DateToString() &&
                                                                                   (idc.LastDateConfirmed == null || 
-                                                                                  idc.LastDateConfirmed.Value.Date.Date != DateTime.Today))
+                                                                                  idc.LastDateConfirmed.Value.Date.Date != context.Date))
                                                                     .Select(qr => qr.Username)
                                                                     .ToList();
             }
@@ -230,12 +236,12 @@ namespace Equilobe.DailyReport.SL
 
         private bool WasFinalReportSent(ExecutionContext context, BasicSettings report)
         {
-            return (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == context.Date.Date);
+            return (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today);
         }
 
         private bool WasFullDraftReportSent(ExecutionContext context, BasicSettings report)
         {
-            return (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == context.Date.Date);
+            return (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today);
         }
 
         SimpleResult CanSendIndividualDraft(ExecutionContext context)
@@ -314,7 +320,7 @@ namespace Equilobe.DailyReport.SL
         bool IsIndividualDraftConfirmed(ExecutionContext context, ICollection<IndividualDraftConfirmation> individualDrafts)
         {
             var draft = individualDrafts.SingleOrDefault(d => d.UniqueUserKey == context.DraftKey);
-            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.Date == context.Date.Date)
+            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.Date.DateToString() == draft.ReportDate)
                 return true;
 
             return false;
@@ -367,7 +373,7 @@ namespace Equilobe.DailyReport.SL
 
         bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports)
         {
-            return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date != DateTime.Today);
+            return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date.DateToString() != r.ReportDate);
         }
 
         public bool IsForcedByLead(ExecutionContext context)
@@ -402,12 +408,6 @@ namespace Equilobe.DailyReport.SL
         bool TryRunReport(ExecutionContext context)
         {
             return TaskSchedulerService.TryRunReportTask(new Models.TaskScheduling.ProjectContext { UniqueProjectKey = context.Id });
-        }
-
-        TimeSpan GetOffsetFromProjectKey(string key)
-        {
-            var timeZoneId = DataService.GetTimeZoneIdFromProjectKey(key);
-            return TimeZoneService.GetOffsetFromTimezoneId(timeZoneId);
         }
 
         #endregion

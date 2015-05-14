@@ -197,7 +197,7 @@ namespace JiraReporter
 
         private void LoadReportDates(JiraReport context)
         {
-            context.OffsetFromUtc = TimeZoneService.GetOffsetFromTimezoneId(context.Settings.InstalledInstance.TimeZone);
+            context.OffsetFromUtc = DataService.GetOffsetFromProjectKey(context.UniqueProjectKey);
             new DatesHelper(context).LoadDates();
         }
 

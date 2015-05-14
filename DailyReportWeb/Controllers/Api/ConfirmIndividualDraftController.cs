@@ -18,6 +18,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }
+        public IDataService DataService { get; set; }
 
         public DataReportOperation Post(ExecutionContext context)
         {
@@ -56,7 +57,9 @@ namespace DailyReportWeb.Controllers.Api
 
         private string GetIndividualDraftConfirmationDetails(ExecutionContext context, AdvancedReportSettings advancedSettings, List<JiraUser> jiraUsers, bool confirmationHasError)
         {
-            if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
+            var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
+
+            if (DateTime.Compare(context.Date, DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date) != 0)
                 return "You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.";
 
             var recipients = ReportExecutionService.GetFullDraftRecipients(advancedSettings);

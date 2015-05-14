@@ -276,13 +276,21 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey)
+        public TimeSpan GetOffsetFromProjectKey(string key)
         {
-            using(var db = new ReportsDb())
+            var timeZoneId = GetTimeZoneIdFromProjectKey(key);
+            return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
+        }
+
+        #region helpers
+        string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey)
+        {
+            using (var db = new ReportsDb())
             {
                 var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == uniqueProjcetKey);
                 return basicSettings.InstalledInstance.TimeZone;
             }
         }
+        #endregion
     }
 }
