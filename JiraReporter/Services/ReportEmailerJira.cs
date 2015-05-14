@@ -70,7 +70,7 @@ namespace JiraReporter
                 Subject = GetReportSubject(reportPath),
                 Body = File.ReadAllText(reportPath),
                 IsBodyHtml = true
-            };;
+            };
 
             AddMailRecipients(message);
 
