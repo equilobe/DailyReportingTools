@@ -37,11 +37,6 @@ namespace JiraReporter.Services
 
             var draft = new IndividualDraftInfo();
             draftConfirmation.CopyPropertiesOnObjects(draft);
-            //{
-            //    UserKey = draftConfirmation.UniqueUserKey,
-            //    Username = draftConfirmation.Username,
-            //    IsLead = draftConfirmation.IsProjectLead
-            //};
 
             if (draftConfirmation.LastDateConfirmed != null)
                 draft.LastConfirmationDate = draftConfirmation.LastDateConfirmed.Value;
