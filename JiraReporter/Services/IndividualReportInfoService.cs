@@ -58,7 +58,7 @@ namespace JiraReporter.Services
                 Username = author.Username,
                 UniqueUserKey = RandomString.Get(),
                 IsProjectLead = author.IsProjectLead,
-                ReportDate = context.ToDate
+                ReportDate = context.ToDate.DateToString()
             };
             SetIndividualUrls(individualDraft, context);
 
