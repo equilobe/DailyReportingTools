@@ -169,7 +169,7 @@ namespace Equilobe.DailyReport.SL
             {
                 var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
                 usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
-                                                                                  idc.ReportDate == context.Date &&
+                                                                                  idc.ReportDate == context.Date.DateToString() &&
                                                                                   DbFunctions.TruncateTime(idc.LastDateConfirmed) != DateTime.Today)
                                                                     .Select(qr => qr.Username)
                                                                     .ToList();
@@ -192,7 +192,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
-                var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate.Value == context.Date.Date).ToList();
+                var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate == context.Date.DateToString()).ToList();
 
                 if (WasFinalReportSent(context, report))
                     return false;
@@ -349,7 +349,7 @@ namespace Equilobe.DailyReport.SL
                 IsProjectLead = draft.IsProjectLead,
                 UniqueUserKey = draft.UniqueUserKey,
                 Username = draft.Username,
-                ReportDate = draft.ReportDate
+                ReportDate = draft.ReportDate.DateToString()
             });
         }
 
