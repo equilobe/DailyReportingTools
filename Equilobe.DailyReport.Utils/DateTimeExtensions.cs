@@ -30,5 +30,10 @@ namespace System
         {
             return TimeZoneInfo.ConvertTimeToUtc(date).Add(offsetFromUtc);
         }
+
+        public static string DateToString(this DateTime date)
+        {
+            return date.ToString("yyyy-MM-dd");
+        }
     }
 }

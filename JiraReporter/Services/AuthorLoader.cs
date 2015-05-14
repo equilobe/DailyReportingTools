@@ -114,7 +114,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id);
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id + " and status != 'Done'");
         }
 
         private void SetName()

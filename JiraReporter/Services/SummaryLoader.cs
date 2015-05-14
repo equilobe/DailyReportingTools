@@ -398,7 +398,7 @@ namespace JiraReporter.Services
             _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
             _summary.ConfirmationErrors = new List<Error>();
             var notConfirmed = _report.Settings.IndividualDraftConfirmations
-                .Where(d => d.ReportDate == _report.ToDate)
+                .Where(d => d.ReportDate == _report.ToDate.DateToString())
                 .Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != _report.ToDate)
                 .ToList();
 

@@ -18,7 +18,8 @@ namespace Equilobe.DailyReport.Models.Storage
         [Required]
         public string UniqueUserKey { get; set; }
         public DateTime? LastDateConfirmed { get; set; }
-        public DateTime? ReportDate { get; set; }
+        //ReportDate represents the day of the report (rounded to 00:00) and is converted to the JIRA timezone
+        public string ReportDate { get; set; }
         public bool IsProjectLead { get; set; }
 
         public virtual BasicSettings BasicSettings { get; set; }

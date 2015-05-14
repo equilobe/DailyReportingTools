@@ -131,7 +131,7 @@ namespace JiraReporter
 
         void FilterIndividualDrafts(JiraReport report)
         {
-            report.Settings.IndividualDraftConfirmations = report.Settings.IndividualDraftConfirmations.Where(r => r.ReportDate.Value == report.ToDate).ToArray();
+            report.Settings.IndividualDraftConfirmations = report.Settings.IndividualDraftConfirmations.Where(r => r.ReportDate == report.ToDate.DateToString()).ToArray();
         }
     }
 }
