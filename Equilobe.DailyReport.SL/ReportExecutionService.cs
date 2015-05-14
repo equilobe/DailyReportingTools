@@ -356,7 +356,7 @@ namespace Equilobe.DailyReport.SL
                 IsProjectLead = draft.IsProjectLead,
                 UniqueUserKey = draft.UniqueUserKey,
                 Username = draft.Username,
-                ReportDate = draft.ReportDate.DateToString()
+                ReportDate = draft.ReportDate
             });
         }
 
