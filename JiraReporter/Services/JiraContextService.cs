@@ -61,7 +61,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmDraft/" + Context.UniqueProjectKey + "?date=" + date.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private Uri GetResendDraftUrl()
@@ -70,7 +70,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + date.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
@@ -79,7 +79,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + date.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private Uri GetResendIndividualDraftUrl()
@@ -88,7 +88,7 @@ namespace JiraReporter.Services
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + date.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private static DateTime GetDateTimeFromString(string date)

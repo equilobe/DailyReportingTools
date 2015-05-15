@@ -128,10 +128,9 @@ namespace JiraReporter
 
         private bool RunReport(JiraReport context)
         {
-            //var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
-            var today = DateTime.Today;
+            var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
 
-            if (context.LastReportSentDate.Date == today)
+            if (context.LastReportSentDate.ToOriginalTimeZone(context.OffsetFromUtc).Date == today)
                 return false;
 
             if (DatesHelper.IsWeekend(context))
@@ -140,7 +139,7 @@ namespace JiraReporter
             if (CheckDayFromOverrides(context))
                 return false;
 
-            if (context.ExecutionInstance != null && context.ExecutionInstance.DateAdded.Date != today)
+            if (context.ExecutionInstance != null && context.ExecutionInstance.DateAdded.ToOriginalTimeZone(context.OffsetFromUtc).Date != today)
             {
                 ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(context.ExecutionInstance.Id));
                 return false;

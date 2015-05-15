@@ -29,10 +29,16 @@ namespace Equilobe.DailyReport.SL
         {
             var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
 
-            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
+            if (context.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot confirm full draft report for another date!");
 
-            if (!CanSendFullDraft(context))
+            var confirmationContext = new ConfirmationContext
+            {
+                ExecutionContext = context,
+                OffsetFromUtc = offsetFromUtc
+            };
+
+            if (!CanSendFullDraft(confirmationContext))
                 return SimpleResult.Error("Not all individual draft reports were confirmed!");
 
             SetFinalDraftConfirmation(context);
@@ -50,10 +56,16 @@ namespace Equilobe.DailyReport.SL
         {
             var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
 
-            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
+            if (context.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot resend full draft report for another date!");
 
-            if (!CanSendFullDraft(context) && !IsForcedByLead(context))
+            var confirmationContext = new ConfirmationContext
+            {
+                ExecutionContext = context,
+                OffsetFromUtc = offsetFromUtc
+            };
+
+            if (!CanSendFullDraft(confirmationContext) && !IsForcedByLead(context))
                 return SimpleResult.Error("Error in resending full draft report!");
 
             context.Scope = SendScope.SendFinalDraft;
@@ -69,17 +81,23 @@ namespace Equilobe.DailyReport.SL
         {
             var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
 
-            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
+            if (context.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot confirm individual draft report for another date!");
 
-            var canConfirm = CanConfirm(context);
+            var confirmationContext = new ConfirmationContext
+            {
+                ExecutionContext = context,
+                OffsetFromUtc = offsetFromUtc
+            };
+
+            var canConfirm = CanConfirm(confirmationContext);
             if (canConfirm.HasError)
                 return canConfirm;
 
-            if (!MarkIndividualDraftAsConfirmed(context))
+            if (!MarkIndividualDraftAsConfirmed(context, offsetFromUtc))
                 return SimpleResult.Error("Error in confirming individual draft report!");
 
-            if (CanSendFullDraft(context))
+            if (CanSendFullDraft(confirmationContext))
             {
                 context.Scope = SendScope.SendFinalDraft;
                 SetReportExecutionInstance(context);
@@ -94,10 +112,16 @@ namespace Equilobe.DailyReport.SL
         {
             var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
 
-            if (context.Date.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
+            if (context.Date != DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
                 return SimpleResult.Error("Cannot resend individual draft report for another date!");
 
-            var result = CanSendIndividualDraft(context);
+            var confirmationContext = new ConfirmationContext
+            {
+                ExecutionContext = context,
+                OffsetFromUtc = offsetFromUtc
+            };
+
+            var result = CanSendIndividualDraft(confirmationContext);
             if (result.HasError)
                 return result;
 
@@ -170,7 +194,7 @@ namespace Equilobe.DailyReport.SL
             return StringExtensions.GetNaturalLanguage(fullDraftRecipients);
         }
 
-        public string GetRemainingUsersToConfirmIndividualDraft(ExecutionContext context, List<JiraUser> jiraUsers)
+        public string GetRemainingUsersToConfirmIndividualDraft(ConfirmationContext context)
         {
             var usernamesToConfirm = new List<string>();
             var usersToConfirm = new List<string>();
@@ -178,19 +202,19 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
-                var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
+                var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.ExecutionContext.DraftKey).BasicSettingsId;
                 individualDraftConfirmations = db.IndividualDraftConfirmations.ToList();
                 usernamesToConfirm = individualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
-                                                                                  idc.ReportDate == context.Date.DateToString() &&
+                                                                                  idc.ReportDate == context.ExecutionContext.Date.DateToString() &&
                                                                                   (idc.LastDateConfirmed == null || 
-                                                                                  idc.LastDateConfirmed.Value.Date.Date != context.Date))
+                                                                                  idc.LastDateConfirmed.Value.ToOriginalTimeZone(context.OffsetFromUtc).Date != context.ExecutionContext.Date))
                                                                     .Select(qr => qr.Username)
                                                                     .ToList();
             }
 
             usernamesToConfirm.ForEach(usernameToConfirm =>
             {
-                jiraUsers.ForEach(jiraUser =>
+                context.Users.ForEach(jiraUser =>
                 {
                     if (usernameToConfirm == jiraUser.name)
                         usersToConfirm.Add(jiraUser.displayName);
@@ -200,17 +224,17 @@ namespace Equilobe.DailyReport.SL
             return StringExtensions.GetNaturalLanguage(usersToConfirm);
         }
 
-        public bool CanSendFullDraft(ExecutionContext context)
+        public bool CanSendFullDraft(ConfirmationContext context)
         {
             using (var db = new ReportsDb())
             {
-                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
-                var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate == context.Date.DateToString()).ToList();
+                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.ExecutionContext.Id);
+                var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate == context.ExecutionContext.Date.DateToString()).ToList();
 
-                if (WasFinalReportSent(context, report))
+                if (WasFinalReportSent(report, context.OffsetFromUtc))
                     return false;
 
-                if (WasFullDraftReportSent(context, report))
+                if (WasFullDraftReportSent(report, context.OffsetFromUtc))
                     return true;
 
                 if (report.SerializedAdvancedSettings == null)
@@ -227,36 +251,37 @@ namespace Equilobe.DailyReport.SL
                 if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
                     return false;
 
-                if (ExistsUnconfirmedDraft(individualReports))
+                if (ExistsUnconfirmedDraft(individualReports, context.OffsetFromUtc))
                     return false;
 
                 return true;
             }
         }
 
-        private bool WasFinalReportSent(ExecutionContext context, BasicSettings report)
+        private bool WasFinalReportSent(BasicSettings report, TimeSpan offsetFromUtc)
         {
-            return (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.Date == DateTime.Today);
+            return (report.ReportExecutionSummary.LastFinalReportSentDate != null && report.ReportExecutionSummary.LastFinalReportSentDate.Value.ToOriginalTimeZone(offsetFromUtc).Date == DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date);
         }
 
-        private bool WasFullDraftReportSent(ExecutionContext context, BasicSettings report)
+        private bool WasFullDraftReportSent(BasicSettings report, TimeSpan offsetFromUtc)
         {
-            return (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.Date == DateTime.Today);
+            return (report.ReportExecutionSummary != null && report.ReportExecutionSummary.LastDraftSentDate != null && report.ReportExecutionSummary.LastDraftSentDate.Value.ToOriginalTimeZone(offsetFromUtc).Date == DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date);
         }
 
-        SimpleResult CanSendIndividualDraft(ExecutionContext context)
+        SimpleResult CanSendIndividualDraft(ConfirmationContext context)
         {
             var reportSettings = new BasicSettings();
             using (var db = new ReportsDb())
             {
-                var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.ExecutionContext.Id);
                 report.CopyPropertiesOnObjects(reportSettings);
             }
+            context.IndividualDrafts = reportSettings.IndividualDraftConfirmations.ToList();
 
-            if (WasFullDraftReportSent(context, reportSettings))
+            if (WasFullDraftReportSent(reportSettings, context.OffsetFromUtc))
                 return SimpleResult.Error("Cannot resend individual draft if full draft was already sent!");
 
-            if (IsIndividualDraftConfirmed(context, reportSettings.IndividualDraftConfirmations))
+            if (IsIndividualDraftConfirmed(context))
                 return SimpleResult.Error("Cannot resend individual draft if it's confirmed!");
 
             return SimpleResult.Success("");
@@ -275,13 +300,13 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        bool MarkIndividualDraftAsConfirmed(ExecutionContext context)
+        bool MarkIndividualDraftAsConfirmed(ExecutionContext context, TimeSpan offset)
         {
             using (var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 if (report == null || report.IndividualDraftConfirmations == null)
-                    if (VerifyDates(report.ReportExecutionSummary))
+                    if (VerifyDates(report.ReportExecutionSummary, offset))
                         return false;
 
                 var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.BasicSettingsId == report.Id).ToList();
@@ -295,32 +320,34 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        SimpleResult CanConfirm(ExecutionContext context)
+        SimpleResult CanConfirm(ConfirmationContext confirmationContext)
         {
             var basicSettings = new BasicSettings();
 
             using (var db = new ReportsDb())
             {
-                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
+                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == confirmationContext.ExecutionContext.Id);
                 report.CopyPropertiesOnObjects(basicSettings);
             }
 
-            if (WasFullDraftReportSent(context, basicSettings))
+            confirmationContext.IndividualDrafts = basicSettings.IndividualDraftConfirmations.ToList();
+
+            if (WasFullDraftReportSent(basicSettings, confirmationContext.OffsetFromUtc))
                 return SimpleResult.Error("Full draft report already sent!");
 
             if (basicSettings.IndividualDraftConfirmations == null)
-                return SimpleResult.Success("Can confirm");
+                return SimpleResult.Success("Can confirm");           
 
-            if (IsIndividualDraftConfirmed(context, basicSettings.IndividualDraftConfirmations))
+            if (IsIndividualDraftConfirmed(confirmationContext))
                 return SimpleResult.Error("Individual draft report already confirmed!");
 
             return SimpleResult.Success("Can confirm");
         }
 
-        bool IsIndividualDraftConfirmed(ExecutionContext context, ICollection<IndividualDraftConfirmation> individualDrafts)
+        bool IsIndividualDraftConfirmed(ConfirmationContext context)
         {
-            var draft = individualDrafts.SingleOrDefault(d => d.UniqueUserKey == context.DraftKey);
-            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.Date.DateToString() == draft.ReportDate)
+            var draft = context.IndividualDrafts.SingleOrDefault(d => d.UniqueUserKey == context.ExecutionContext.DraftKey);
+            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.ToOriginalTimeZone(context.OffsetFromUtc).DateToString() == draft.ReportDate)
                 return true;
 
             return false;
@@ -371,15 +398,13 @@ namespace Equilobe.DailyReport.SL
             draft.CopyPropertiesOnObjects(individualDraft);
         }
 
-        bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports)
+        bool ExistsUnconfirmedDraft(List<IndividualDraftConfirmation> individualReports, TimeSpan offsetFromUtc)
         {
-            return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.Date.DateToString() != r.ReportDate);
+            return individualReports.Exists(r => r.LastDateConfirmed == null || r.LastDateConfirmed.Value.ToOriginalTimeZone(offsetFromUtc).Date.DateToString() != r.ReportDate);
         }
 
         public bool IsForcedByLead(ExecutionContext context)
         {
-            var individualDrafts = new List<IndividualDraftConfirmation>();
-
             using (var db = new ReportsDb())
             {
                 var settings = db.BasicSettings.SingleOrDefault(bs => bs.UniqueProjectKey == context.Id);
@@ -399,10 +424,12 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        bool VerifyDates(ReportExecutionSummary reportExec)
+        bool VerifyDates(ReportExecutionSummary reportExec, TimeSpan offset)
         {
-            return (reportExec == null || (reportExec.LastDraftSentDate != null && reportExec.LastDraftSentDate.Value.Date == DateTime.Today)
-                || (reportExec.LastFinalReportSentDate != null && reportExec.LastFinalReportSentDate.Value.Date == DateTime.Today));
+            var today = DateTime.Now.ToOriginalTimeZone(offset).Date;
+
+            return (reportExec == null || (reportExec.LastDraftSentDate != null && reportExec.LastDraftSentDate.Value.ToOriginalTimeZone(offset).Date ==today)
+                || (reportExec.LastFinalReportSentDate != null && reportExec.LastFinalReportSentDate.Value.ToOriginalTimeZone(offset).Date == today));
         }
 
         bool TryRunReport(ExecutionContext context)
