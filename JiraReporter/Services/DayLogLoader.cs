@@ -20,7 +20,7 @@ namespace JiraReporter.Services
 
             dayLog.Commits = AuthorHelpers.GetDayLogCommits(author, date, context.OffsetFromUtc);
             dayLog.Date = date;
-            dayLog.Title = TimeFormatting.GetStringDay(date, context.ReportDate);
+            dayLog.Title = GetDaylogTitle(date, context);
             dayLog.AuthorName = author.Name;
 
             if (author.Issues != null)
@@ -46,6 +46,16 @@ namespace JiraReporter.Services
             dayLog.TimeLogged = dayLog.TimeSpent.SetTimeFormat();
 
             return dayLog;
+        }
+
+        static string GetDaylogTitle(DateTime date, JiraReport context)
+        {
+            var title = date.DayOfWeek.ToString();
+
+            if ((context.ToDate - context.FromDate).Days > 7)
+                title += " (" + date.ToString("dd MMM") + ")";
+
+            return title;
         }
     }
 }
