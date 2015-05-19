@@ -168,9 +168,10 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var basicSettingsId = db.IndividualDraftConfirmations.Single(uidc => uidc.UniqueUserKey == context.DraftKey).BasicSettingsId;
-                usernamesToConfirm = db.IndividualDraftConfirmations.Where(idc => idc.BasicSettingsId == basicSettingsId &&
+                usernamesToConfirm = db.IndividualDraftConfirmations.ToList()
+                                                                    .Where(idc => idc.BasicSettingsId == basicSettingsId &&
                                                                                   idc.ReportDate == context.Date.DateToString() &&
-                                                                                  DbFunctions.TruncateTime(idc.LastDateConfirmed) != DateTime.Today)
+                                                                                 (idc.LastDateConfirmed == null || idc.LastDateConfirmed.Value != DateTime.Today))
                                                                     .Select(qr => qr.Username)
                                                                     .ToList();
             }
