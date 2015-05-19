@@ -90,13 +90,10 @@ namespace Equilobe.DailyReport.SL
                 OffsetFromUtc = offsetFromUtc
             };
 
-            var canConfirm = CanConfirm(confirmationContext);
+            var confirm = ConfirmIndividualDraft(confirmationContext);
 
-            if (canConfirm.HasError)
-                return canConfirm;
-
-            if (!MarkIndividualDraftAsConfirmed(context, offsetFromUtc))
-                return SimpleResult.Error("Error in confirming individual draft report!");
+            if (confirm.HasError)
+                return confirm;
 
             if (CanSendFullDraft(confirmationContext))
             {
@@ -282,12 +279,17 @@ namespace Equilobe.DailyReport.SL
                 var report = db.BasicSettings.SingleOrDefault(r => r.UniqueProjectKey == context.ExecutionContext.Id);
                 report.CopyPropertiesOnObjects(reportSettings);
             }
+
             context.IndividualDrafts = reportSettings.IndividualDraftConfirmations.ToList();
+            var draft = context.IndividualDrafts.SingleOrDefault(d => d.UniqueUserKey == context.ExecutionContext.DraftKey);
 
             if (WasFullDraftReportSent(reportSettings.ReportExecutionSummary, context.OffsetFromUtc))
                 return SimpleResult.Error("Cannot resend individual draft if full draft was already sent!");
 
-            if (IsIndividualDraftConfirmed(context))
+            if (draft == null)
+                return SimpleResult.Error("Error in confirmation. Draft was not found");
+
+            if (IsIndividualDraftConfirmed(draft, context.OffsetFromUtc))
                 return SimpleResult.Error("Cannot resend individual draft if it's confirmed!");
 
             return SimpleResult.Success("");
@@ -306,25 +308,17 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        bool MarkIndividualDraftAsConfirmed(ExecutionContext context, TimeSpan offset)
+        void MarkIndividualDraftAsConfirmed(string draftKey)
         {
             using (var db = new ReportsDb())
             {
-                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
-
-                var individualReports = report.IndividualDraftConfirmations.Select(confirmation => confirmation).Where(c => c.BasicSettingsId == report.Id).ToList();
-                var draft = individualReports.SingleOrDefault(dr => dr.UniqueUserKey == context.DraftKey);
-
-                if (draft == null)
-                    return false;
-
+                var draft = db.IndividualDraftConfirmations.Single(dr => dr.UniqueUserKey == draftKey);
                 draft.LastDateConfirmed = DateTime.Now;
                 db.SaveChanges();
-                return true;
             }
         }
 
-        SimpleResult CanConfirm(ConfirmationContext confirmationContext)
+        SimpleResult ConfirmIndividualDraft(ConfirmationContext confirmationContext)
         {
             var basicSettings = new BasicSettings();
 
@@ -335,26 +329,39 @@ namespace Equilobe.DailyReport.SL
             }
 
             confirmationContext.IndividualDrafts = basicSettings.IndividualDraftConfirmations.ToList();
+            var draft = confirmationContext.IndividualDrafts.SingleOrDefault(d => d.UniqueUserKey == confirmationContext.ExecutionContext.DraftKey);
 
-            if (WasFullDraftReportSent(basicSettings.ReportExecutionSummary, confirmationContext.OffsetFromUtc))
+            var canConfirm = CanConfirm(confirmationContext, basicSettings.ReportExecutionSummary, draft);
+            if (canConfirm.HasError)
+                return canConfirm;
+
+            MarkIndividualDraftAsConfirmed(confirmationContext.ExecutionContext.DraftKey);
+            return SimpleResult.Success("Confirmed");
+        }
+
+        SimpleResult CanConfirm(ConfirmationContext confirmationContext, ReportExecutionSummary execSummary, IndividualDraftConfirmation draft)
+        {
+            if (WasFullDraftReportSent(execSummary, confirmationContext.OffsetFromUtc))
                 return SimpleResult.Error("Full draft report already sent!");
 
-            if (WasFinalReportSent(basicSettings.ReportExecutionSummary, confirmationContext.OffsetFromUtc))
+            if (WasFinalReportSent(execSummary, confirmationContext.OffsetFromUtc))
                 return SimpleResult.Error("Final report already sent");
 
             if (confirmationContext.IndividualDrafts.IsEmpty())
-                return SimpleResult.Error("Cannot confirm individual draft");           
+                return SimpleResult.Error("Cannot confirm individual draft");
 
-            if (IsIndividualDraftConfirmed(confirmationContext))
+            if (draft == null)
+                return SimpleResult.Error("Error in confirmation. Draft was not found");
+
+            if (IsIndividualDraftConfirmed(draft, confirmationContext.OffsetFromUtc))
                 return SimpleResult.Error("Individual draft report already confirmed!");
 
-            return SimpleResult.Success("Can confirm");
+            return SimpleResult.Success("");
         }
 
-        bool IsIndividualDraftConfirmed(ConfirmationContext context)
+        bool IsIndividualDraftConfirmed(IndividualDraftConfirmation draft, TimeSpan offset)
         {
-            var draft = context.IndividualDrafts.SingleOrDefault(d => d.UniqueUserKey == context.ExecutionContext.DraftKey);
-            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.ToOriginalTimeZone(context.OffsetFromUtc).DateToString() == draft.ReportDate)
+            if (draft != null && draft.LastDateConfirmed != null && draft.LastDateConfirmed.Value.ToOriginalTimeZone(offset).DateToString() == draft.ReportDate)
                 return true;
 
             return false;
