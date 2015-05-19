@@ -53,7 +53,7 @@ namespace DailyReportWeb.Controllers.Api
         {
             var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
 
-            if (DateTime.Compare(context.Date, DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date) != 0)
+            if (DateTimeHelpers.CompareDay(context.Date, DateTime.Now.ToOriginalTimeZone(offsetFromUtc)) != 1)
                 return "You are trying to resend a full draft report sent another day, but you can only resend reports that were sent today.";
 
             var recipients = ReportExecutionService.GetFullDraftRecipients(advancedSettings);
@@ -63,7 +63,7 @@ namespace DailyReportWeb.Controllers.Api
                 var basicSettingsId = db.BasicSettings.Single(bs => bs.UniqueProjectKey == context.Id).Id;
                 var reportSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == basicSettingsId).LastFinalReportSentDate;
 
-                if (reportSentDate != null && reportSentDate.Value.ToOriginalTimeZone(offsetFromUtc).Date == DateTime.Now.ToOriginalTimeZone(offsetFromUtc).Date)
+                if (DateTimeHelpers.CompareDay(reportSentDate, DateTime.Now, offsetFromUtc) == 1)
                     return string.Format("The final report was already sent at {0} to {1}", reportSentDate.Value.ToShortTimeString(), recipients);
             }
 

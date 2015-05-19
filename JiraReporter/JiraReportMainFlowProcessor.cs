@@ -7,6 +7,7 @@ using Equilobe.DailyReport.Models.ReportExecution;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
+using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 using JiraReporter.Model;
 using JiraReporter.Services;
@@ -128,9 +129,7 @@ namespace JiraReporter
 
         private bool RunReport(JiraReport context)
         {
-            var today = DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Date;
-
-            if (context.LastReportSentDate.ToOriginalTimeZone(context.OffsetFromUtc).Date == today)
+            if (DateTimeHelpers.CompareDay(context.LastReportSentDate, DateTime.Now, context.OffsetFromUtc) == 1)
                 return false;
 
             if (DatesHelper.IsWeekend(context))
@@ -139,7 +138,7 @@ namespace JiraReporter
             if (CheckDayFromOverrides(context))
                 return false;
 
-            if (context.ExecutionInstance != null && context.ExecutionInstance.DateAdded.ToOriginalTimeZone(context.OffsetFromUtc).Date != today)
+            if (context.ExecutionInstance != null && DateTimeHelpers.CompareDay(context.ExecutionInstance.DateAdded, DateTime.Now, context.OffsetFromUtc) != 1)
             {
                 ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(context.ExecutionInstance.Id));
                 return false;

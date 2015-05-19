@@ -399,7 +399,7 @@ namespace JiraReporter.Services
             _summary.ConfirmationErrors = new List<Error>();
             var notConfirmed = _report.Settings.IndividualDraftConfirmations
                 .Where(d => d.ReportDate == _report.ToDate.DateToString())
-                .Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.ToOriginalTimeZone(_report.OffsetFromUtc).Date != _report.ToDate)
+                .Where(d => DateTimeHelpers.CompareDay(d.LastDateConfirmed, _report.ToDate, _report.OffsetFromUtc) != 1)
                 .ToList();
 
             foreach (var author in _summary.Authors)
