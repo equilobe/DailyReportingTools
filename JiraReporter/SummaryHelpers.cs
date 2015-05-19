@@ -12,13 +12,13 @@ namespace JiraReporter
     public static class SummaryHelpers
     {
 
-        public static int GetWorkingDays(DateTime startDate, DateTime endDate, List<Month> currentOverrides)
+        public static int GetWorkingDays(DateTime startDate, DateTime endDate, WorkingDaysContext context)
         {
             DateTime dateIterator = startDate.Date;
             int days = 0;
             while (dateIterator < endDate.Date)
             {
-                if (dateIterator.DayOfWeek != DayOfWeek.Saturday && dateIterator.DayOfWeek != DayOfWeek.Sunday && !MonthlyOptionsHelpers.SearchDateInOverrides(currentOverrides, dateIterator))
+                if (!context.WeekendDaysList.Exists(d => d == dateIterator.DayOfWeek) && !MonthlyOptionsHelpers.SearchDateInOverrides(context.MonthlyOptions, dateIterator))
                     days++;
                 dateIterator = dateIterator.AddDays(1);
             }
@@ -29,9 +29,9 @@ namespace JiraReporter
         {
             var reportDate = context.ToDate.AddDays(-1);
             if (reportDate <= context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc))
-                return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), reportDate.AddDays(1), context.Policy.MonthlyOptions);
+                return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), reportDate.AddDays(1), context.WorkingDaysContext);
 
-            return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc).AddDays(1), context.Policy.MonthlyOptions);
+            return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc).AddDays(1), context.WorkingDaysContext);
         }
     }
 }

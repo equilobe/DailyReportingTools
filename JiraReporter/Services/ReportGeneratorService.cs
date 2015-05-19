@@ -27,6 +27,8 @@ namespace JiraReporter
 
         public JiraReport GenerateReport(JiraReport report)
         {
+            SetWorkingDaysContext(report);
+
             FilterIndividualDrafts(report);
 
             SetSourceControlLogs(report);
@@ -44,6 +46,11 @@ namespace JiraReporter
             report.NotHideContentId = RandomString.Get();
 
             return report;
+        }
+
+        private void SetWorkingDaysContext(JiraReport report)
+        {
+            report.WorkingDaysContext = new WorkingDaysContext(report.Policy.MonthlyOptions, report.Policy.AdvancedOptions.WeekendDaysList);
         }
 
         private static void SetDetails(JiraReport report)
