@@ -171,7 +171,7 @@ namespace Equilobe.DailyReport.SL
                 usernamesToConfirm = db.IndividualDraftConfirmations.ToList()
                                                                     .Where(idc => idc.BasicSettingsId == basicSettingsId &&
                                                                                   idc.ReportDate == context.Date.DateToString() &&
-                                                                                 (idc.LastDateConfirmed == null || idc.LastDateConfirmed.Value != DateTime.Today))
+                                                                                 (idc.LastDateConfirmed == null || idc.LastDateConfirmed.Value.Date != DateTime.Today))
                                                                     .Select(qr => qr.Username)
                                                                     .ToList();
             }
