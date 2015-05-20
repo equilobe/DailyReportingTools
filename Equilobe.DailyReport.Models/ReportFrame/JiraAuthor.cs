@@ -32,7 +32,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> Issues { get; set; }
         public List<IssueDetailed> MonthIssues { get; set; }
         public List<IssueDetailed> SprintIssues { get; set; }
-        public List<IssueDetailed> CompletedIssues { get; set; }
+        public List<IssueDetailed> CompletedIssuesAll { get; set; }
+        public List<IssueDetailed> CompletedIssuesVisible { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }

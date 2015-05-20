@@ -169,8 +169,8 @@ namespace JiraReporter.Services
             {
                 RequestContext = context.JiraRequestContext,
                 ProjectKey = context.ProjectKey,
-                StartDate = context.ReportDate.AddDays(-6).Date,
-                EndDate = context.ReportDate
+                StartDate = context.ToDate.AddDays(-6).Date,
+                EndDate = context.ToDate
             };
             return issuesContext;
         }

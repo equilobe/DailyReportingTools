@@ -44,7 +44,7 @@ namespace JiraReporter.Services
             var authors = JiraService.GetUsers(_context.JiraRequestContext, _context.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
-                            .ToList();           
+                            .ToList();
 
             SetProjectLead(authors);
             authors.ForEach(SetAuthorAdvancedProperties);
@@ -112,9 +112,13 @@ namespace JiraReporter.Services
 
         private void SetCompletedTasks()
         {
-            _currentAuthor.CompletedIssues = new List<IssueDetailed>();
+            _currentAuthor.CompletedIssuesAll = new List<IssueDetailed>();
+            _currentAuthor.CompletedIssuesVisible = new List<IssueDetailed>();
+
             if (!_reportTasks.CompletedTasksAll.IsEmpty())
-                _currentAuthor.CompletedIssues = _reportTasks.CompletedTasksAll.Where(i => i.Assignee == _currentAuthor.Name).ToList();
+                _currentAuthor.CompletedIssuesAll = _reportTasks.CompletedTasksAll.Where(i => i.Assignee == _currentAuthor.Name).ToList();
+            if (!_reportTasks.CompletedTasksVisible.IsEmpty())
+                _currentAuthor.CompletedIssuesVisible = _reportTasks.CompletedTasksVisible.Where(i => i.Assignee == _currentAuthor.Name).ToList();
         }
 
         private void SetIssuesSearchUrl()
@@ -153,7 +157,7 @@ namespace JiraReporter.Services
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
                 fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
-                fullIssue.SubtasksDetailed.ForEach(i=>i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
+                fullIssue.SubtasksDetailed.ForEach(i => i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
                 fullIssue.SubtasksDetailed.RemoveAll(s => s.Entries.IsEmpty());
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
                 completeIssues.Add(fullIssue);
@@ -399,11 +403,11 @@ namespace JiraReporter.Services
         {
             _currentAuthor.Errors = new List<Error>();
 
-            if(!_currentAuthor.CompletedIssues.IsEmpty())
+            if (!_currentAuthor.CompletedIssuesVisible.IsEmpty())
             {
-                var completedTasksErrors = _currentAuthor.CompletedIssues.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                var completedTasksErrors = _currentAuthor.CompletedIssuesVisible.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
                 if (completedTasksErrors.Count > 0)
-                   _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
+                    _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
             }
 
             if (!_context.HasSprint)
