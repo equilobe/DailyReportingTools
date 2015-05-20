@@ -137,6 +137,21 @@ footer {
     }
 }
 
+.report-summary-examples {
+
+    > div {
+        background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(238,238,238,0.45) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(238,238,238,0.45)));
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
+        background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
+        background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6eeeeee',GradientType=0 );
+        border-bottom: 1px solid rgba(238,238,238, 0.45);
+        overflow: hidden;
+    }
+}
+
 .how-it-works {
     margin-top: 20px;
 }
@@ -279,7 +294,7 @@ div.disabled {
         display: inline-block;
         max-width: 680px;
         line-height: 1.6em;
-        font-size: 1em;
+        font-size: 1.2em;
         color: black;
         font-weight: lighter;
     }
@@ -343,18 +358,6 @@ div.disabled {
 
     .report-summary {
 
-        > div:not(:first-of-type) {
-            background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(238,238,238,0.45) 100%);
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(238,238,238,0.45)));
-            background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6eeeeee',GradientType=0 );
-            border-bottom: 1px solid rgba(238,238,238, 0.45);
-            overflow: hidden;
-        }
-
         .row {
             margin: 0;
             margin-top: 50px;
@@ -380,18 +383,6 @@ div.disabled {
 [data-page='howItWorks'] {
 
     .report-summary {
-
-        > div:not(:first-of-type) {
-            background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(238,238,238,0.45) 100%);
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(238,238,238,0.45)));
-            background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(238,238,238,0.45) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6eeeeee',GradientType=0 );
-            border-bottom: 1px solid rgba(238,238,238, 0.45);
-            overflow: hidden;
-        }
 
         .row {
             margin: 0;
