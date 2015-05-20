@@ -224,7 +224,7 @@ namespace Equilobe.DailyReport.SL
 
         private bool WasFullDraftReportConfirmed(ExecutionContext context, BasicSettings report)
         {
-            return (report.FinalDraftConfirmation != null && report.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null && report.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value.Date == context.Date);
+            return (report.FinalDraftConfirmation != null && report.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null && report.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value.Date == context.Date); // must be modified after merge of DRT-148
         }
 
         private bool WasFinalReportSent(ExecutionContext context, BasicSettings report)
