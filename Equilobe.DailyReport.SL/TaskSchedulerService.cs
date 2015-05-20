@@ -40,6 +40,7 @@ namespace Equilobe.DailyReport.SL
                     taskDefinition.Actions.Add(new ExecAction(ConfigurationService.GetJiraReporterPath(),
                                                               "--uniqueProjectKey=" + context.UniqueProjectKey,
                                                               ConfigurationService.GetReportToolPath()));
+                    taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.Queue;
                 }
                 else
                     taskDefinition = task.Definition;
