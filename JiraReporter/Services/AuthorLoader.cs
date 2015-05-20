@@ -101,12 +101,20 @@ namespace JiraReporter.Services
             AddCommitIssuesNotInTimesheet();
 
             SetUncompletedTasks();
+            SetCompletedTasks();
             SetAuthorDayLogs();
             SetAuthorErrors();
             SetRemainingEstimate();
             SetOverrideEmail();
             SetAuthorIsEmpty();
             SetImage();
+        }
+
+        private void SetCompletedTasks()
+        {
+            _currentAuthor.CompletedIssues = new List<IssueDetailed>();
+            if (!_reportTasks.CompletedTasksAll.IsEmpty())
+                _currentAuthor.CompletedIssues = _reportTasks.CompletedTasksAll.Where(i => i.Assignee == _currentAuthor.Name).ToList();
         }
 
         private void SetIssuesSearchUrl()
@@ -389,6 +397,15 @@ namespace JiraReporter.Services
 
         private void SetAuthorErrors()
         {
+            _currentAuthor.Errors = new List<Error>();
+
+            if(!_currentAuthor.CompletedIssues.IsEmpty())
+            {
+                var completedTasksErrors = _currentAuthor.CompletedIssues.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                if (completedTasksErrors.Count > 0)
+                   _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
+            }
+
             if (!_context.HasSprint)
                 return;
 
@@ -396,7 +413,7 @@ namespace JiraReporter.Services
             {
                 var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
                 if (errors.Count > 0)
-                    _currentAuthor.Errors = errors;
+                    _currentAuthor.Errors = _currentAuthor.Errors.Concat(errors).ToList();
             }
         }
 
