@@ -195,7 +195,7 @@ namespace Equilobe.DailyReport.SL
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == context.Id);
                 var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate == context.Date.DateToString()).ToList();
 
-                if (WasFinalReportSent(context, report))
+                if (WasFinalReportSent(context, report) || WasFullDraftReportConfirmed(context,report))
                     return false;
 
                 if (WasFullDraftReportSent(context, report))
@@ -220,6 +220,11 @@ namespace Equilobe.DailyReport.SL
 
                 return true;
             }
+        }
+
+        private bool WasFullDraftReportConfirmed(ExecutionContext context, BasicSettings report)
+        {
+            return (report.FinalDraftConfirmation != null && report.FinalDraftConfirmation.LastFinalDraftConfirmationDate != null && report.FinalDraftConfirmation.LastFinalDraftConfirmationDate.Value.Date == context.Date);
         }
 
         private bool WasFinalReportSent(ExecutionContext context, BasicSettings report)
