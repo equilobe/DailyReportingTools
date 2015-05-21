@@ -114,7 +114,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id + " and status != 'Done'");
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id + " and statusCategory != 'Done'");
         }
 
         private void SetName()
@@ -332,10 +332,11 @@ namespace JiraReporter.Services
                         if (subtask.Assignee != _currentAuthor.Name || subtask.Resolution != null)
                             continue;
 
+                        if (_currentTasksCount >= 3)
+                            return;
+
                         _currentTasksCount++;
                         newIssue.SubtasksDetailed.Add(subtask);
-                        if (_currentTasksCount == 3)
-                            return;
                     }
                 }
             }
