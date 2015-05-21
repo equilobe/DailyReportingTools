@@ -41,11 +41,18 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public DateTime CompletedDate
+        public DateTime? CompletedDate
         {
             get
             {
-                return Convert.ToDateTime(completeDate);
+                try
+                {
+                    return Convert.ToDateTime(completeDate);
+                }
+                catch(Exception)
+                {
+                    return null;
+                }
             }
         }
     }

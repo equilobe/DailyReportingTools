@@ -83,7 +83,7 @@ namespace Equilobe.DailyReport.BL.Jira
                 if (sprint.StartDate.Date <= date)
                 {
                     if (sprint.CompletedDate > date)
-                        sprint.state = "Active";
+                        sprint.state = "ACTIVE";
 
                     return sprint;
                 }
