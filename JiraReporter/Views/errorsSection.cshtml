@@ -31,26 +31,22 @@
     </tr>
     @if (Model.IsIndividualDraft)
     {
-        if (Model.Author.Errors.Count == 1)
+        if (Model.Author.Errors.Count > 0)
         {
-            items = "item";
+            <tr>
+                <td style="vertical-align:top;">
+                    @Dot()
+                </td>
+                <td colspan="2" style="text-align: left">
+                    <span style="font-size:14px;">@Model.Author.ErrorMessage</span>
+                </td>
+            </tr>;
         }
-        else
-        {
-            items = "items";
-        }
-        <tr>
-            <td style="vertical-align:top;">
-                @Dot()
-            </td>
-            <td colspan="2" style="text-align: left">
-                <span style="font-size:14px;">@Model.Author.FirstName has @Model.Author.Errors.Count @items with no remaining estimate</span>
-            </td>
-        </tr>
     }
     else
     {
-        if (Model.Summary.CompletedWithEstimateErrors.Count > 0)
+        
+        @*if (Model.Summary.CompletedWithEstimateErrors.Count > 0)
         {
             if (Model.Summary.CompletedWithEstimateErrors.Count == 1)
             {
@@ -83,7 +79,8 @@
                 </td>
                 <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@Model.Summary.CompletedWithNoWorkErrors.Count completed @items with no work logged</span></td>
             </tr>
-        }
+        }*@
+        
         if (Model.Summary.UnassignedErrors.Count > 0)
         {
             if (Model.Summary.UnassignedErrors.Count == 1)
@@ -105,23 +102,15 @@
         {
             foreach (var author in Model.Summary.AuthorsWithErrors)
             {
-                if (author.Errors.Count == 1)
-                {
-                    items = "item";
-                }
-                else
-                {
-                    items = "items";
-                }
                 <tr>
                     <td style="vertical-align:top;">
                         @Dot()
                     </td>
-                    <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@author.FirstName has @author.Errors.Count @items with no remaining estimate</span></td>
+                    <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@author.ErrorMessage</span></td>
                 </tr>
             }
         }
-        if (Model.Summary.IsFinalDraft && !Model.Summary.Policy.AdvancedOptions.NoIndividualDraft)
+        @*if (Model.Summary.IsFinalDraft && !Model.Summary.Policy.AdvancedOptions.NoIndividualDraft)
         {
             if (Model.Summary.AuthorsNotConfirmed.Count > 0)
             {
@@ -137,6 +126,6 @@
                     </tr>
                 }
             }
-        }
+        }*@
     }
 </table>

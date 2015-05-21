@@ -59,6 +59,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public AuthorTasks OpenTasks { get; set; }
         public AuthorTasks RemainingTasks { get; set; }
 
+        public int NoRemainingEstimateErrors { get; set; }
+        public int NoTimeSpentErrors { get; set; }
+        public int CompletedWithEstimateErrors { get; set; }
+        public bool HasNotConfirmedError { get; set; }
+        public string ErrorMessage { get; set; }
+    //    public int Errors { get; set; }
+
+
         public Uri IssueSearchUrl { get; set; }
 
         public JiraAuthor()

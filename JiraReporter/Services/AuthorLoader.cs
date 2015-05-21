@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
@@ -22,6 +23,7 @@ namespace JiraReporter.Services
         public IEncryptionService EncryptionService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
         public IDataService DataService { get; set; }
+        public IErrorService ErrorService { get; set; }
 
         SprintTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
@@ -403,22 +405,62 @@ namespace JiraReporter.Services
         {
             _currentAuthor.Errors = new List<Error>();
 
-            if (!_currentAuthor.CompletedIssuesVisible.IsEmpty())
-            {
-                var completedTasksErrors = _currentAuthor.CompletedIssuesVisible.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                if (completedTasksErrors.Count > 0)
-                    _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
-            }
+            SetCompletedTasksErrors();
 
             if (!_context.HasSprint)
                 return;
 
+            SetRemainingTasksErrors();
+            SetNotConfirmedError();
+            SetErrorsMessage();
+
+     //  _currentAuthor.Errors = _currentAuthor.NoRemainingEstimateErrors + _currentAuthor.NoTimeSpentErrors + _currentAuthor.CompletedWithEstimateErrors;
+        }
+
+        private void SetNotConfirmedError()
+        {
+            if (!_context.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
+                return;
+
+            var draft = _context.Settings.IndividualDraftConfirmations.SingleOrDefault(dr => dr.Username == _currentAuthor.Username && dr.ReportDate == _context.ToDate.DateToString()); 
+
+            if (draft == null)
+                return;
+
+            if (draft.LastDateConfirmed == null || draft.LastDateConfirmed != _context.ToDate)
+                _currentAuthor.HasNotConfirmedError = true;
+        }
+
+        private void SetRemainingTasksErrors()
+        {
             if (!_currentAuthor.RemainingTasks.Issues.IsEmpty())
             {
                 var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
                 if (errors.Count > 0)
                     _currentAuthor.Errors = _currentAuthor.Errors.Concat(errors).ToList();
+                _currentAuthor.NoRemainingEstimateErrors = errors.Count(er => er.Type == ErrorType.HasNoRemaining);
             }
+        }
+
+        private void SetCompletedTasksErrors()
+        {
+            if (!_currentAuthor.CompletedIssuesVisible.IsEmpty())
+            {
+                var completedTasksErrors = _currentAuthor.CompletedIssuesVisible.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                if (completedTasksErrors.Count > 0)
+                    _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
+
+                _currentAuthor.NoTimeSpentErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasNoTimeSpent);
+                _currentAuthor.CompletedWithEstimateErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasRemaining);
+            }
+        }
+
+        private void SetErrorsMessage()
+        {
+            if (_currentAuthor.Errors.Count == 0)
+                return;
+
+            _currentAuthor.ErrorMessage = ErrorService.GetErrorsMessage(_currentAuthor.Name, _currentAuthor.Errors, _currentAuthor.HasNotConfirmedError);
         }
 
 

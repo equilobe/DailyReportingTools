@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
 using System.Globalization;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter.Services
 {
@@ -26,6 +27,7 @@ namespace JiraReporter.Services
         public Sprint _sprint { get { return _report.Sprint; } }
         public Summary _summary;
         public JiraReport _report;
+        public IErrorService ErrorService { get; set; }
 
         public SummaryLoader(JiraReport report)
         {
@@ -356,8 +358,8 @@ namespace JiraReporter.Services
 
         private void SetErrors()
         {
+            // add method to set unassigned errors
             SetAuthorsWithErrors();
-            SetAuthorsNotConfirmed();
             GetCompletedTasksErrors();
             GetUnassignedErrors();
             GetAllErrors();
@@ -387,30 +389,7 @@ namespace JiraReporter.Services
         private void SetAuthorsWithErrors()
         {
             _summary.AuthorsWithErrors = new List<JiraAuthor>();
-            _summary.AuthorsWithErrors = _summary.Authors.FindAll(a => a.Errors != null && a.Errors.Count > 0).ToList();
-        }
-
-        private void SetAuthorsNotConfirmed()
-        {
-            if (!_report.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
-                return;
-
-            _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
-            _summary.ConfirmationErrors = new List<Error>();
-            var notConfirmed = _report.Settings.IndividualDraftConfirmations
-                .Where(d => d.ReportDate == _report.ToDate.DateToString())
-                .Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != _report.ToDate)
-                .ToList();
-
-            foreach (var author in _summary.Authors)
-            {
-                var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);
-                if (notConfirmedAuthor)
-                {
-                    _summary.AuthorsNotConfirmed.Add(author);
-                    _summary.ConfirmationErrors.Add(new Error(ErrorType.NotConfirmed));
-                }
-            }
+            _summary.AuthorsWithErrors = _summary.Authors.FindAll(a => !a.Errors.IsEmpty()).ToList();
         }
 
         private void GetCompletedTasksErrors()
@@ -427,14 +406,16 @@ namespace JiraReporter.Services
             _summary.CompletedWithNoWorkErrors = _summary.CompletedWithNoWorkErrors.Concat(errorsWithNoTimeSpent).ToList();
         }
 
+        //set unassinged errors using the service
         private void GetUnassignedErrors()
         {
             _summary.UnassignedErrors = new List<Error>();
             if (_report.ReportTasks.UnassignedTasks != null && _report.ReportTasks.UnassignedTasks.Count > 0)
             {
-                var errors = new List<Error>();
-                errors = _report.ReportTasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                _summary.UnassignedErrors = _summary.UnassignedErrors.Concat(errors).ToList();
+                var noRemainingErrors = _report.ReportTasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+                var completedTasksErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0 && t.Assignee == null).SelectMany(e => e.Errors).ToList();
+
+                _summary.UnassignedErrors = noRemainingErrors.Concat(completedTasksErrors).ToList();
             }
         }
 

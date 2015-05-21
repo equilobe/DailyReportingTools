@@ -24,6 +24,7 @@ namespace JiraReporter
         public IEncryptionService EncryptionService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
         public IDataService DataService { get; set; }
+        public IErrorService ErrorService { get; set; }
 
         public JiraReport GenerateReport(JiraReport report)
         {
@@ -83,7 +84,8 @@ namespace JiraReporter
                 JiraService = JiraService,
                 EncryptionService = EncryptionService,
                 ConfigurationService = ConfigurationService,
-                DataService = DataService
+                DataService = DataService,
+                ErrorService = ErrorService
             };
 
             if (context.ExecutionInstance != null
@@ -132,7 +134,7 @@ namespace JiraReporter
 
         Summary LoadSummary(JiraReport report)
         {
-            var summaryLoader = new SummaryLoader(report);
+            var summaryLoader = new SummaryLoader(report) { ErrorService = ErrorService };
             return summaryLoader.LoadSummary();
         }
 
