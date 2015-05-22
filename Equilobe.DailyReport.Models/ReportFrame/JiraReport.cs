@@ -162,6 +162,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string NotHideContentId { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
+        public WorkingDaysContext WorkingDaysContext { get; set; }
         public ExecutionInstance ExecutionInstance { get; set; }
 
         public DateTime LastReportSentDate { get; set; }
@@ -188,5 +189,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public bool IsOnSchedule { get; set; }
         public bool HasSprint { get; set; }
+
     }
 }

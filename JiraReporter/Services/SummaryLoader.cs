@@ -311,7 +311,7 @@ namespace JiraReporter.Services
         private void SetHealth()
         {
             var healthInspector = new HealthInspector(_report);
-            _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _policy.MonthlyOptions), _summary.Timing.TotalTimeHours);
+            _summary.WorkedDaysHealth = healthInspector.GetWorkedDaysHealth(_summary.Timing.AllocatedHoursPerDay * SummaryHelpers.GetWorkingDays(_options.FromDate, _options.ToDate.AddDays(-1), _report.WorkingDaysContext), _summary.Timing.TotalTimeHours);
             if (_sprint == null)
             {
                 _summary.DayHealth = Health.None;
@@ -544,17 +544,17 @@ namespace JiraReporter.Services
             var workingDaysInfo = new WorkingDaysInfo();
             var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
             var reportDate = _report.ToDate.AddDays(-1);
-            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, reportDate.AddDays(1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions); ;
-            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth().AddDays(1), _policy.MonthlyOptions);
-            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.AddDays(1), _policy.MonthlyOptions);
+            workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, reportDate.AddDays(1), _report.WorkingDaysContext);
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _report.WorkingDaysContext); ;
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth().AddDays(1), _report.WorkingDaysContext);
+            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.AddDays(1), _report.WorkingDaysContext);
             if (_sprint != null)
             {
                 var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone(_report.OffsetFromUtc);
                 var sprintStartDate = _sprint.StartDate.ToOriginalTimeZone(_report.OffsetFromUtc);
-                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate.AddDays(1), _policy.MonthlyOptions);
-                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate.AddDays(1), _policy.MonthlyOptions);
-                workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetWorkingDays(sprintStartDate, _report.ToDate, _policy.MonthlyOptions);
+                workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate.AddDays(1), _report.WorkingDaysContext);
+                workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate, sprintEndDate.AddDays(1), _report.WorkingDaysContext);
+                workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetWorkingDays(sprintStartDate, _report.ToDate, _report.WorkingDaysContext);
             }
             return workingDaysInfo;
         }

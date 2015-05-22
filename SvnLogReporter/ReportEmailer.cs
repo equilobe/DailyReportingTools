@@ -76,7 +76,7 @@ namespace SourceControlLogReporter
 
         protected void EmailReportMessage(MailMessage message, string reportPath)
         {
-            var smtp = new SmtpClient { EnableSsl = true };
+            var smtp = new SmtpClient();
             smtp.Send(message);
             MoveToSent(reportPath);
 

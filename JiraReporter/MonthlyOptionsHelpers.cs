@@ -16,6 +16,7 @@ namespace JiraReporter
             var daysString = month.NonWorkingDays.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var number in daysString)
                 nonWorkingDays.Add(Int32.Parse(number));
+
             return nonWorkingDays;
         }
 
@@ -29,9 +30,8 @@ namespace JiraReporter
 
         public static bool SearchDateInOverrides(List<Month> overrides, DateTime date)
         {
-            var currentOverride = new Month();
-            if (overrides != null)
-                currentOverride = SearchOverride(overrides, date);
+            var currentOverride = SearchOverride(overrides, date);
+
 
             if (currentOverride == null || currentOverride.NonWorkingDaysList == null)
                 return false;

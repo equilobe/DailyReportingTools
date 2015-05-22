@@ -99,9 +99,9 @@ namespace JiraReporter
             if (allocatedHours == 0)
                 return Health.None;
 
-            var workedDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).AddDays(-1), Policy.MonthlyOptions);
+            var workedDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).AddDays(-1), Report.WorkingDaysContext);
             var workedPerDay = totalTimeWorked / workedDays;
-            var monthWorkingDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).EndOfMonth(), Policy.MonthlyOptions);
+            var monthWorkingDays = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).StartOfMonth(), DateTime.Now.ToOriginalTimeZone(Report.OffsetFromUtc).EndOfMonth(), Report.WorkingDaysContext);
             var averageFromAllocatedHours = allocatedHours / monthWorkingDays;
             return GetHealthFromPercentage(averageFromAllocatedHours, workedPerDay);
         }

@@ -57,7 +57,7 @@ namespace DailyReportWeb
 	{
 		public Task SendAsync(IdentityMessage message)
 		{
-            var client = new SmtpClient() { EnableSsl = true };
+            var client = new SmtpClient();
             var credential = (System.Net.NetworkCredential)client.Credentials;
 			var mail = new MailMessage(credential.UserName, message.Destination);
 			mail.Subject = message.Subject;

@@ -104,6 +104,7 @@
     <Compile Include="ReportFrame\Timing.cs" />
     <Compile Include="ReportFrame\TimingDetailed.cs" />
     <Compile Include="ReportFrame\UserImageContext.cs" />
+    <Compile Include="ReportFrame\WorkingDaysContext.cs" />
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
     <Compile Include="Jira\Avatar.cs" />
     <Compile Include="Jira\Entries.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
+    <Compile Include="Views\ConfirmationMail.cs" />
     <Compile Include="Views\Spacing.cs" />
     <Compile Include="Web\DataReportOperation.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
