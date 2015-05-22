@@ -32,6 +32,7 @@ namespace JiraReporter
         {
             var currentOverride = SearchOverride(overrides, date);
 
+
             if (currentOverride == null || currentOverride.NonWorkingDaysList == null)
                 return false;
 

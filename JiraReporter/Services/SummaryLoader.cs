@@ -120,7 +120,7 @@ namespace JiraReporter.Services
 
         private void SetMonthStatus()
         {
-            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Today.Month != _report.Options.ToDate.AddDays(-1).Month)
+            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Month != _report.Options.ToDate.AddDays(-1).Month)
             {
                 _summary.MonthStatus = "Finished";
                 return;
@@ -399,7 +399,7 @@ namespace JiraReporter.Services
             _summary.ConfirmationErrors = new List<Error>();
             var notConfirmed = _report.Settings.IndividualDraftConfirmations
                 .Where(d => d.ReportDate == _report.ToDate.DateToString())
-                .Where(d => d.LastDateConfirmed == null || d.LastDateConfirmed.Value.Date != _report.ToDate)
+                .Where(d => DateTimeHelpers.CompareDay(d.LastDateConfirmed, _report.ToDate, _report.OffsetFromUtc) != 1)
                 .ToList();
 
             foreach (var author in _summary.Authors)

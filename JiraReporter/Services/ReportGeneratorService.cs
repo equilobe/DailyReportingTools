@@ -91,7 +91,7 @@ namespace JiraReporter
                 && context.ExecutionInstance.Scope == SendScope.SendIndividualDraft)
             {
                 var author = authorLoader.CreateAuthorByKey(context);
-                if (context.ProjectManager == author.Username)
+                if (context.ProjectManager == author.UserKey)
                     author.IsProjectLead = true;
                 authors.Add(author);
             }

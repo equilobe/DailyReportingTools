@@ -18,8 +18,6 @@ namespace Equilobe.DailyReport.Models.Policy
         public string DraftEmails { get; set; }
         public string Emails { get; set; }
         public string ReportTime { get; set; }
-        [XmlIgnore]
-        public DateTime ReportTimeDateFormat { get; set; }
 
         [XmlIgnore]
         public List<string> EmailCollection { get; set; }
