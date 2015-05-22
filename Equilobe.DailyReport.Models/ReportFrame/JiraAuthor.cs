@@ -63,8 +63,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public int NoTimeSpentErrors { get; set; }
         public int CompletedWithEstimateErrors { get; set; }
         public bool HasNotConfirmedError { get; set; }
-        public string ErrorMessage { get; set; }
-    //    public int Errors { get; set; }
+        public string ErrorsMessageHeader { get; set; }
+        public List<string> ErrorsMessageList { get; set; }
 
 
         public Uri IssueSearchUrl { get; set; }

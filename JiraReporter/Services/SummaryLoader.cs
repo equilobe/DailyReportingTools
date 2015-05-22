@@ -358,32 +358,11 @@ namespace JiraReporter.Services
 
         private void SetErrors()
         {
-            // add method to set unassigned errors
             SetAuthorsWithErrors();
-            GetCompletedTasksErrors();
-            GetUnassignedErrors();
-            GetAllErrors();
-        }
+            SetUnassignedErrors();
 
-        private void GetAllErrors()
-        {
-            var errors = new List<Error>();
-            if (_summary.CompletedWithNoWorkErrors != null)
-                errors = errors.Concat(_summary.CompletedWithNoWorkErrors).ToList();
-            if (_summary.ConfirmationErrors != null)
-                errors = errors.Concat(_summary.ConfirmationErrors).ToList();
-
-            if (_report.HasSprint)
-            {
-                if (_summary.AuthorsWithErrors != null)
-                    errors = errors.Concat(_summary.AuthorsWithErrors.SelectMany(e => e.Errors)).ToList();
-                if (_summary.CompletedWithEstimateErrors != null)
-                    errors = errors.Concat(_summary.CompletedWithEstimateErrors).ToList();
-                if (_summary.UnassignedErrors != null)
-                    errors = errors.Concat(_summary.UnassignedErrors).ToList();
-            }
-
-            _summary.Errors = errors;
+            if (_summary.AuthorsWithErrors.Count > 0 || _summary.UnassignedErrors.Count > 0)
+                _summary.HasErrors = true;
         }
 
         private void SetAuthorsWithErrors()
@@ -392,22 +371,7 @@ namespace JiraReporter.Services
             _summary.AuthorsWithErrors = _summary.Authors.FindAll(a => !a.Errors.IsEmpty()).ToList();
         }
 
-        private void GetCompletedTasksErrors()
-        {
-            _summary.CompletedWithEstimateErrors = new List<Error>();
-            _summary.CompletedWithNoWorkErrors = new List<Error>();
-            if (_report.ReportTasks.CompletedTasksAll == null)
-                return;
-
-            var tasksWithErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0);
-            var errorsWithEstimate = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasRemaining)).ToList();
-            var errorsWithNoTimeSpent = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasNoTimeSpent)).ToList();
-            _summary.CompletedWithEstimateErrors = _summary.CompletedWithEstimateErrors.Concat(errorsWithEstimate).ToList();
-            _summary.CompletedWithNoWorkErrors = _summary.CompletedWithNoWorkErrors.Concat(errorsWithNoTimeSpent).ToList();
-        }
-
-        //set unassinged errors using the service
-        private void GetUnassignedErrors()
+        private void SetUnassignedErrors()
         {
             _summary.UnassignedErrors = new List<Error>();
             if (_report.ReportTasks.UnassignedTasks != null && _report.ReportTasks.UnassignedTasks.Count > 0)
@@ -417,6 +381,10 @@ namespace JiraReporter.Services
 
                 _summary.UnassignedErrors = noRemainingErrors.Concat(completedTasksErrors).ToList();
             }
+
+            var errorContext = new ErrorContext(_summary.UnassignedErrors, null);
+            _summary.UnassignedErrorsMessageHeader = ErrorService.GetMessagesHeader(errorContext);
+            _summary.UnassignedErrorsMessageList = ErrorService.GetMessagesList(errorContext);
         }
 
         private void SetWorkSummaryMax()

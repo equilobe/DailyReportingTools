@@ -79,6 +79,7 @@
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
     <Compile Include="Interfaces\IJiraReport.cs" />
+    <Compile Include="ReportFrame\ErrorContext.cs" />
     <Compile Include="ReportFrame\IndividualDraftInfo.cs">
       <SubType>Code</SubType>
     </Compile>

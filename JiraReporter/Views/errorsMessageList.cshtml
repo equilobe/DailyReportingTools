@@ -1,0 +1,16 @@
+﻿@foreach(var message in Model)
+{
+    <tr>
+        <td width="10" style="vertical-align:top;">
+            &nbsp;
+        </td>
+        <td width="10" style="vertical-align:top;">
+            @Dot()
+        </td>
+        <td width="420" style="text-align:left">
+            <span style="font-size:14px;">
+                @message
+            </span>
+        </td>
+    </tr>
+}

@@ -9,6 +9,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IErrorService : IService
     {
-        string GetErrorsMessage(string authorName, List<Error> errors, bool hasNotConfirmedError);
+        string GetMessagesHeader(ErrorContext context);
+        List<string> GetMessagesList(ErrorContext context);
     }
 }

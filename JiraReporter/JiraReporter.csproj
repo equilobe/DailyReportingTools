@@ -169,6 +169,9 @@
     <None Include="Views\errorIcon.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Views\errorsMessageList.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\errorsSection.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -427,8 +427,8 @@ namespace JiraReporter.Services
             if (draft == null)
                 return;
 
-            if (draft.LastDateConfirmed == null || draft.LastDateConfirmed != _context.ToDate)
-                _currentAuthor.HasNotConfirmedError = true;
+            if (draft.LastDateConfirmed == null || draft.LastDateConfirmed.Value.Date != _context.ToDate)
+                _currentAuthor.Errors.Add(new Error(ErrorType.NotConfirmed));
         }
 
         private void SetRemainingTasksErrors()
@@ -460,7 +460,9 @@ namespace JiraReporter.Services
             if (_currentAuthor.Errors.Count == 0)
                 return;
 
-            _currentAuthor.ErrorMessage = ErrorService.GetErrorsMessage(_currentAuthor.Name, _currentAuthor.Errors, _currentAuthor.HasNotConfirmedError);
+            var errorContext = new ErrorContext(_currentAuthor.Errors, _currentAuthor.Name);
+            _currentAuthor.ErrorsMessageHeader = ErrorService.GetMessagesHeader(errorContext);
+            _currentAuthor.ErrorsMessageList = ErrorService.GetMessagesList(errorContext);
         }
 
 
