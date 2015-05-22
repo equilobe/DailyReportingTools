@@ -361,7 +361,7 @@ namespace JiraReporter.Services
             SetAuthorsWithErrors();
             SetUnassignedErrors();
 
-            if (_summary.AuthorsWithErrors.Count > 0 || _summary.UnassignedErrors.Count > 0)
+            if (!_summary.AuthorsWithErrors.IsEmpty()|| !_summary.UnassignedErrors.IsEmpty())
                 _summary.HasErrors = true;
         }
 
@@ -373,6 +373,9 @@ namespace JiraReporter.Services
 
         private void SetUnassignedErrors()
         {
+            if (!_summary.HasSprint)
+                return;
+
             _summary.UnassignedErrors = new List<Error>();
             if (_report.ReportTasks.UnassignedTasks != null && _report.ReportTasks.UnassignedTasks.Count > 0)
             {

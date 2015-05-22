@@ -33,15 +33,6 @@
     {
         if (Model.Author.Errors.Count > 0)
         {
-            <tr>
-                <td width="10" style="vertical-align:top;">
-                    @Dot()
-                </td>
-                <td colspan="2" style="text-align: left">
-                    <span style="font-size:14px;">@Model.Author.ErrorsMessageHeader</span>
-                </td>
-            </tr>
-
             @Partial("Views/errorsMessageList.cshtml", Model.Author.ErrorsMessageList)
         }
     }

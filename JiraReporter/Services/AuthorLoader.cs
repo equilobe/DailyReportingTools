@@ -414,7 +414,7 @@ namespace JiraReporter.Services
             SetNotConfirmedError();
             SetErrorsMessage();
 
-     //  _currentAuthor.Errors = _currentAuthor.NoRemainingEstimateErrors + _currentAuthor.NoTimeSpentErrors + _currentAuthor.CompletedWithEstimateErrors;
+            //  _currentAuthor.Errors = _currentAuthor.NoRemainingEstimateErrors + _currentAuthor.NoTimeSpentErrors + _currentAuthor.CompletedWithEstimateErrors;
         }
 
         private void SetNotConfirmedError()
@@ -422,7 +422,7 @@ namespace JiraReporter.Services
             if (!_context.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
                 return;
 
-            var draft = _context.Settings.IndividualDraftConfirmations.SingleOrDefault(dr => dr.Username == _currentAuthor.Username && dr.ReportDate == _context.ToDate.DateToString()); 
+            var draft = _context.Settings.IndividualDraftConfirmations.SingleOrDefault(dr => dr.Username == _currentAuthor.Username && dr.ReportDate == _context.ToDate.DateToString());
 
             if (draft == null)
                 return;
@@ -433,26 +433,26 @@ namespace JiraReporter.Services
 
         private void SetRemainingTasksErrors()
         {
-            if (!_currentAuthor.RemainingTasks.Issues.IsEmpty())
-            {
-                var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                if (errors.Count > 0)
-                    _currentAuthor.Errors = _currentAuthor.Errors.Concat(errors).ToList();
-                _currentAuthor.NoRemainingEstimateErrors = errors.Count(er => er.Type == ErrorType.HasNoRemaining);
-            }
+            if (_currentAuthor.RemainingTasks.Issues.IsEmpty())
+                return;
+
+            var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (errors.Count > 0)
+                _currentAuthor.Errors = _currentAuthor.Errors.Concat(errors).ToList();
+            _currentAuthor.NoRemainingEstimateErrors = errors.Count(er => er.Type == ErrorType.HasNoRemaining);
         }
 
         private void SetCompletedTasksErrors()
         {
-            if (!_currentAuthor.CompletedIssuesVisible.IsEmpty())
-            {
-                var completedTasksErrors = _currentAuthor.CompletedIssuesVisible.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                if (completedTasksErrors.Count > 0)
-                    _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
+            if (_currentAuthor.CompletedIssuesVisible.IsEmpty() || _context.IsIndividualDraft)
+                return;
 
-                _currentAuthor.NoTimeSpentErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasNoTimeSpent);
-                _currentAuthor.CompletedWithEstimateErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasRemaining);
-            }
+            var completedTasksErrors = _currentAuthor.CompletedIssuesVisible.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (completedTasksErrors.Count > 0)
+                _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
+
+            _currentAuthor.NoTimeSpentErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasNoTimeSpent);
+            _currentAuthor.CompletedWithEstimateErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasRemaining);
         }
 
         private void SetErrorsMessage()

@@ -113,6 +113,9 @@ namespace JiraReporter
 
         protected override void UpdateBasicSettings()
         {
+            if (Report.IsIndividualDraft)
+                return;
+
             using(var db = new ReportsDb())
             {
                 var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == Report.UniqueProjectKey);
