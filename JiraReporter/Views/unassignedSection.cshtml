@@ -6,11 +6,23 @@
     </td>
 </tr>
 
-@foreach (var task in Model.ReportTasks.UnassignedTasks)
+@foreach (var task in Model.ReportTasks.UnassignedTasksVisible)
 {
     if (task.IsSubtask == false)
     {
         @Partial("Views/uncompletedTask.cshtml", task)
     }
+}
+
+@if(Model.ReportTasks.AdditionalUnassignedTasks > 0)
+{
+    <tr>
+        <td width="15">
+            &nbsp;
+        </td>
+        <td colspan="2">
+            + <a href="@Model.ReportTasks.UnassignedTasksSearchUrl" style="text-decoration:none; color:black">@Model.ReportTasks.AdditionalUnassignedTasks more</a>
+        </td>
+    </tr>
 }
 

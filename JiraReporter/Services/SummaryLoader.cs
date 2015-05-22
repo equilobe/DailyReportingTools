@@ -54,7 +54,7 @@ namespace JiraReporter.Services
             if (_report.HasSprint)
             {
                 _summary.HasSprint = true;
-                _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
+                _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasksAll.Count(t => t.IsSubtask == false);
             }
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
@@ -361,7 +361,7 @@ namespace JiraReporter.Services
             SetAuthorsWithErrors();
             SetUnassignedErrors();
 
-            if (!_summary.AuthorsWithErrors.IsEmpty()|| !_summary.UnassignedErrors.IsEmpty())
+            if (!_summary.AuthorsWithErrors.IsEmpty() || !_summary.UnassignedErrors.IsEmpty())
                 _summary.HasErrors = true;
         }
 
@@ -373,17 +373,15 @@ namespace JiraReporter.Services
 
         private void SetUnassignedErrors()
         {
-            if (!_summary.HasSprint)
+            if (!_summary.HasSprint || _report.ReportTasks.UnassignedTasksVisible.IsEmpty())
                 return;
 
             _summary.UnassignedErrors = new List<Error>();
-            if (_report.ReportTasks.UnassignedTasks != null && _report.ReportTasks.UnassignedTasks.Count > 0)
-            {
-                var noRemainingErrors = _report.ReportTasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                var completedTasksErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0 && t.Assignee == null).SelectMany(e => e.Errors).ToList();
 
-                _summary.UnassignedErrors = noRemainingErrors.Concat(completedTasksErrors).ToList();
-            }
+            var noRemainingErrors = _report.ReportTasks.UnassignedTasksVisible.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            var completedTasksErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0 && t.Assignee == null).SelectMany(e => e.Errors).ToList();
+
+            _summary.UnassignedErrors = noRemainingErrors.Concat(completedTasksErrors).ToList();
 
             var errorContext = new ErrorContext(_summary.UnassignedErrors, null);
             _summary.UnassignedErrorsMessageHeader = ErrorService.GetMessagesHeader(errorContext);

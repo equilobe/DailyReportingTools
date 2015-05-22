@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿using Equilobe.DailyReport.BL;
+using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
@@ -128,7 +129,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id + " and status != 'Done'");
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.AssignedUncompletedIssues(_currentAuthor.UserKey, _context.ProjectKey, _context.Sprint.id));
         }
 
         private void SetName()

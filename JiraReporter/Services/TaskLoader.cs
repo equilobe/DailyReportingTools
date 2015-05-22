@@ -29,26 +29,35 @@ namespace JiraReporter.Services
                 context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
                 SortTasks(context.ReportTasks);
                 SetUnassignedTasksErrors(context);
+                SetVisibleUnassignedTasks(context);
             }
 
             context.ReportTasks.CompletedTasksAll = GetCompletedTasks(context);
             SetVisibleCompletedTasks(context);
-            //   SetCompletedTasks(GroupCompletedTasks(completedTasks, context), context.ReportTasks);
             SetCompletedTasksErrors(context);
+        }
+
+        private void SetVisibleUnassignedTasks(JiraReport context)
+        {
+            if (context.ReportTasks.UnassignedTasksAll.IsEmpty())
+                return;
+
+            context.ReportTasks.UnassignedTasksVisible = context.ReportTasks.UnassignedTasksAll.Where(t=> !t.IsSubtask).Take(5).ToList();
+            context.ReportTasks.AdditionalUnassignedTasks = context.ReportTasks.UnassignedTasksAll.Count(t=>!t.IsSubtask) - context.ReportTasks.UnassignedTasksVisible.Count;
+            context.ReportTasks.UnassignedTasksSearchUrl = new Uri(context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.UnassignedUncompletedIssues(context.ProjectKey, context.Sprint.id));
         }
 
         void SetCompletedTasksErrors(JiraReport report)
         {
             int completedErrors = 0;
-        //    SetErrors(report.ReportTasks.CompletedTasksVisible, report.Policy);
             completedErrors += GetErrorsCount(report.ReportTasks.CompletedTasksVisible);
             report.ReportTasks.CompletedTasksErrorCount = completedErrors;
         }
 
         static void SetUnassignedTasksErrors(JiraReport report)
         {
-            SetErrors(report.ReportTasks.UnassignedTasks, report.Policy);
-            report.ReportTasks.UnassignedTasksErrorCount = GetErrorsCount(report.ReportTasks.UnassignedTasks);
+            SetErrors(report.ReportTasks.UnassignedTasksVisible, report.Policy);
+            report.ReportTasks.UnassignedTasksErrorCount = GetErrorsCount(report.ReportTasks.UnassignedTasksVisible);
         }
 
         List<IssueDetailed> GetCompletedTasks(JiraReport context)
@@ -73,7 +82,7 @@ namespace JiraReporter.Services
 
         void SetVisibleCompletedTasks(JiraReport context)
         {
-            if (context.ReportTasks.CompletedTasksAll == null)
+            if (context.ReportTasks.CompletedTasksAll.IsEmpty())
                 return;
 
             context.ReportTasks.CompletedTasksVisible = context.ReportTasks.CompletedTasksAll.Take(5).ToList();
@@ -90,7 +99,7 @@ namespace JiraReporter.Services
             var tasks = context.ReportTasks;
             tasks.InProgressTasks = new List<IssueDetailed>();
             tasks.OpenTasks = new List<IssueDetailed>();
-            tasks.UnassignedTasks = new List<IssueDetailed>();
+            tasks.UnassignedTasksAll = new List<IssueDetailed>();
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
@@ -105,7 +114,7 @@ namespace JiraReporter.Services
                         tasks.OpenTasks.Add(issue);
                     }
                 if (issue.Assignee == null && issue.StatusCategory.name != "Done")
-                    tasks.UnassignedTasks.Add(issue);
+                    tasks.UnassignedTasksAll.Add(issue);
             }
         }
 
@@ -119,37 +128,14 @@ namespace JiraReporter.Services
             return issue;
         }
 
-        // Mehtods not used at the moment
-        //IEnumerable<IGrouping<string, IssueDetailed>> GroupCompletedTasks(List<IssueDetailed> completedTasks, JiraReport context)
-        //{
-        //    var tasks = from task in completedTasks
-        //                group task by task.CompletedTimeAgo into newGroup
-        //                orderby newGroup.Min(g => g.ResolutionDate.ToOriginalTimeZone(context.OffsetFromUtc))
-        //                select newGroup;
-        //    tasks = tasks.OrderByDescending(t => t.Min(g => g.ResolutionDate));
-        //    return tasks;
-        //}
-
-        //void SetCompletedTasks(IEnumerable<IGrouping<string, IssueDetailed>> tasks, SprintTasks sprintTasks)
-        //{
-        //    var completedTasks = new Dictionary<string, List<IssueDetailed>>();
-        //    var issues = new List<IssueDetailed>();
-        //    foreach (var task in tasks)
-        //    {
-        //        issues = tasks.SelectMany(group => group).Where(group => group.CompletedTimeAgo == task.Key).ToList();
-        //        completedTasks.Add(task.Key, issues);
-        //    }
-        //    sprintTasks.CompletedTasks = completedTasks;
-        //}
-
         void SortTasks(SprintTasks sprintTasks)
         {
             if (sprintTasks.InProgressTasks != null)
                 sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.OpenTasks != null)
                 sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
-            if (sprintTasks.UnassignedTasks != null)
-                sprintTasks.UnassignedTasks = sprintTasks.UnassignedTasks.OrderBy(priority => priority.Priority.id).ToList();
+            if (sprintTasks.UnassignedTasksAll != null)
+                sprintTasks.UnassignedTasksAll = sprintTasks.UnassignedTasksAll.OrderBy(priority => priority.Priority.id).ToList();
         }
 
 
