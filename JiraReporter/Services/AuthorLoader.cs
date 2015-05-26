@@ -158,15 +158,37 @@ namespace JiraReporter.Services
             foreach (var issue in issues)
             {
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
-                fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate);
+                var entryContext = GetEntryContext(fullIssue, fromDate, toDate);
+                IssueAdapter.RemoveWrongEntries(entryContext);
+             //   fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < fromDate || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
-                fullIssue.SubtasksDetailed.ForEach(i => i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
+
+                foreach(var subtask in fullIssue.SubtasksDetailed)
+                {
+                    entryContext = GetEntryContext(subtask, fromDate, toDate);
+                    IssueAdapter.RemoveWrongEntries(entryContext);
+                }
+
+              //  fullIssue.SubtasksDetailed.ForEach(i=>i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
                 fullIssue.SubtasksDetailed.RemoveAll(s => s.Entries.IsEmpty());
+
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
                 completeIssues.Add(fullIssue);
             }
 
             return completeIssues;
+        }
+
+        private EntryContext GetEntryContext(IssueDetailed issue, DateTime fromDate, DateTime toDate)
+        {
+            return new EntryContext
+            {
+                Issue = issue,
+                AuthorName = _currentAuthor.Name,
+                OffsetFromUtc = _context.OffsetFromUtc,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
         }
 
         private TimesheetContext GetTimesheetContext(DateTime fromDate, DateTime toDate)
@@ -347,10 +369,11 @@ namespace JiraReporter.Services
                         if (subtask.Assignee != _currentAuthor.Name || subtask.Resolution != null)
                             continue;
 
+                        if (_currentTasksCount >= 3)
+                            return;
+
                         _currentTasksCount++;
                         newIssue.SubtasksDetailed.Add(subtask);
-                        if (_currentTasksCount == 3)
-                            return;
                     }
                 }
             }
@@ -385,7 +408,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.DayLogs = new List<JiraDayLog>();
             foreach (var day in _options.ReportDates)
-                _currentAuthor.DayLogs.Add(DayLogLoader.CreateDayLog(_currentAuthor, day, _context));
+                _currentAuthor.DayLogs.Add(new DayLogLoader(_currentAuthor, day, _context).CreateDayLog());
             _currentAuthor.DayLogs = _currentAuthor.DayLogs.OrderBy(d => d.Date).ToList();
             _currentAuthor.DayLogs.RemoveAll(d => d.Commits.Count == 0 && (d.Issues.IsEmpty()));
         }

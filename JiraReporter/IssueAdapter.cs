@@ -17,14 +17,12 @@ namespace JiraReporter
 {
     class IssueAdapter
     {
-        public static void RemoveWrongEntries(IssueDetailed issue, DateTime date, TimeSpan offsetFromUtc)
+        public static void RemoveWrongEntries(EntryContext context)
         {
-            if (issue.Entries != null)
-            {
-                var newEntries = new List<Entry>(issue.Entries);
-                newEntries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(offsetFromUtc) < date || e.StartDate.ToOriginalTimeZone(offsetFromUtc) >= date.AddDays(1));
-                issue.Entries = newEntries;
-            }
+            if (context.Issue.Entries == null)
+                return;
+
+            context.Issue.Entries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || context.AuthorName != e.AuthorFullName);
         }
 
         public static void RemoveWrongIssues(List<IssueDetailed> issues)

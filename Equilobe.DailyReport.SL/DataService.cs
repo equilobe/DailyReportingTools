@@ -275,5 +275,22 @@ namespace Equilobe.DailyReport.SL
                 return avatar.Key;
             }
         }
+
+        public TimeSpan GetOffsetFromProjectKey(string key)
+        {
+            var timeZoneId = GetTimeZoneIdFromProjectKey(key);
+            return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
+        }
+
+        #region helpers
+        string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == uniqueProjcetKey);
+                return basicSettings.InstalledInstance.TimeZone;
+            }
+        }
+        #endregion
     }
 }

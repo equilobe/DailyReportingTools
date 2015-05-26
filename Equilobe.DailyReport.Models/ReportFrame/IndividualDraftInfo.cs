@@ -12,6 +12,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string Username { get; set; }
         public string UniqueUserKey { get; set; }
         public DateTime? LastConfirmationDate { get; set; }
+
+        //ReportDate represents the day of the report (rounded to 00:00) and is converted to the JIRA timezone
         public string ReportDate { get; set; }
         public bool IsProjectLead { get; set; }
         public Uri ConfirmationDraftUrl { get; set; }

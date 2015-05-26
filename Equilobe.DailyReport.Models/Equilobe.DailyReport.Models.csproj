@@ -75,6 +75,8 @@
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />
     <Compile Include="ReportFrame\ChartElement.cs" />
     <Compile Include="ReportFrame\AuthorizationContext.cs" />
+    <Compile Include="ReportExecution\ConfirmationContext.cs" />
+    <Compile Include="ReportFrame\EntryContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />

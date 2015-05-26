@@ -122,7 +122,7 @@ namespace JiraReporter.Services
 
         private void SetMonthStatus()
         {
-            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Today.Month != _report.Options.ToDate.AddDays(-1).Month)
+            if (_summary.WorkingDays.MonthWorkingDaysLeft == 0 || DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc).Month != _report.Options.ToDate.AddDays(-1).Month)
             {
                 _summary.MonthStatus = "Finished";
                 return;
@@ -573,7 +573,7 @@ namespace JiraReporter.Services
 
         private double GetGuidelineWidth(int maxValue, int guidelinesRate)
         {
-            var width = MathHelpers.RuleOfThree(250, maxValue, guidelinesRate);
+            var width = MathHelpers.RuleOfThree(200, maxValue, guidelinesRate);
             return MathHelpers.RoundToNextEvenInteger(width);
         }
 
