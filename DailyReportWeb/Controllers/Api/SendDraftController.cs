@@ -74,7 +74,7 @@ namespace DailyReportWeb.Controllers.Api
                 OffsetFromUtc = offsetFromUtc
             };
 
-            if (!ReportExecutionService.CanSendFullDraft(confirmationContext) && !ReportExecutionService.IsForcedByLead(context))
+            if (ReportExecutionService.CanSendFullDraft(confirmationContext).HasError && !ReportExecutionService.IsForcedByLead(context))
             {
                 var usersToConfirm = ReportExecutionService.GetRemainingUsersToConfirmIndividualDraft(confirmationContext);
                 return string.Format("{0} must confirm. After everyone confirms, the full draft will be sent to {1}", usersToConfirm, recipients);

@@ -16,7 +16,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         SimpleResult SendIndividualDraft(ExecutionContext context);
         void SaveIndividualDraftConfirmation(UserConfirmationContext context);
         void MarkExecutionInstanceAsExecuted(ItemContext context);
-        bool CanSendFullDraft(ConfirmationContext context);
+        SimpleResult CanSendFullDraft(ConfirmationContext context);
         bool IsForcedByLead(ExecutionContext context);
         string GetFullDraftRecipients(AdvancedReportSettings advancedSettings);
         string GetFinalReportRecipients(AdvancedReportSettings advancedSettings);

@@ -38,8 +38,10 @@ namespace Equilobe.DailyReport.SL
                 OffsetFromUtc = offsetFromUtc
             };
 
-            if (!CanSendFullDraft(confirmationContext))
-                return SimpleResult.Error("Not all individual draft reports were confirmed!");
+            var canSendFullDraft = CanSendFullDraft(confirmationContext);
+
+            if (canSendFullDraft.HasError)
+                return canSendFullDraft;
 
             SetFinalDraftConfirmation(context);
 
@@ -65,8 +67,10 @@ namespace Equilobe.DailyReport.SL
                 OffsetFromUtc = offsetFromUtc
             };
 
-            if (!CanSendFullDraft(confirmationContext) && !IsForcedByLead(context))
-                return SimpleResult.Error("Error in resending full draft report!");
+            var canSendFullDraft = CanSendFullDraft(confirmationContext);
+
+            if (canSendFullDraft.HasError && !IsForcedByLead(context))
+                return canSendFullDraft;
 
             context.Scope = SendScope.SendFinalDraft;
             SetReportExecutionInstance(context);
@@ -95,7 +99,7 @@ namespace Equilobe.DailyReport.SL
             if (confirm.HasError)
                 return confirm;
 
-            if (CanSendFullDraft(confirmationContext))
+            if (!CanSendFullDraft(confirmationContext).HasError)
             {
                 context.Scope = SendScope.SendFinalDraft;
                 SetReportExecutionInstance(context);
@@ -221,7 +225,7 @@ namespace Equilobe.DailyReport.SL
             return StringExtensions.GetNaturalLanguage(usersToConfirm);
         }
 
-        public bool CanSendFullDraft(ConfirmationContext context)
+        public SimpleResult CanSendFullDraft(ConfirmationContext context)
         {
             using (var db = new ReportsDb())
             {
@@ -229,29 +233,32 @@ namespace Equilobe.DailyReport.SL
                 var individualReports = report.IndividualDraftConfirmations.Where(dr => dr.ReportDate == context.ExecutionContext.Date.DateToString()).ToList();
 
                 if (WasFinalReportSent(report.ReportExecutionSummary, context.OffsetFromUtc))
-                    return false;
+                    return SimpleResult.Error("Final report was already sent");
 
                 if (WasFullDraftReportSent(report.ReportExecutionSummary, context.OffsetFromUtc))
-                    return true;
+                    return SimpleResult.Success("");
 
                 if (report.SerializedAdvancedSettings == null)
-                    return false;
+                    return SimpleResult.Error("Report settings are missing");
 
                 var policy = Deserialization.XmlDeserialize<AdvancedReportSettings>(report.SerializedAdvancedSettings.PolicyString);
 
-                if (report == null || policy.AdvancedOptions.NoDraft)
-                    return false;
+                if (report == null)
+                    return SimpleResult.Error("Project not found");
+
+                if (policy.AdvancedOptions.NoDraft)
+                    return SimpleResult.Error("Project is not configured to send draft");
 
                 if (policy.AdvancedOptions.NoIndividualDraft)
-                    return true;
+                    return SimpleResult.Success("");
 
-                if (report.IndividualDraftConfirmations == null || report.IndividualDraftConfirmations.Count == 0)
-                    return false;
+                if (report.IndividualDraftConfirmations.IsEmpty())
+                    return SimpleResult.Error("Individual reports must be sent and confirmed first");
 
                 if (ExistsUnconfirmedDraft(individualReports, context.OffsetFromUtc))
-                    return false;
+                    return SimpleResult.Error("Not all individual drafts were confirmed!");
 
-                return true;
+                return SimpleResult.Success("");
             }
         }
 
