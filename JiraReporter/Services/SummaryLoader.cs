@@ -623,7 +623,7 @@ namespace JiraReporter.Services
 
         private double GetGuidelineWidth(int maxValue, int guidelinesRate)
         {
-            var width = MathHelpers.RuleOfThree(250, maxValue, guidelinesRate);
+            var width = MathHelpers.RuleOfThree(200, maxValue, guidelinesRate);
             return MathHelpers.RoundToNextEvenInteger(width);
         }
 

@@ -80,7 +80,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
-        public readonly int ChartMaxWidth = 350;
+        public readonly int ChartMaxWidth = 250;
         public int StatusChartWidth { get; set; }
         public int SummaryChartWidth { get; set; }
 
