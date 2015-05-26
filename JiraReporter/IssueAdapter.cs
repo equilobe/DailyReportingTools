@@ -169,12 +169,7 @@ namespace JiraReporter
                 {
                     if (issue.RemainingEstimateSeconds == 0)
                     {
-                        ErrorType type = new ErrorType();
-                        if (issue.Assignee == null)
-                            type = ErrorType.Unassigned;
-                        else
-                            type = ErrorType.HasNoRemaining;
-                        issue.Errors.Add(new Error { Type = type });
+                        issue.Errors.Add(new Error { Type = ErrorType.HasNoRemaining });
                         issue.ErrorsCount++;
                     }
                 }

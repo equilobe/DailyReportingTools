@@ -7,7 +7,7 @@
         </td>
     </tr>
 
-    @if (Model.DayLogs.Count > 0)
+    if (Model.DayLogs.Count > 0)
     {
         foreach (var dayLog in Model.DayLogs)
         {
@@ -16,7 +16,7 @@
         }
     }
 
-    @if (Model.HasSprint)
+    if (Model.HasSprint)
     {
         if (Model.RemainingTasksCount > 0)
         {
@@ -25,28 +25,28 @@
                     <i style="color:sienna; ">Next</i>
                     @if (Model.Timing.RemainingTasksTimeLeftSeconds == 0)
                     {
-                    <i style="color:red; ">@Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
+                        <i style="color:red; ">@Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                     else
                     {
-                    <i style="color:sienna; "> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
+                        <i style="color:sienna; "> @Dot() @Model.Timing.RemainingTasksTimeLeftString left</i>
                     }
                 </td>
-            </tr>          
-                @Partial("Views/tasks.cshtml", Model.RemainingTasks)       
-                @if (Model.AdditionalUncompletedTasksCount > 0)
-                {
-                    <tr>
-                        <td width="15">
-                            &nbsp;
-                        </td>
-                        <td colspan="2">
-                            + <a href="@Model.IssueSearchUrl" style="text-decoration:none; color:black">
-                                @Model.AdditionalUncompletedTasksCount more
-                            </a>
-                        </td>
-                    </tr>
-                }
+            </tr>
+            @Partial("Views/tasks.cshtml", Model.RemainingTasks)
+            if (Model.AdditionalUncompletedTasksCount > 0)
+            {
+                <tr>
+                    <td width="15">
+                        &nbsp;
+                    </td>
+                    <td colspan="2">
+                        + <a href="@Model.IssueSearchUrl" style="text-decoration:none; color:black">
+                            @Model.AdditionalUncompletedTasksCount more
+                        </a>
+                    </td>
+                </tr>
+            }
         }
     }
 }

@@ -32,6 +32,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> Issues { get; set; }
         public List<IssueDetailed> MonthIssues { get; set; }
         public List<IssueDetailed> SprintIssues { get; set; }
+        public List<IssueDetailed> CompletedIssuesAll { get; set; }
+        public List<IssueDetailed> CompletedIssuesVisible { get; set; }
 
         public int InProgressTasksCount { get; set; }
         public int OpenTasksCount { get; set; }
@@ -56,6 +58,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public AuthorTasks InProgressTasks { get; set; }
         public AuthorTasks OpenTasks { get; set; }
         public AuthorTasks RemainingTasks { get; set; }
+
+        public int NoRemainingEstimateErrors { get; set; }
+        public int NoTimeSpentErrors { get; set; }
+        public int CompletedWithEstimateErrors { get; set; }
+        public bool HasNotConfirmedError { get; set; }
+        public string ErrorsMessageHeader { get; set; }
+        public List<string> ErrorsMessageList { get; set; }
+
 
         public Uri IssueSearchUrl { get; set; }
 

@@ -1,4 +1,6 @@
-﻿using Equilobe.DailyReport.DAL;
+﻿using Equilobe.DailyReport.BL;
+using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
@@ -22,6 +24,7 @@ namespace JiraReporter.Services
         public IEncryptionService EncryptionService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
         public IDataService DataService { get; set; }
+        public IErrorService ErrorService { get; set; }
 
         SprintTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
@@ -44,7 +47,7 @@ namespace JiraReporter.Services
             var authors = JiraService.GetUsers(_context.JiraRequestContext, _context.ProjectKey)
                             .Where(UserIsNotIgnored)
                             .Select(u => new JiraAuthor(u))
-                            .ToList();           
+                            .ToList();
 
             SetProjectLead(authors);
             authors.ForEach(SetAuthorAdvancedProperties);
@@ -101,6 +104,7 @@ namespace JiraReporter.Services
             AddCommitIssuesNotInTimesheet();
 
             SetUncompletedTasks();
+            SetCompletedTasks();
             SetAuthorDayLogs();
             SetAuthorErrors();
             SetRemainingEstimate();
@@ -109,12 +113,23 @@ namespace JiraReporter.Services
             SetImage();
         }
 
+        private void SetCompletedTasks()
+        {
+            _currentAuthor.CompletedIssuesAll = new List<IssueDetailed>();
+            _currentAuthor.CompletedIssuesVisible = new List<IssueDetailed>();
+
+            if (!_reportTasks.CompletedTasksAll.IsEmpty())
+                _currentAuthor.CompletedIssuesAll = _reportTasks.CompletedTasksAll.Where(i => i.Assignee == _currentAuthor.Name).ToList();
+            if (!_reportTasks.CompletedTasksVisible.IsEmpty())
+                _currentAuthor.CompletedIssuesVisible = _reportTasks.CompletedTasksVisible.Where(i => i.Assignee == _currentAuthor.Name).ToList();
+        }
+
         private void SetIssuesSearchUrl()
         {
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=assignee='" + _currentAuthor.Username + "' and project=" + _context.ProjectKey + " and sprint=" + _context.Sprint.id + " and statusCategory != 'Done'");
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.AssignedUncompletedIssues(_currentAuthor.UserKey, _context.ProjectKey, _context.Sprint.id));
         }
 
         private void SetName()
@@ -412,15 +427,66 @@ namespace JiraReporter.Services
 
         private void SetAuthorErrors()
         {
+            _currentAuthor.Errors = new List<Error>();
+
+            SetCompletedTasksErrors();
+
             if (!_context.HasSprint)
                 return;
 
-            if (!_currentAuthor.RemainingTasks.Issues.IsEmpty())
-            {
-                var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                if (errors.Count > 0)
-                    _currentAuthor.Errors = errors;
-            }
+            SetRemainingTasksErrors();
+            SetNotConfirmedError();
+            SetErrorsMessage();
+
+            //  _currentAuthor.Errors = _currentAuthor.NoRemainingEstimateErrors + _currentAuthor.NoTimeSpentErrors + _currentAuthor.CompletedWithEstimateErrors;
+        }
+
+        private void SetNotConfirmedError()
+        {
+            if (!_context.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
+                return;
+
+            var draft = _context.Settings.IndividualDraftConfirmations.SingleOrDefault(dr => dr.Username == _currentAuthor.Username && dr.ReportDate == _context.ToDate.DateToString());
+
+            if (draft == null)
+                return;
+
+            if (draft.LastDateConfirmed == null || draft.LastDateConfirmed.Value.Date != _context.ToDate)
+                _currentAuthor.Errors.Add(new Error(ErrorType.NotConfirmed));
+        }
+
+        private void SetRemainingTasksErrors()
+        {
+            if (_currentAuthor.RemainingTasks.Issues.IsEmpty())
+                return;
+
+            var errors = _currentAuthor.RemainingTasks.Issues.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (errors.Count > 0)
+                _currentAuthor.Errors = _currentAuthor.Errors.Concat(errors).ToList();
+            _currentAuthor.NoRemainingEstimateErrors = errors.Count(er => er.Type == ErrorType.HasNoRemaining);
+        }
+
+        private void SetCompletedTasksErrors()
+        {
+            if (_currentAuthor.CompletedIssuesVisible.IsEmpty() || _context.IsIndividualDraft)
+                return;
+
+            var completedTasksErrors = _currentAuthor.CompletedIssuesVisible.Where(i => i.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (completedTasksErrors.Count > 0)
+                _currentAuthor.Errors = _currentAuthor.Errors.Concat(completedTasksErrors).ToList();
+
+            _currentAuthor.NoTimeSpentErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasNoTimeSpent);
+            _currentAuthor.CompletedWithEstimateErrors = completedTasksErrors.Count(er => er.Type == ErrorType.HasRemaining);
+        }
+
+        private void SetErrorsMessage()
+        {
+            if (_currentAuthor.Errors.Count == 0)
+                return;
+
+            var errorContext = new ErrorContext(_currentAuthor.Errors, _currentAuthor.Name);
+            _currentAuthor.ErrorsMessageHeader = ErrorService.GetMessagesHeader(errorContext);
+            _currentAuthor.ErrorsMessageList = ErrorService.GetMessagesList(errorContext);
         }
 
 

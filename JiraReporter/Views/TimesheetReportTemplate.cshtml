@@ -19,7 +19,7 @@
             @Partial("Views/header.cshtml", Model)
 
             <br />
-            @if (Model.Summary.Errors != null && Model.Summary.Errors.Count > 0)
+            @if (Model.Summary.HasErrors)
             {
                 @Partial("Views/errorsSection.cshtml", Model)
             }

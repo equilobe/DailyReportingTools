@@ -78,6 +78,16 @@ namespace Equilobe.DailyReport.BL
             return string.Format("project = '{0}' AND sprint in openSprints()", project);
         }
 
+        public static string UnassignedUncompletedIssues(string projectKey, int sprintId)
+        {
+            return string.Format("assignee=null and project='{0}' and sprint={1} and statusCategory != 'Done' and issueType != 'sub-task'", projectKey, sprintId);
+        }
+
+        public static string AssignedUncompletedIssues(string assignee, string projectKey, int sprintId)
+        {
+            return string.Format("assignee='{0}' and project='{1}' and sprint={2} and statusCategory != 'Done'", assignee, projectKey, sprintId);
+        }
+
         public static string WorkLogs(string projectKey, string author, string fromDate, string endDate)
         {
             return string.Format("project = {0} AND worklogAuthor = '{1}' AND worklogDate >= '{2}' AND worklogDate <= '{3}'", projectKey, author, fromDate, endDate);

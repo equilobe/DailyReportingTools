@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
 using System.Globalization;
+using Equilobe.DailyReport.Models.Interfaces;
 
 namespace JiraReporter.Services
 {
@@ -26,6 +27,7 @@ namespace JiraReporter.Services
         public Sprint _sprint { get { return _report.Sprint; } }
         public Summary _summary;
         public JiraReport _report;
+        public IErrorService ErrorService { get; set; }
 
         public SummaryLoader(JiraReport report)
         {
@@ -52,7 +54,7 @@ namespace JiraReporter.Services
             if (_report.HasSprint)
             {
                 _summary.HasSprint = true;
-                _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasks.Count(t => t.IsSubtask == false);
+                _summary.UnassignedTasksCount = _sprintTasks.UnassignedTasksAll.Count(t => t.IsSubtask == false);
             }
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
@@ -357,85 +359,33 @@ namespace JiraReporter.Services
         private void SetErrors()
         {
             SetAuthorsWithErrors();
-            SetAuthorsNotConfirmed();
-            GetCompletedTasksErrors();
-            GetUnassignedErrors();
-            GetAllErrors();
-        }
+            SetUnassignedErrors();
 
-        private void GetAllErrors()
-        {
-            var errors = new List<Error>();
-            if (_summary.CompletedWithNoWorkErrors != null)
-                errors = errors.Concat(_summary.CompletedWithNoWorkErrors).ToList();
-            if (_summary.ConfirmationErrors != null)
-                errors = errors.Concat(_summary.ConfirmationErrors).ToList();
-
-            if (_report.HasSprint)
-            {
-                if (_summary.AuthorsWithErrors != null)
-                    errors = errors.Concat(_summary.AuthorsWithErrors.SelectMany(e => e.Errors)).ToList();
-                if (_summary.CompletedWithEstimateErrors != null)
-                    errors = errors.Concat(_summary.CompletedWithEstimateErrors).ToList();
-                if (_summary.UnassignedErrors != null)
-                    errors = errors.Concat(_summary.UnassignedErrors).ToList();
-            }
-
-            _summary.Errors = errors;
+            if (!_summary.AuthorsWithErrors.IsEmpty() || !_summary.UnassignedErrors.IsEmpty())
+                _summary.HasErrors = true;
         }
 
         private void SetAuthorsWithErrors()
         {
             _summary.AuthorsWithErrors = new List<JiraAuthor>();
-            _summary.AuthorsWithErrors = _summary.Authors.FindAll(a => a.Errors != null && a.Errors.Count > 0).ToList();
+            _summary.AuthorsWithErrors = _summary.Authors.FindAll(a => !a.Errors.IsEmpty()).ToList();
         }
 
-        private void SetAuthorsNotConfirmed()
+        private void SetUnassignedErrors()
         {
-            if (!_report.IsFinalDraft || _policy.AdvancedOptions.NoIndividualDraft)
+            if (!_summary.HasSprint || _report.ReportTasks.UnassignedTasksVisible.IsEmpty())
                 return;
 
-            _summary.AuthorsNotConfirmed = new List<JiraAuthor>();
-            _summary.ConfirmationErrors = new List<Error>();
-            var notConfirmed = _report.Settings.IndividualDraftConfirmations
-                .Where(d => d.ReportDate == _report.ToDate.DateToString())
-                .Where(d => DateTimeHelpers.CompareDay(d.LastDateConfirmed, _report.ToDate, _report.OffsetFromUtc) != 1)
-                .ToList();
-
-            foreach (var author in _summary.Authors)
-            {
-                var notConfirmedAuthor = notConfirmed.Exists(a => a.Username == author.Username);
-                if (notConfirmedAuthor)
-                {
-                    _summary.AuthorsNotConfirmed.Add(author);
-                    _summary.ConfirmationErrors.Add(new Error(ErrorType.NotConfirmed));
-                }
-            }
-        }
-
-        private void GetCompletedTasksErrors()
-        {
-            _summary.CompletedWithEstimateErrors = new List<Error>();
-            _summary.CompletedWithNoWorkErrors = new List<Error>();
-            if (_report.ReportTasks.CompletedTasksAll == null)
-                return;
-
-            var tasksWithErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0);
-            var errorsWithEstimate = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasRemaining)).ToList();
-            var errorsWithNoTimeSpent = tasksWithErrors.SelectMany(e => e.Errors.Where(er => er.Type == ErrorType.HasNoTimeSpent)).ToList();
-            _summary.CompletedWithEstimateErrors = _summary.CompletedWithEstimateErrors.Concat(errorsWithEstimate).ToList();
-            _summary.CompletedWithNoWorkErrors = _summary.CompletedWithNoWorkErrors.Concat(errorsWithNoTimeSpent).ToList();
-        }
-
-        private void GetUnassignedErrors()
-        {
             _summary.UnassignedErrors = new List<Error>();
-            if (_report.ReportTasks.UnassignedTasks != null && _report.ReportTasks.UnassignedTasks.Count > 0)
-            {
-                var errors = new List<Error>();
-                errors = _report.ReportTasks.UnassignedTasks.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-                _summary.UnassignedErrors = _summary.UnassignedErrors.Concat(errors).ToList();
-            }
+
+            var noRemainingErrors = _report.ReportTasks.UnassignedTasksVisible.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            var completedTasksErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0 && t.Assignee == null).SelectMany(e => e.Errors).ToList();
+
+            _summary.UnassignedErrors = noRemainingErrors.Concat(completedTasksErrors).ToList();
+
+            var errorContext = new ErrorContext(_summary.UnassignedErrors, null);
+            _summary.UnassignedErrorsMessageHeader = ErrorService.GetMessagesHeader(errorContext);
+            _summary.UnassignedErrorsMessageList = ErrorService.GetMessagesList(errorContext);
         }
 
         private void SetWorkSummaryMax()
