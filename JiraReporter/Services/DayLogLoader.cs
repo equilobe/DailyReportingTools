@@ -63,28 +63,33 @@ namespace JiraReporter.Services
 
         private void AddIssueToDaylog(JiraDayLog dayLog, IssueDetailed issue)
         {
-            var currentIssue = new IssueDetailed(issue);
+            var currentIssue = new IssueDetailed();
+            issue.CopyTo<IssueDetailed>(currentIssue);
             currentIssue.ExistsInTimesheet = true;
-            var entryContext = GetEntryContext(currentIssue);
 
-            IssueAdapter.RemoveWrongEntries(entryContext);
+            currentIssue.Entries = issue.Entries.Where(e => e.AuthorFullName == _author.Name && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Date >= _date && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < _date.AddDays(1)).ToList(); 
+
             IssueAdapter.TimeSpentFromEntries(currentIssue);
             IssueAdapter.SetTimeFormat(currentIssue);
+            SetSubtaskEntries(currentIssue);
             dayLog.Issues.Add(currentIssue);
             dayLog.TimeSpent += currentIssue.TimeSpent;
         }
 
-        private EntryContext GetEntryContext(IssueDetailed currentIssue)
+        private void SetSubtaskEntries(IssueDetailed issue)
         {
-            var entryContext = new EntryContext
+            if (issue.SubtasksDetailed.IsEmpty())
+                return;
+
+            foreach(var subtask in issue.SubtasksDetailed)
             {
-                AuthorName = _author.Name,
-                FromDate = _date,
-                ToDate = _date.AddDays(1),
-                Issue = currentIssue,
-                OffsetFromUtc = _context.OffsetFromUtc
-            };
-            return entryContext;
+                subtask.Entries = subtask.Entries.Where(e => e.AuthorFullName == _author.Name && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Date >= _date && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < _date.AddDays(1)).ToList();
+                IssueAdapter.TimeSpentFromEntries(subtask);
+                IssueAdapter.SetTimeFormat(subtask);
+            }
+
+            issue.SubtasksDetailed = new List<IssueDetailed>();
+            issue.SubtasksDetailed = issue.SubtasksDetailed.Where(s => !s.Entries.IsEmpty()).ToList();
         }
     }
 }
