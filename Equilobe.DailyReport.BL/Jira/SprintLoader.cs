@@ -74,15 +74,19 @@ namespace Equilobe.DailyReport.BL.Jira
             return completedSprint;
         }
 
-        Sprint GetSprint(List<Sprint> sprints, DateTime date, string rapidViewId)
+        Sprint GetSprint(List<Sprint> sprints, DateTime date, string rapidViewId) 
         {
             while (sprints.Count > 0)
             {
                 var sprint = sprints.Last();
                 sprint = GetCompleteSprint(sprint.id.ToString(), rapidViewId);
                 if (sprint.StartDate.Date <= date)
-                    return sprint;
+                {
+                    if (sprint.CompletedDate > date)
+                        sprint.state = "ACTIVE";
 
+                    return sprint;
+                }
                 sprints.Remove(sprints.Last());
             }
 

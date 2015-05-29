@@ -22,7 +22,7 @@ namespace JiraReporter.Helpers
 
         public void LoadDates()
         {
-            Context.FullReportDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
+            Context.FullReportDate = DateTime.Now;
 
             if (Options.HasToDate)
                 Options.ToDate = Options.GetDate(Options.StringToDate).Date;
@@ -34,8 +34,8 @@ namespace JiraReporter.Helpers
 
             if (Options.ToDate < Options.FromDate)
                 throw new ArgumentException("ToDate < FromDate");
-            if (Options.ToDate > DateTime.Today.AddDays(1))
-                Options.ToDate = DateTime.Today.AddDays(1);
+            if (Options.ToDate > DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date.AddDays(1))
+                Options.ToDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date.AddDays(1);
 
             Options.ReportDates = Options.GetDates();
         }
@@ -71,7 +71,7 @@ namespace JiraReporter.Helpers
 
         private void SetDatesFromLastSentReport()
         {
-            Options.FromDate = Context.LastReportSentDate.Date;
+            Options.FromDate = Context.LastReportSentDate.ToOriginalTimeZone(Context.OffsetFromUtc).Date;
             Options.ToDate = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc).Date;
         }
 

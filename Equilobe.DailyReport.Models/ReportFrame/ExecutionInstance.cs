@@ -9,6 +9,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class ExecutionInstance
     {
+        public long Id { get; set; }
         public SendScope Scope { get; set; }
         public string UniqueUserKey { get; set; }
         public DateTime DateAdded { get; set; }

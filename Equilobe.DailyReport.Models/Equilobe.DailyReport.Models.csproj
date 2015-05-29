@@ -62,6 +62,7 @@
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Interfaces\IEncryptionService.cs" />
+    <Compile Include="Interfaces\IErrorService.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
@@ -74,10 +75,13 @@
     <Compile Include="ReportExecution\UserConfirmationContext.cs" />
     <Compile Include="ReportFrame\ChartElement.cs" />
     <Compile Include="ReportFrame\AuthorizationContext.cs" />
+    <Compile Include="ReportExecution\ConfirmationContext.cs" />
+    <Compile Include="ReportFrame\EntryContext.cs" />
     <Compile Include="ReportFrame\Error.cs" />
     <Compile Include="Interfaces\IContext.cs" />
     <Compile Include="Interfaces\IIndividualReport.cs" />
     <Compile Include="Interfaces\IJiraReport.cs" />
+    <Compile Include="ReportFrame\ErrorContext.cs" />
     <Compile Include="ReportFrame\IndividualDraftInfo.cs">
       <SubType>Code</SubType>
     </Compile>

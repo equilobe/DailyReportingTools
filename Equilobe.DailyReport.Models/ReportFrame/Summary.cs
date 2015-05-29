@@ -37,13 +37,11 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasWorkSummary { get; set; }
         public bool HasSprint { get; set; }
 
-        public List<Error> Errors { get; set; }
-        public List<Error> CompletedWithEstimateErrors { get; set; }
-        public List<Error> CompletedWithNoWorkErrors { get; set; }
+        public bool HasErrors { get; set; }
         public List<Error> UnassignedErrors { get; set; }
-        public List<Error> ConfirmationErrors { get; set; }
-        public List<JiraAuthor> AuthorsNotConfirmed { get; set; }
         public List<JiraAuthor> AuthorsWithErrors { get; set; }
+        public string UnassignedErrorsMessageHeader { get; set; }
+        public List<string> UnassignedErrorsMessageList { get; set; }
 
         public WorkingDaysInfo WorkingDays { get; set; }
 
@@ -80,7 +78,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public double SprintHourRateVariance { get; set; }
         public double MonthHourRateVariance { get; set; }
 
-        public readonly int ChartMaxWidth = 350;
+        public readonly int ChartMaxWidth = 300;
         public int StatusChartWidth { get; set; }
         public int SummaryChartWidth { get; set; }
 

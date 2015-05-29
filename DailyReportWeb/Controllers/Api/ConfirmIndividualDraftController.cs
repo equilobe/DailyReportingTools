@@ -18,6 +18,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }
+        public IDataService DataService { get; set; }
 
         public DataReportOperation Post(ExecutionContext context)
         {
@@ -56,7 +57,9 @@ namespace DailyReportWeb.Controllers.Api
 
         private string GetIndividualDraftConfirmationDetails(ExecutionContext context, AdvancedReportSettings advancedSettings, List<JiraUser> jiraUsers, bool confirmationHasError)
         {
-            if (DateTime.Compare(context.Date, DateTime.Today.Date) != 0)
+            var offsetFromUtc = DataService.GetOffsetFromProjectKey(context.Id);
+
+            if (DateTimeHelpers.CompareDay(context.Date, DateTime.Now.ToOriginalTimeZone(offsetFromUtc)) != 1)
                 return "You are trying to confirm a report sent another day, but you can only confirm reports that were sent today.";
 
             var recipients = ReportExecutionService.GetFullDraftRecipients(advancedSettings);
@@ -66,13 +69,20 @@ namespace DailyReportWeb.Controllers.Api
                 var individualConfirmationBasicSettingsId = db.IndividualDraftConfirmations.Single(idc => idc.UniqueUserKey == context.DraftKey).BasicSettingsId;
                 var draftSentDate = db.ReportExecutionSummaries.Single(res => res.BasicSettingsId == individualConfirmationBasicSettingsId).LastDraftSentDate;
 
-                if (draftSentDate != null && draftSentDate.Value.Date == DateTime.Today)
+                if (DateTimeHelpers.CompareDay(draftSentDate, DateTime.Now, offsetFromUtc) == 1)
                     return string.Format("The full draft report was already sent at {0} to {1}", draftSentDate.Value.ToShortTimeString(), recipients);
             }
 
-            if (!ReportExecutionService.CanSendFullDraft(context))
+            var confirmationContext = new ConfirmationContext
             {
-                var usersToConfirm = ReportExecutionService.GetRemainingUsersToConfirmIndividualDraft(context, jiraUsers);
+                ExecutionContext = context,
+                Users = jiraUsers,
+                OffsetFromUtc = offsetFromUtc
+            };
+
+            if (ReportExecutionService.CanSendFullDraft(confirmationContext).HasError)
+            {
+                var usersToConfirm = ReportExecutionService.GetRemainingUsersToConfirmIndividualDraft(confirmationContext);
                 return string.Format("{0} must confirm. After everyone confirms, the full draft will be sent to {1}", usersToConfirm, recipients);
             }
 

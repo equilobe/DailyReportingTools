@@ -47,6 +47,7 @@
     <Compile Include="CommandLine.cs" />
     <Compile Include="CommandLineText.cs" />
     <Compile Include="DateTimeExtensions.cs" />
+    <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Ensure.cs" />
     <Compile Include="RandomString.cs" />
     <Compile Include="ReflectionExtensions.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="SVNNotAvailableException.cs" />
     <Compile Include="TimeFormatting.cs" />
     <Compile Include="TimeFormattingExtensions.cs" />
+    <Compile Include="TimeZoneHelpers.cs" />
     <Compile Include="UrlExtensions.cs" />
     <Compile Include="ValidateNotNullAttribute.cs" />
     <Compile Include="Validations.cs" />

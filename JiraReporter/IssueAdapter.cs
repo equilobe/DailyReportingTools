@@ -17,14 +17,12 @@ namespace JiraReporter
 {
     class IssueAdapter
     {
-        public static void RemoveWrongEntries(IssueDetailed issue, DateTime date, TimeSpan offsetFromUtc)
+        public static void RemoveWrongEntries(EntryContext context)
         {
-            if (issue.Entries != null)
-            {
-                var newEntries = new List<Entry>(issue.Entries);
-                newEntries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(offsetFromUtc) < date || e.StartDate.ToOriginalTimeZone(offsetFromUtc) >= date.AddDays(1));
-                issue.Entries = newEntries;
-            }
+            if (context.Issue.Entries == null)
+                return;
+
+            context.Issue.Entries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || context.AuthorName != e.AuthorFullName);
         }
 
         public static void RemoveWrongIssues(List<IssueDetailed> issues)
@@ -66,7 +64,7 @@ namespace JiraReporter
                 return true;
             return false;
         }
-		public static List<IssueDetailed> OrderIssues(List<IssueDetailed> issues)
+        public static List<IssueDetailed> OrderIssues(List<IssueDetailed> issues)
         {
             return issues.OrderByDescending(i => i.TimeSpent).ToList();
         }
@@ -171,12 +169,7 @@ namespace JiraReporter
                 {
                     if (issue.RemainingEstimateSeconds == 0)
                     {
-                        ErrorType type = new ErrorType();
-                        if (issue.Assignee == null)
-                            type = ErrorType.Unassigned;
-                        else
-                            type = ErrorType.HasNoRemaining;
-                        issue.Errors.Add(new Error { Type = type });
+                        issue.Errors.Add(new Error { Type = ErrorType.HasNoRemaining });
                         issue.ErrorsCount++;
                     }
                 }
@@ -187,7 +180,7 @@ namespace JiraReporter
 
         public static void SetLoggedAuthor(IssueDetailed issue, string authorName)
         {
-                issue.LoggedAuthor = AuthorHelpers.GetCleanName(authorName);
+            issue.LoggedAuthor = AuthorHelpers.GetCleanName(authorName);
         }
 
         public static void SetSubtasksLoggedAuthor(IssueDetailed issue, string authorName)
@@ -197,7 +190,7 @@ namespace JiraReporter
                     SetLoggedAuthor(subtask, authorName);
         }
 
-        public static IssueDetailed GetBasicIssue (JiraIssue issue)
+        public static IssueDetailed GetBasicIssue(JiraIssue issue)
         {
             var basicIssue = new IssueDetailed
             {

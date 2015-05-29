@@ -2,6 +2,7 @@
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
+using System;
 using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Interfaces
@@ -25,5 +26,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         byte[] GetUserImageByKey(string key);
         void AddUserImage(UserImageContext context);
         string GetUserImageKey(string username);
+        TimeSpan GetOffsetFromProjectKey(string key);
     }
 }

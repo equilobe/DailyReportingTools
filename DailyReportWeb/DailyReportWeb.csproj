@@ -322,6 +322,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\assistant.svg" />
+    <Content Include="Content\Images\favicon.ico" />
+    <Content Include="Content\Images\logo-big.png" />
     <Content Include="Content\Images\logo.png" />
     <Content Include="Content\Images\logo.svg" />
     <Content Include="Content\Images\Report\calendar_month.png" />

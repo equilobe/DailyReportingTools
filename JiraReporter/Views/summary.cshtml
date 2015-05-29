@@ -312,68 +312,71 @@ else
         @Spacing(20, 5)
         @foreach (var author in Model.Authors)
         {
-            <tr>
-                <td width="90" colspan="2" style="border-right:1px solid #ABABAB; text-align:center; vertical-align:middle; color:black">
-                   <table>
-                       <tr>
-                           <td align="center" width="90" height="48" style="text-align:center">
-                               <img src="@author.ReportAvatarLink" />
-                           </td>
-                       </tr>
-                       <tr>
-                           <td width="90" align="center" style="text-align:center">
-                               <span style="color:black; ">@author.ShortName</span>
-                           </td>
-                       </tr>
-                   </table>
-                </td>
-                <td colspan="3" style="padding:0px; padding-bottom:10px;">
-                    @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
-                    @if (author.Timing.AverageWorkedHours >= 0.1)
-                    {
-                        @ChartBar("#5CB85C", @author.Day.Width, @Model.ChartMaxWidth, @author.Day.ActualValue)
-                    }
-                    else
-                    {
-                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                    }
-
-                    @if (Model.Sprint != null)
-                    {
-                        if (author.Timing.AverageWorkedSprintHours >= 0.1)
+            if (!author.IsEmpty)
+            {
+                <tr>
+                    <td width="90" colspan="2" style="border-right:1px solid #ABABAB; text-align:center; vertical-align:middle; color:black">
+                        <table>
+                            <tr>
+                                <td align="center" width="90" height="48" style="text-align:center">
+                                    <img src="@author.ReportAvatarLink" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" align="center" style="text-align:center">
+                                    <span style="color:black; ">@author.ShortName</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="3" style="padding:0px; padding-bottom:10px;">
+                        @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
+                        @if (author.Timing.AverageWorkedHours >= 0.1)
                         {
-                            @ChartBar("#F60", @author.Sprint.Width, @Model.ChartMaxWidth, @author.Sprint.ActualValue)
+                            @ChartBar("#5CB85C", @author.Day.Width, @Model.ChartMaxWidth, @author.Day.ActualValue)
                         }
                         else
                         {
                             @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
-                    }
 
-                    @if (author.Timing.AverageWorkedMonthHours >= 0.1)
-                    {
-                        @ChartBar("#F0AD4E", @author.Month.Width, @Model.ChartMaxWidth, @author.Month.ActualValue)
-                    }
-                    else
-                    {
-                        @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
-                    }
-
-                    @if (Model.Sprint != null)
-                    {
-                        if (author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.state != "CLOSED")
+                        @if (Model.Sprint != null)
                         {
-                            @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
+                            if (author.Timing.AverageWorkedSprintHours >= 0.1)
+                            {
+                                @ChartBar("#F60", @author.Sprint.Width, @Model.ChartMaxWidth, @author.Sprint.ActualValue)
+                            }
+                            else
+                            {
+                                @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                            }
+                        }
+
+                        @if (author.Timing.AverageWorkedMonthHours >= 0.1)
+                        {
+                            @ChartBar("#F0AD4E", @author.Month.Width, @Model.ChartMaxWidth, @author.Month.ActualValue)
                         }
                         else
                         {
                             @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
                         }
-                    }
 
-                </td>
-            </tr>
-            @Spacing(20,5)
+                        @if (Model.Sprint != null)
+                        {
+                            if (author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.state != "CLOSED")
+                            {
+                                @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
+                            }
+                            else
+                            {
+                                @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                            }
+                        }
+
+                    </td>
+                </tr>
+                @Spacing(20, 5)
+            }
         }
 
 

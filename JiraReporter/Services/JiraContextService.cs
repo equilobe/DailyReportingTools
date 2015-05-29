@@ -35,7 +35,6 @@ namespace JiraReporter.Services
             Policy.CurrentOverride = GetCurrentOverride();
             Policy.IsThisMonthOverriden = IsThisMonthOverriden();
             Policy.Users = GetUsersDictionary();
-            Policy.ReportTimeDateFormat = GetDateTimeFromString(Policy.ReportTime);
             SetReportType();
             SetMonthlyNonWorkingDays();
         }
@@ -58,38 +57,38 @@ namespace JiraReporter.Services
 
         private Uri GetDraftConfirmationUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
+            var date = Context.Options.ToDate;
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private Uri GetResendDraftUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
+            var date = Context.Options.ToDate;
             if (Policy.AdvancedOptions.NoDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private Uri GetIndividualDraftConfirmationUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
+            var date = Context.Options.ToDate;
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/confirmIndividualDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private Uri GetResendIndividualDraftUrl()
         {
-            var now = DateTime.Now.ToOriginalTimeZone(Context.OffsetFromUtc);
+            var date = Context.Options.ToDate;
             if (Policy.AdvancedOptions.NoIndividualDraft)
                 return null;
 
-            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + now.ToShortDateString());
+            return new Uri(ConfigurationService.GetWebBaseUrl() + "/app/report/sendIndividualDraft/" + Context.UniqueProjectKey + "?date=" + date.DateToString());
         }
 
         private static DateTime GetDateTimeFromString(string date)
