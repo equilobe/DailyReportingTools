@@ -37,7 +37,7 @@ else
         {
             <span style="color:black;">&#10004;</span>
         }
-        else 
+        else
         {
             <span style="color:black; font-weight:normal">&#10065;</span>
         }
@@ -86,20 +86,22 @@ else
         }
         <a href=@Model.Link style="text-decoration: none; color:black;" title="@title"> @Model.Summary</a>
 
-        @if (Model.Commits != null && Model.Commits.Count>0)
+        @if (Model.Commits != null && Model.Commits.Count > 0)
         {
-            @Dot() 
+            @Dot()
             @Partial("Views/commits.cshtml", Model.Commits)
         }
-        
+
         @if (Model.TimeSpent > 0)
         {
             <span style="color:#ABABAB" title="@entryComments"> @Dot() @Model.TimeLogged worked</span>
         }
-        else
+        else if (!Model.HasWorkLogged)
         {
             <span style="color:orange"> @Dot() no work logged</span>
         }
+
+
 
         @if (Model.PullRequests != null)
         {
@@ -108,7 +110,7 @@ else
                 <span> @Partial("Views/pullRequests.cshtml", Model.PullRequests) </span>
             }
         }
-        
+
         @if (Model.StatusCategory.name == "Done")
         {
             if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
@@ -122,10 +124,10 @@ else
         }
     </td>
     @*@if (test == false)
-    {
-        <td>
-            &nbsp;
-        </td>
-    }*@
+        {
+            <td>
+                &nbsp;
+            </td>
+        }*@
 </tr>
 

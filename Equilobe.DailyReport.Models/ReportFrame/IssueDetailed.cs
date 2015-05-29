@@ -58,6 +58,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public bool HasWorkLoggedByAssignee { get; set; }
         public string Summary { get; set; }
         public List<Entry> Entries { get; set; }
+        public bool HasWorkLogged { get; set; }
 
         public IssueDetailed()
         {

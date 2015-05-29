@@ -44,7 +44,11 @@ namespace JiraReporter.Services
             IssueAdapter.RemoveWrongIssues(dayLog.Issues);
 
             if (dayLog.Issues != null)
+            {
                 dayLog.Issues = TaskLoader.GetParentTasks(dayLog.Issues, _author);
+                dayLog.Issues.ForEach(SetHasWorkLoggedProperty);
+            }
+
             dayLog.UnsyncedCommits = new List<JiraCommit>(dayLog.Commits.FindAll(c => c.TaskSynced == false));
             dayLog.TimeLogged = dayLog.TimeSpent.SetTimeFormat();
 
@@ -90,6 +94,14 @@ namespace JiraReporter.Services
 
             issue.SubtasksDetailed = new List<IssueDetailed>();
             issue.SubtasksDetailed = issue.SubtasksDetailed.Where(s => !s.Entries.IsEmpty()).ToList();
+        }
+
+        void SetHasWorkLoggedProperty(IssueDetailed issue)
+        {
+            if (issue.TimeSpent == 0 && (issue.SubtasksDetailed.IsEmpty()))
+                return;
+
+            issue.HasWorkLogged = true;
         }
     }
 }
