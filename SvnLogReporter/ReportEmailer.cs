@@ -79,13 +79,6 @@ namespace SourceControlLogReporter
             var smtp = new SmtpClient();
             smtp.Send(message);
             MoveToSent(reportPath);
-
-            UpdateBasicSettings();
-        }
-
-        protected virtual void UpdateBasicSettings()
-        {
-            return;
         }
 
         public virtual MailMessage GetMessage(string reportPath)

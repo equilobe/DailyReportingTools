@@ -16,10 +16,13 @@ namespace Equilobe.DailyReport.Models.Interfaces
         SimpleResult SendIndividualDraft(ExecutionContext context);
         void SaveIndividualDraftConfirmation(UserConfirmationContext context);
         void MarkExecutionInstanceAsExecuted(ItemContext context);
+        void AddScheduledExecutionInstance(JiraReport report);
+        void MarkExecutionInstanceStatus(ExecutionInstanceContext context);
         SimpleResult CanSendFullDraft(ConfirmationContext context);
         bool IsForcedByLead(ExecutionContext context);
         string GetFullDraftRecipients(AdvancedReportSettings advancedSettings);
         string GetFinalReportRecipients(AdvancedReportSettings advancedSettings);
         string GetRemainingUsersToConfirmIndividualDraft(ConfirmationContext context);
+        void MarkSentDates(JiraReport report);
     }
 }

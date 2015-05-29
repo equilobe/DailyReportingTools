@@ -378,8 +378,13 @@ namespace JiraReporter.Services
 
             _summary.UnassignedErrors = new List<Error>();
 
-            var noRemainingErrors = _report.ReportTasks.UnassignedTasksVisible.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
-            var completedTasksErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0 && t.Assignee == null).SelectMany(e => e.Errors).ToList();
+            var noRemainingErrors = new List<Error>();
+            var completedTasksErrors = new List<Error>();
+
+            if (!_report.ReportTasks.UnassignedTasksVisible.IsEmpty())
+                noRemainingErrors = _report.ReportTasks.UnassignedTasksVisible.Where(t => t.ErrorsCount > 0).SelectMany(e => e.Errors).ToList();
+            if (!_report.ReportTasks.CompletedTasksVisible.IsEmpty())
+                completedTasksErrors = _report.ReportTasks.CompletedTasksVisible.Where(t => t.ErrorsCount > 0 && t.Assignee == null).SelectMany(e => e.Errors).ToList();
 
             _summary.UnassignedErrors = noRemainingErrors.Concat(completedTasksErrors).ToList();
 

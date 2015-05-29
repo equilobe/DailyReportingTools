@@ -16,6 +16,7 @@ using JiraReporter.Services;
 using Equilobe.DailyReport.Utils;
 using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.ReportExecution;
 
 namespace JiraReporter
 {
@@ -97,7 +98,7 @@ namespace JiraReporter
 
             foreach (var file in Directory.GetFiles(Report.UnsentReportsPath))
             {
-                TryEmailReport(file);
+                EmailReport(file);
             }
         }
 
@@ -109,27 +110,6 @@ namespace JiraReporter
 
             File.Copy(path, newFilePath, overwrite: true);
             File.Delete(path);
-        }
-
-        protected override void UpdateBasicSettings()
-        {
-            if (Report.IsIndividualDraft)
-                return;
-
-            using(var db = new ReportsDb())
-            {
-                var report = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == Report.UniqueProjectKey);
-
-                if (report.ReportExecutionSummary == null)
-                    report.ReportExecutionSummary = new ReportExecutionSummary();
-
-                if(Report.IsFinalDraft)
-                    report.ReportExecutionSummary.LastDraftSentDate = Report.FullReportDate;
-                if (Report.IsFinalReport)
-                    report.ReportExecutionSummary.LastFinalReportSentDate = Report.FullReportDate;
-
-                db.SaveChanges();
-            }
         }
     }
 }
