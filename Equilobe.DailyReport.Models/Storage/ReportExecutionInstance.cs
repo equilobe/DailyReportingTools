@@ -15,6 +15,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string UniqueUserKey { get; set; }
         public DateTime DateAdded { get; set; }
         public DateTime? DateExecuted { get; set; }
+        public string Status { get; set; }
 
         public virtual BasicSettings BasicSettings { get; set; }
     }
