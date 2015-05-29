@@ -155,7 +155,7 @@ namespace Equilobe.DailyReport.SL
 
         public void AddScheduledExecutionInstance(JiraReport report)
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var basingSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == report.UniqueProjectKey);
                 var execInstance = new ReportExecutionInstance
@@ -172,7 +172,7 @@ namespace Equilobe.DailyReport.SL
 
         public void MarkExecutionInstanceStatus(ExecutionInstanceContext context)
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var execInstance = db.ReportExecutionInstances.Single(ei => ei.Id == context.Id);
                 execInstance.Status = context.Status;
@@ -195,6 +195,27 @@ namespace Equilobe.DailyReport.SL
                 if (report.IsFinalReport)
                     bs.ReportExecutionSummary.LastFinalReportSentDate = report.FullReportDate;
 
+                db.SaveChanges();
+            }
+        }
+
+        public void UpdateDeprecatedExecutionInstances(ExecutionInstanceContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                if (db.ReportExecutionInstances == null)
+                    return;
+
+                var instances = db.ReportExecutionInstances.ToList()
+                                                           .Where(ei => DateTimeHelpers.CompareDay(ei.DateAdded, DateTime.Now, context.OffsetFromUtc) != 1
+                                                                        && ei.DateExecuted == null
+                                                                        && ei.BasicSettingsId == context.BasicSettingsId);
+
+                foreach (var instance in instances)
+                {
+                    instance.DateExecuted = DateTime.Now;
+                    instance.Status = "Failed. Deprecated entry";
+                }
                 db.SaveChanges();
             }
         }

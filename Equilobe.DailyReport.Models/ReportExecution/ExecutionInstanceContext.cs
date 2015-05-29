@@ -9,6 +9,8 @@ namespace Equilobe.DailyReport.Models.ReportExecution
     public class ExecutionInstanceContext
     {
         public long Id { get; set; }
+        public long BasicSettingsId { get; set; }
         public string Status { get; set; }
+        public TimeSpan OffsetFromUtc { get; set; }
     }
 }

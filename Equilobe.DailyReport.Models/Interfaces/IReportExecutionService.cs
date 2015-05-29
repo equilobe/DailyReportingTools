@@ -24,5 +24,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetFinalReportRecipients(AdvancedReportSettings advancedSettings);
         string GetRemainingUsersToConfirmIndividualDraft(ConfirmationContext context);
         void MarkSentDates(JiraReport report);
+        void UpdateDeprecatedExecutionInstances(ExecutionInstanceContext context);
     }
 }

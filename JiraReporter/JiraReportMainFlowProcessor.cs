@@ -55,12 +55,11 @@ namespace JiraReporter
             report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
             SetLastReportDatesFromSettings(report);
             report.JiraRequestContext = jiraRequestContext;
-
+            LoadReportDates(report);
             SetExecutionInstance(report);
 
             var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
-            LoadReportDates(report);
 
             var contextService = new JiraContextService(report) { ConfigurationService = ConfigurationService };
             contextService.SetPolicy();
@@ -126,16 +125,27 @@ namespace JiraReporter
 
         ReportExecutionInstance GetUnexecutedInstance(BasicSettings report)
         {
+            if (report.ReportExecutionInstances.IsEmpty())
+                return null;
+
             var execInstance = report.ReportExecutionInstances.Where(qr => qr.DateExecuted == null).FirstOrDefault();
             return execInstance;
         }
 
         void SetExecutionInstance(JiraReport _report)
         {
+            var executionContext = new ExecutionInstanceContext
+            {
+                BasicSettingsId = _report.Settings.Id,
+                OffsetFromUtc = _report.OffsetFromUtc
+            };
+
+            ReportExecutionService.UpdateDeprecatedExecutionInstances(executionContext);
+
             var executionInstance = GetUnexecutedInstance(_report.Settings);
             _report.ExecutionInstance = new ExecutionInstance();
-            if (executionInstance != null)            
-                executionInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);           
+            if (executionInstance != null)
+                executionInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);
             else
             {
                 _report.IsOnSchedule = true;
@@ -145,6 +155,7 @@ namespace JiraReporter
             ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(_report.ExecutionInstance.Id));
 
         }
+
 
         private bool RunReport(JiraReport context)
         {
@@ -156,12 +167,6 @@ namespace JiraReporter
 
             if (CheckDayFromOverrides(context))
                 return false;
-
-            if (context.ExecutionInstance != null && DateTimeHelpers.CompareDay(context.ExecutionInstance.DateAdded, DateTime.Now, context.OffsetFromUtc) != 1)
-            {
-                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(context.ExecutionInstance.Id));
-                return false;
-            }
 
             return true;
         }
