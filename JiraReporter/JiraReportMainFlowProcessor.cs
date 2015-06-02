@@ -55,20 +55,35 @@ namespace JiraReporter
             report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
             SetLastReportDatesFromSettings(report);
             report.JiraRequestContext = jiraRequestContext;
-
+            LoadReportDates(report);
             SetExecutionInstance(report);
 
             var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
-            LoadReportDates(report);
 
             var contextService = new JiraContextService(report) { ConfigurationService = ConfigurationService };
-            contextService.SetPolicy();        
+            contextService.SetPolicy();
 
             if (RunReport(report))
-                RunReportTool(report);
+                TryRunReport(report);
             else
+            {
+                UpdateOnFailed(report, "Unable to run report tool due to policy settings or final report already generated");
                 throw new ApplicationException("Unable to run report tool due to policy settings or final report already generated.");
+            }
+        }
+
+        void TryRunReport(JiraReport report)
+        {
+            try
+            {
+                RunReportTool(report);
+                UpdateOnSucces(report);
+            }
+            catch (Exception)
+            {
+                UpdateOnFailed(report, "Failed");
+            }
         }
 
         private void SyncProject(JiraOptions options, JiraRequestContext jiraRequestContext, long projectId)
@@ -110,22 +125,37 @@ namespace JiraReporter
 
         ReportExecutionInstance GetUnexecutedInstance(BasicSettings report)
         {
+            if (report.ReportExecutionInstances.IsEmpty())
+                return null;
+
             var execInstance = report.ReportExecutionInstances.Where(qr => qr.DateExecuted == null).FirstOrDefault();
             return execInstance;
         }
 
         void SetExecutionInstance(JiraReport _report)
         {
-            var unexecutedInstance = GetUnexecutedInstance(_report.Settings);
-            if (unexecutedInstance != null)
+            var executionContext = new ExecutionInstanceContext
             {
-                _report.ExecutionInstance = new ExecutionInstance();
-                unexecutedInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);
-                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(unexecutedInstance.Id));
-            }
+                BasicSettingsId = _report.Settings.Id,
+                OffsetFromUtc = _report.OffsetFromUtc
+            };
+
+            ReportExecutionService.UpdateDeprecatedExecutionInstances(executionContext);
+
+            var executionInstance = GetUnexecutedInstance(_report.Settings);
+            _report.ExecutionInstance = new ExecutionInstance();
+            if (executionInstance != null)
+                executionInstance.CopyPropertiesOnObjects(_report.ExecutionInstance);
             else
+            {
                 _report.IsOnSchedule = true;
+                ReportExecutionService.AddScheduledExecutionInstance(_report);
+            }
+
+            ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(_report.ExecutionInstance.Id));
+
         }
+
 
         private bool RunReport(JiraReport context)
         {
@@ -137,12 +167,6 @@ namespace JiraReporter
 
             if (CheckDayFromOverrides(context))
                 return false;
-
-            if (context.ExecutionInstance != null && DateTimeHelpers.CompareDay(context.ExecutionInstance.DateAdded, DateTime.Now, context.OffsetFromUtc) != 1)
-            {
-                ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(context.ExecutionInstance.Id));
-                return false;
-            }
 
             return true;
         }
@@ -206,5 +230,28 @@ namespace JiraReporter
             if (project.Lead != null)
                 report.ProjectManager = project.Lead.key;
         }
+
+        void UpdateOnSucces(JiraReport report)
+        {
+            var executionInstanceContext = new ExecutionInstanceContext
+            {
+                Id = report.ExecutionInstance.Id,
+                Status = "Succes"
+            };
+
+            ReportExecutionService.MarkExecutionInstanceStatus(executionInstanceContext);
+
+            if (report.IsIndividualDraft)
+                return;
+
+            ReportExecutionService.MarkSentDates(report);
+        }
+
+        void UpdateOnFailed(JiraReport report, string status)
+        {
+            var context = new ExecutionInstanceContext { Id = report.ExecutionInstance.Id, Status = status };
+            ReportExecutionService.MarkExecutionInstanceStatus(context);
+        }
+
     }
 }

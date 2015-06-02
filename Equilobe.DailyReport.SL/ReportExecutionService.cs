@@ -153,6 +153,73 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void AddScheduledExecutionInstance(JiraReport report)
+        {
+            using (var db = new ReportsDb())
+            {
+                var basingSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == report.UniqueProjectKey);
+                var execInstance = new ReportExecutionInstance
+                {
+                    DateAdded = DateTime.Now,
+                    Scope = SendScope.OnSchedule,
+                };
+                basingSettings.ReportExecutionInstances.Add(execInstance);
+                db.SaveChanges();
+
+                execInstance.CopyPropertiesOnObjects(report.ExecutionInstance);
+            }
+        }
+
+        public void MarkExecutionInstanceStatus(ExecutionInstanceContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                var execInstance = db.ReportExecutionInstances.Single(ei => ei.Id == context.Id);
+                execInstance.Status = context.Status;
+                db.SaveChanges();
+            }
+        }
+
+
+        public void MarkSentDates(JiraReport report)
+        {
+            using (var db = new ReportsDb())
+            {
+                var bs = db.BasicSettings.SingleOrDefault(qr => qr.UniqueProjectKey == report.UniqueProjectKey);
+
+                if (bs.ReportExecutionSummary == null)
+                    bs.ReportExecutionSummary = new ReportExecutionSummary();
+
+                if (report.IsFinalDraft)
+                    bs.ReportExecutionSummary.LastDraftSentDate = report.FullReportDate;
+                if (report.IsFinalReport)
+                    bs.ReportExecutionSummary.LastFinalReportSentDate = report.FullReportDate;
+
+                db.SaveChanges();
+            }
+        }
+
+        public void UpdateDeprecatedExecutionInstances(ExecutionInstanceContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                if (db.ReportExecutionInstances == null)
+                    return;
+
+                var instances = db.ReportExecutionInstances.ToList()
+                                                           .Where(ei => DateTimeHelpers.CompareDay(ei.DateAdded, DateTime.Now, context.OffsetFromUtc) != 1
+                                                                        && ei.DateExecuted == null
+                                                                        && ei.BasicSettingsId == context.BasicSettingsId);
+
+                foreach (var instance in instances)
+                {
+                    instance.DateExecuted = DateTime.Now;
+                    instance.Status = "Failed. Deprecated entry";
+                }
+                db.SaveChanges();
+            }
+        }
+
         #region Helpers
 
         public string GetFullDraftRecipients(AdvancedReportSettings advancedSettings)
