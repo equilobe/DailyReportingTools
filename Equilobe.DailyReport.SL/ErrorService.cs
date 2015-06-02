@@ -32,6 +32,7 @@ namespace Equilobe.DailyReport.SL
             var noRemainingEstimateErrors = context.Errors.Count(er => er.Type == ErrorType.HasNoRemaining);
             var completedWithEstimateErrors = context.Errors.Count(er => er.Type == ErrorType.HasRemaining);
             var noTimeSpentErrors = context.Errors.Count(er => er.Type == ErrorType.HasNoTimeSpent);
+            var notInSprintErrors = context.Errors.Count(er => er.Type == ErrorType.NotFromSprint);
             bool hasNotConfirmedError = context.Errors.Exists(er => er.Type == ErrorType.NotConfirmed);
 
             if (noRemainingEstimateErrors > 0)
@@ -42,6 +43,9 @@ namespace Equilobe.DailyReport.SL
 
             if (noTimeSpentErrors > 0)
                 messagesList.Add(noTimeSpentErrors + " completed " + NounWithPlural(noTimeSpentErrors, "item") + " with no work logged");
+
+            if (notInSprintErrors > 0)
+                messagesList.Add(notInSprintErrors + " " + NounWithPlural(notInSprintErrors, "item") + " that " + NounWithPlural(notInSprintErrors,"doesn't","don't") + " belong to the current sprint");
 
             if (hasNotConfirmedError)
                 messagesList.Add("has not confirmed individual draft");
@@ -58,6 +62,14 @@ namespace Equilobe.DailyReport.SL
                 return noun;
 
             return noun + "s";
+        }
+
+        string NounWithPlural(int count, string noun1, string noun2)
+        {
+            if (count == 1)
+                return noun1;
+
+            return noun2;
         }
 
         #endregion

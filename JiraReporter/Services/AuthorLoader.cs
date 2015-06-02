@@ -436,9 +436,25 @@ namespace JiraReporter.Services
 
             SetRemainingTasksErrors();
             SetNotConfirmedError();
+            SetTaskFromAnotherSprintErrors();
             SetErrorsMessage();
 
             //  _currentAuthor.Errors = _currentAuthor.NoRemainingEstimateErrors + _currentAuthor.NoTimeSpentErrors + _currentAuthor.CompletedWithEstimateErrors;
+        }
+
+        public void SetTaskFromAnotherSprintErrors()
+        {
+            foreach(var issue in _currentAuthor.Issues)
+            {
+                if(!_context.ReportTasks.UncompletedTasks.Exists(t=>t.Key == issue.Key))
+                {
+                    issue.ErrorsCount ++;
+                    if (issue.Errors == null)
+                        issue.Errors = new List<Error>();
+                    issue.Errors.Add(new Error(ErrorType.NotFromSprint));
+                    _currentAuthor.Errors.Add(new Error(ErrorType.NotFromSprint));
+                }
+            }
         }
 
         private void SetNotConfirmedError()
