@@ -166,7 +166,7 @@ namespace Equilobe.DailyReport.SL
                 basingSettings.ReportExecutionInstances.Add(execInstance);
                 db.SaveChanges();
 
-                execInstance.CopyPropertiesOnObjects(report.ExecutionInstance);
+                report.ExecutionInstance.Id = execInstance.Id;
             }
         }
 
