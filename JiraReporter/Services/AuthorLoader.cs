@@ -105,8 +105,8 @@ namespace JiraReporter.Services
 
             SetUncompletedTasks();
             SetCompletedTasks();
-            SetAuthorDayLogs();
             SetAuthorErrors();
+            SetAuthorDayLogs();
             SetRemainingEstimate();
             SetOverrideEmail();
             SetAuthorIsEmpty();
@@ -444,6 +444,9 @@ namespace JiraReporter.Services
 
         public void SetTaskFromAnotherSprintErrors()
         {
+            if (!_context.HasSprint)
+                return;
+
             foreach(var issue in _currentAuthor.Issues)
             {
                 if(!_context.ReportTasks.UncompletedTasks.Exists(t=>t.Key == issue.Key))
@@ -453,6 +456,7 @@ namespace JiraReporter.Services
                         issue.Errors = new List<Error>();
                     issue.Errors.Add(new Error(ErrorType.NotFromSprint));
                     _currentAuthor.Errors.Add(new Error(ErrorType.NotFromSprint));
+                    issue.NotFromSprint = true;
                 }
             }
         }

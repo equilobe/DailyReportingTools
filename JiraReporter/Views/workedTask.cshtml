@@ -101,7 +101,10 @@ else
             <span style="color:orange"> @Dot() no work logged</span>
         }
 
-
+        @if(Model.NotFromSprint)
+        {
+            <span style="color:red">@Dot() issue doesn't belong to the current sprint</span>
+        }
 
         @if (Model.PullRequests != null)
         {

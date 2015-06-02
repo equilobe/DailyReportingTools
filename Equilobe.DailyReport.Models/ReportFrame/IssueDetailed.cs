@@ -59,6 +59,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string Summary { get; set; }
         public List<Entry> Entries { get; set; }
         public bool HasWorkLogged { get; set; }
+        public bool NotFromSprint { get; set; }
 
         public IssueDetailed()
         {
@@ -120,6 +121,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             this.HasWorkLoggedByAssignee = issue.HasWorkLoggedByAssignee;
             this.StatusType = issue.StatusType;
             this.DisplayStatus = issue.DisplayStatus;
+            this.NotFromSprint = issue.NotFromSprint;
         }
 
         public IssueDetailed(JiraIssue jiraIssue)
