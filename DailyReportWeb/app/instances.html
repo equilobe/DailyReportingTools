@@ -88,10 +88,10 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-danger" ng-click="clearInstanceForm(this)">
+                <button type="button" class="btn btn-danger" ng-click="clearInstanceForm(this)">
                     Cancel
                 </button>
-                <button class="btn btn-success" ng-disabled="form.$invalid" ng-click="saveInstance(this)">
+                <button type="submit" class="btn btn-success" ng-disabled="form.$invalid" ng-click="saveInstance(this)">
                     Save
                 </button>
                 <span class="status-message" ng-show="status == 'saving'">
