@@ -14,7 +14,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         DateTime FromDate { get; }
         List<JiraPullRequest> PullRequests { get; set; }
         Sprint Sprint { get; set; }
-        SprintTasks ReportTasks { get; set; }
+        ReportTasks ReportTasks { get; set; }
         Summary Summary { get; set; }
         string Title { get; set; }
         DateTime ToDate { get; }

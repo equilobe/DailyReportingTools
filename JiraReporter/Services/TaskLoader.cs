@@ -21,10 +21,10 @@ namespace JiraReporter.Services
 
         public void SetReportTasks(JiraReport context)
         {
-            context.ReportTasks = new SprintTasks();
+            context.ReportTasks = new ReportTasks();
             if (context.HasSprint)
             {
-                var unfinishedTasks = GetUnfinishedTasks(context);
+                var unfinishedTasks = GetSprintTasks(context);
                 SetUnfinishedTasks(unfinishedTasks, context);
                 context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
                 SortTasks(context.ReportTasks);
@@ -89,7 +89,7 @@ namespace JiraReporter.Services
             context.ReportTasks.AdditionalCompletedTasks = context.ReportTasks.CompletedTasksAll.Count - context.ReportTasks.CompletedTasksVisible.Count;
         }
 
-        JiraIssues GetUnfinishedTasks(JiraReport context)
+        JiraIssues GetSprintTasks(JiraReport context)
         {
             return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey, context.Sprint.id.ToString());
         }
@@ -100,10 +100,12 @@ namespace JiraReporter.Services
             tasks.InProgressTasks = new List<IssueDetailed>();
             tasks.OpenTasks = new List<IssueDetailed>();
             tasks.UnassignedTasksAll = new List<IssueDetailed>();
+            tasks.SprintTasksAll = new List<IssueDetailed>();
 
             foreach (var jiraIssue in jiraIssues.issues)
             {
                 var issue = GetCompleteIssue(context, jiraIssue);
+                tasks.SprintTasksAll.Add(issue);
 
                 if (issue.StatusCategory.name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
@@ -128,7 +130,7 @@ namespace JiraReporter.Services
             return issue;
         }
 
-        void SortTasks(SprintTasks sprintTasks)
+        void SortTasks(ReportTasks sprintTasks)
         {
             if (sprintTasks.InProgressTasks != null)
                 sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();

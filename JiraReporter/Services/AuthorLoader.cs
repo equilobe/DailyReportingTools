@@ -26,7 +26,7 @@ namespace JiraReporter.Services
         public IDataService DataService { get; set; }
         public IErrorService ErrorService { get; set; }
 
-        SprintTasks _reportTasks { get { return _context.ReportTasks; } }
+        ReportTasks _reportTasks { get { return _context.ReportTasks; } }
         JiraPolicy _policy { get { return _context.Policy; } }
         List<JiraCommit> _commits { get { return _context.Commits; } }
         JiraOptions _options { get { return _context.Options; } }
@@ -175,6 +175,8 @@ namespace JiraReporter.Services
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
                 completeIssues.Add(fullIssue);
             }
+
+            completeIssues.RemoveAll(i => i.Entries.IsEmpty());
 
             return completeIssues;
         }
@@ -449,7 +451,7 @@ namespace JiraReporter.Services
 
             foreach(var issue in _currentAuthor.Issues)
             {
-                if(!_context.ReportTasks.UncompletedTasks.Exists(t=>t.Key == issue.Key))
+                if (!_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key))
                 {
                     issue.ErrorsCount ++;
                     if (issue.Errors == null)

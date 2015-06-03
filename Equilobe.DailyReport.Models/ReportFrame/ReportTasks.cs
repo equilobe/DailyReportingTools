@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.ReportFrame
 {
-    public class SprintTasks
+    public class ReportTasks
     {
        // public Dictionary<string, List<IssueDetailed>> CompletedTasks { get; set; } not used at the moment
         public List<IssueDetailed> CompletedTasksAll { get; set; }
@@ -21,6 +21,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> UnassignedTasksAll { get; set; }
         public List<IssueDetailed> UnassignedTasksVisible { get; set; }
         public List<IssueDetailed> UncompletedTasks { get; set; }
+        public List<IssueDetailed> SprintTasksAll { get; set; }
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }  
     }

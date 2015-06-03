@@ -20,7 +20,7 @@ namespace JiraReporter.Services
     class SummaryLoader
     {
         public List<JiraAuthor> _authors { get { return _report.Authors; } }
-        public SprintTasks _sprintTasks { get { return _report.ReportTasks; } }
+        public ReportTasks _sprintTasks { get { return _report.ReportTasks; } }
         public List<JiraPullRequest> _pullRequests { get { return _report.PullRequests; } }
         public JiraPolicy _policy { get { return _report.Policy; } }
         public JiraOptions _options { get { return _report.Options; } }

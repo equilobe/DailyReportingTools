@@ -106,8 +106,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         }
 
 
-        private SprintTasks _reportTasks;
-        public SprintTasks ReportTasks
+        private ReportTasks _reportTasks;
+        public ReportTasks ReportTasks
         {
             get
             {
