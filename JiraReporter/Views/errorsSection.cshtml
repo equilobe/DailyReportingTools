@@ -14,7 +14,7 @@
         </td>
     </tr>
     <tr>
-        <td width="10" height="14" style="font-size:14px; line-height:14px">
+        <td width="10" height="14" style="font-size:14px; line-height:14px;">
             @ErrorIcon()
         </td>
         <td width="10" height="14" style="font-size:14px; line-height:14px">
@@ -41,7 +41,7 @@
         if (Model.Summary.UnassignedErrors.Count > 0)
         {
             <tr>
-                <td width="10" style="vertical-align:top;">
+                <td width="10" style="vertical-align:top;text-align:center">
                     @Dot()
                 </td>
                 <td colspan="2" style="text-align: left"><span style="font-size:14px;">@Model.Summary.UnassignedErrorsMessageHeader</span></td>
@@ -59,7 +59,7 @@
                     </td>
                     <td colspan="2" style="text-align: left; font-size:14px;"><span style="font-size:14px;">@author.ErrorsMessageHeader</span></td>
                 </tr>
-         
+
                 @Partial("Views/errorsMessageList.cshtml", author.ErrorsMessageList)
             }
         }
