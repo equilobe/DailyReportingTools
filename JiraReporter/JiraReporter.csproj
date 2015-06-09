@@ -121,9 +121,14 @@
     </None>
     <None Include="..\Config\appSettings.dev.config">
       <Link>config\appSettings.dev.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Config\ConnectionStrings.config">
       <Link>config\ConnectionStrings.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Config\ConnectionStrings.dev.config">
+      <Link>config\ConnectionStrings.dev.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Config\smtp.config">
@@ -134,7 +139,7 @@
     <None Condition=" '$(Configuration)' == 'Debug' " Include="App.Debug.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Condition =" '$(Configuration)' == 'Release' " Include="App.Release.config">
+    <None Condition=" '$(Configuration)' == 'Release' " Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
     <None Include="packages.config" />

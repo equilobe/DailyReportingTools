@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Storage;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Configuration;
 
 namespace Equilobe.DailyReport.DAL
 {
 	public class ReportsDb : IdentityDbContext<ApplicationUser>
     {
         public ReportsDb()
-            : base("name=ReportsDb")
+            : base("name=" + ConfigurationManager.AppSettings["dbName"])
         {
 
         }
