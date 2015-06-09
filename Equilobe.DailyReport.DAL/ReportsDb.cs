@@ -13,7 +13,7 @@ namespace Equilobe.DailyReport.DAL
 	public class ReportsDb : IdentityDbContext<ApplicationUser>
     {
         public ReportsDb()
-            : base("name=" + ConfigurationManager.AppSettings["dbName"])
+            : base("name=ReportsDb")
         {
 
         }
