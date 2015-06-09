@@ -331,7 +331,7 @@ else
                     </td>
                     <td colspan="3" style="padding:0px; padding-bottom:10px;">
                         @Partial("Views/guidelines.cshtml", Model.GuidelineInfoWorkSummary)
-                        @if (author.Timing.AverageWorkedHours >= 0.1)
+                        @if (author.Timing.AverageWorkedHours >= 0.1 || author.Day.Width > 1)
                         {
                             @ChartBar("#5CB85C", @author.Day.Width, @Model.ChartMaxWidth, @author.Day.ActualValue)
                         }
@@ -342,7 +342,7 @@ else
 
                         @if (Model.Sprint != null)
                         {
-                            if (author.Timing.AverageWorkedSprintHours >= 0.1)
+                            if (author.Timing.AverageWorkedSprintHours >= 0.1 || author.Sprint.Width > 1)
                             {
                                 @ChartBar("#F60", @author.Sprint.Width, @Model.ChartMaxWidth, @author.Sprint.ActualValue)
                             }
@@ -352,7 +352,7 @@ else
                             }
                         }
 
-                        @if (author.Timing.AverageWorkedMonthHours >= 0.1)
+                        @if (author.Timing.AverageWorkedMonthHours >= 0.1 || author.Month.Width > 1)
                         {
                             @ChartBar("#F0AD4E", @author.Month.Width, @Model.ChartMaxWidth, @author.Month.ActualValue)
                         }
@@ -363,7 +363,7 @@ else
 
                         @if (Model.Sprint != null)
                         {
-                            if (author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.state != "CLOSED")
+                            if ((author.Timing.TotalRemainingAverage >= 0.1 || author.Remaining.Width > 1) && Model.Sprint.state != "CLOSED")
                             {
                                 @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
                             }
