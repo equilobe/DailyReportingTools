@@ -45,7 +45,7 @@ namespace JiraReporter.Services
         public List<JiraAuthor> GetAuthors()
         {
             var authors = JiraService.GetUsers(_context.JiraRequestContext, _context.ProjectKey)
-                            .Where(UserIsNotIgnored)
+                            .Where(UserIsIncluded)
                             .Select(u => new JiraAuthor(u))
                             .ToList();
 
@@ -79,13 +79,13 @@ namespace JiraReporter.Services
             return author;
         }
 
-        private bool UserIsNotIgnored(JiraUser u)
+        private bool UserIsIncluded(JiraUser u)
         {
             var userJiraOptions = _policy.UserOptions.Find(user => user.JiraUserKey == u.key);
             if (userJiraOptions == null)
                 return true;
 
-            return !userJiraOptions.Ignored;
+            return userJiraOptions.Included;
         }
 
 

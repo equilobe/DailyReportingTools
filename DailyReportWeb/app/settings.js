@@ -65,15 +65,28 @@ angular.module('app')
                 $scope.user.sourceControlUsernames = [];
 
             $scope.user.sourceControlUsernames.push($scope.sourceControlUsername);
+            var i = $scope.data.sourceControlUsernames.indexOf($scope.sourceControlUsername);
+            if (i != -1)
+                $scope.data.sourceControlUsernames.splice(i, 1);
+            $scope.sourceControlUsername = $scope.data.sourceControlUsernames[0];
         };
 
         $scope.removeSourceControlUsername = function ($scope) {
-            for (var i = $scope.user.sourceControlUsernames.length - 1; i >= 0; i--)
-                if ($scope.user.sourceControlUsernames[i] == $scope.sourceControlUsername) {
-                    $scope.user.sourceControlUsernames.splice(i, 1);
-                    break;
-                }
+            var i = $scope.user.sourceControlUsernames.indexOf($scope.sourceControlUsername);
+            if (i != -1) {
+                $scope.user.sourceControlUsernames.splice(i, 1);
+                $scope.data.sourceControlUsernames.push($scope.sourceControlUsername);
+            }
+            $scope.form.$setDirty();
         };
+
+        $scope.editUser = function ($scope) {
+            $scope.$parent.editingUser = true;
+        };
+
+        $scope.cancelEditingUser = function ($scope) {
+            $scope.$parent.editingUser = false;
+        }
 
 
     }])

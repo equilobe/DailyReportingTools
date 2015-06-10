@@ -271,7 +271,8 @@
             <h3>
                 User options
             </h3>
-            <div class="row">
+            <label>Check people you want to include in the report</label>
+            <!--<div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>
@@ -328,163 +329,239 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="container-alternate">
-            <h3>
-                Monthly options
-            </h3>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Select month:</label>
-                        <select class="form-control" ng-model="month" ng-options="month as month.monthName for month in data.monthlyOptions"></select>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" ng-show="month.monthName.length">
-                <div class="panel-heading">
-                    <h4>{{month.monthName}}</h4>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>
-                                    Expected daily team work rate (hours/day):
-                                </label>
-                                <div ng-form="hoursDayMonthlyForm">
-                                    <input name="hoursDayMonthly" type="text" class="form-control" placeholder="e.g. 24" ng-model="month.allocatedHoursPerDay" ng-focus="hoursDayMonthly.focus = true" ng-blur="hoursDayMonthly.focus = false" ng-pattern=regex.Digits />
-                                    <span class="form-notification" ng-show="hoursDayMonthlyForm.hoursDayMonthly.$error.pattern && !hoursDayMonthly.focus"><b>Enter valid number</b> (84)</span>
-                                </div>
+            </div>-->
+            <div ng-repeat="user in data.userOptions">
+                <div ng-if="!editingUser" class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-1">
+                                <input type="checkbox" ng-model="user.included" ng-checked="user.included" />
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>
-                                    Monthly hour limit:
-                                </label>
-                                <div ng-form="hoursMonthMonthlyForm">
-                                    <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="e.g. 400" ng-model="month.allocatedHoursPerMonth" ng-focus="hoursMonthMonthly.focus = true" ng-blur="hoursMonthMonthly.focus = false" ng-pattern=regex.Digits />
-                                    <span class="form-notification" ng-show="hoursMonthMonthlyForm.hoursMonthMonthly.$error.pattern && !hoursMonthMonthly.focus"><b>Enter valid number</b> (584)</span>
-                                </div>
+                            <div class="col-md-3">
+                                {{user.jiraDisplayName}}
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>
-                                    Free days:
-                                </label>
-                                <div ng-form="freeDaysMonthlyForm">
-                                    <input name="freeDaysMonthly" type="text" class="form-control" placeholder="e.g. 1 16 31" ng-model="month.nonWorkingDays" ng-focus="freeDaysMonthly.focus = true" ng-blur="freeDaysMonthly.focus = false" ng-pattern=regex.Days />
-                                    <span class="form-notification" ng-show="freeDaysMonthlyForm.freeDaysMonthly.$error.pattern && !freeDaysMonthly.focus"><b>Enter valid days</b> (1 16 31)</span>
-                                </div>
+                            <div class="col-md-3">
+                                {{user.emailOverride}}
+                            </div>
+                            <div class="col-md-4">
+                                <label ng-show="user.sourceControlUsernames.length">Source control:</label>
+                                {{user.sourceControlUsernames.join(', ')}}
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-default" ng-click="editUser(this)">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="container-alternate">
-            <h3>
-                Advanced
-            </h3>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Report title:
-                        </label>
-                        <input type="text" class="form-control" placeholder="e.g. {{data.projectName}} Daily Report" ng-model="data.advancedOptions.reportTitle" />
-                        <p class="help-block">
-                            If left blank the default will be used: {{data.projectName}} Daily Report
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Reopened tasks status:
-                        </label>
-                        <input type="text" class="form-control" placeholder="e.g. Reopened" ng-model="data.advancedOptions.reopenedStatus" />
-                        <p class="help-block">
-                            If left blank the default will be used: Reopened.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Label used for permanent tasks:
-                        </label>
-                        <input type="text" class="form-control" placeholder="e.g. permanent" ng-model="data.advancedOptions.permanentTaskLabel" />
-                        <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Draft options:
-                        </label>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="data.advancedOptions.noDraft" />
-                                Do not send full draft report
-                            </label>
+
+                <div ng-if="editingUser">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h5>{{user.jiraDisplayName}}</h5>
                         </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" ng-model="data.advancedOptions.noIndividualDraft" ng-checked="data.advancedOptions.noIndividualDraft || data.advancedOptions.noDraft" ng-disabled="data.advancedOptions.noDraft" />
-                                Do not send individual draft report
-                            </label>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Email override:</label>
+                                        <div ng-form="emailOverrideForm">
+                                            <input name="emailOverride" type="text" class="form-control" placeholder="{{user.emailOverride}}" ng-model="user.emailOverride" ng-focus="emailOverride.focus = true" ng-blur="emailOverride.focus = false" ng-pattern=regex.Mail />
+                                            <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern && !emailOverride.focus"><b>Enter valid email</b> (johndoe@eq.com)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group" ng-if="data.sourceControlOptions.type != 'None' && data.sourceControlUsernames.length">
+                                        <label>
+                                            Source control account:
+                                        </label>
+                                        <div class="input-group">
+                                            <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in data.sourceControlUsernames"></select>
+                                            <span class="input-group-btn">
+                                                <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-disabled="sourceControlUsername == null"><span class="glyphicon glyphicon-plus"></span></a>                                              
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-if="data.sourceControlOptions.type != 'None'" class="col-md-4">
+                                    <a ng-repeat="sourceControlUsername in user.sourceControlUsernames" ng-click="removeSourceControlUsername(this)" ng-model="sourceControlUsername" class="label label-primary mg-5 pull-right">{{sourceControlUsername}}</a>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-default" ng-click="cancelEditingUser(this)">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                                <span class="status-message" ng-show="status == 'saving'">
+                                    <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                                    <span>Saving</span>
+                                </span>
+                                <span class="status-message" ng-show="status == 'error' && form.$pristine">
+                                    <span class="alert-danger glyphicon glyphicon-remove"></span>
+                                    <span>{{message}}</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Weekend days:
-                        </label>
-                        <div class="checkbox" ng-repeat="day in days">
-                            <label>
-                                <input type="checkbox" weekend-days />
-                                {{day}}
-                            </label>
+
+            </div>
+            <div class="container-alternate">
+                <h3>
+                    Monthly options
+                </h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Select month:</label>
+                            <select class="form-control" ng-model="month" ng-options="month as month.monthName for month in data.monthlyOptions"></select>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <label>
-                        Workflow statuses:
-                    </label>
-                    <div class="form-group" ng-repeat="additionalWorkflowStatus in data.advancedOptions.additionalWorkflowStatuses track by $index">
-                        <input type="text" class="form-control" placeholder="e.g. To Do" ng-model="data.advancedOptions.additionalWorkflowStatuses[$index]" workflow-status />
+                <div class="panel panel-default" ng-show="month.monthName.length">
+                    <div class="panel-heading">
+                        <h4>{{month.monthName}}</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        Expected daily team work rate (hours/day):
+                                    </label>
+                                    <div ng-form="hoursDayMonthlyForm">
+                                        <input name="hoursDayMonthly" type="text" class="form-control" placeholder="e.g. 24" ng-model="month.allocatedHoursPerDay" ng-focus="hoursDayMonthly.focus = true" ng-blur="hoursDayMonthly.focus = false" ng-pattern=regex.Digits />
+                                        <span class="form-notification" ng-show="hoursDayMonthlyForm.hoursDayMonthly.$error.pattern && !hoursDayMonthly.focus"><b>Enter valid number</b> (84)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        Monthly hour limit:
+                                    </label>
+                                    <div ng-form="hoursMonthMonthlyForm">
+                                        <input name="hoursMonthMonthly" type="text" class="form-control" placeholder="e.g. 400" ng-model="month.allocatedHoursPerMonth" ng-focus="hoursMonthMonthly.focus = true" ng-blur="hoursMonthMonthly.focus = false" ng-pattern=regex.Digits />
+                                        <span class="form-notification" ng-show="hoursMonthMonthlyForm.hoursMonthMonthly.$error.pattern && !hoursMonthMonthly.focus"><b>Enter valid number</b> (584)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        Free days:
+                                    </label>
+                                    <div ng-form="freeDaysMonthlyForm">
+                                        <input name="freeDaysMonthly" type="text" class="form-control" placeholder="e.g. 1 16 31" ng-model="month.nonWorkingDays" ng-focus="freeDaysMonthly.focus = true" ng-blur="freeDaysMonthly.focus = false" ng-pattern=regex.Days />
+                                        <span class="form-notification" ng-show="freeDaysMonthlyForm.freeDaysMonthly.$error.pattern && !freeDaysMonthly.focus"><b>Enter valid days</b> (1 16 31)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="container-alternate">
+                <h3>
+                    Advanced
+                </h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Report title:
+                            </label>
+                            <input type="text" class="form-control" placeholder="e.g. {{data.projectName}} Daily Report" ng-model="data.advancedOptions.reportTitle" />
+                            <p class="help-block">
+                                If left blank the default will be used: {{data.projectName}} Daily Report
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Reopened tasks status:
+                            </label>
+                            <input type="text" class="form-control" placeholder="e.g. Reopened" ng-model="data.advancedOptions.reopenedStatus" />
+                            <p class="help-block">
+                                If left blank the default will be used: Reopened.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Label used for permanent tasks:
+                            </label>
+                            <input type="text" class="form-control" placeholder="e.g. permanent" ng-model="data.advancedOptions.permanentTaskLabel" />
+                            <p class="help-block">Permanent tasks are not closed at the end of one sprint, but are used for the same activity for multiple sprints (e.g. sprint planning, testing).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Draft options:
+                            </label>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="data.advancedOptions.noDraft" />
+                                    Do not send full draft report
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="data.advancedOptions.noIndividualDraft" ng-checked="data.advancedOptions.noIndividualDraft || data.advancedOptions.noDraft" ng-disabled="data.advancedOptions.noDraft" />
+                                    Do not send individual draft report
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>
+                                Weekend days:
+                            </label>
+                            <div class="checkbox" ng-repeat="day in days">
+                                <label>
+                                    <input type="checkbox" weekend-days />
+                                    {{day}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label>
+                            Workflow statuses:
+                        </label>
+                        <div class="form-group" ng-repeat="additionalWorkflowStatus in data.advancedOptions.additionalWorkflowStatuses track by $index">
+                            <input type="text" class="form-control" placeholder="e.g. To Do" ng-model="data.advancedOptions.additionalWorkflowStatuses[$index]" workflow-status />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-alternate">
+                <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="saveSettings(this)">
+                    Save settings
+                </button>
+                <span class="status-message" ng-show="form.$dirty">
+                    <span class="alert-warning glyphicon glyphicon-share-alt"></span>
+                    <span>Unsaved changes</span>
+                </span>
+                <span class="status-message" ng-show="status == 'saving'">
+                    <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    <span>Loading</span>
+                </span>
+                <span class="status-message" ng-show="status == 'success' && form.$pristine">
+                    <span class="alert-success glyphicon glyphicon-ok"></span>
+                    <span>Changes saved</span>
+                </span>
+                <span class="status-message" ng-show="status == 'error' && form.$pristine">
+                    <span class="alert-danger glyphicon glyphicon-remove"></span>
+                    <span>{{message}}</span>
+                </span>
+            </div>
         </div>
-        <div class="container-alternate">
-            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="saveSettings(this)">
-                Save settings
-            </button>
-            <span class="status-message" ng-show="form.$dirty">
-                <span class="alert-warning glyphicon glyphicon-share-alt"></span>
-                <span>Unsaved changes</span>
-            </span>
-            <span class="status-message" ng-show="status == 'saving'">
-                <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                <span>Loading</span>
-            </span>
-            <span class="status-message" ng-show="status == 'success' && form.$pristine">
-                <span class="alert-success glyphicon glyphicon-ok"></span>
-                <span>Changes saved</span>
-            </span>
-            <span class="status-message" ng-show="status == 'error' && form.$pristine">
-                <span class="alert-danger glyphicon glyphicon-remove"></span>
-                <span>{{message}}</span>
-            </span>
-        </div>
-    </div>
 </form>
