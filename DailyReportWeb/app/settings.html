@@ -330,38 +330,37 @@
                     </div>
                 </div>
             </div>-->
-            <div ng-repeat="user in data.userOptions">
-                <div ng-if="!editingUser" class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-1">
-                                <input type="checkbox" ng-model="user.included" ng-checked="user.included" />
-                            </div>
-                            <div class="col-md-3">
-                                {{user.jiraDisplayName}}
-                            </div>
-                            <div class="col-md-3">
-                                {{user.emailOverride}}
-                            </div>
-                            <div class="col-md-4">
-                                <label ng-show="user.sourceControlUsernames.length">Source control:</label>
-                                {{user.sourceControlUsernames.join(', ')}}
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-default" ng-click="editUser(this)">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                </button>
+            <div class="mg-10-top">
+                <div ng-repeat="user in data.userOptions">
+                    <div ng-if="!editingUser">
+                        <div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <input type="checkbox" ng-model="user.included" ng-checked="user.included" />
+                               
+                                    {{user.jiraDisplayName}}
+                                </div>
+                                <div class="col-md-3">
+                                    {{user.emailOverride}}
+                                </div>
+                                <div class="col-md-4">
+                                    <label ng-show="user.sourceControlUsernames.length">Source control:</label>
+                                    {{user.sourceControlUsernames.join(', ')}}
+                                </div>
+                                <div class="col-xs-1">
+                                    <button type="button" class="btn btn-default" ng-click="editUser(this)">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div ng-if="editingUser">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h5>{{user.jiraDisplayName}}</h5>
+                    <div ng-if="editingUser" class="user-options">
+                        <div>
+                            <h4>{{user.jiraDisplayName}}</h4>
                         </div>
-                        <div class="panel-body">
+                        <div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -380,13 +379,13 @@
                                         <div class="input-group">
                                             <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in data.sourceControlUsernames"></select>
                                             <span class="input-group-btn">
-                                                <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-disabled="sourceControlUsername == null"><span class="glyphicon glyphicon-plus"></span></a>                                              
+                                                <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-disabled="sourceControlUsername == null"><span class="glyphicon glyphicon-plus"></span></a>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div ng-if="data.sourceControlOptions.type != 'None'" class="col-md-4">
-                                    <a ng-repeat="sourceControlUsername in user.sourceControlUsernames" ng-click="removeSourceControlUsername(this)" ng-model="sourceControlUsername" class="label label-primary mg-5 pull-right">{{sourceControlUsername}}</a>
+                                    <a ng-repeat="sourceControlUsername in user.sourceControlUsernames" ng-click="removeSourceControlUsername(this)" ng-model="sourceControlUsername" class="label label-primary mg-5 pull-right">{{sourceControlUsername}} x</a>
                                 </div>
                             </div>
                             <div>
@@ -404,8 +403,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
             <div class="container-alternate">
                 <h3>
