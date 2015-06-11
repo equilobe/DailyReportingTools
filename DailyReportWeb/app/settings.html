@@ -271,83 +271,35 @@
             <h3>
                 User options
             </h3>
-            <label>Check people you want to include in the report</label>
-            <!--<div class="row">
+            <div class="row">
+                <div class="col-md-5">
+                    <label>Check people you want to include in the report</label>
+                </div>
                 <div class="col-md-4">
-                    <div class="form-group">
-                        <label>
-                            Select user:
-                        </label>
-                        <select class="form-control" ng-model="user" ng-options="user as user.jiraDisplayName for user in data.userOptions"></select>
-                    </div>
+                    &nbsp;
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-default" ng-click="includeAll(this)">Include All</button>
+                    <button class="btn btn-default" ng-click="excludeAll(this)">Exclude All</button>
                 </div>
             </div>
-            <div class="panel panel-default" ng-show="user.jiraDisplayName.length">
-                <div class="panel-heading">
-                    <h4>
-                        {{user.jiraDisplayName}}
-                        <small class="pull-right">
-                            <label ng-repeat="sourceControlUser in user.sourceControlUsernames">
-                                [ {{sourceControlUser}} ]
-                            </label>
-                        </small>
-                    </h4>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" ng-model="user.ignored" ng-checked="user.ignored" />
-                                    Exclude from report
-                                </label>
-                                <p class="help-block">An excluded user won't show up in the report and won't receive the report</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Email override:</label>
-                                <div ng-form="emailOverrideForm">
-                                    <input name="emailOverride" type="text" class="form-control" placeholder="e.g. dan@equilobe.com" ng-model="user.emailOverride" ng-focus="emailOverride.focus = true" ng-blur="emailOverride.focus = false" ng-pattern=regex.Mail />
-                                    <span class="form-notification" ng-show="emailOverrideForm.emailOverride.$error.pattern && !emailOverride.focus"><b>Enter valid email</b> (dan@eq.com)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group" ng-if="data.sourceControlOptions.type != 'None' && data.sourceControlUsernames">
-                                <label>
-                                    Source control account:
-                                </label>
-                                <div class="input-group">
-                                    <select class="form-control" ng-model="sourceControlUsername" ng-options="sourceControlUsername for sourceControlUsername in data.sourceControlUsernames"></select>
-                                    <span class="input-group-btn">
-                                        <a role="button" class="btn btn-default" ng-click="addSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames != null && user.sourceControlUsernames.indexOf(sourceControlUsername) != -1 }" ng-disabled="sourceControlUsername == null"><span class="glyphicon glyphicon-plus"></span></a>
-                                        <a role="button" class="btn btn-default" ng-click="removeSourceControlUsername(this)" ng-class="{'ng-hide': user.sourceControlUsernames == null || user.sourceControlUsernames.indexOf(sourceControlUsername) == -1 }"><span class="glyphicon glyphicon-minus"></span></a>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
             <div class="mg-10-top">
                 <div ng-repeat="user in data.userOptions">
                     <div ng-if="!editingUser">
                         <div>
                             <div class="row">
-                                <div class="col-xs-4">
+                                <div class="col-xs-4 ellipsis">
                                     <input type="checkbox" ng-model="user.included" ng-checked="user.included" />
-                               
-                                    {{user.jiraDisplayName}}
+                                    <span class="mg-5-left">{{user.jiraDisplayName}}</span>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3 ellipsis">
                                     {{user.emailOverride}}
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4 ">
                                     <label ng-show="user.sourceControlUsernames.length">Source control:</label>
                                     {{user.sourceControlUsernames.join(', ')}}
                                 </div>
-                                <div class="col-xs-1">
+                                <div class="col-md-1">
                                     <button type="button" class="btn btn-default" ng-click="editUser(this)">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                     </button>

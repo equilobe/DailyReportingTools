@@ -86,7 +86,34 @@ angular.module('app')
 
         $scope.cancelEditingUser = function ($scope) {
             $scope.$parent.editingUser = false;
-        }
+        };
+
+        $scope.includeAll = function ($scope) {
+            var setDirty = false;
+
+            angular.forEach($scope.data.userOptions, function (user) {
+                if (user.included == false)
+                    setDirty = true;
+                user.included = true;
+            });
+
+            if (setDirty)
+                $scope.form.$setDirty();
+        };
+
+        $scope.excludeAll = function ($scope) {
+            var setDirty = false;
+
+            angular.forEach($scope.data.userOptions, function (user) {
+                if (user.included == true)
+                    setDirty = true;
+                user.included = false;
+            });
+
+            if (setDirty)
+                $scope.form.$setDirty();
+        };
+
 
 
     }])
