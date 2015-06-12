@@ -566,7 +566,7 @@ namespace JiraReporter.Services
 
         private void SetOverrideEmail()
         {
-            var author = _policy.UserOptions.Find(u => _currentAuthor.Username == u.JiraUserKey && u.EmailOverride != null);
+            var author = _policy.UserOptions.Find(u => _currentAuthor.Username == u.JiraUserKey);
             if (author != null)
                 _currentAuthor.EmailAdress = author.EmailOverride;
         }

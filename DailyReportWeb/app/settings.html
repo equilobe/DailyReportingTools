@@ -275,12 +275,21 @@
                 <div class="col-md-5">
                     <label>Check people you want to include in the report</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-7">
                     &nbsp;
                 </div>
+                <!--<div class="col-md-3">
+                    <button class="btn btn-default" ng-click="includeAll(this)">Include All</button>
+                    <button class="btn btn-default pull-right" ng-click="excludeAll(this)">Exclude All</button>
+                </div>-->
+            </div>
+            <div class="row mg-10-top mg-10-btm">
                 <div class="col-md-3">
                     <button class="btn btn-default" ng-click="includeAll(this)">Include All</button>
                     <button class="btn btn-default" ng-click="excludeAll(this)">Exclude All</button>
+                </div>
+                <div class="col-md-9">
+                    &nbsp;
                 </div>
             </div>
             <div class="mg-10-top">
@@ -288,19 +297,24 @@
                     <div ng-if="!editingUser">
                         <div>
                             <div class="row">
-                                <div class="col-xs-4 ellipsis">
-                                    <input type="checkbox" ng-model="user.included" ng-checked="user.included" />
-                                    <span class="mg-5-left">{{user.jiraDisplayName}}</span>
+                                <div class="col-md-10 col-xs-10">
+                                    <div class="row">
+                                        <div class="col-md-4 ellipsis">
+                                            <input type="checkbox" ng-model="user.included" ng-checked="user.included" />
+                                            <span class="mg-5-left">{{user.jiraDisplayName}}</span>
+                                        </div>
+                                        <div class="col-md-4 ellipsis">
+                                            {{user.emailOverride}}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label ng-show="user.sourceControlUsernames.length">Source control:</label>
+                                            {{user.sourceControlUsernames.join(', ')}}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 ellipsis">
-                                    {{user.emailOverride}}
-                                </div>
-                                <div class="col-md-4 ">
-                                    <label ng-show="user.sourceControlUsernames.length">Source control:</label>
-                                    {{user.sourceControlUsernames.join(', ')}}
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-default" ng-click="editUser(this)">
+                                
+                                <div class="col-md-2 col-xs-2">
+                                    <button type="button" class="btn btn-default pull-right" ng-click="editUser(this)">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                     </button>
                                 </div>
