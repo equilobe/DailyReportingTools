@@ -2,6 +2,34 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.mg-5 {
+    margin: 5px;
+}
+
+.mg-10-top {
+    margin-top: 10px;
+}
+
+.mg-10-btm {
+    margin-bottom: 10px;
+}
+
+.mg-5-left {
+    margin-left: 5px;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-options {
+    padding: 15px 0px 15px 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .logo {
     font-weight: bold;
     color: #000;
@@ -44,13 +72,13 @@
 }
 
 
-.legend{
+.legend {
     font-size: 1em;
     color: #BABABA;
 }
 
-.legend-symbol{
-    color:red;
+.legend-symbol {
+    color: red;
 }
 
 [data-page] {

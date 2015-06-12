@@ -13,13 +13,15 @@ namespace Equilobe.DailyReport.Models.Policy
         public string JiraDisplayName { get; set; }
         public List<string> SourceControlUsernames { get; set; }
         public string EmailOverride { get; set; }
+        public string EmailAdress { get; set; }
 
         [XmlAttribute]
-        public bool Ignored { get; set; }
+        public bool Included { get; set; }
 
         public User()
         {
             SourceControlUsernames = new List<string>();
+            Included = true;
         }
     }
 }
