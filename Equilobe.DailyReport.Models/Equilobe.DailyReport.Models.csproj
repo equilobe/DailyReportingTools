@@ -63,6 +63,7 @@
     <Compile Include="Interfaces\IDb.cs" />
     <Compile Include="Interfaces\IEncryptionService.cs" />
     <Compile Include="Interfaces\IErrorService.cs" />
+    <Compile Include="Interfaces\IPayPalService.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="Paypal\PayPalCheckoutInfo.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\ExecutionInstanceContext.cs" />

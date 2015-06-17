@@ -83,6 +83,7 @@
     <Compile Include="ErrorService.cs" />
     <Compile Include="GitHubService.cs" />
     <Compile Include="JiraService.cs" />
+    <Compile Include="PayPalService.cs" />
     <Compile Include="SettingsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportExecutionService.cs" />

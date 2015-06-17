@@ -15,6 +15,9 @@ namespace Equilobe.DailyReport.Models.Storage
         public string JiraPassword { get; set; }
         public string ClientKey { get; set; }
         public string SharedSecret { get; set; }
+
+        //public bool Active { get; set; }
+        //public bool OnTrial { get;set; }  ?
 		
 
         public virtual ICollection<BasicSettings> BasicSettings { get; set; }
