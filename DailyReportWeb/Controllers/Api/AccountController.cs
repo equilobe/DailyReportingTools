@@ -73,15 +73,18 @@ namespace DailyReportWeb.Controllers.Api
             DataService.SaveInstance(model);
 
             // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-            string code = HttpUtility.UrlEncode(UserManager.GenerateEmailConfirmationToken(user.Id));
-            var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}",
-                                             UrlExtensions.GetHostUrl(Request.RequestUri.OriginalString),
-                                             user.Id,
-                                             code);
 
-            SendAccountConfirmationEmail(user, callbackUrl);
+            //string code = HttpUtility.UrlEncode(UserManager.GenerateEmailConfirmationToken(user.Id));
+            //var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}",
+            //                                 UrlExtensions.GetHostUrl(Request.RequestUri.OriginalString),
+            //                                 user.Id,
+            //                                 code);
 
-            return SimpleResult.Success("Account confirmation details has been sent to your mail.");
+            //SendAccountConfirmationEmail(user, callbackUrl);
+
+            //return SimpleResult.Success("Account confirmation details has been sent to your mail.");
+
+            return SimpleResult.Success("Subscribe to finalize account registration");
         }
 
         [AllowAnonymous]
