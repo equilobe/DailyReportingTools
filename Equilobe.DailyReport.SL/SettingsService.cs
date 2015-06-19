@@ -94,6 +94,9 @@ namespace Equilobe.DailyReport.SL
 
                 instance.CopyPropertiesOnObjects(jiraRequestContext);
                 baseUrl = instance.BaseUrl;
+
+                if (!instance.Active.Value)
+                    return null;
             }
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
@@ -121,7 +124,7 @@ namespace Equilobe.DailyReport.SL
                               .ToList();
         }
 
-        public List<List<BasicReportSettings>> GetAllBasicReportSettings(UserContext context)
+        public List<JiraInstance> GetAllBasicReportSettings(UserContext context)
         {
             List<InstalledInstance> installedInstances;
             using (var db = new ReportsDb())
@@ -134,11 +137,23 @@ namespace Equilobe.DailyReport.SL
                     return null;
             }
 
-            var instances = new List<List<BasicReportSettings>>();
+            var instances = new List<JiraInstance>();
+
             foreach (var installedInstance in installedInstances)
-            {
+            {              
                 var icontext = new ItemContext(installedInstance.Id);
                 var jiraRequestContext = new JiraRequestContext(installedInstance);
+                var instance = new JiraInstance
+                {
+                    BaseUrl = installedInstance.BaseUrl,
+                    Id = installedInstance.Id,
+                    Active = installedInstance.Active.Value
+                };
+
+                instances.Add(instance);
+
+                if (!installedInstance.Active.Value)                   
+                    continue;                
 
                 var projects = JiraService.GetProjectsInfo(jiraRequestContext)
                                           .Select(projectInfo =>
@@ -163,8 +178,7 @@ namespace Equilobe.DailyReport.SL
                                               };
                                           })
                                           .ToList();
-
-                instances.Add(projects);
+                instance.Projects = projects;
             }
 
             return instances;

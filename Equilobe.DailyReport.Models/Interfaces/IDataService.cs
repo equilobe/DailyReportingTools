@@ -13,6 +13,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SaveInstance(RegisterModel modelData);
         void DeleteInstance(long id);
         void DeleteInstance(string pluginKey);
+        void ActivateInstance(SubscriptionContext context);
+        bool IsInstanceActive(long id);
         List<Instance> GetInstances();
         long GetNumberOfReportsGenerated();
         string GetBaseUrl(long id);

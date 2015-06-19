@@ -94,6 +94,27 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void ActivateInstance(SubscriptionContext context)
+        {
+            using(var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
+                instance.Active = true;
+
+                var subscription = new SubscriptionDetails();
+                subscription.TrialStartDate = context.TrialStartDate;
+                subscription.TrialEndDate = context.TrialEndDate;
+                subscription.SubscriptionDate = context.SubscriptionDate;
+                subscription.SubscriptionId = context.SubscriptionId;
+                subscription.PaymentGross = context.PaymentGross;
+                subscription.InstalledInstanceId = instance.Id;
+                instance.SubscriptionDetails = subscription;
+                
+
+                db.SaveChanges();
+            }
+        }
+
         public string GetSharedSecret(string baseUrl)
         {
             using (var db = new ReportsDb())
@@ -192,6 +213,16 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public bool IsInstanceActive(long basicSettingsId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var instance = SearchInstanceBySettingsId(basicSettingsId);
+
+                return instance.Active.Value;
+            }
+        }         
+
 
         // TODO: refactor to return a different object that is not tied to the Storage layer
         public BasicSettings GetReportSettingsWithDetails(string uniqueProjectKey)
@@ -289,6 +320,16 @@ namespace Equilobe.DailyReport.SL
             {
                 var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == uniqueProjcetKey);
                 return basicSettings.InstalledInstance.TimeZone;
+            }
+        }
+
+        InstalledInstance SearchInstanceBySettingsId(long settingsId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var basicSettings = db.BasicSettings.Single(bs => bs.Id == settingsId);
+
+                return basicSettings.InstalledInstance;
             }
         }
         #endregion

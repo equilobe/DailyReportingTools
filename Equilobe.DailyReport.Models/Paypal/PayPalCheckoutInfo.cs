@@ -155,12 +155,12 @@ namespace Equilobe.DailyReport.Models.Paypal
         public string subscr_effective { get; set; }
         public string subscr_id { get; set; }
 
-        public decimal Total
+        public double Total
         {
             get
             {
-                decimal amount = 0;
-                if (decimal.TryParse(mc_gross, out amount))
+                double amount = 0;
+                if (double.TryParse(mc_gross, out amount))
                 {
                     return amount;
                 }
@@ -170,12 +170,12 @@ namespace Equilobe.DailyReport.Models.Paypal
                 }
             }
         }
-        public decimal Fee
+        public double Fee
         {
             get
             {
-                decimal amount = 0;
-                if (decimal.TryParse(mc_fee, out amount))
+                double amount = 0;
+                if (double.TryParse(mc_fee, out amount))
                 {
                     return amount;
                 }

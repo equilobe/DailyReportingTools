@@ -96,13 +96,16 @@
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
+    <Compile Include="ReportFrame\JiraInstance.cs" />
     <Compile Include="ReportFrame\JiraOptions.cs" />
     <Compile Include="ReportFrame\JiraPullRequest.cs" />
     <Compile Include="ReportFrame\JiraReport.cs" />
     <Compile Include="Interfaces\IJiraRequestContext.cs" />
     <Compile Include="ReportFrame\JiraRequestContext.cs" />
+    <Compile Include="ReportFrame\ReportSettings.cs" />
     <Compile Include="ReportFrame\ReportTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
+    <Compile Include="ReportFrame\SubscriptionContext.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
     <Compile Include="ReportFrame\SummaryGuidelineInfo.cs" />
     <Compile Include="ReportFrame\TimesheetContext.cs" />
@@ -131,6 +134,7 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\IdentityModel.cs" />
+    <Compile Include="Storage\SubscriptionDetails.cs" />
     <Compile Include="Storage\UserImage.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />

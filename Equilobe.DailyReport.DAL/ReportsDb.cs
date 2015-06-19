@@ -47,6 +47,11 @@ namespace Equilobe.DailyReport.DAL
                 .WithOptional(x => x.User)
                 .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<SubscriptionDetails>()
+                .HasRequired(x => x.InstalledInstance)
+                .WithOptional(x => x.SubscriptionDetails)
+                .WillCascadeOnDelete(true);
+
 			modelBuilder.Entity<ApplicationUser>().ToTable("Users");
 			modelBuilder.Entity<IdentityUserRole>().ToTable("UserRoles");
 			modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
@@ -63,5 +68,6 @@ namespace Equilobe.DailyReport.DAL
         public DbSet<IndividualDraftConfirmation> IndividualDraftConfirmations { get; set; }
         public DbSet<SerializedAdvancedSettings> SerializedAdvancedSettings { get; set; }
         public DbSet<UserImage> UserImages { get; set; }
+        public DbSet<SubscriptionDetails> SubscriptionDetails { get; set; }
     }
 }
