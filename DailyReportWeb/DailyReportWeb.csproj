@@ -418,10 +418,7 @@
     <Content Include="Tools\AngularJS MVC.zip" />
     <Content Include="Views\Email\ConfirmationEmail.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Avatar\" />
-    <Folder Include="Views\IPN\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>

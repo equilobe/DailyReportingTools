@@ -2,6 +2,7 @@
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
@@ -23,7 +24,7 @@ namespace DailyReportWeb.Controllers.Api
             return SettingsService.GetAllBasicReportSettings(new ItemContext(id));
         }
 
-        public List<List<BasicReportSettings>> Get()
+        public List<JiraInstance> Get()
         {
             return SettingsService.GetAllBasicReportSettings(new UserContext());
         }

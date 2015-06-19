@@ -20,15 +20,15 @@ angular.module('app')
                 if (instances) {
                     if ($routeParams.instanceId == 0) {
                         $scope.instance = instances[0];
-                        $location.path('/app/instances/' + instances[0][0].installedInstanceId + '/projects', false);
+                        $location.path('/app/instances/' + instances[0].id + '/projects', false);
                     }
                     else {
                         instances.forEach(function (instance) {
-                            if (instance[0].installedInstanceId == $routeParams.instanceId)
+                            if (instance.id == $routeParams.instanceId)
                                 $scope.instance = instance;
                         });
 
-                        if ($scope.instance[0].installedInstanceId != $routeParams.instanceId)
+                        if ($scope.instance.id != $routeParams.instanceId)
                             $scope.instance = instances[0];
                     }
                 }
@@ -41,6 +41,6 @@ angular.module('app')
 
         $scope.setInstance = function (instance) {
             $scope.instance = instance;
-            $location.path('/app/instances/' + instance[0].installedInstanceId + '/projects', false);
+            $location.path('/app/instances/' + instance.id + '/projects', false);
         }
     }]);
