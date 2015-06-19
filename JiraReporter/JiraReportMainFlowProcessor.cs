@@ -53,6 +53,13 @@ namespace JiraReporter
             var policy = DataService.GetPolicy(options.UniqueProjectKey);
             var report = new JiraReport(policy, options);
             report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
+
+            if (!report.Settings.InstalledInstance.Active.Value)
+            {
+                UpdateOnFailed(report, "Instance is inactive");
+                throw new ApplicationException("Instance is inactive");
+            }
+
             SetLastReportDatesFromSettings(report);
             report.JiraRequestContext = jiraRequestContext;
             LoadReportDates(report);
@@ -80,9 +87,9 @@ namespace JiraReporter
                 RunReportTool(report);
                 UpdateOnSucces(report);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                UpdateOnFailed(report, "Failed");
+                UpdateOnFailed(report, "Failed. " + ex.Message);
             }
         }
 
