@@ -102,7 +102,6 @@
     <Compile Include="ReportFrame\JiraReport.cs" />
     <Compile Include="Interfaces\IJiraRequestContext.cs" />
     <Compile Include="ReportFrame\JiraRequestContext.cs" />
-    <Compile Include="ReportFrame\ReportSettings.cs" />
     <Compile Include="ReportFrame\ReportTasks.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
     <Compile Include="ReportFrame\SubscriptionContext.cs" />
