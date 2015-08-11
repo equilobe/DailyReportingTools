@@ -13,6 +13,5 @@ namespace JiraReporter
             var mainFlow = DependencyInjection.Container.Resolve<JiraReportMainFlowProcessor>();
             mainFlow.Execute(args);
         }
-
     }
 }

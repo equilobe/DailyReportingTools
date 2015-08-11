@@ -154,8 +154,6 @@ namespace JiraReporter.Services
             }
         }
 
-
-
         public void SetDefaultProperties()
         {
             if (Policy.AdvancedOptions == null)
@@ -166,14 +164,6 @@ namespace JiraReporter.Services
 
         private void SetReportType()
         {
-            if (Context.IsOnSchedule)
-                SetScheduledReportType();
-            else
-                SetReportTypeBySendingScope();
-        }
-
-        private void SetReportTypeBySendingScope()
-        {
             if (Context.ExecutionInstance.Scope == SendScope.SendFinalDraft)
                 Context.IsFinalDraft = true;
             else
@@ -182,36 +172,6 @@ namespace JiraReporter.Services
                 else
                     if (Context.ExecutionInstance.Scope == SendScope.SendReport)
                         Context.IsFinalReport = true;
-        }
-
-        private void SetScheduledReportType()
-        {
-            if (Context.Policy.AdvancedOptions.NoDraft)
-                SetFinalReportMode();
-            else
-                if (Context.Policy.AdvancedOptions.NoIndividualDraft && !Context.Policy.AdvancedOptions.NoDraft)
-                    SetFullDraftMode();
-                else
-                    SetIndividualDraftMode();
-        }
-
-        private void SetIndividualDraftMode()
-        {
-            Context.IsFinalDraft = false;
-            Context.IsIndividualDraft = true;
-        }
-
-        private void SetFullDraftMode()
-        {
-            Context.IsFinalDraft = true;
-            Context.IsIndividualDraft = false;
-        }
-
-        private void SetFinalReportMode()
-        {
-            Context.IsFinalDraft = false;
-            Context.IsIndividualDraft = false;
-            Context.IsFinalReport = true;
         }
     }
 }

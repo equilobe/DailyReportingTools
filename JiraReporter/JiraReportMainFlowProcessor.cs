@@ -80,9 +80,9 @@ namespace JiraReporter
                 RunReportTool(report);
                 UpdateOnSucces(report);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                UpdateOnFailed(report, "Failed");
+                UpdateOnFailed(report, "Failed. " + ex.Message + "." + ex.StackTrace);
             }
         }
 
@@ -153,7 +153,6 @@ namespace JiraReporter
             }
 
             ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(_report.ExecutionInstance.Id));
-
         }
 
 
@@ -201,6 +200,7 @@ namespace JiraReporter
                         Info = author.IndividualDraftInfo,
                     };
                     ReportExecutionService.SaveIndividualDraftConfirmation(context);
+                    ReportExecutionService.SetExecutionInstanceUniqueUserKey(individualReport.ExecutionInstance.Id, context.DraftKey);
                     var reportProcessor = new IndividualReportProcessor(individualReport);
                     reportProcessor.ProcessReport();
                 }

@@ -25,5 +25,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetRemainingUsersToConfirmIndividualDraft(ConfirmationContext context);
         void MarkSentDates(JiraReport report);
         void UpdateDeprecatedExecutionInstances(ExecutionInstanceContext context);
+        void SetExecutionInstanceUniqueUserKey(long id, string key);
     }
 }
