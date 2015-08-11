@@ -144,7 +144,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.Issues = GetAuthorsTimesheetIssues(_options.FromDate, _options.ToDate);
             if (_sprint != null)
-                _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Date, _options.ToDate);
+                _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Value.Date, _options.ToDate);
             _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _options.ToDate);
         }
 
@@ -440,8 +440,6 @@ namespace JiraReporter.Services
             SetNotConfirmedError();
             SetTaskFromAnotherSprintErrors();
             SetErrorsMessage();
-
-            //  _currentAuthor.Errors = _currentAuthor.NoRemainingEstimateErrors + _currentAuthor.NoTimeSpentErrors + _currentAuthor.CompletedWithEstimateErrors;
         }
 
         public void SetTaskFromAnotherSprintErrors()
@@ -451,7 +449,7 @@ namespace JiraReporter.Services
 
             foreach(var issue in _currentAuthor.Issues)
             {
-                if (!_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key))
+                if (!_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i=>i.key == issue.Key))
                 {
                     issue.ErrorsCount ++;
                     if (issue.Errors == null)

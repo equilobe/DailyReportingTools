@@ -24,8 +24,9 @@ namespace JiraReporter.Services
             context.ReportTasks = new ReportTasks();
             if (context.HasSprint)
             {
-                var unfinishedTasks = GetSprintTasks(context);
+                var unfinishedTasks = GetSprintTasks(context, context.Sprint.id.ToString());
                 SetUnfinishedTasks(unfinishedTasks, context);
+                SetFutureSprintTasks(context);
                 context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
                 SortTasks(context.ReportTasks);
                 SetUnassignedTasksErrors(context);
@@ -89,9 +90,9 @@ namespace JiraReporter.Services
             context.ReportTasks.AdditionalCompletedTasks = context.ReportTasks.CompletedTasksAll.Count - context.ReportTasks.CompletedTasksVisible.Count;
         }
 
-        JiraIssues GetSprintTasks(JiraReport context)
+        JiraIssues GetSprintTasks(JiraReport context, string sprintId)
         {
-            return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey, context.Sprint.id.ToString());
+            return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey, sprintId);
         }
 
         void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
@@ -138,6 +139,16 @@ namespace JiraReporter.Services
                 sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
             if (sprintTasks.UnassignedTasksAll != null)
                 sprintTasks.UnassignedTasksAll = sprintTasks.UnassignedTasksAll.OrderBy(priority => priority.Priority.id).ToList();
+        }
+
+        void SetFutureSprintTasks(JiraReport report)
+        {
+            report.ReportTasks.FutureSprintTasks = new List<JiraIssue>();
+
+            if (report.FutureSprint == null)
+                return;
+
+            report.ReportTasks.FutureSprintTasks = GetSprintTasks(report, report.FutureSprint.id.ToString()).issues;
         }
 
 

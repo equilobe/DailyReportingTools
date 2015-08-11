@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Jira;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> UnassignedTasksVisible { get; set; }
         public List<IssueDetailed> UncompletedTasks { get; set; }
         public List<IssueDetailed> SprintTasksAll { get; set; }
+        public List<JiraIssue> FutureSprintTasks { get; set; }
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }  
     }

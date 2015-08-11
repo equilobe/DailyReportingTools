@@ -45,7 +45,7 @@ namespace Equilobe.DailyReport.BL
 
         public static string AllSprints(string rapidViewId)
         {
-            return string.Format("rest/greenhopper/1.0/sprintquery/{0}", rapidViewId);
+            return string.Format("rest/greenhopper/1.0/sprintquery/{0}?includeHistoricSprints=true&includeFutureSprints=true", rapidViewId);
         }
 
         public static string Issue(string key)

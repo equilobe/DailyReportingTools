@@ -25,13 +25,13 @@ namespace JiraReporter
             return days;
         }
 
-        public static int GetSprintDaysWorked(JiraReport context)
-        {
-            var reportDate = context.ToDate.AddDays(-1);
-            if (reportDate <= context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc))
-                return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), reportDate.AddDays(1), context.WorkingDaysContext);
+        //public static int GetSprintDaysWorked(JiraReport context)
+        //{
+        //    var reportDate = context.ToDate.AddDays(-1);
+        //    if (reportDate <= context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc))
+        //        return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), reportDate.AddDays(1), context.WorkingDaysContext);
 
-            return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc).AddDays(1), context.WorkingDaysContext);
-        }
+        //    return GetWorkingDays(context.Sprint.StartDate.ToOriginalTimeZone(context.OffsetFromUtc), context.Sprint.EndDate.ToOriginalTimeZone(context.OffsetFromUtc).AddDays(1), context.WorkingDaysContext);
+        //}
     }
 }

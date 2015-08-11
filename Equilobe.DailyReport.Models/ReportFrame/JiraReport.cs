@@ -93,6 +93,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         }
 
         public Sprint Sprint { get; set; }
+        public Sprint FutureSprint { get; set; }
 
         private List<JiraCommit> _commits;
         public List<JiraCommit> Commits
@@ -188,7 +189,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string UnsentReportsPath { get { return Path.Combine(RootPath, "UnsentReports"); } }
 
         public bool IsOnSchedule { get; set; }
-        public bool HasSprint { get; set; }
+        public bool HasSprint
+        {
+            get
+            {
+                return Sprint != null;
+            }
+        }
 
     }
 }

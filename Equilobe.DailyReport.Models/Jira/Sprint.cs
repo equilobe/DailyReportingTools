@@ -26,18 +26,32 @@ namespace Equilobe.DailyReport.Models.Jira
         [DataMember]
         public string completeDate { get; set; }
 
-        public DateTime StartDate
+        public DateTime? StartDate
         {
             get
             {
-                return Convert.ToDateTime(startDate);
+                try
+                {
+                    return Convert.ToDateTime(startDate);
+                }
+                catch(Exception)
+                {
+                    return null;
+                }
             }
         }
-        public DateTime EndDate
+        public DateTime? EndDate
         {
             get
             {
-                return Convert.ToDateTime(endDate);
+                try
+                {
+                    return Convert.ToDateTime(endDate);
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 

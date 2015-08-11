@@ -34,7 +34,7 @@ namespace JiraReporter
 
             SetSourceControlLogs(report);
 
-            report.Sprint = GenerateSprint(report);
+            SetReportSprintDetails(report);
 
             SetReportTasks(report);
 
@@ -122,14 +122,17 @@ namespace JiraReporter
             tasksService.SetReportTasks(report);
         }
 
-        Sprint GenerateSprint(JiraReport report)
+        void SetReportSprintDetails(JiraReport report)
         {
             var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.ToDate.AddDays(-1), ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
-            var sprint = JiraService.GetProjectSprintForDate(projectDateFilter);
-            if (sprint != null)
-                report.HasSprint = true;
 
-            return sprint;
+            var sprintContext = JiraService.GetProjectSprintDetailsForDate(projectDateFilter);
+
+            if (sprintContext == null)
+                return;
+
+            report.FutureSprint = sprintContext.FutureSprint;
+            report.Sprint = sprintContext.ReportSprint;
         }
 
         Summary LoadSummary(JiraReport report)
