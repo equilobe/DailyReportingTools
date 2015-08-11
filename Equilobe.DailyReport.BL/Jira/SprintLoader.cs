@@ -56,6 +56,11 @@ namespace Equilobe.DailyReport.BL.Jira
             if (sprints == null || sprints.Count == 0)
                 return null;
 
+            return GetSprintContext(date, rapidViewId, sprints);
+        }
+
+        private SprintContext GetSprintContext(DateTime date, string rapidViewId, List<Sprint> sprints)
+        {
             var sprintContext = new SprintContext();
             var futureSprints = new List<Sprint>();
 
