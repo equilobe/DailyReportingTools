@@ -219,7 +219,7 @@ namespace Equilobe.DailyReport.SL
             {
                 var instance = SearchInstanceBySettingsId(basicSettingsId);
 
-                return instance.Active.Value;
+                return instance.Active;
             }
         }         
 

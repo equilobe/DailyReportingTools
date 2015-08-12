@@ -25,14 +25,7 @@ namespace DailyReportWeb.Controllers.Api
         public IDataService DataService { get; set; }
         public ISettingsService SettingsService { get; set; }
         public IJiraService JiraService { get; set; }
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.Current.GetOwinContext().Authentication;
-            }
-        }
+        public IRegistrationService RegistrationService { get; set; }
 
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
@@ -47,132 +40,28 @@ namespace DailyReportWeb.Controllers.Api
             }
         }
 
-
         [AllowAnonymous]
         public SimpleResult Register(RegisterModel model)
         {
-            if (!Validations.Mail(model.Email) ||
-                !Validations.Password(model.Password) ||
-                !Validations.Url(model.BaseUrl))
-                throw new ArgumentException();
-
-            var credentialsValid = JiraService.CredentialsValid(model, false);
-            if (!credentialsValid)
-                return SimpleResult.Error("Invalid JIRA username or password");
-
-            var user = new ApplicationUser()
-            {
-                UserName = model.Email,
-                Email = model.Email
-            };
-
-            IdentityResult result = UserManager.Create(user, model.Password);
-            if (!result.Succeeded)
-                return SimpleResult.Error(result.Errors.First());
-
-            DataService.SaveInstance(model);
-
-            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-
-            //string code = HttpUtility.UrlEncode(UserManager.GenerateEmailConfirmationToken(user.Id));
-            //var callbackUrl = string.Format("{0}/app/confirmEmail?userId={1}&code={2}",
-            //                                 UrlExtensions.GetHostUrl(Request.RequestUri.OriginalString),
-            //                                 user.Id,
-            //                                 code);
-
-            //SendAccountConfirmationEmail(user, callbackUrl);
-
-            //return SimpleResult.Success("Account confirmation details has been sent to your mail.");
-
-            return SimpleResult.Success("Subscribe to finalize account registration");
+            return RegistrationService.RegisterUser(model, UserManager);           
         }
 
         [AllowAnonymous]
         [HttpPost]
         public SimpleResult ConfirmEmail([FromBody]EmailConfirmation emailConfirmation)
         {
-            string userId = emailConfirmation.userId;
-            string code = HttpUtility.UrlDecode(emailConfirmation.code);
-
-            if (userId == null || code == null)
-                return SimpleResult.Error("Invalid activation token.");
-
-            var user = UserManager.FindById(userId);
-            if (user == null)
-                return SimpleResult.Error("Invalid activation token.");
-            if (user.EmailConfirmed)
-                return SimpleResult.Error("Your account was already activated.");
-
-            IdentityResult result = UserManager.ConfirmEmail(userId, code);
-            if (!result.Succeeded)
-                return SimpleResult.Error(result.Errors.First());
-
-            var instanceId = UserManager.FindById(userId)
-                                        .InstalledInstances
-                                        .Single()
-                                        .Id;
-            SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
-
-            return SimpleResult.Success("Your account was activated. You can now sign in.");
+            return RegistrationService.ConfirmEmail(emailConfirmation, UserManager);
         }
 
         [AllowAnonymous]
         public SimpleResult Login(LoginModel model)
         {
-            if (!Validations.Mail(model.Email))
-                throw new ArgumentException();
-
-            var user = UserManager.Find(model.Email, model.Password);
-
-            if (user == null || UserManager.FindByEmail(model.Email) == null)
-                return SimpleResult.Error("Invalid username or password.");
-
-            if (!user.EmailConfirmed)
-                return SimpleResult.Error("Account has not been activated yet.");
-
-            SignIn(user, model.RememberMe);
-
-            return SimpleResult.Success("");
-        }
-
-        private void SignIn(ApplicationUser user, bool isPersistent)
-        {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie));
+            return RegistrationService.Login(model, UserManager);
         }
 
         public void Logout()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-        }
-
-        private void SendAccountConfirmationEmail(ApplicationUser user, string callbackUrl)
-        {
-            var message = GetAccountConfirmationMessage(user, callbackUrl);
-
-            SendEmail(message);
-        }
-
-        private static void SendEmail(MailMessage message)
-        {
-            var smtp = new SmtpClient();
-
-            smtp.Send(message);
-        }
-
-        private static MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
-        {
-            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml");
-            var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
-            var email = RazorEngine.Razor.Parse(template, emailModel);
-            var message = new MailMessage
-            {
-                Subject = "DailyReport | Account Confirmation",
-                Body = email,
-                IsBodyHtml = true
-            };
-            message.To.Add(user.Email);
-            return message;
+            RegistrationService.Logout();
         }
     }
 }

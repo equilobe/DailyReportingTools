@@ -64,6 +64,7 @@
     <Compile Include="Interfaces\IEncryptionService.cs" />
     <Compile Include="Interfaces\IErrorService.cs" />
     <Compile Include="Interfaces\IPayPalService.cs" />
+    <Compile Include="Interfaces\IRegistrationService.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />

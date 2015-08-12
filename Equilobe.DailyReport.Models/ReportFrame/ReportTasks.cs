@@ -9,7 +9,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 {
     public class ReportTasks
     {
-       // public Dictionary<string, List<IssueDetailed>> CompletedTasks { get; set; } not used at the moment
         public List<IssueDetailed> CompletedTasksAll { get; set; }
         public List<IssueDetailed> CompletedTasksVisible { get; set; }
         public int AdditionalCompletedTasks { get; set; }

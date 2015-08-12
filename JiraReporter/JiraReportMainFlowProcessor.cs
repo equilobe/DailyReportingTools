@@ -54,7 +54,7 @@ namespace JiraReporter
             var report = new JiraReport(policy, options);
             report.Settings = DataService.GetReportSettingsWithDetails(report.UniqueProjectKey);
 
-            if (!report.Settings.InstalledInstance.Active.Value)
+            if (!report.Settings.InstalledInstance.Active)
             {
                 UpdateOnFailed(report, "Instance is inactive");
                 throw new ApplicationException("Instance is inactive");
