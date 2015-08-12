@@ -200,7 +200,6 @@ namespace JiraReporter
                         Info = author.IndividualDraftInfo,
                     };
                     ReportExecutionService.SaveIndividualDraftConfirmation(context);
-                    ReportExecutionService.SetExecutionInstanceUniqueUserKey(individualReport.ExecutionInstance.Id, context.DraftKey);
                     var reportProcessor = new IndividualReportProcessor(individualReport);
                     reportProcessor.ProcessReport();
                 }

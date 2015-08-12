@@ -181,7 +181,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public string ProjectManager { get; set; }
 
-        public string RootPath { get { return Path.GetFullPath(ProjectName); } }
+        public string RootPath { get { return Path.GetFullPath(UniqueProjectKey); } }
 
         public string LogPath { get { return Path.Combine(RootPath, "Logs"); } }
         public string LogArchivePath { get { return Path.Combine(RootPath, "LogArchive"); } }

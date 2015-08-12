@@ -222,18 +222,18 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void SetExecutionInstanceUniqueUserKey(long id, string key)
-        {
-            using(var db = new ReportsDb())
-            {
-                if (db.ReportExecutionInstances == null)
-                    return;
+        //public void SetExecutionInstanceUniqueUserKey(long id, string key)
+        //{
+        //    using(var db = new ReportsDb())
+        //    {
+        //        if (db.ReportExecutionInstances == null)
+        //            return;
 
-                var instance = db.ReportExecutionInstances.Single(ei => ei.Id == id);
-                instance.UniqueUserKey = key;
-                db.SaveChanges();
-            }
-        }
+        //        var instance = db.ReportExecutionInstances.Single(ei => ei.Id == id);
+        //        instance.UniqueUserKey = key;
+        //        db.SaveChanges();
+        //    }
+        //}
 
         #region Helpers
 

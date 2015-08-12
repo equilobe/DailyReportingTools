@@ -63,8 +63,8 @@ namespace JiraReporter.Helpers
         public static int GetDraftCount(JiraReport report)
         {
             int count = 0;
-            if (report.IsIndividualDraft)
-                count = report.Settings.ReportExecutionInstances.Count(i => CountIndividualDraft(i, report));
+            if (report.IsIndividualDraft && !report.IsOnSchedule)            
+                count = report.Settings.ReportExecutionInstances.Count(i => CountIndividualDraft(i, report)) + 1;
             else if (report.IsFinalDraft)
                 count = report.Settings.ReportExecutionInstances.Count(i => CountFinalDraft(i, report));
 
@@ -73,8 +73,6 @@ namespace JiraReporter.Helpers
 
         static bool CountIndividualDraft(ReportExecutionInstance instance, JiraReport report)
         {
-            //var individualDraft = report.Settings.IndividualDraftConfirmations.Single(dr => dr.UniqueUserKey == instance.UniqueUserKey);
-
             return instance.BasicSettingsId == report.Settings.Id && instance.DateExecuted != null && instance.DateExecuted.Value.Date == DateTime.Today && instance.Scope == SendScope.SendIndividualDraft && instance.Status == "Succes" && report.Author.IndividualDraftInfo.UniqueUserKey == instance.UniqueUserKey;
         }
 
