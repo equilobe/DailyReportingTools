@@ -31,6 +31,14 @@ namespace System
             return TimeZoneInfo.ConvertTimeToUtc(date).Add(offsetFromUtc);
         }
 
+        public static DateTime? ToOriginalTimeZone(this DateTime? date, TimeSpan offsetFromUtc)
+        {
+            if (date == null)
+                return null;
+
+            return TimeZoneInfo.ConvertTimeToUtc(date.Value).Add(offsetFromUtc);
+        }
+
         public static string DateToString(this DateTime date)
         {
             return date.ToString("yyyy-MM-dd");

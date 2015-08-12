@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.SL;
@@ -29,10 +30,18 @@ namespace JiraReporter.Helpers
 
         public static string GetReportSubject(JiraReport report)
         {
+            var count = GetDraftCount(report);
             var subject = "DailyReport | ";
             if (report.IsIndividualDraft || report.IsFinalDraft)
             {
-                subject += "DRAFT | ";
+                subject += "DRAFT ";
+                if (count > 1)
+                    subject += count + " ";
+                subject += " | ";
+            }
+            else
+            {
+                subject += "FINAL |";
             }
             if (report.IsIndividualDraft)
             {
@@ -49,6 +58,27 @@ namespace JiraReporter.Helpers
             report.Policy.Password = report.Settings.InstalledInstance.JiraPassword;
 
             return new JiraRequestContext(report.Settings.InstalledInstance);
+        }
+
+        public static int GetDraftCount(JiraReport report)
+        {
+            int count = 0;
+            if (report.IsIndividualDraft && !report.IsOnSchedule)            
+                count = report.Settings.ReportExecutionInstances.Count(i => CountIndividualDraft(i, report)) + 1;
+            else if (report.IsFinalDraft)
+                count = report.Settings.ReportExecutionInstances.Count(i => CountFinalDraft(i, report));
+
+            return count + 1;
+        }
+
+        static bool CountIndividualDraft(ReportExecutionInstance instance, JiraReport report)
+        {
+            return instance.BasicSettingsId == report.Settings.Id && instance.DateExecuted != null && instance.DateExecuted.Value.Date == DateTime.Today && instance.Scope == SendScope.SendIndividualDraft && instance.Status == "Succes" && report.Author.IndividualDraftInfo.UniqueUserKey == instance.UniqueUserKey;
+        }
+
+        static bool CountFinalDraft(ReportExecutionInstance instance, JiraReport report)
+        {
+            return instance.BasicSettingsId == report.Settings.Id && instance.DateExecuted != null && instance.DateExecuted.Value.Date == DateTime.Today && instance.Scope == SendScope.SendFinalDraft && instance.Status == "Succes";
         }
     }
 }

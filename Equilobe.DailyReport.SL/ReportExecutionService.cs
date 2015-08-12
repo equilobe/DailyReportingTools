@@ -161,12 +161,14 @@ namespace Equilobe.DailyReport.SL
                 var execInstance = new ReportExecutionInstance
                 {
                     DateAdded = DateTime.Now,
-                    Scope = SendScope.OnSchedule,
+                    Scope = SetScheduledReportType(report)
                 };
                 basingSettings.ReportExecutionInstances.Add(execInstance);
                 db.SaveChanges();
 
-                report.ExecutionInstance.Id = execInstance.Id;
+                execInstance.CopyPropertiesOnObjects(report.ExecutionInstance);
+
+               // report.ExecutionInstance = execInstance;
             }
         }
 
@@ -220,7 +222,32 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        //public void SetExecutionInstanceUniqueUserKey(long id, string key)
+        //{
+        //    using(var db = new ReportsDb())
+        //    {
+        //        if (db.ReportExecutionInstances == null)
+        //            return;
+
+        //        var instance = db.ReportExecutionInstances.Single(ei => ei.Id == id);
+        //        instance.UniqueUserKey = key;
+        //        db.SaveChanges();
+        //    }
+        //}
+
         #region Helpers
+
+
+        private SendScope SetScheduledReportType(JiraReport context)
+        {
+            if (context.Policy.AdvancedOptions.NoDraft)
+                return SendScope.SendReport;
+            else
+                if (context.Policy.AdvancedOptions.NoIndividualDraft && !context.Policy.AdvancedOptions.NoDraft)
+                    return SendScope.SendFinalDraft;
+                else
+                   return SendScope.SendIndividualDraft;
+        }
 
         public string GetFullDraftRecipients(AdvancedReportSettings advancedSettings)
         {

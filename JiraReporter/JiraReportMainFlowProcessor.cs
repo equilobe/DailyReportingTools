@@ -89,7 +89,7 @@ namespace JiraReporter
             }
             catch (Exception ex)
             {
-                UpdateOnFailed(report, "Failed. " + ex.Message);
+                UpdateOnFailed(report, "Failed. " + ex.Message + "." + ex.StackTrace);
             }
         }
 
@@ -160,7 +160,6 @@ namespace JiraReporter
             }
 
             ReportExecutionService.MarkExecutionInstanceAsExecuted(new ItemContext(_report.ExecutionInstance.Id));
-
         }
 
 

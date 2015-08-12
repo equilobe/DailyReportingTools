@@ -24,7 +24,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId);
         ProjectInfo GetProjectInfo(JiraRequestContext context, long id);
         List<ProjectInfo> GetProjectsInfo(JiraRequestContext context);
-        Sprint GetProjectSprintForDate(ProjectDateFilter filter);
         byte[] GetUserAvatar(JiraRequestContext context, string url);
+        SprintContext GetProjectSprintDetailsForDate(ProjectDateFilter filter);
     }
 }
