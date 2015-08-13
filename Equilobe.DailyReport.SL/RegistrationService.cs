@@ -26,15 +26,10 @@ namespace Equilobe.DailyReport.SL
         public IJiraService JiraService { get; set; }
         public IDataService DataService { get; set; }
         public ISettingsService SettingsService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
 
         public SimpleResult RegisterUser(RegisterModel model, UserManager<ApplicationUser> userManager)
         {
-            ValidateRegisterModel(model);
-
-            var credentialsValid = JiraService.CredentialsValid(model, false);
-            if (!credentialsValid)
-                return SimpleResult.Error("Invalid JIRA username or password");
-
             var user = new ApplicationUser()
             {
                 UserName = model.Email,
@@ -42,12 +37,34 @@ namespace Equilobe.DailyReport.SL
             };
 
             IdentityResult result = userManager.Create(user, model.Password);
+            
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
             DataService.SaveInstance(model);
 
             return SimpleResult.Success("Subscribe to finalize account registration");
+        }
+
+        public SimpleResult CheckRegistrationDetails(RegisterModel model, UserManager<ApplicationUser> userManager)
+        {
+            ValidateRegisterModel(model);
+
+            var credentialsValid = JiraService.CredentialsValid(model, false);
+            if (!credentialsValid)
+                return SimpleResult.Error("Invalid JIRA username or password");
+
+            var user = new ApplicationUser();
+
+            using(var db = new ReportsDb())
+            {
+               user = db.Users.SingleOrDefault(u => u.UserName == model.Email);
+            }
+
+            if (user != null)
+                return SimpleResult.Error("There is already an account with \"" + model.Email + "\" email adress");
+
+            return SimpleResult.Success("Subscribe to finalize account registration"); 
         }
 
         public SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation, UserManager<ApplicationUser> userManager)

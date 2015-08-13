@@ -488,6 +488,6 @@ popd</PreBuildEvent>
   <Target Name="BeforeBuild">
   </Target>-->
   <Target Name="AfterBuild">
-    <TransformXml Source="@(AppConfigWithTargetPath)" Transform="$(ProjectConfigTransformFileName)" Destination="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')" />
+    <TransformXml Source="Web.config" Transform="$(ProjectConfigTransformFileName)" Destination="Web.config" />
   </Target> 
 </Project>

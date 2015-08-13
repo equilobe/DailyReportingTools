@@ -13,6 +13,7 @@ angular.module('app')
         $scope.username = "";
         $scope.instanceUrl = "";
         $scope.subscribePhase = false;
+        $scope.serializedForm = {};
 
         $scope.setTimeZone = $interval(function () {
             if ($scope.timeZone) {
@@ -25,7 +26,17 @@ angular.module('app')
             $scope.status = "saving";
             $scope.form.$setPristine();
 
-            $http.post("/api/account/register", $scope.form)
+            $scope.serializedForm =
+            {
+                email : $scope.form.email,
+                password : $scope.form.password,
+                baseUrl : $scope.form.baseUrl,
+                timeZone: $scope.form.timeZone,
+                jiraUsername: $scope.form.jiraUsername,
+                jiraPassword : $scope.jiraPassword
+            };
+
+            $http.post("/api/account/checkRegistrationDetails", $scope.form)
                 .success(function (response) {
                     if (!response.hasError) {
                         $scope.username = $scope.form.email;
@@ -37,10 +48,32 @@ angular.module('app')
                     else {
                         $scope.message = response.message;
                         $scope.status = "error";
+                        $scope.subscribePhase = false;
                     }
                 })
                 .error(function () {
                     $scope.status = "error";
-                });
+                    $scope.subscribePhase = false;
+                })
+
+            //$http.post("/api/account/register", $scope.form)
+            //    .success(function (response) {
+            //        if (!response.hasError) {
+            //            $scope.username = $scope.form.email;
+            //            $scope.instanceUrl = $scope.form.baseUrl;
+            //            $scope.message = response.message;
+            //            $scope.status = "success";
+            //            $scope.subscribePhase = true;
+            //        }
+            //        else {
+            //            $scope.message = response.message;
+            //            $scope.status = "error";
+            //        }
+            //    })
+            //    .error(function () {
+            //        $scope.status = "error";
+            //    });
         };
+
+       
     }]);

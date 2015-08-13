@@ -4,6 +4,8 @@ using Equilobe.DailyReport.Models.Paypal;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Views;
+using Equilobe.DailyReport.Models.Web;
+using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,13 +61,10 @@ namespace Equilobe.DailyReport.SL
                 if (payPalCheckoutInfo.custom == null)
                     return;
 
-                var registrationInfo = payPalCheckoutInfo.custom
-                    .Split('&')
-                    .Select(x => x.Split('='))
-                    .ToDictionary(x => x.First(), x => x.Last());
+                var registrationInfo = Deserialization.JsonDeserialize<RegisterModel>(payPalCheckoutInfo.custom);
 
-                var username = registrationInfo["username"];
-                var instanceUrl = registrationInfo["instanceUrl"];
+                var username = registrationInfo.Email;
+                var instanceUrl = registrationInfo.BaseUrl;
 
                 var subscriptionContext = new SubscriptionContext();
                 subscriptionContext.Username = username;

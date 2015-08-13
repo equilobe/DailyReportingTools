@@ -47,6 +47,12 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         [AllowAnonymous]
+        public SimpleResult CheckRegistrationDetails(RegisterModel model)
+        {
+            return RegistrationService.CheckRegistrationDetails(model, UserManager);
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public SimpleResult ConfirmEmail([FromBody]EmailConfirmation emailConfirmation)
         {
