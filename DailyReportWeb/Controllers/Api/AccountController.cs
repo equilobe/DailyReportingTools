@@ -40,11 +40,11 @@ namespace DailyReportWeb.Controllers.Api
             }
         }
 
-        [AllowAnonymous]
-        public SimpleResult Register(RegisterModel model)
-        {
-            return RegistrationService.RegisterUser(model, UserManager);           
-        }
+        //[AllowAnonymous]
+        //public SimpleResult Register(RegisterModel model)
+        //{
+        //    return RegistrationService.RegisterUser(model, UserManager);           
+        //}
 
         [AllowAnonymous]
         public SimpleResult CheckRegistrationDetails(RegisterModel model)

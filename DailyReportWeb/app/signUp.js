@@ -33,7 +33,7 @@ angular.module('app')
                 baseUrl : $scope.form.baseUrl,
                 timeZone: $scope.form.timeZone,
                 jiraUsername: $scope.form.jiraUsername,
-                jiraPassword : $scope.jiraPassword
+                jiraPassword : $scope.form.jiraPassword
             };
 
             $http.post("/api/account/checkRegistrationDetails", $scope.form)

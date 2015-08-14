@@ -5,7 +5,7 @@ using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
 using Microsoft.AspNet.Identity;
-//using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin;
@@ -18,6 +18,7 @@ using System.Web;
 using System.Net.Mail;
 using System.IO;
 using Equilobe.DailyReport.Models.Views;
+using System.Net.Http;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -30,6 +31,8 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult RegisterUser(RegisterModel model, UserManager<ApplicationUser> userManager)
         {
+            ValidateRegisterModel(model);
+
             var user = new ApplicationUser()
             {
                 UserName = model.Email,
@@ -43,7 +46,10 @@ namespace Equilobe.DailyReport.SL
 
             DataService.SaveInstance(model);
 
-            return SimpleResult.Success("Subscribe to finalize account registration");
+            var callbackUrl = GetCallbackUrl(userManager, user.Id);
+            SendAccountConfirmationEmail(user, callbackUrl);
+
+            return SimpleResult.Success("");
         }
 
         public SimpleResult CheckRegistrationDetails(RegisterModel model, UserManager<ApplicationUser> userManager)
@@ -119,6 +125,14 @@ namespace Equilobe.DailyReport.SL
         }
 
         #region Helpers
+
+        private string GetCallbackUrl(UserManager<ApplicationUser> userManager, string userId)
+        {
+            string code = HttpUtility.UrlEncode(userManager.GenerateEmailConfirmationToken(userId));
+
+            return string.Format("{0}/app/confirmEmail?userId={1}&code={2}", ConfigurationService.GetWebBaseUrl(), userId, code);
+        }
+
         private static void ValidateRegisterModel(RegisterModel model)
         {
             if (!Validations.Mail(model.Email) ||
@@ -169,6 +183,7 @@ namespace Equilobe.DailyReport.SL
             message.To.Add(user.Email);
             return message;
         }
+
         #endregion
     }
 }

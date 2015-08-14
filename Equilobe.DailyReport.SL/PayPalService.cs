@@ -6,6 +6,8 @@ using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Views;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
+using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,8 +23,9 @@ namespace Equilobe.DailyReport.SL
     public class PayPalService : IPayPalService
     {
         public IDataService DataService { get; set; }
+        public IRegistrationService RegistrationService { get; set; }
 
-        public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo)
+        public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager)
         {
 
             //verify the transaction             
@@ -30,7 +33,6 @@ namespace Equilobe.DailyReport.SL
 
             if (status == "INVALID")
                 return;
-
 
 
             if (payPalCheckoutInfo.txn_type == "subscr_signup")
@@ -61,10 +63,19 @@ namespace Equilobe.DailyReport.SL
                 if (payPalCheckoutInfo.custom == null)
                     return;
 
-                var registrationInfo = Deserialization.JsonDeserialize<RegisterModel>(payPalCheckoutInfo.custom);
+                var registrationInfo = JsonConvert.DeserializeObject<RegisterModel>(payPalCheckoutInfo.custom);
+
+                try
+                {
+                    RegistrationService.RegisterUser(registrationInfo, userManager);
+                }
+                catch(Exception)
+                {
+                    return;
+                }
 
                 var username = registrationInfo.Email;
-                var instanceUrl = registrationInfo.BaseUrl;
+                var instanceUrl = registrationInfo.BaseUrl;              
 
                 var subscriptionContext = new SubscriptionContext();
                 subscriptionContext.Username = username;
