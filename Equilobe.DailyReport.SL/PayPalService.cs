@@ -27,6 +27,16 @@ namespace Equilobe.DailyReport.SL
 
         public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager)
         {
+            try
+            {
+                SaveLog(payPalCheckoutInfo);
+            }
+            catch
+            {
+
+            }
+
+
 
             //verify the transaction             
             string status = Verify(true, parameters);
@@ -71,6 +81,8 @@ namespace Equilobe.DailyReport.SL
                 }
                 catch(Exception)
                 {
+                    RemoveUser(registrationInfo);
+
                     return;
                 }
 
@@ -118,10 +130,39 @@ namespace Equilobe.DailyReport.SL
             {
                 //log response/ipn data for manual investigation             
             }
-
         }
 
         #region Helpers
+
+        private static void SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory + @"TemporaryLogs\ipnLogs.xml";
+            var xml = File.ReadAllText(path);
+            var logs = Deserialization.XmlDeserialize<List<PayPalLog>>(xml);
+            if (logs == null)
+                logs = new List<PayPalLog>();
+
+            logs.Add(new PayPalLog
+            {
+                PayPalInfo = payPalCheckoutInfo,
+                Date = DateTime.Now
+            });
+
+            var newXml = Serialization.XmlSerialize(logs);
+            File.WriteAllText(path, newXml);
+        }
+
+        private static void RemoveUser(RegisterModel registrationInfo)
+        {
+            using (var db = new ReportsDb())
+            {
+                var user = db.Users.SingleOrDefault(u => u.Email == registrationInfo.Email && !u.EmailConfirmed);
+                if (user != null)
+                    db.Users.Remove(user);
+                db.SaveChanges();
+            }
+        }
+
         string Verify(bool isSandbox, byte[] parameters)
         {
 

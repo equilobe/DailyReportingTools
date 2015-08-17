@@ -417,6 +417,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Tools\AngularJS MVC.zip" />
     <Content Include="Views\Email\ConfirmationEmail.cshtml" />
+    <Content Include="TemporaryLogs\ipnLogs.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -483,11 +484,11 @@
 xcopy "..\..\config\*.config" /Y
 popd</PreBuildEvent>
   </PropertyGroup>
-   <!--To modify your build process, add your task inside one of the targets below and uncomment it.
+  <!--To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
   <Target Name="AfterBuild">
     <TransformXml Source="Web.config" Transform="$(ProjectConfigTransformFileName)" Destination="Web.config" />
-  </Target> 
+  </Target>
 </Project>

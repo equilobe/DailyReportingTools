@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Errors\ApplicationErrors.cs" />
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="Paypal\PayPalCheckoutInfo.cs" />
+    <Compile Include="Paypal\PayPalLog.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\ExecutionInstanceContext.cs" />

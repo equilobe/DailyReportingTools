@@ -19,6 +19,7 @@ using System.Net.Mail;
 using System.IO;
 using Equilobe.DailyReport.Models.Views;
 using System.Net.Http;
+using Equilobe.DailyReport.Models.Errors;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -39,6 +40,10 @@ namespace Equilobe.DailyReport.SL
                 Email = model.Email
             };
 
+            var searchedUser = SearchUser(model);
+            if (searchedUser != null)
+                return SimpleResult.Error(ApplicationErrors.UserAlreadyCreated);
+
             IdentityResult result = userManager.Create(user, model.Password);
             
             if (!result.Succeeded)
@@ -58,19 +63,23 @@ namespace Equilobe.DailyReport.SL
 
             var credentialsValid = JiraService.CredentialsValid(model, false);
             if (!credentialsValid)
-                return SimpleResult.Error("Invalid JIRA username or password");
+                return SimpleResult.Error(ApplicationErrors.InvalidJiraCredentials);
 
-            var user = new ApplicationUser();
-
-            using(var db = new ReportsDb())
-            {
-               user = db.Users.SingleOrDefault(u => u.UserName == model.Email);
-            }
+            var user = SearchUser(model);
 
             if (user != null)
-                return SimpleResult.Error("There is already an account with \"" + model.Email + "\" email adress");
+                return SimpleResult.Error(ApplicationErrors.EmailNotAvailable(model.Email));
 
             return SimpleResult.Success("Subscribe to finalize account registration"); 
+        }
+
+        private static ApplicationUser SearchUser(RegisterModel model)
+        {
+            using (var db = new ReportsDb())
+            {
+                var user = db.Users.SingleOrDefault(u => u.UserName == model.Email);
+                return user;
+            }
         }
 
         public SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation, UserManager<ApplicationUser> userManager)
@@ -171,7 +180,7 @@ namespace Equilobe.DailyReport.SL
 
         private static MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
         {
-            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml"); // TODO: move template
+            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml"); 
             var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
             var email = RazorEngine.Razor.Parse(template, emailModel);
             var message = new MailMessage
