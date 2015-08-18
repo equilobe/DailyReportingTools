@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Data\ApplicationErrors.cs" />
     <Compile Include="General\ItemContext.cs" />
@@ -73,8 +74,8 @@
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
-    <Compile Include="Paypal\PayPalCheckoutInfo.cs" />
-    <Compile Include="Paypal\PayPalLog.cs" />
+    <Compile Include="PayPal\PayPalCheckoutInfo.cs" />
+    <Compile Include="PayPal\PayPalLog.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\ExecutionInstanceContext.cs" />
@@ -108,7 +109,7 @@
     <Compile Include="ReportFrame\ReportTasks.cs" />
     <Compile Include="ReportFrame\SprintContext.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
-    <Compile Include="ReportFrame\SubscriptionContext.cs" />
+    <Compile Include="PayPal\SubscriptionContext.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
     <Compile Include="ReportFrame\SummaryGuidelineInfo.cs" />
     <Compile Include="ReportFrame\TimesheetContext.cs" />
