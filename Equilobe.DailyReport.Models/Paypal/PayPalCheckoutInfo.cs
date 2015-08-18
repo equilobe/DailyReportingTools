@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.Paypal
+namespace Equilobe.DailyReport.Models.PayPal
 {
     public class PayPalCheckoutInfo
     {
@@ -16,6 +16,7 @@ namespace Equilobe.DailyReport.Models.Paypal
         /// Keep this ID to avoid processing the transaction twice
         /// The merchant’s original transaction identification number for the payment from the buyer, against which the case was registered.
         public string txn_id { get; set; }
+        public string parent_txn_id { get; set; }
         /// The kind of transaction for which the IPN message was sent.
         public string txn_type { get; set; }
         /// Encrypted string used to validate the authenticity of the transaction
@@ -154,6 +155,7 @@ namespace Equilobe.DailyReport.Models.Paypal
         public string subscr_date { get; set; }
         public string subscr_effective { get; set; }
         public string subscr_id { get; set; }
+
 
         public double Total
         {

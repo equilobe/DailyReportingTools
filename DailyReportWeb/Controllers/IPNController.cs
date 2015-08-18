@@ -1,5 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.Paypal;
+using Equilobe.DailyReport.Models.PayPal;
 using System;
 using System.Collections.Generic;
 using System.Linq;

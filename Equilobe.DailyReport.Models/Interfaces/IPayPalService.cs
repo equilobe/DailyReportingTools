@@ -1,4 +1,4 @@
-﻿using Equilobe.DailyReport.Models.Paypal;
+﻿using Equilobe.DailyReport.Models.PayPal;
 using Equilobe.DailyReport.Models.Storage;
 using Microsoft.AspNet.Identity;
 using System;

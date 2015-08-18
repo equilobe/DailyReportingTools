@@ -94,12 +94,35 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void ActivateInstance(SubscriptionContext context)
+        public void ActivateInstance(string username, string baseUrl)
         {
             using(var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
+                var instance = db.InstalledInstances.Single(i => i.BaseUrl == baseUrl && i.User.UserName == username);
                 instance.Active = true;
+
+                db.SaveChanges();
+            }
+        }
+
+        public void DeactivateInstance(string subscriptionId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.SingleOrDefault(i => i.SubscriptionDetails.SubscriptionId == subscriptionId);
+
+                if (instance != null)
+                    instance.Active = false;
+
+                db.SaveChanges();
+            }
+        }
+
+        public void AddSubscriptionDetails(SubscriptionContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
 
                 var subscription = new SubscriptionDetails();
                 subscription.TrialStartDate = context.TrialStartDate;
@@ -108,8 +131,9 @@ namespace Equilobe.DailyReport.SL
                 subscription.SubscriptionId = context.SubscriptionId;
                 subscription.PaymentGross = context.PaymentGross;
                 subscription.InstalledInstanceId = instance.Id;
+                subscription.TxnId = context.TxnId;
+                subscription.TxnType = context.TxnType;
                 instance.SubscriptionDetails = subscription;
-                
 
                 db.SaveChanges();
             }

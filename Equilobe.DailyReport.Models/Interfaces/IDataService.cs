@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Policy;
+﻿using Equilobe.DailyReport.Models.PayPal;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
@@ -13,7 +14,9 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SaveInstance(RegisterModel modelData);
         void DeleteInstance(long id);
         void DeleteInstance(string pluginKey);
-        void ActivateInstance(SubscriptionContext context);
+        void ActivateInstance(string username, string baseUrl);
+        void DeactivateInstance(string subscriptionId);
+        void AddSubscriptionDetails(SubscriptionContext context);
         bool IsInstanceActive(long id);
         List<Instance> GetInstances();
         long GetNumberOfReportsGenerated();

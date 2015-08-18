@@ -1,11 +1,11 @@
-﻿using Equilobe.DailyReport.Models.Paypal;
+﻿using Equilobe.DailyReport.Models.PayPal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.ReportFrame
+namespace Equilobe.DailyReport.Models.PayPal
 {
     public class SubscriptionContext
     {
@@ -16,5 +16,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public DateTime TrialStartDate { get; set; }
         public DateTime TrialEndDate { get; set; }
         public string SubscriptionId { get; set; }
+        public string TxnType { get; set; }
+        public string TxnId { get; set; }
     }
 }

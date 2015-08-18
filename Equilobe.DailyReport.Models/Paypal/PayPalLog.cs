@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.Paypal
+namespace Equilobe.DailyReport.Models.PayPal
 {
     public class PayPalLog
     {

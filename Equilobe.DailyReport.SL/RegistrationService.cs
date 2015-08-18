@@ -19,7 +19,7 @@ using System.Net.Mail;
 using System.IO;
 using Equilobe.DailyReport.Models.Views;
 using System.Net.Http;
-using Equilobe.DailyReport.Models.Errors;
+using Equilobe.DailyReport.Models.Data;
 
 namespace Equilobe.DailyReport.SL
 {

@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Enums.cs" />
-    <Compile Include="Errors\ApplicationErrors.cs" />
+    <Compile Include="Data\ApplicationErrors.cs" />
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />

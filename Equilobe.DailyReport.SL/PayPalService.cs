@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Data;
 using Equilobe.DailyReport.Models.Interfaces;
-using Equilobe.DailyReport.Models.Paypal;
+using Equilobe.DailyReport.Models.PayPal;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Views;
@@ -36,28 +37,27 @@ namespace Equilobe.DailyReport.SL
 
             }
 
-
-
-            //verify the transaction             
             string status = Verify(true, parameters);
 
             if (status == "INVALID")
                 return;
 
+            var subscriptionContext = new SubscriptionContext();
+            subscriptionContext.TxnType = payPalCheckoutInfo.txn_type;
+            subscriptionContext.TxnId = payPalCheckoutInfo.txn_id;
 
-            if (payPalCheckoutInfo.txn_type == "subscr_signup")
+
+            if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionSignup)
             {
-                // register user/instance
-
                 var subscriptionDate = new DateTime();
                 var trialEndDate = new DateTime();
 
                 using(var db = new ReportsDb())
                 {
-                    var sub = db.SubscriptionDetails.SingleOrDefault(s => s.SubscriptionId == payPalCheckoutInfo.subscr_id);
+                    var sub = db.SubscriptionDetails.SingleOrDefault(s => s.SubscriptionId == payPalCheckoutInfo.subscr_id && s.TxnType == PayPalVariables.SubscriptionSignup);
+
                     if (sub != null)
                         return;
-                    //maybe update subscription. depends on the case. investigate first
                 }
 
 
@@ -67,7 +67,6 @@ namespace Equilobe.DailyReport.SL
                     string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
                     subscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
                     trialEndDate = GetTrialEndDate(subscriptionDate, payPalCheckoutInfo.period1);
-
                 }
 
                 if (payPalCheckoutInfo.custom == null)
@@ -89,12 +88,11 @@ namespace Equilobe.DailyReport.SL
                 var username = registrationInfo.Email;
                 var instanceUrl = registrationInfo.BaseUrl;              
 
-                var subscriptionContext = new SubscriptionContext();
                 subscriptionContext.Username = username;
                 subscriptionContext.BaseUrl = instanceUrl;
                 subscriptionContext.PaymentGross = payPalCheckoutInfo.Total;
                 subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
-                subscriptionContext.SubscriptionDate = subscriptionDate;
+                subscriptionContext.SubscriptionDate = subscriptionDate;                
 
                 if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
                 {
@@ -102,37 +100,62 @@ namespace Equilobe.DailyReport.SL
                     subscriptionContext.TrialEndDate = trialEndDate;
                 }
 
-                DataService.ActivateInstance(subscriptionContext);
+                DataService.ActivateInstance(username, instanceUrl);
+                DataService.AddSubscriptionDetails(subscriptionContext);
 
             }
 
-            if (payPalCheckoutInfo.txn_type == "subscr_cancel")
+            if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionCanceled)
             {
-                // disable instance
+                DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
             }
 
-            //check that the payment_status is Completed                 
-            if (payPalCheckoutInfo.payment_status == "Completed")
+            if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionExpired)
             {
-
-                //trial period is over. payment is received
-
-                //check that txn_id has not been previously processed to prevent duplicates                      
-
-                //check that receiver_email is your Primary PayPal email                                          
-
-                //check that payment_amount/payment_currency are correct                       
-
-                //process payment/refund/etc               
-
+                DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
             }
-            else
+
+            if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionPayment)
             {
-                //log response/ipn data for manual investigation             
+                //check that the payment_status is Completed                 
+                if (payPalCheckoutInfo.payment_status == "Completed")
+                {
+                    if (TransactionProcessed(payPalCheckoutInfo.txn_id))
+                        return;
+
+
+                    //trial period is over. payment is received
+
+                    //check that txn_id has not been previously processed to prevent duplicates                      
+
+                    //check that receiver_email is your Primary PayPal email                                          
+
+                    //check that payment_amount/payment_currency are correct                       
+
+                    //process payment/refund/etc               
+
+                }
+
             }
+
+            if(payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
+            {
+                //refund 
+            }
+
         }
 
         #region Helpers
+
+        private bool TransactionProcessed(string transactionId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var transaction = db.SubscriptionDetails.SingleOrDefault(s => s.TxnId == transactionId);
+
+                return transaction != null;
+            }
+        }
 
         private static void SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
         {
