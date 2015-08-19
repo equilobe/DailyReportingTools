@@ -145,6 +145,16 @@ namespace Equilobe.DailyReport.SL
 
             if(payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
             {
+                var paymentContext = GetPaymentContext(payPalCheckoutInfo);
+                try
+                {
+                    DataService.SavePayment(paymentContext);
+                }
+                catch
+                {
+                    return;
+                }
+
                 if(!CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
                     DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
             }
