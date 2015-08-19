@@ -110,7 +110,7 @@ namespace Equilobe.DailyReport.SL
         {
             using(var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.SingleOrDefault(i => i.SubscriptionDetails.SubscriptionId == subscriptionId);
+                var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
 
                 if (instance != null)
                     instance.Active = false;
@@ -119,23 +119,31 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void AddSubscriptionDetails(SubscriptionContext context)
+        public void SaveSubscription(SubscriptionContext context)
         {
             using (var db = new ReportsDb())
             {
                 var instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
 
-                var subscription = new SubscriptionDetails();
-                subscription.TrialStartDate = context.TrialStartDate;
+                var subscription = new Subscription();
                 subscription.TrialEndDate = context.TrialEndDate;
                 subscription.SubscriptionDate = context.SubscriptionDate;
-                subscription.SubscriptionId = context.SubscriptionId;
-                subscription.PaymentGross = context.PaymentGross;
+                subscription.Id = context.SubscriptionId;
                 subscription.InstalledInstanceId = instance.Id;
-                subscription.TxnId = context.TxnId;
-                subscription.TxnType = context.TxnType;
-                instance.SubscriptionDetails = subscription;
+                instance.Subscription = subscription;
 
+                db.SaveChanges();
+            }
+        }
+
+        public void SavePayment(PaymentContext context)
+        {
+            var payment = new Payment();
+            context.CopyPropertiesOnObjects(payment);
+
+            using(var db= new ReportsDb())
+            {
+                db.Payments.Add(payment);
                 db.SaveChanges();
             }
         }

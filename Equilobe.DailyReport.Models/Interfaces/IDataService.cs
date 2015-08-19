@@ -16,7 +16,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void DeleteInstance(string pluginKey);
         void ActivateInstance(string username, string baseUrl);
         void DeactivateInstance(string subscriptionId);
-        void AddSubscriptionDetails(SubscriptionContext context);
+        void SaveSubscription(SubscriptionContext context);
+        void SavePayment(PaymentContext context);
         bool IsInstanceActive(long id);
         List<Instance> GetInstances();
         long GetNumberOfReportsGenerated();

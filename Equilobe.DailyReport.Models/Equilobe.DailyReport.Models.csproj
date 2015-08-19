@@ -74,6 +74,7 @@
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="PayPal\PaymentContext.cs" />
     <Compile Include="PayPal\PayPalCheckoutInfo.cs" />
     <Compile Include="PayPal\PayPalLog.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
@@ -138,7 +139,8 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\IdentityModel.cs" />
-    <Compile Include="Storage\SubscriptionDetails.cs" />
+    <Compile Include="Storage\Payment.cs" />
+    <Compile Include="Storage\Subscription.cs" />
     <Compile Include="Storage\UserImage.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />

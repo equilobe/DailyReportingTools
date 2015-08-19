@@ -42,19 +42,15 @@ namespace Equilobe.DailyReport.SL
             if (status == "INVALID")
                 return;
 
-            var subscriptionContext = new SubscriptionContext();
-            subscriptionContext.TxnType = payPalCheckoutInfo.txn_type;
-            subscriptionContext.TxnId = payPalCheckoutInfo.txn_id;
-
-
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionSignup)
             {
-                var subscriptionDate = new DateTime();
-                var trialEndDate = new DateTime();
+                var subscriptionContext = new SubscriptionContext();
+                string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
+                subscriptionContext.SubscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
 
                 using(var db = new ReportsDb())
                 {
-                    var sub = db.SubscriptionDetails.SingleOrDefault(s => s.SubscriptionId == payPalCheckoutInfo.subscr_id && s.TxnType == PayPalVariables.SubscriptionSignup);
+                    var sub = db.Subscriptions.SingleOrDefault(s => s.Id == payPalCheckoutInfo.subscr_id);
 
                     if (sub != null)
                         return;
@@ -64,9 +60,7 @@ namespace Equilobe.DailyReport.SL
                 if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
                 {
                     //trial period
-                    string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
-                    subscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
-                    trialEndDate = GetTrialEndDate(subscriptionDate, payPalCheckoutInfo.period1);
+                    subscriptionContext.TrialEndDate = GetTrialEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
                 }
 
                 if (payPalCheckoutInfo.custom == null)
@@ -85,23 +79,20 @@ namespace Equilobe.DailyReport.SL
                     return;
                 }
 
-                var username = registrationInfo.Email;
-                var instanceUrl = registrationInfo.BaseUrl;              
-
-                subscriptionContext.Username = username;
-                subscriptionContext.BaseUrl = instanceUrl;
-                subscriptionContext.PaymentGross = payPalCheckoutInfo.Total;
+                subscriptionContext.Username = registrationInfo.Email;
+                subscriptionContext.BaseUrl = registrationInfo.BaseUrl;
                 subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
-                subscriptionContext.SubscriptionDate = subscriptionDate;                
 
-                if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
+                try
                 {
-                    subscriptionContext.TrialStartDate = subscriptionDate;
-                    subscriptionContext.TrialEndDate = trialEndDate;
+                    DataService.ActivateInstance(registrationInfo.Email, registrationInfo.BaseUrl);
+                    DataService.SaveSubscription(subscriptionContext);
                 }
-
-                DataService.ActivateInstance(username, instanceUrl);
-                DataService.AddSubscriptionDetails(subscriptionContext);
+                catch
+                {
+                    DataService.DeactivateInstance(subscriptionContext.SubscriptionId);
+                    return;
+                }
 
             }
 
@@ -123,6 +114,20 @@ namespace Equilobe.DailyReport.SL
                     if (TransactionProcessed(payPalCheckoutInfo.txn_id))
                         return;
 
+                    var paymentContext = GetPaymentContext(payPalCheckoutInfo);
+
+                    try
+                    {
+                        DataService.SavePayment(paymentContext);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+
+                    if (!CheckPayment(payPalCheckoutInfo) && !CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
+                        DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+
 
                     //trial period is over. payment is received
 
@@ -140,18 +145,80 @@ namespace Equilobe.DailyReport.SL
 
             if(payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
             {
-                //refund 
+                if(!CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
+                    DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
             }
+        }
 
+        public bool CheckSubscriptionPaymentSituation(string subscriptionId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
+                if (subscription == null)
+                    return false;
+
+                if (IsOnTrial(subscription) || SubscriptionPaidPresentMonth(subscription))
+                    return true;
+
+                return false;
+            }
         }
 
         #region Helpers
+
+        bool SubscriptionPaidPresentMonth(Subscription subscription)
+        {
+            var monthPayments = subscription.Payments.Where(p => CheckPaymentDateMonth(p.PaymentDate, subscription.SubscriptionDate) && p.Gross >= 10 && p.ParentTransactionId != null).ToList();
+
+            return !monthPayments.IsEmpty();
+        }
+
+        bool CheckPaymentDateMonth(DateTime paymentDate, DateTime subscriptionDate)
+        {
+            if (paymentDate >= subscriptionDate && paymentDate < subscriptionDate.AddMonths(1))
+                return true;
+
+            return false;
+        }
+
+        static bool IsOnTrial(Subscription subscription)
+        {
+            return DateTime.Now < subscription.TrialEndDate;
+        }
+
+        bool CheckPayment(PayPalCheckoutInfo paypalInfo)
+        {
+            if (paypalInfo.Total < 10)
+                return false;
+
+            return true;
+        }
+
+        private PaymentContext GetPaymentContext(PayPalCheckoutInfo checkoutInfo)
+        {
+            return new PaymentContext
+            {
+                Fee = checkoutInfo.Fee,
+                Gross = checkoutInfo.Total,
+                SubscriptionId = checkoutInfo.subscr_id,
+                Currency = checkoutInfo.mc_currency,
+                TransactionId = checkoutInfo.txn_id,
+                PaymentDate = checkoutInfo.TrxnDate,
+                Status = checkoutInfo.payment_status,
+                ParentTransactionId = checkoutInfo.parent_txn_id,
+                Type = checkoutInfo.payment_type
+            };
+        }
 
         private bool TransactionProcessed(string transactionId)
         {
             using(var db = new ReportsDb())
             {
-                var transaction = db.SubscriptionDetails.SingleOrDefault(s => s.TxnId == transactionId);
+                if (db.Payments == null)
+                    return false;
+
+                var transaction = db.Payments.SingleOrDefault(s => s.TransactionId == transactionId);
 
                 return transaction != null;
             }
@@ -161,9 +228,15 @@ namespace Equilobe.DailyReport.SL
         {
             var path = AppDomain.CurrentDomain.BaseDirectory + @"TemporaryLogs\ipnLogs.xml";
             var xml = File.ReadAllText(path);
-            var logs = Deserialization.XmlDeserialize<List<PayPalLog>>(xml);
-            if (logs == null)
+            var logs = new List<PayPalLog>();
+            try
+            {
+                logs = Deserialization.XmlDeserialize<List<PayPalLog>>(xml);
+            }
+            catch
+            {
                 logs = new List<PayPalLog>();
+            }
 
             logs.Add(new PayPalLog
             {

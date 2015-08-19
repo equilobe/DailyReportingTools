@@ -22,6 +22,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public virtual ICollection<UserImage> UserImages { get; set; }
 
 		public virtual ApplicationUser User { get; set; }
-        public virtual SubscriptionDetails SubscriptionDetails { get; set; }
+        public virtual Subscription Subscription{ get; set; }
     }
 }
