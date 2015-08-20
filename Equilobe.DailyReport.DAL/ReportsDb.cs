@@ -75,5 +75,6 @@ namespace Equilobe.DailyReport.DAL
         public DbSet<UserImage> UserImages { get; set; }
         public DbSet<Subscription> Subscriptions{ get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<IPNLog> IPNLogs { get; set; }
     }
 }

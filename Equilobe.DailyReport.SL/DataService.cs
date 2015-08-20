@@ -106,6 +106,17 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void ActivateInstance(string subscriptionId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
+                instance.Active = true;
+
+                db.SaveChanges();
+            }
+        }
+
         public void DeactivateInstance(string subscriptionId)
         {
             using(var db = new ReportsDb())
@@ -116,6 +127,16 @@ namespace Equilobe.DailyReport.SL
                     instance.Active = false;
 
                 db.SaveChanges();
+            }
+        }
+
+        public bool IsInstanceActive(string subscriptionId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
+
+                return instance.Active;
             }
         }
 

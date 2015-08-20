@@ -18,5 +18,8 @@ namespace Equilobe.DailyReport.Models.Data
         public static string PaymentCompleted = "Completed";
         public static string PaymentPending = "Pending";
         public static string PaymentDenied = "Denied";
+
+        public static string InvalidStatus = "INVALID";
+        public static string VerifiedStatus = "VERIFIED";
     }
 }

@@ -76,7 +76,7 @@
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="PayPal\PaymentContext.cs" />
     <Compile Include="PayPal\PayPalCheckoutInfo.cs" />
-    <Compile Include="PayPal\PayPalLog.cs" />
+    <Compile Include="Storage\IPNLog.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\ExecutionInstanceContext.cs" />

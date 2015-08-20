@@ -417,7 +417,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Tools\AngularJS MVC.zip" />
     <Content Include="Views\Email\ConfirmationEmail.cshtml" />
-    <Content Include="TemporaryLogs\ipnLogs.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

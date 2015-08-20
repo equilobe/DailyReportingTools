@@ -14,5 +14,9 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager);
 
         bool CheckSubscriptionPaymentSituation(string subscriptionId);
+
+        void ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long id);
+
+        void ProcessIPNLogs(UserManager<ApplicationUser> userManager, long skipLogId);
     }
 }

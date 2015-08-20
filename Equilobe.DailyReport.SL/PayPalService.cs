@@ -28,43 +28,52 @@ namespace Equilobe.DailyReport.SL
 
         public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager)
         {
+            long id;
             try
             {
-                SaveLog(payPalCheckoutInfo);
+                 id = SaveLog(payPalCheckoutInfo);
             }
             catch
             {
-
+                return;
             }
 
             string status = Verify(true, parameters);
-
-            if (status == "INVALID")
+            
+            if (status == PayPalVariables.InvalidStatus)
                 return;
 
+            //Task.Factory.StartNew(() => ProcessIPN(payPalCheckoutInfo, userManager, id));
+            //Task.Factory.StartNew(() => ProcessIPNLogs(userManager, id));
+
+            ProcessIPN(payPalCheckoutInfo, userManager, id);
+            ProcessIPNLogs(userManager, id);
+        }
+
+        public void ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long ipnId)
+        {
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionSignup)
             {
                 var subscriptionContext = new SubscriptionContext();
                 string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
                 subscriptionContext.SubscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
 
-                using(var db = new ReportsDb())
+                using (var db = new ReportsDb())
                 {
                     var sub = db.Subscriptions.SingleOrDefault(s => s.Id == payPalCheckoutInfo.subscr_id);
 
                     if (sub != null)
+                    {
+                        SetLogProcessed(ipnId);
                         return;
-                }
-
-
-                if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
-                {
-                    //trial period
-                    subscriptionContext.TrialEndDate = GetTrialEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
+                    }
                 }
 
                 if (payPalCheckoutInfo.custom == null)
+                {
+                    SetLogProcessed(ipnId);
                     return;
+                }
 
                 var registrationInfo = JsonConvert.DeserializeObject<RegisterModel>(payPalCheckoutInfo.custom);
 
@@ -72,10 +81,10 @@ namespace Equilobe.DailyReport.SL
                 {
                     RegistrationService.RegisterUser(registrationInfo, userManager);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     RemoveUser(registrationInfo);
-
+                    SetLogProcessed(ipnId);
                     return;
                 }
 
@@ -83,14 +92,21 @@ namespace Equilobe.DailyReport.SL
                 subscriptionContext.BaseUrl = registrationInfo.BaseUrl;
                 subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
 
+                if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
+                {
+                    //trial period
+                    subscriptionContext.TrialEndDate = GetTrialEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
+                    DataService.ActivateInstance(registrationInfo.Email, registrationInfo.BaseUrl);
+                }
+
                 try
                 {
-                    DataService.ActivateInstance(registrationInfo.Email, registrationInfo.BaseUrl);
                     DataService.SaveSubscription(subscriptionContext);
                 }
                 catch
                 {
                     DataService.DeactivateInstance(subscriptionContext.SubscriptionId);
+                    SetLogProcessed(ipnId);
                     return;
                 }
 
@@ -108,11 +124,13 @@ namespace Equilobe.DailyReport.SL
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionPayment)
             {
-                //check that the payment_status is Completed                 
-                if (payPalCheckoutInfo.payment_status == "Completed")
+                if (payPalCheckoutInfo.payment_status == PayPalVariables.PaymentCompleted)
                 {
                     if (TransactionProcessed(payPalCheckoutInfo.txn_id))
+                    {
+                        SetLogProcessed(ipnId);
                         return;
+                    }
 
                     var paymentContext = GetPaymentContext(payPalCheckoutInfo);
 
@@ -128,6 +146,8 @@ namespace Equilobe.DailyReport.SL
                     if (!CheckPayment(payPalCheckoutInfo) && !CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
                         DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
 
+                    if (CheckPayment(payPalCheckoutInfo) && !DataService.IsInstanceActive(payPalCheckoutInfo.subscr_id))
+                        DataService.ActivateInstance(payPalCheckoutInfo.subscr_id);
 
                     //trial period is over. payment is received
 
@@ -143,7 +163,7 @@ namespace Equilobe.DailyReport.SL
 
             }
 
-            if(payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
+            if (payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
             {
                 var paymentContext = GetPaymentContext(payPalCheckoutInfo);
                 try
@@ -155,8 +175,27 @@ namespace Equilobe.DailyReport.SL
                     return;
                 }
 
-                if(!CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
+                if (!CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
                     DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+            }
+
+            SetLogProcessed(ipnId);
+        }
+
+
+        public void ProcessIPNLogs(UserManager<ApplicationUser> userManager, long skipLogId)
+        {
+            var logs = new List<IPNLog>();
+
+            using(var db = new ReportsDb())
+            {
+                logs = db.IPNLogs.Where(l => l.DateProcessed == null && l.Id != skipLogId).ToList();
+            }
+
+            foreach(var log in logs)
+            {
+                var paypalInfo = Deserialization.XmlDeserialize<PayPalCheckoutInfo>(log.SerializedPayPalInfo);
+                ProcessIPN(paypalInfo, userManager, log.Id);
             }
         }
 
@@ -176,6 +215,17 @@ namespace Equilobe.DailyReport.SL
         }
 
         #region Helpers
+
+        private static void SetLogProcessed(long id)
+        {
+
+            using (var db = new ReportsDb())
+            {
+                var log = db.IPNLogs.Single(l => l.Id == id);
+                log.DateProcessed = DateTime.Now;
+                db.SaveChanges();
+            }
+        }
 
         bool SubscriptionPaidPresentMonth(Subscription subscription)
         {
@@ -234,28 +284,30 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private static void SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
+        private static long SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
         {
-            var path = AppDomain.CurrentDomain.BaseDirectory + @"TemporaryLogs\ipnLogs.xml";
-            var xml = File.ReadAllText(path);
-            var logs = new List<PayPalLog>();
-            try
-            {
-                logs = Deserialization.XmlDeserialize<List<PayPalLog>>(xml);
-            }
-            catch
-            {
-                logs = new List<PayPalLog>();
-            }
+            var log = GetLog(payPalCheckoutInfo);
 
-            logs.Add(new PayPalLog
+            using (var db = new ReportsDb())
             {
-                PayPalInfo = payPalCheckoutInfo,
-                Date = DateTime.Now
-            });
+                db.IPNLogs.Add(log);
+                db.SaveChanges();
+                return log.Id;
+            }
+        }
 
-            var newXml = Serialization.XmlSerialize(logs);
-            File.WriteAllText(path, newXml);
+
+        private static IPNLog GetLog(PayPalCheckoutInfo payPalCheckoutInfo)
+        {
+            var serializedInfo = Serialization.XmlSerialize(payPalCheckoutInfo);
+
+            var log = new IPNLog
+            {
+                SerializedPayPalInfo = serializedInfo,
+                DateAdded = DateTime.Now
+            };
+
+            return log;
         }
 
         private static void RemoveUser(RegisterModel registrationInfo)
