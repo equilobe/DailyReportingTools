@@ -14,5 +14,9 @@ namespace Equilobe.DailyReport.Models.Data
         public static string SubscriptionModify = "subscr_modify";
         public static string SubscriptionPayment = "subscr_payment";
         public static string SubscriptionSignup = "subscr_signup";
+
+        public static string PaymentCompleted = "Completed";
+        public static string PaymentPending = "Pending";
+        public static string PaymentDenied = "Denied";
     }
 }
