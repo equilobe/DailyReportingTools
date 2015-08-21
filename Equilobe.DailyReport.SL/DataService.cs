@@ -56,6 +56,7 @@ namespace Equilobe.DailyReport.SL
                 if (installedInstance == null)
                 {
                     installedInstance = new InstalledInstance();
+                    installedInstance.ExpirationDate = DateTime.Now;
                     db.InstalledInstances.Add(installedInstance);
                     installedInstance.UserId = user.Id;
                 }
@@ -95,39 +96,52 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void ActivateInstance(string username, string baseUrl)
-        {
-            using(var db = new ReportsDb())
-            {
-                var instance = db.InstalledInstances.Single(i => i.BaseUrl == baseUrl && i.User.UserName == username);
-                instance.Active = true;
-
-                db.SaveChanges();
-            }
-        }
-
-        public void ActivateInstance(string subscriptionId)
+        public void SetInstanceExpirationDate(string subscriptionId, DateTime date)
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
-                instance.Active = true;
+                var instance = db.InstalledInstances.Single(i => i.Subscription.Id == subscriptionId);
+                instance.ExpirationDate = date;
 
                 db.SaveChanges();
             }
         }
 
-        public void DeactivateInstance(string subscriptionId)
+        public Subscription GetSubscription(string subscriptionId)
         {
             using(var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
+                var subscription = db.Subscriptions.Single(s => s.Id == subscriptionId);
 
-                if (instance != null)
-                    instance.Active = false;
-
-                db.SaveChanges();
+                return subscription;
             }
+        }
+
+        //public void ActivateInstance(string username, string baseUrl)
+        //{
+        //    using(var db = new ReportsDb())
+        //    {
+        //        var instance = db.InstalledInstances.Single(i => i.BaseUrl == baseUrl && i.User.UserName == username);
+        //        instance.Active = true;
+
+        //        db.SaveChanges();
+        //    }
+        //}
+
+        //public void ActivateInstance(string subscriptionId)
+        //{
+        //    using (var db = new ReportsDb())
+        //    {
+        //        var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
+        //        instance.Active = true;
+
+        //        db.SaveChanges();
+        //    }
+        //}
+
+        public void DeactivateInstance(string subscriptionId)
+        {
+            SetInstanceExpirationDate(subscriptionId, DateTime.Now);
         }
 
         public bool IsInstanceActive(string subscriptionId)
@@ -136,7 +150,7 @@ namespace Equilobe.DailyReport.SL
             {
                 var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
 
-                return instance.Active;
+                return instance.ExpirationDate > DateTime.Now;
             }
         }
 
@@ -149,6 +163,7 @@ namespace Equilobe.DailyReport.SL
                 var subscription = new Subscription();
                 subscription.TrialEndDate = context.TrialEndDate;
                 subscription.SubscriptionDate = context.SubscriptionDate;
+                subscription.SubscriptionPeriod = context.SubscriptionPeriod;
                 subscription.Id = context.SubscriptionId;
                 subscription.InstalledInstanceId = instance.Id;
                 instance.Subscription = subscription;
@@ -273,7 +288,7 @@ namespace Equilobe.DailyReport.SL
             {
                 var instance = SearchInstanceBySettingsId(basicSettingsId);
 
-                return instance.Active;
+                return instance.ExpirationDate > DateTime.Now;
             }
         }         
 

@@ -91,22 +91,23 @@ namespace Equilobe.DailyReport.SL
                 subscriptionContext.Username = registrationInfo.Email;
                 subscriptionContext.BaseUrl = registrationInfo.BaseUrl;
                 subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
+                subscriptionContext.SubscriptionPeriod = payPalCheckoutInfo.period3;
 
                 if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
                 {
-                    //trial period
-                    subscriptionContext.TrialEndDate = GetTrialEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
-                    DataService.ActivateInstance(registrationInfo.Email, registrationInfo.BaseUrl);
+                    subscriptionContext.TrialEndDate = GetPeriodEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
                 }
 
                 try
                 {
                     DataService.SaveSubscription(subscriptionContext);
+                    if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
+                        DataService.SetInstanceExpirationDate(subscriptionContext.SubscriptionId, subscriptionContext.TrialEndDate.Value);
                 }
                 catch
                 {
-                    DataService.DeactivateInstance(subscriptionContext.SubscriptionId);
-                    SetLogProcessed(ipnId);
+                   // DataService.SetInstanceExpirationDate(subscriptionContext.SubscriptionId, DateTime.Now.AddMinutes(-1));
+                  //  SetLogProcessed(ipnId);
                     return;
                 }
 
@@ -143,11 +144,14 @@ namespace Equilobe.DailyReport.SL
                         return;
                     }
 
-                    if (!CheckPayment(payPalCheckoutInfo) && !CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
-                        DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+                    var subscription = DataService.GetSubscription(paymentContext.SubscriptionId);
+                    if (CheckPayment(payPalCheckoutInfo))
+                        DataService.SetInstanceExpirationDate(payPalCheckoutInfo.subscr_id, GetPeriodEndDate(DateTime.Now, subscription.SubscriptionPeriod));
 
-                    if (CheckPayment(payPalCheckoutInfo) && !DataService.IsInstanceActive(payPalCheckoutInfo.subscr_id))
-                        DataService.ActivateInstance(payPalCheckoutInfo.subscr_id);
+
+                    //if (CheckPayment(payPalCheckoutInfo) && !DataService.IsInstanceActive(payPalCheckoutInfo.subscr_id))
+                    //    DataService.SetInstanceExpirationDate(payPalCheckoutInfo.subscr_id, DateTime.Now.AddMonths(1));
+                    // will not be used anymore. if instance subscription expires, new one should be made
 
                     //trial period is over. payment is received
 
@@ -160,6 +164,11 @@ namespace Equilobe.DailyReport.SL
                     //process payment/refund/etc               
 
                 }
+
+            }
+
+            if(payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionFailed)
+            {
 
             }
 
@@ -207,7 +216,7 @@ namespace Equilobe.DailyReport.SL
                 if (subscription == null)
                     return false;
 
-                if (IsOnTrial(subscription) || SubscriptionPaidPresentMonth(subscription))
+                if (SubscriptionPaidPresentMonth(subscription))
                     return true;
 
                 return false;
@@ -218,7 +227,6 @@ namespace Equilobe.DailyReport.SL
 
         private static void SetLogProcessed(long id)
         {
-
             using (var db = new ReportsDb())
             {
                 var log = db.IPNLogs.Single(l => l.Id == id);
@@ -229,9 +237,13 @@ namespace Equilobe.DailyReport.SL
 
         bool SubscriptionPaidPresentMonth(Subscription subscription)
         {
-            var monthPayments = subscription.Payments.Where(p => CheckPaymentDateMonth(p.PaymentDate, subscription.SubscriptionDate) && p.Gross >= 10 && p.ParentTransactionId != null).ToList();
+            var monthPayments = subscription.Payments.Where(p => CheckPaymentDateMonth(p.PaymentDate, subscription.SubscriptionDate) && p.Gross >= 10).ToList();
 
-            return !monthPayments.IsEmpty();
+            var refunds = subscription.Payments.Where(p => CheckPaymentDateMonth(p.PaymentDate, subscription.SubscriptionDate) && p.Gross <0).ToList();
+
+            var amountPaid = monthPayments.Sum(p => p.Gross) + refunds.Sum(p => p.Gross);
+
+            return amountPaid >= 10;
         }
 
         bool CheckPaymentDateMonth(DateTime paymentDate, DateTime subscriptionDate)
@@ -355,7 +367,7 @@ namespace Equilobe.DailyReport.SL
             return response;
         }
 
-        DateTime GetTrialEndDate(DateTime startDate, string trialPeriod)
+        DateTime GetPeriodEndDate(DateTime startDate, string trialPeriod)
         {
             var period = trialPeriod.Split(' ');
             var amount = Int32.Parse(period[0]);

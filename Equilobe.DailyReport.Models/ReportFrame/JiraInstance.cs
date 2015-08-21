@@ -12,7 +12,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     {
         public long Id { get; set; }
         public string BaseUrl { get; set; }
-        public bool Active { get; set; }
+        public DateTime ExpirationDate { get; set; }
         public List<BasicReportSettings> Projects { get; set; }
     }
 }

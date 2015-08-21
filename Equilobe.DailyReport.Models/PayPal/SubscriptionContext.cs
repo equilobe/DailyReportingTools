@@ -14,5 +14,6 @@ namespace Equilobe.DailyReport.Models.PayPal
         public DateTime SubscriptionDate { get; set; }
         public DateTime? TrialEndDate { get; set; }
         public string SubscriptionId { get; set; }
+        public string SubscriptionPeriod { get; set; }
     }
 }

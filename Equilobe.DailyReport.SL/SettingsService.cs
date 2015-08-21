@@ -95,7 +95,7 @@ namespace Equilobe.DailyReport.SL
                 instance.CopyPropertiesOnObjects(jiraRequestContext);
                 baseUrl = instance.BaseUrl;
 
-                if (!instance.Active)
+                if (instance.ExpirationDate <= DateTime.Now)
                     return null;
             }
 
@@ -147,12 +147,12 @@ namespace Equilobe.DailyReport.SL
                 {
                     BaseUrl = installedInstance.BaseUrl,
                     Id = installedInstance.Id,
-                    Active = installedInstance.Active
+                    ExpirationDate = installedInstance.ExpirationDate
                 };
 
                 instances.Add(instance);
 
-                if (!installedInstance.Active)                   
+                if (installedInstance.ExpirationDate <= DateTime.Now)                   
                     continue;                
 
                 var projects = JiraService.GetProjectsInfo(jiraRequestContext)

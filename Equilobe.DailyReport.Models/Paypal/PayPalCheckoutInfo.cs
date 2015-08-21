@@ -21,6 +21,7 @@ namespace Equilobe.DailyReport.Models.PayPal
         public string txn_type { get; set; }
         /// Encrypted string used to validate the authenticity of the transaction
         public string verify_sign { get; set; }
+        public string retry_at { get; set; }
 
         #endregion
 

@@ -33,7 +33,7 @@ namespace DailyReportWeb.Controllers.Api
                 throw new ArgumentException();
 
             instance.Email = User.GetUsername();
-            DataService.SaveInstance(instance);
+            DataService.SaveInstance(instance); // will be modified
 
             return DataService.GetInstances();
         }

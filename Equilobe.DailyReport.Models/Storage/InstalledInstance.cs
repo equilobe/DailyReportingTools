@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,7 +16,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string JiraPassword { get; set; }
         public string ClientKey { get; set; }
         public string SharedSecret { get; set; }
-        public bool Active { get; set; }
+        public DateTime ExpirationDate { get; set; }
     
 
         public virtual ICollection<BasicSettings> BasicSettings { get; set; }
