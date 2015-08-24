@@ -101,7 +101,7 @@
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
-    <Compile Include="ReportFrame\JiraInstance.cs" />
+    <Compile Include="Jira\JiraInstance.cs" />
     <Compile Include="ReportFrame\JiraOptions.cs" />
     <Compile Include="ReportFrame\JiraPullRequest.cs" />
     <Compile Include="ReportFrame\JiraReport.cs" />

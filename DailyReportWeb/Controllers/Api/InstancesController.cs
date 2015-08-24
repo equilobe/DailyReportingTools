@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
@@ -23,7 +24,7 @@ namespace DailyReportWeb.Controllers.Api
             return DataService.GetInstances();
         }
 
-        public List<Instance> Post([FromBody]RegisterModel instance)
+        public SimpleResult CheckInstanceCredentials([FromBody]RegisterModel instance)
         {
             if (!Validations.Url(instance.BaseUrl))
                 throw new ArgumentException();
@@ -32,10 +33,10 @@ namespace DailyReportWeb.Controllers.Api
             if (!credentialsValid)
                 throw new ArgumentException();
 
-            instance.Email = User.GetUsername();
-            DataService.SaveInstance(instance); // will be modified
+          //  instance.Email = User.GetUsername();
+         //   DataService.SaveInstance(instance); // will be modified
 
-            return DataService.GetInstances();
+            return SimpleResult.Success("Please subscribe for the Jira instance. It may take a few minutes to process the subscription.");
         }
 
         public List<Instance> Delete(long id)

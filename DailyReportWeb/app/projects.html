@@ -39,7 +39,7 @@
     </div>
 
     <div ng-if="instances.length">
-        <div class="container" ng-if="!instance.projects.length && instance.active">
+        <div class="container" ng-if="!instance.projects.length && instance.isActive">
             <h2>
                 <span class="alert-danger">
                     No projects available
@@ -49,7 +49,7 @@
                 Daily Report is unable to find any project.
             </p>
         </div>
-        <div class="container" ng-if="!instance.active">
+        <div class="container" ng-if="!instance.isActive">
             <h2>
                 <span class="alert-danger">
                     Instance is not active

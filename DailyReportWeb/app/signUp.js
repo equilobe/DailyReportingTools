@@ -15,6 +15,10 @@ angular.module('app')
         $scope.subscribePhase = false;
         $scope.serializedForm = {};
 
+        //if ($scope.form.$pristine) {
+        //    $scope.subscribePhase = false;
+        //}
+
         $scope.setTimeZone = $interval(function () {
             if ($scope.timeZone) {
                 $scope.child.form.timeZone = $scope.timeZone;

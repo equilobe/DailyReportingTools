@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Equilobe.DailyReport.Models.ReportFrame
+namespace Equilobe.DailyReport.Models.Jira
 {
     public class JiraInstance
     {
@@ -14,5 +14,12 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string BaseUrl { get; set; }
         public DateTime ExpirationDate { get; set; }
         public List<BasicReportSettings> Projects { get; set; }
+        public bool IsActive
+        {
+            get
+            {
+                return ExpirationDate > DateTime.Now;
+            }
+        }
     }
 }

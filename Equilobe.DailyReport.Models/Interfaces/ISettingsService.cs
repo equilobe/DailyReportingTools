@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.General;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Web;
 using System.Collections.Generic;

@@ -3,6 +3,7 @@ using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;

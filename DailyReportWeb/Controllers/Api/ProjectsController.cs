@@ -2,6 +2,7 @@
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;

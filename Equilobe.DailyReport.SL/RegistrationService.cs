@@ -32,7 +32,14 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult RegisterUser(RegisterModel model, UserManager<ApplicationUser> userManager)
         {
-            ValidateRegisterModel(model);
+            try
+            {
+                ValidateRegisterModel(model);
+            }
+            catch
+            {
+                return SimpleResult.Error(ApplicationErrors.ValidationError);
+            }
 
             var user = new ApplicationUser()
             {
@@ -71,7 +78,7 @@ namespace Equilobe.DailyReport.SL
             if (user != null)
                 return SimpleResult.Error(ApplicationErrors.EmailNotAvailable(model.Email));
 
-            return SimpleResult.Success("Subscribe to finalize account registration"); 
+            return SimpleResult.Success("Subscribe to finalize account registration and login after you confirm the account activation email."); 
         }
 
         private static ApplicationUser SearchUser(RegisterModel model)

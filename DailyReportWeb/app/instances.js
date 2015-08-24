@@ -11,6 +11,9 @@ angular.module('app')
         $("body").attr("data-page", "instances");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
+        $scope.subscribePhase = false;
+        $scope.serializedForm = {};
+        $scope.instanceUrl = "";
 
         $http.get("/api/instances")
             .success(function (list) {
@@ -58,6 +61,7 @@ angular.module('app')
             $scope.message = "";
             $scope.addingInstance = false;
             $scope.editingInstance = false;
+            $scope.subscribePhase = false;
         };
 
         $scope.saveInstance = function ($scope) {
@@ -73,18 +77,31 @@ angular.module('app')
                 }
             });
 
-            if ($scope.status == "error")
+            if ($scope.status == "error") {
+                $scope.subscribePhase = false;
                 return;
+            }
 
-            $http.post("/api/instances/", $scope.form)
-                 .success(function (list) {
-                     $scope.$parent.instances = list;
-                     $scope.clearInstanceForm($scope);
+            $http.post("/api/instances/checkInstanceCredentials", $scope.form)
+                 .success(function (response) {
+                    // $scope.$parent.instances = list;
+                   //  $scope.clearInstanceForm($scope);
                      $scope.status = "success";
+                     $scope.message = response.message;
+                     $scope.serializedForm =
+                     {
+                         baseUrl: $scope.form.baseUrl,
+                         timeZone: $scope.form.timeZone,
+                         jiraUsername: $scope.form.jiraUsername,
+                         jiraPassword: $scope.form.jiraPassword
+                     };
+                     $scope.instanceUrl = $scope.form.baseUrl;
+                     $scope.subscribePhase = true;
                  })
                  .error(function () {
                      $scope.message = "Invalid JIRA username or password";
                      $scope.status = "error";
+                     $scope.subscribePhase = false;
                  });
         };
     }]);
