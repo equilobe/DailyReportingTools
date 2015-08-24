@@ -51,8 +51,9 @@ namespace Equilobe.DailyReport.SL
 
             DataService.SaveInstance(model);
 
-            var callbackUrl = GetCallbackUrl(userManager, user.Id);
-            SendAccountConfirmationEmail(user, callbackUrl);
+            //When testing, do not send emails
+        //    var callbackUrl = GetCallbackUrl(userManager, user.Id);
+         //   SendAccountConfirmationEmail(user, callbackUrl);
 
             return SimpleResult.Success("");
         }
@@ -77,7 +78,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var user = db.Users.SingleOrDefault(u => u.UserName == model.Email);
+                var user = db.Users.SingleOrDefault(u => u.Email == model.Email);
                 return user;
             }
         }
