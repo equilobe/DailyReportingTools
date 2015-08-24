@@ -449,7 +449,7 @@ namespace JiraReporter.Services
 
             foreach(var issue in _currentAuthor.Issues)
             {
-                if (!_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i=>i.key == issue.Key))
+                if (!_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i=>i.key == issue.Key) && !issue.IsSubtask)
                 {
                     issue.ErrorsCount ++;
                     if (issue.Errors == null)

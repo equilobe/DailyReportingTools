@@ -51,7 +51,7 @@ namespace Equilobe.DailyReport.BL.Jira
             if (rapidViewId == null)
                 return null;
 
-            var sprints = Client.GetAllSprints(rapidViewId);
+            var sprints = Client.GetAllSprints(rapidViewId, Filter.ProjectKey);
 
             if (sprints == null || sprints.Count == 0)
                 return null;

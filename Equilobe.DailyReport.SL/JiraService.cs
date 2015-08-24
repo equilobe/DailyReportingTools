@@ -108,9 +108,9 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetSprintReport(rapidViewId, sprintId);
         }
 
-        public List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId)
+        public List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId, string projectKey)
         {
-            return GetClient(context).GetAllSprints(rapidViewId);
+            return GetClient(context).GetAllSprints(rapidViewId, projectKey);
         }
 
         public JiraIssue GetIssue(JiraRequestContext context, string issueKey)

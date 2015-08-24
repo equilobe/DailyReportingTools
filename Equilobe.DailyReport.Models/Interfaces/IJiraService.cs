@@ -18,7 +18,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         RapidView GetRapidView(JiraRequestContext context, string id);
         List<View> GetRapidViews(JiraRequestContext context);
         SprintReport GetSprintReport(JiraRequestContext context,string rapidViewId, string sprintId);
-        List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId);
+        List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId, string projectKey);
         JiraIssue GetIssue(JiraRequestContext context, string issueKey);
         JiraIssues GetCompletedIssues(IssuesContext context);
         JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId);
