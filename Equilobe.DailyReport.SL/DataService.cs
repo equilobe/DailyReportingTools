@@ -103,7 +103,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.Single(i => i.Subscription.Id == subscriptionId);
+                var instance = db.Subscriptions.Single(s => s.Id == subscriptionId).InstalledInstance;
                 instance.ExpirationDate = date;
 
                 db.SaveChanges();
@@ -162,7 +162,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
+                var instance = db.Subscriptions.Single(s => s.Id == subscriptionId).InstalledInstance;
 
                 return instance.ExpirationDate > DateTime.Now;
             }
@@ -184,7 +184,7 @@ namespace Equilobe.DailyReport.SL
                 subscription.SubscriptionPeriod = context.SubscriptionPeriod;
                 subscription.Id = context.SubscriptionId;
                 subscription.InstalledInstanceId = instance.Id;
-                instance.Subscription = subscription;
+                instance.Subscriptions.Add(subscription);
 
                 db.SaveChanges();
             }

@@ -149,22 +149,6 @@ namespace Equilobe.DailyReport.SL
                     var subscription = DataService.GetSubscription(paymentContext.SubscriptionId);
                     if (CheckPayment(payPalCheckoutInfo))
                         DataService.SetInstanceExpirationDate(payPalCheckoutInfo.subscr_id, GetPeriodEndDate(DateTime.Now, subscription.SubscriptionPeriod));
-
-
-                    //if (CheckPayment(payPalCheckoutInfo) && !DataService.IsInstanceActive(payPalCheckoutInfo.subscr_id))
-                    //    DataService.SetInstanceExpirationDate(payPalCheckoutInfo.subscr_id, DateTime.Now.AddMonths(1));
-                    // will not be used anymore. if instance subscription expires, new one should be made
-
-                    //trial period is over. payment is received
-
-                    //check that txn_id has not been previously processed to prevent duplicates                      
-
-                    //check that receiver_email is your Primary PayPal email                                          
-
-                    //check that payment_amount/payment_currency are correct                       
-
-                    //process payment/refund/etc               
-
                 }
 
             }

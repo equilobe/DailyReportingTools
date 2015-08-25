@@ -49,7 +49,7 @@ namespace Equilobe.DailyReport.DAL
 
             modelBuilder.Entity<Subscription>()
                 .HasRequired(x => x.InstalledInstance)
-                .WithOptional(x => x.Subscription)
+                .WithMany(x => x.Subscriptions)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Payment>()
