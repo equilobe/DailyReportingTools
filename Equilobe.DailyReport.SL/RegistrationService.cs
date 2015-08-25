@@ -52,17 +52,15 @@ namespace Equilobe.DailyReport.SL
                 return SimpleResult.Error(ApplicationErrors.UserAlreadyCreated);
 
             IdentityResult result = userManager.Create(user, model.Password);
-            
+
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
-            DataService.SaveInstance(model);
-
             //When testing, do not send emails
-        //    var callbackUrl = GetCallbackUrl(userManager, user.Id);
-         //   SendAccountConfirmationEmail(user, callbackUrl);
+            //var callbackUrl = GetCallbackUrl(userManager, user.Id);
+            //endAccountConfirmationEmail(user, callbackUrl);
 
-            return SimpleResult.Success("");
+            return DataService.SaveInstance(model);
         }
 
         public SimpleResult CheckRegistrationDetails(RegisterModel model, UserManager<ApplicationUser> userManager)
@@ -78,7 +76,7 @@ namespace Equilobe.DailyReport.SL
             if (user != null)
                 return SimpleResult.Error(ApplicationErrors.EmailNotAvailable(model.Email));
 
-            return SimpleResult.Success("Subscribe to finalize account registration and login after you confirm the account activation email."); 
+            return SimpleResult.Success("Subscribe to finalize account registration and login after you confirm the account activation email.");
         }
 
         private static ApplicationUser SearchUser(RegisterModel model)
@@ -188,7 +186,7 @@ namespace Equilobe.DailyReport.SL
 
         private static MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
         {
-            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml"); 
+            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml");
             var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
             var email = RazorEngine.Razor.Parse(template, emailModel);
             var message = new MailMessage

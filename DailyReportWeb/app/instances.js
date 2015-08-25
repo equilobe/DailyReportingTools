@@ -34,8 +34,17 @@ angular.module('app')
 
         $scope.editInstance = function ($scope) {
             $scope.$parent.$parent.editingInstance = true;
+            $scope.$parent.$parent.instanceUrl = $scope.instance.baseUrl;
             $scope.form.baseUrl = $scope.instance.baseUrl;
             $scope.form.timeZone = $scope.instance.timeZone;
+
+            if (!$scope.instance.isActive) {
+                $scope.$parent.$parent.subscribePhase = true;
+                $scope.$parent.$parent.serializedForm = {
+                    instanceId: $scope.instance.id,
+                    baseUrl : $scope.instance.baseUrl
+                };
+            }
         };
 
         $scope.deleteInstance = function ($scope) {
@@ -83,17 +92,18 @@ angular.module('app')
             }
 
             $http.post("/api/instances/checkInstanceCredentials", $scope.form)
-                 .success(function (response) {
+                 .success(function (instance) {
                     // $scope.$parent.instances = list;
                    //  $scope.clearInstanceForm($scope);
                      $scope.status = "success";
-                     $scope.message = response.message;
+                     $scope.message = "Please subscribe for the Jira instance. It may take a few minutes to process the subscription.";
                      $scope.serializedForm =
                      {
                          baseUrl: $scope.form.baseUrl,
                          timeZone: $scope.form.timeZone,
                          jiraUsername: $scope.form.jiraUsername,
-                         jiraPassword: $scope.form.jiraPassword
+                         jiraPassword: $scope.form.jiraPassword,
+                         email : instance.email
                      };
                      $scope.instanceUrl = $scope.form.baseUrl;
                      $scope.subscribePhase = true;

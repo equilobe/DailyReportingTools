@@ -11,10 +11,11 @@ namespace Equilobe.DailyReport.Models.Interfaces
     public interface IDataService : IService
     {
         void SaveInstance(InstalledInstance instanceData);
-        void SaveInstance(RegisterModel modelData);
+        SimpleResult SaveInstance(RegisterModel modelData);
         void DeleteInstance(long id);
         void DeleteInstance(string pluginKey);
         void SetInstanceExpirationDate(string subscriptionId, DateTime date);
+        void SetInstanceExpirationDate(long instanceId, DateTime date);
         Subscription GetSubscription(string subscriptionId);
         //void ActivateInstance(string username, string baseUrl);
         //void ActivateInstance(string subscriptionId);

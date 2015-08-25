@@ -74,11 +74,23 @@ namespace Equilobe.DailyReport.SL
                 }
 
                 var registrationInfo = JsonConvert.DeserializeObject<RegisterModel>(payPalCheckoutInfo.custom);
-                var registerUser = RegisterUser(userManager, ipnId, registrationInfo);
-                if (!registerUser)
-                    return;
 
-                subscriptionContext.Username = registrationInfo.Email;
+                if(registrationInfo.InstanceId != null)
+                {
+                    DataService.SetInstanceExpirationDate(registrationInfo.InstanceId.Value, GetPeriodEndDate(DateTime.Now, payPalCheckoutInfo.period3));
+                }
+                else
+                {
+                    var register = Register(userManager, ipnId, registrationInfo);
+                    if (!register)
+                        return;
+                }
+        
+                if(!string.IsNullOrEmpty(registrationInfo.Email))
+                    subscriptionContext.Username = registrationInfo.Email;
+                if (registrationInfo.InstanceId != null)
+                    subscriptionContext.InstanceId = registrationInfo.InstanceId;
+
                 subscriptionContext.BaseUrl = registrationInfo.BaseUrl;
                 subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
                 subscriptionContext.SubscriptionPeriod = payPalCheckoutInfo.period3;
@@ -181,32 +193,6 @@ namespace Equilobe.DailyReport.SL
             SetLogProcessed(ipnId);
         }
 
-        private bool RegisterUser(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
-        {
-            if (string.IsNullOrEmpty(registrationInfo.Email))
-                return true;
-
-            var registrationResult = new SimpleResult();
-            try
-            {
-                registrationResult = RegistrationService.RegisterUser(registrationInfo, userManager);
-                if (registrationResult.Message == ApplicationErrors.ValidationError || registrationResult.Message == ApplicationErrors.UserAlreadyCreated)
-                {
-                    SetLogProcessed(ipnId);
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                //RemoveUser(registrationInfo);
-                //SetLogProcessed(ipnId);
-                return false;
-            }
-
-            return true;
-        }
-
-
         public void ProcessIPNLogs(UserManager<ApplicationUser> userManager, long skipLogId)
         {
             var logs = new List<IPNLog>();
@@ -239,6 +225,59 @@ namespace Equilobe.DailyReport.SL
         }
 
         #region Helpers
+
+        private bool Register(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
+        {
+            var user = userManager.FindByEmail(registrationInfo.Email);
+            if (user != null)
+            {
+                var saveInstance = SaveInstance(ipnId, registrationInfo);
+                if (!saveInstance)
+                    return false;
+
+                return true;
+            }
+
+            return RegisterUser(userManager, ipnId, registrationInfo);
+        }
+
+        private bool RegisterUser(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
+        {
+            var registrationResult = new SimpleResult();
+            try
+            {
+                registrationResult = RegistrationService.RegisterUser(registrationInfo, userManager);
+                if (registrationResult.Message == ApplicationErrors.ValidationError || registrationResult.Message == ApplicationErrors.UserAlreadyCreated)
+                {
+                    SetLogProcessed(ipnId);
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool SaveInstance(long ipnId, RegisterModel registrationInfo)
+        {
+            var saveInstance = new SimpleResult();
+            try
+            {
+                DataService.SaveInstance(registrationInfo);
+            }
+            catch
+            {
+                if (saveInstance.HasError)
+                    SetLogProcessed(ipnId);
+
+                return false;
+            }
+
+            return true;
+        }
 
         private static void SetLogProcessed(long id)
         {
@@ -322,7 +361,6 @@ namespace Equilobe.DailyReport.SL
                 return log.Id;
             }
         }
-
 
         private static IPNLog GetLog(PayPalCheckoutInfo payPalCheckoutInfo)
         {

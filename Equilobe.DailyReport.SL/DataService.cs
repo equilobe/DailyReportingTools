@@ -13,6 +13,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Net.Http;
 using Equilobe.DailyReport.Models.PayPal;
+using Equilobe.DailyReport.Models.Data;
 
 
 namespace Equilobe.DailyReport.SL
@@ -41,7 +42,7 @@ namespace Equilobe.DailyReport.SL
             SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
-        public void SaveInstance(RegisterModel modelData)
+        public SimpleResult SaveInstance(RegisterModel modelData)
         {
             long instanceId = 0;
             using (var db = new ReportsDb())
@@ -51,7 +52,7 @@ namespace Equilobe.DailyReport.SL
 
                 var installedInstance = user.InstalledInstances.SingleOrDefault(i => i.BaseUrl == modelData.BaseUrl);
                 if (installedInstance != null && !string.IsNullOrEmpty(modelData.Password))
-                    throw new ArgumentException();
+                    return SimpleResult.Error(ApplicationErrors.InstanceAlreadyCreated);
 
                 if (installedInstance == null)
                 {
@@ -71,6 +72,8 @@ namespace Equilobe.DailyReport.SL
 
             if (instanceId != 0)
                 SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
+
+            return SimpleResult.Success("Succes");
         }
 
         public void DeleteInstance(string pluginKey)
@@ -107,9 +110,20 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void SetInstanceExpirationDate(long instanceId, DateTime date)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.Single(i => i.Id == instanceId);
+                instance.ExpirationDate = date;
+
+                db.SaveChanges();
+            }
+        }
+
         public Subscription GetSubscription(string subscriptionId)
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var subscription = db.Subscriptions.Single(s => s.Id == subscriptionId);
 
@@ -158,7 +172,11 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
+                var instance = new InstalledInstance();
+                if (context.InstanceId != null)
+                    instance = db.InstalledInstances.Single(i => i.Id == context.InstanceId);
+                else
+                    instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
 
                 var subscription = new Subscription();
                 subscription.TrialEndDate = context.TrialEndDate;
@@ -177,7 +195,7 @@ namespace Equilobe.DailyReport.SL
             var payment = new Payment();
             context.CopyPropertiesOnObjects(payment);
 
-            using(var db= new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 db.Payments.Add(payment);
                 db.SaveChanges();
@@ -225,7 +243,7 @@ namespace Equilobe.DailyReport.SL
                          .Where(installedInstance => installedInstance.ClientKey == pluginKey)
                          .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
                 .ToList();
-        }
+            }
         }
 
         public List<string> GetUniqueProjectsKey(long id)
@@ -251,13 +269,14 @@ namespace Equilobe.DailyReport.SL
                            .ToList()
                            .ForEach(installedInstance =>
                 {
-                               instances.Add(new Instance
-                               {
-                                   Id = installedInstance.Id,
-                                   BaseUrl = installedInstance.BaseUrl,
-                                   TimeZone = installedInstance.TimeZone
-                               });
-                           });
+                    instances.Add(new Instance
+                    {
+                        Id = installedInstance.Id,
+                        BaseUrl = installedInstance.BaseUrl,
+                        TimeZone = installedInstance.TimeZone,
+                        IsActive = installedInstance.ExpirationDate > DateTime.Now
+                    });
+                });
             }
 
             return instances;
@@ -284,13 +303,13 @@ namespace Equilobe.DailyReport.SL
 
         public bool IsInstanceActive(long basicSettingsId)
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var instance = SearchInstanceBySettingsId(basicSettingsId);
 
                 return instance.ExpirationDate > DateTime.Now;
             }
-        }         
+        }
 
 
         // TODO: refactor to return a different object that is not tied to the Storage layer
@@ -305,8 +324,8 @@ namespace Equilobe.DailyReport.SL
                     .Include(s => s.IndividualDraftConfirmations)
                     .Include(s => s.ReportExecutionInstances)
                     .SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
-                }
             }
+        }
 
 
 
@@ -394,7 +413,7 @@ namespace Equilobe.DailyReport.SL
 
         InstalledInstance SearchInstanceBySettingsId(long settingsId)
         {
-            using(var db = new ReportsDb())
+            using (var db = new ReportsDb())
             {
                 var basicSettings = db.BasicSettings.Single(bs => bs.Id == settingsId);
 
