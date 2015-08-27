@@ -12,6 +12,7 @@ angular.module('app')
         $("body").attr("data-page", "projects");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
+        $scope.serializedInstance = {};
 
         $http.get("/api/projects/")
             .success(function (instances) {
@@ -42,5 +43,11 @@ angular.module('app')
         $scope.setInstance = function (instance) {
             $scope.instance = instance;
             $location.path('/app/instances/' + instance.id + '/projects', false);
+            if (!instance.isActive) {
+                $scope.serializedInstance = {
+                    instanceId: instance.id,
+                    baseUrl: instance.baseUrl
+                };
+            }
         }
     }]);

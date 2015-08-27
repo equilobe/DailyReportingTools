@@ -44,112 +44,31 @@ namespace Equilobe.DailyReport.SL
             if (status == PayPalVariables.InvalidStatus)
                 return;
 
-            ProcessIPN(payPalCheckoutInfo, userManager, id);
+            var result = ProcessIPN(payPalCheckoutInfo, userManager, id);
             ProcessIPNLogs(userManager, id);
         }
 
-        public void ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long ipnId)
+        public bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long ipnId)
         {
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionSignup)
-            {
-                var subscriptionContext = new SubscriptionContext();
-                string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
-                subscriptionContext.SubscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
-
-                using (var db = new ReportsDb())
-                {
-                    var sub = db.Subscriptions.SingleOrDefault(s => s.Id == payPalCheckoutInfo.subscr_id);
-
-                    if (sub != null)
-                    {
-                        SetLogProcessed(ipnId);
-                        return;
-                    }
-                }
-
-                if (payPalCheckoutInfo.custom == null)
-                {
-                    SetLogProcessed(ipnId);
-                    return;
-                }
-
-                var registrationInfo = JsonConvert.DeserializeObject<RegisterModel>(payPalCheckoutInfo.custom);
-
-                if(registrationInfo.InstanceId != null)
-                {
-                    DataService.SetInstanceExpirationDate(registrationInfo.InstanceId.Value, GetPeriodEndDate(DateTime.Now, payPalCheckoutInfo.period3));
-                }
-                else
-                {
-                    var register = Register(userManager, ipnId, registrationInfo);
-                    if (!register)
-                        return;
-                }
-        
-                if(!string.IsNullOrEmpty(registrationInfo.Email))
-                    subscriptionContext.Username = registrationInfo.Email;
-                if (registrationInfo.InstanceId != null)
-                    subscriptionContext.InstanceId = registrationInfo.InstanceId;
-
-                subscriptionContext.BaseUrl = registrationInfo.BaseUrl;
-                subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
-                subscriptionContext.SubscriptionPeriod = payPalCheckoutInfo.period3;
-
-                if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
-                {
-                    subscriptionContext.TrialEndDate = GetPeriodEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
-                }
-
-                try
-                {
-                    DataService.SaveSubscription(subscriptionContext);
-                    if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
-                        DataService.SetInstanceExpirationDate(subscriptionContext.SubscriptionId, subscriptionContext.TrialEndDate.Value);
-                }
-                catch
-                {
-                    // DataService.SetInstanceExpirationDate(subscriptionContext.SubscriptionId, DateTime.Now.AddMinutes(-1));
-                    //  SetLogProcessed(ipnId);
-                    return;
-                }
-
-            }
+                return HandleSubscriptionSignUp(payPalCheckoutInfo, userManager, ipnId);
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionCanceled)
             {
-                DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+                //TODO : 
+                // - don't cancel
+                // - notify user via email
             }
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionExpired)
             {
-                DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+                HandleSubscriptionExpiration(payPalCheckoutInfo, ipnId);
+                return true;
             }
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionPayment)
             {
-                if (payPalCheckoutInfo.payment_status == PayPalVariables.PaymentCompleted)
-                {
-                    if (TransactionProcessed(payPalCheckoutInfo.txn_id))
-                    {
-                        SetLogProcessed(ipnId);
-                        return;
-                    }
-
-                    var paymentContext = GetPaymentContext(payPalCheckoutInfo);
-
-                    try
-                    {
-                        DataService.SavePayment(paymentContext);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-
-                    var subscription = DataService.GetSubscription(paymentContext.SubscriptionId);
-                    if (CheckPayment(payPalCheckoutInfo))
-                        DataService.SetInstanceExpirationDate(payPalCheckoutInfo.subscr_id, GetPeriodEndDate(DateTime.Now, subscription.SubscriptionPeriod));
-                }
+                return HandleSubscriptionPayment(payPalCheckoutInfo, ipnId);
 
             }
 
@@ -160,21 +79,11 @@ namespace Equilobe.DailyReport.SL
 
             if (payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
             {
-                var paymentContext = GetPaymentContext(payPalCheckoutInfo);
-                try
-                {
-                    DataService.SavePayment(paymentContext);
-                }
-                catch
-                {
-                    return;
-                }
-
-                if (!CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
-                    DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+                return HandleRefund(payPalCheckoutInfo, ipnId);
             }
 
             SetLogProcessed(ipnId);
+            return true;
         }
 
         public void ProcessIPNLogs(UserManager<ApplicationUser> userManager, long skipLogId)
@@ -189,7 +98,14 @@ namespace Equilobe.DailyReport.SL
             foreach (var log in logs)
             {
                 var paypalInfo = Deserialization.XmlDeserialize<PayPalCheckoutInfo>(log.SerializedPayPalInfo);
-                ProcessIPN(paypalInfo, userManager, log.Id);
+                try
+                {
+                    var result = ProcessIPN(paypalInfo, userManager, log.Id);
+                }
+                catch (Exception ex)
+                {
+                    //for debugging
+                }
             }
         }
 
@@ -210,17 +126,145 @@ namespace Equilobe.DailyReport.SL
 
         #region Helpers
 
+        private bool HandleRefund(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        {
+            var paymentContext = GetPaymentContext(payPalCheckoutInfo);
+            try
+            {
+                DataService.SavePayment(paymentContext);
+            }
+            catch
+            {
+                return false;
+            }
+
+            if (!CheckSubscriptionPaymentSituation(payPalCheckoutInfo.subscr_id))
+                DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+
+            SetLogProcessed(ipnId);
+            return true;
+        }
+
+        private bool HandleSubscriptionPayment(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        {
+            if (payPalCheckoutInfo.payment_status == PayPalVariables.PaymentCompleted)
+            {
+                if (TransactionProcessed(payPalCheckoutInfo.txn_id))
+                {
+                    SetLogProcessed(ipnId);
+                    return true;
+                }
+
+                var paymentContext = GetPaymentContext(payPalCheckoutInfo);
+
+                try
+                {
+                    DataService.SavePayment(paymentContext);
+                }
+                catch
+                {
+                    return false;
+                }
+
+                var subscription = DataService.GetSubscription(paymentContext.SubscriptionId);
+                if (CheckPayment(payPalCheckoutInfo))
+                    DataService.SetInstanceExpirationDate(payPalCheckoutInfo.subscr_id, GetPeriodEndDate(DateTime.Now, subscription.SubscriptionPeriod));
+            }
+
+            SetLogProcessed(ipnId);
+            return true;
+        }
+
+        private void HandleSubscriptionExpiration(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        {
+            DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
+            SetLogProcessed(ipnId);
+        }
+
+        private bool HandleSubscriptionSignUp(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long ipnId)
+        {
+            var subscriptionContext = new SubscriptionContext();
+            string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
+            subscriptionContext.SubscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
+
+            if (WasSubscriptionAlreadyProcessed(payPalCheckoutInfo, ipnId))
+                return true;
+
+            if (payPalCheckoutInfo.custom == null)
+            {
+                SetLogProcessed(ipnId);
+                return true;
+            }
+
+            var registrationInfo = JsonConvert.DeserializeObject<RegisterModel>(payPalCheckoutInfo.custom);
+
+            if (registrationInfo.InstanceId != null)
+            {
+                DataService.SetInstanceExpirationDate(registrationInfo.InstanceId.Value, GetPeriodEndDate(DateTime.Now, payPalCheckoutInfo.period3));
+            }
+            else
+            {
+                var register = Register(userManager, ipnId, registrationInfo);
+                if (!register)
+                    return true;
+            }
+
+            SetSubscriptionContext(payPalCheckoutInfo, subscriptionContext, registrationInfo);
+
+            try
+            {
+                DataService.SaveSubscription(subscriptionContext);
+                if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
+                    DataService.SetInstanceExpirationDate(subscriptionContext.SubscriptionId, subscriptionContext.TrialEndDate.Value);
+            }
+            catch
+            {
+                return false;
+            }
+
+            SetLogProcessed(ipnId);
+            return true;
+        }
+
+        private void SetSubscriptionContext(PayPalCheckoutInfo payPalCheckoutInfo, SubscriptionContext subscriptionContext, RegisterModel registrationInfo)
+        {
+
+            if (!string.IsNullOrEmpty(registrationInfo.Email))
+                subscriptionContext.Username = registrationInfo.Email;
+            if (registrationInfo.InstanceId != null)
+                subscriptionContext.InstanceId = registrationInfo.InstanceId;
+
+            subscriptionContext.BaseUrl = registrationInfo.BaseUrl;
+            subscriptionContext.SubscriptionId = payPalCheckoutInfo.subscr_id;
+            subscriptionContext.SubscriptionPeriod = payPalCheckoutInfo.period3;
+
+            if (!string.IsNullOrEmpty(payPalCheckoutInfo.period1))
+            {
+                subscriptionContext.TrialEndDate = GetPeriodEndDate(subscriptionContext.SubscriptionDate, payPalCheckoutInfo.period1);
+            }
+        }
+
+        private static bool WasSubscriptionAlreadyProcessed(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var sub = db.Subscriptions.SingleOrDefault(s => s.Id == payPalCheckoutInfo.subscr_id);
+
+                if (sub != null)
+                {
+                    SetLogProcessed(ipnId);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private bool Register(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
         {
             var user = userManager.FindByEmail(registrationInfo.Email);
             if (user != null)
-            {
-                var saveInstance = SaveInstance(ipnId, registrationInfo);
-                if (!saveInstance)
-                    return false;
-
-                return true;
-            }
+                return SaveInstance(ipnId, registrationInfo);
 
             return RegisterUser(userManager, ipnId, registrationInfo);
         }
@@ -228,17 +272,11 @@ namespace Equilobe.DailyReport.SL
         private bool RegisterUser(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
         {
             var registrationResult = new SimpleResult();
-            try
+
+            registrationResult = RegistrationService.RegisterUser(registrationInfo, userManager);
+            if (registrationResult.Message == ApplicationErrors.ValidationError || registrationResult.Message == ApplicationErrors.UserAlreadyCreated)
             {
-                registrationResult = RegistrationService.RegisterUser(registrationInfo, userManager);
-                if (registrationResult.Message == ApplicationErrors.ValidationError || registrationResult.Message == ApplicationErrors.UserAlreadyCreated)
-                {
-                    SetLogProcessed(ipnId);
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
+                SetLogProcessed(ipnId);
                 return false;
             }
 
@@ -247,16 +285,11 @@ namespace Equilobe.DailyReport.SL
 
         private bool SaveInstance(long ipnId, RegisterModel registrationInfo)
         {
-            var saveInstance = new SimpleResult();
-            try
-            {
-                DataService.SaveInstance(registrationInfo);
-            }
-            catch
-            {
-                if (saveInstance.HasError)
-                    SetLogProcessed(ipnId);
+            var saveInstance = DataService.SaveInstance(registrationInfo);
 
+            if (saveInstance.HasError)
+            {
+                SetLogProcessed(ipnId);
                 return false;
             }
 

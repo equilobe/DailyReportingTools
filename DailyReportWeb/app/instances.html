@@ -32,18 +32,18 @@
     </div>
     <div class="container" ng-if="instances.length">
         <div class="row" ng-repeat="instance in instances">
-            <div class="col-sm-8">
+            <div class="col-sm-7">
                 <a class="instance" ng-href="app/instances/{{instance.id}}/projects/">
                     <h3>
                         {{instance.hostname}}
                     </h3>
                 </a>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-5">
                 <div class="pull-right">
                     <h3>
                         <button class="btn btn-default glyphicon glyphicon-cog" ng-click="editInstance(this)" ng-disabled="addingInstance || editingInstance" title="Edit Instance"></button>
-                        <button class="btn btn-default glyphicon glyphicon-trash" ng-click="deleteInstance(this)" ng-disabled="addingInstance || editingInstance" title="Delete Instance"></button>
+                        <!--<button class="btn btn-default glyphicon glyphicon-trash" ng-click="deleteInstance(this)" ng-disabled="addingInstance || editingInstance" title="Delete Instance"></button>-->
                     </h3>
                 </div>
             </div>
@@ -112,16 +112,6 @@
             <form class="hcenter" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
                 <input type="hidden" name="item_name" value="Subscription for '{{instanceUrl}}' instance">
-                <input type="hidden" name="hosted_button_id" value="USVJSPUC2AT7W">
-                <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
-                <input type="hidden" name="custom" value="{{serializedForm}}" />
-                <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-            </form>
-
-            <form class="hcenter" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="item_name" value="Subscription for '{{instanceUrl}}' instance">
                 <input type="hidden" name="hosted_button_id" value="VFAC7AWMFHERS">
                 <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
                 <input type='hidden' name='rm' value='2'>
@@ -140,7 +130,7 @@
         </div>
     </div>
     <div ng-show="!addingInstance && !editingInstance" class="container mg-top-10">
-        <a class="pull-right" href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=UPQDRYSGXEG62">
+        <a href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=UPQDRYSGXEG62">
             <img src="https://www.sandbox.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif" border="0">
         </a>
     </div>

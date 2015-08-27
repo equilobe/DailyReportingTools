@@ -1,5 +1,4 @@
 ﻿'use strict';
-
 angular.module('app')
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/app/instances', {
@@ -7,6 +6,7 @@ angular.module('app')
             controller: 'InstancesController'
         });
     }])
+
     .controller("InstancesController", ['$scope', '$http', function ($scope, $http) {
         $("body").attr("data-page", "instances");
         $scope.$parent.child = $scope;
@@ -42,24 +42,32 @@ angular.module('app')
                 $scope.$parent.$parent.subscribePhase = true;
                 $scope.$parent.$parent.serializedForm = {
                     instanceId: $scope.instance.id,
-                    baseUrl : $scope.instance.baseUrl
+                    baseUrl: $scope.instance.baseUrl
                 };
             }
         };
 
-        $scope.deleteInstance = function ($scope) {
-            if (confirm("Are you sure you want to remove instance ?\n" + $scope.instance.baseUrl) == true) {
-                $scope.child.status = "loading";
+        //$scope.deleteInstance = function ($scope) {
+        //    var confirmation = true;
+        //    if ($scope.instance.isActive) {
+        //        confirmation = confirm("Are you sure you want to remove instance? \n" + $scope.instance.baseUrl + "\nThe subscription period is not over yet.");
+        //    }
+        //    else {
+        //        confirmation = confirm("Are you sure you want to remove instance ?\n" + $scope.instance.baseUrl);
+        //    }
 
-                $http.delete("/api/instances/" + $scope.instance.id)
-                    .success(function (list) {
-                        $scope.child.instances = list;
-                    })
-                    .finally(function () {
-                        $scope.child.status = "loaded";
-                    });
-            }
-        };
+        //    if (confirmation) {
+        //        $scope.child.status = "loading";
+
+        //        $http.delete("/api/instances/" + $scope.instance.id)
+        //            .success(function (list) {
+        //                $scope.child.instances = list;
+        //            })
+        //            .finally(function () {
+        //                $scope.child.status = "loaded";
+        //            });
+        //    }
+        //};
 
         $scope.clearInstanceForm = function ($scope) {
             $scope.form.$setPristine();
@@ -93,8 +101,8 @@ angular.module('app')
 
             $http.post("/api/instances/checkInstanceCredentials", $scope.form)
                  .success(function (instance) {
-                    // $scope.$parent.instances = list;
-                   //  $scope.clearInstanceForm($scope);
+                     // $scope.$parent.instances = list;
+                     //  $scope.clearInstanceForm($scope);
                      $scope.status = "success";
                      $scope.message = "Please subscribe for the Jira instance. It may take a few minutes to process the subscription.";
                      $scope.serializedForm =
@@ -103,7 +111,7 @@ angular.module('app')
                          timeZone: $scope.form.timeZone,
                          jiraUsername: $scope.form.jiraUsername,
                          jiraPassword: $scope.form.jiraPassword,
-                         email : instance.email
+                         email: instance.email
                      };
                      $scope.instanceUrl = $scope.form.baseUrl;
                      $scope.subscribePhase = true;

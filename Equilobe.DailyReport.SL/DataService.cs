@@ -103,8 +103,11 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.Subscriptions.Single(s => s.Id == subscriptionId).InstalledInstance;
-                instance.ExpirationDate = date;
+                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
+                if (subscription == null)
+                    return;
+
+                subscription.InstalledInstance.ExpirationDate = date;
 
                 db.SaveChanges();
             }
@@ -162,9 +165,12 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.Subscriptions.Single(s => s.Id == subscriptionId).InstalledInstance;
+                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
 
-                return instance.ExpirationDate > DateTime.Now;
+                if (subscription == null)
+                    return false;
+
+                return subscription.InstalledInstance.ExpirationDate > DateTime.Now;
             }
         }
 

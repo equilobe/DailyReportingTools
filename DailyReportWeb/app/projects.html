@@ -58,6 +58,18 @@
             <p class="help-block">
                 You have to subscribe for this instance
             </p>
+            <div class="subscribe">
+                <form class="hcenter" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="item_name" value="Subscription for '{{instance.baseUrl}}' instance">
+                    <input type="hidden" name="hosted_button_id" value="VFAC7AWMFHERS">
+                    <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
+                    <input type='hidden' name='rm' value='2'>
+                    <input type="hidden" name="custom" value="{{serializedInstance}}" />
+                    <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
+            </div>
         </div>
         <div class="container projects" ng-if="instance.projects.length">
             <div ng-repeat="project in instance.projects">

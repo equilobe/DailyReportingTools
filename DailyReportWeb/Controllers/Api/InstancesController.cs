@@ -39,17 +39,17 @@ namespace DailyReportWeb.Controllers.Api
             return instance;
         }
 
-        public List<Instance> Delete(long id)
-        {
-            var projectKeys = DataService.GetUniqueProjectsKey(id);
-            TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
-            {
-                UniqueProjectKeys = projectKeys
-            });
+        //public List<Instance> Delete(long id)
+        //{
+        //    var projectKeys = DataService.GetUniqueProjectsKey(id);
+        //    TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
+        //    {
+        //        UniqueProjectKeys = projectKeys
+        //    });
 
-            DataService.DeleteInstance(id);
+        //    DataService.DeleteInstance(id);
 
-            return DataService.GetInstances();
-        }
+        //    return DataService.GetInstances();
+        //}
     }
 }
