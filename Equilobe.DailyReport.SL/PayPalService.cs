@@ -26,6 +26,7 @@ namespace Equilobe.DailyReport.SL
     {
         public IDataService DataService { get; set; }
         public IRegistrationService RegistrationService { get; set; }
+        public IEmailService EmailService { get; set; }
 
         public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager)
         {
@@ -55,9 +56,8 @@ namespace Equilobe.DailyReport.SL
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionCanceled)
             {
-                //TODO : 
-                // - don't cancel
-                // - notify user via email
+                HandleSubscriptionCanceling(payPalCheckoutInfo, ipnId);
+                return true;
             }
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionExpired)
@@ -69,12 +69,6 @@ namespace Equilobe.DailyReport.SL
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionPayment)
             {
                 return HandleSubscriptionPayment(payPalCheckoutInfo, ipnId);
-
-            }
-
-            if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionFailed)
-            {
-
             }
 
             if (payPalCheckoutInfo.payment_status == "Refunded" || payPalCheckoutInfo.reason_code == "refund")
@@ -125,6 +119,42 @@ namespace Equilobe.DailyReport.SL
         }
 
         #region Helpers
+
+        private void HandleSubscriptionCanceling(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        {
+            var instance = DataService.GetInstance(payPalCheckoutInfo.subscr_id);
+            var user = DataService.GetUser(instance.UserId);
+
+            var emailModel = GetSubscriptionCancelingEmailModel(payPalCheckoutInfo, instance);
+
+            var subject = "Daily Report | Subscription Canceled";
+
+            var body = GetSubscriptionCancelingEmailBody(emailModel);
+
+            var message = EmailService.GetHtmlMessage(user.Email, subject, body);
+
+            EmailService.SendEmail(message);
+
+            SetLogProcessed(ipnId);
+        }
+
+        private static EmailNotification GetSubscriptionCancelingEmailModel(PayPalCheckoutInfo payPalCheckoutInfo, InstalledInstance instance)
+        {
+            return new EmailNotification
+            {
+                InstanceUrl = instance.BaseUrl,
+                SubscriptionId = payPalCheckoutInfo.subscr_id,
+                ExpirationDate = instance.ExpirationDate,
+                ExpirationDateString = instance.ExpirationDate.ToLongDateString()
+            };
+        }
+
+        private string GetSubscriptionCancelingEmailBody(EmailNotification model)
+        {
+            var template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"Views\Email\SubscriptionCanceling.cshtml");
+
+            return RazorEngine.Razor.Parse(template, model);
+        }
 
         private bool HandleRefund(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {

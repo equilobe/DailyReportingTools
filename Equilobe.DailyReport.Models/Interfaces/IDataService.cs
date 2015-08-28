@@ -17,6 +17,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SetInstanceExpirationDate(string subscriptionId, DateTime date);
         void SetInstanceExpirationDate(long instanceId, DateTime date);
         Subscription GetSubscription(string subscriptionId);
+        InstalledInstance GetInstance(string subscriptionId);
+        ApplicationUser GetUser(string userId);
         //void ActivateInstance(string username, string baseUrl);
         //void ActivateInstance(string subscriptionId);
         void DeactivateInstance(string subscriptionId);

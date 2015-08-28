@@ -417,6 +417,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Tools\AngularJS MVC.zip" />
     <Content Include="Views\Email\ConfirmationEmail.cshtml" />
+    <Content Include="Views\Email\SubscriptionCanceling.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

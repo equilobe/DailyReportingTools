@@ -134,6 +134,29 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public InstalledInstance GetInstance(string subscriptionId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
+
+                if (subscription == null)
+                    return null;
+
+                return subscription.InstalledInstance;
+            }
+        }
+
+        public ApplicationUser GetUser(string userId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var user = db.Users.SingleOrDefault(u => u.Id == userId);
+
+                return user;
+            }
+        }
+
         //public void ActivateInstance(string username, string baseUrl)
         //{
         //    using(var db = new ReportsDb())

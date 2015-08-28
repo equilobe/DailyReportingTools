@@ -29,6 +29,7 @@ namespace Equilobe.DailyReport.SL
         public IDataService DataService { get; set; }
         public ISettingsService SettingsService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
+        public IEmailService EmailService { get; set; }
 
         public SimpleResult RegisterUser(RegisterModel model, UserManager<ApplicationUser> userManager)
         {
@@ -56,9 +57,8 @@ namespace Equilobe.DailyReport.SL
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
-            //When testing, do not send emails
-            //var callbackUrl = GetCallbackUrl(userManager, user.Id);
-            //endAccountConfirmationEmail(user, callbackUrl);
+            var callbackUrl = GetCallbackUrl(userManager, user.Id);
+            SendAccountConfirmationEmail(user, callbackUrl);
 
             return DataService.SaveInstance(model);
         }
@@ -174,29 +174,17 @@ namespace Equilobe.DailyReport.SL
         {
             var message = GetAccountConfirmationMessage(user, callbackUrl);
 
-            SendEmail(message);
+            EmailService.SendEmail(message);
         }
 
-        private static void SendEmail(MailMessage message)
-        {
-            var smtp = new SmtpClient();
-
-            smtp.Send(message);
-        }
-
-        private static MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
+        private MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
         {
             var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml");
             var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
-            var email = RazorEngine.Razor.Parse(template, emailModel);
-            var message = new MailMessage
-            {
-                Subject = "DailyReport | Account Confirmation",
-                Body = email,
-                IsBodyHtml = true
-            };
-            message.To.Add(user.Email);
-            return message;
+            var body = RazorEngine.Razor.Parse(template, emailModel);
+            var subject = "DailyReport | Account Confirmation";
+
+            return EmailService.GetHtmlMessage(user.Email, subject, body);
         }
 
         #endregion
