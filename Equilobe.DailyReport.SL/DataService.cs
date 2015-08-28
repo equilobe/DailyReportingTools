@@ -14,6 +14,7 @@ using System.Data.Entity;
 using System.Net.Http;
 using Equilobe.DailyReport.Models.PayPal;
 using Equilobe.DailyReport.Models.Data;
+using System.Transactions;
 
 
 namespace Equilobe.DailyReport.SL
@@ -224,11 +225,17 @@ namespace Equilobe.DailyReport.SL
             var payment = new Payment();
             context.CopyPropertiesOnObjects(payment);
 
-            using (var db = new ReportsDb())
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.RepeatableRead}))
             {
-                db.Payments.Add(payment);
-                db.SaveChanges();
+                using (var db = new ReportsDb())
+                {
+                    db.Payments.Add(payment);
+                    db.SaveChanges();
+                }
+                scope.Complete();
             }
+
+
         }
 
         public string GetSharedSecret(string baseUrl)

@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Web;
 
 namespace Equilobe.DailyReport.SL
@@ -99,6 +100,10 @@ namespace Equilobe.DailyReport.SL
                 catch (Exception ex)
                 {
                     //for debugging
+                    var save = log.Id + "    " + ex.Message + "/n" + ex.StackTrace + "/n";
+                    var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
+                    path = Path.Combine(path, log.Id.ToString() + DateTime.Now.ToString());
+                    File.WriteAllText(path, save);
                 }
             }
         }
@@ -386,15 +391,21 @@ namespace Equilobe.DailyReport.SL
 
         private bool TransactionProcessed(string transactionId)
         {
-            using (var db = new ReportsDb())
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.RepeatableRead }))
             {
-                if (db.Payments == null)
-                    return false;
+                var transaction = new Payment();
+                using (var db = new ReportsDb())
+                {
+                    if (db.Payments == null)
+                        return false;
 
-                var transaction = db.Payments.SingleOrDefault(s => s.TransactionId == transactionId);
+                    transaction = db.Payments.SingleOrDefault(s => s.TransactionId == transactionId);
 
+                }
+                scope.Complete();
                 return transaction != null;
             }
+           
         }
 
         private static long SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
