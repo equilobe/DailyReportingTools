@@ -28,7 +28,7 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <h1 style="color:black; font-weight:normal; margin:0;">Subscription Cancelation</h1>
+                        <h1 style="color:black; font-weight:normal; margin:0;">Subscription Cancelled</h1>
                     </td>
                 </tr>
                 <tr>
@@ -38,7 +38,12 @@
                 </tr>
                 <tr>
                     <td colspan="4" height="20">
-                        <span style="color:black; font-size:12px;">The subscription with the id @Model.SubscriptionId, for '@Model.InstanceUrl' JIRA instance, has been canceled. The license will expire on @Model.ExpirationDateString</span><span>.</span>
+                        <span style="color:black; font-size:12px;">You just cancelled your daily report subscription for @Model.InstanceUrl. You will still receive the daily report until @Model.ExpirationDateString when your already paid subscription runs out.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" height="20">
+                        <span style="color:black; font-size:12px;">To reactivate the daily report you can go to <a href="@Model.SubscribeInstanceUrl">@Model.SubscribeInstanceUrl</a> after the subscription expires.</span>
                     </td>
                 </tr>
                 <tr>
@@ -48,7 +53,7 @@
                 </tr>
                 <tr>
                     <td colspan="4" style="font-size:11px">
-                        <p style="color:#ABABAB">You received this email because you canceled your subscription for the Daily Report at <a href="http://dailyreport.equilobe.com/" style="text-decoration:none; color:black">http://dailyreport.equilobe.com</a>. For help please send an email to <a href="mailto:dailyreport@equilobe.com" style="text-decoration:none; color:black">dailyreport@equilobe.com</a>.</p>
+                        <p style="color:#ABABAB">You received this email because you canceled your subscription for the Daily Report at <a href="@Model.DailyReportAppUrl" style="text-decoration:none; color:black">@Model.DailyReportAppUrl</a>. For help please send an email to <a href="mailto:dailyreport@equilobe.com" style="text-decoration:none; color:black">dailyreport@equilobe.com</a>.</p>
                     </td>
                 </tr>
             </table>

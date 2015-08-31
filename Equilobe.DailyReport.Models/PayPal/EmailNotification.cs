@@ -12,5 +12,8 @@ namespace Equilobe.DailyReport.Models.PayPal
         public DateTime ExpirationDate { get; set; }
         public string ExpirationDateString { get; set; }
         public string SubscriptionId { get; set; }
+        public long InstanceId { get; set; }
+        public string DailyReportAppUrl { get; set; }
+        public string SubscribeInstanceUrl { get; set; }
     }
 }

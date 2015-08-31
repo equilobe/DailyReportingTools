@@ -28,6 +28,7 @@ namespace Equilobe.DailyReport.SL
         public IDataService DataService { get; set; }
         public IRegistrationService RegistrationService { get; set; }
         public IEmailService EmailService { get; set; }
+        public IConfigurationService ConfigurationService { get; set; }
 
         public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager)
         {
@@ -99,7 +100,7 @@ namespace Equilobe.DailyReport.SL
                 }
                 catch (Exception ex)
                 {
-                    //for debugging
+                    //for testing purposes
                     var save = log.Id + "    " + ex.Message + "/n" + ex.StackTrace + "/n";
                     var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
                     var date = DateTime.Now;
@@ -133,7 +134,7 @@ namespace Equilobe.DailyReport.SL
 
             var emailModel = GetSubscriptionCancelingEmailModel(payPalCheckoutInfo, instance);
 
-            var subject = "Daily Report | Subscription Canceled";
+            var subject = "Daily Report | Subscription Cancelled";
 
             var body = GetSubscriptionCancelingEmailBody(emailModel);
 
@@ -144,15 +145,19 @@ namespace Equilobe.DailyReport.SL
             SetLogProcessed(ipnId);
         }
 
-        private static EmailNotification GetSubscriptionCancelingEmailModel(PayPalCheckoutInfo payPalCheckoutInfo, InstalledInstance instance)
+        private EmailNotification GetSubscriptionCancelingEmailModel(PayPalCheckoutInfo payPalCheckoutInfo, InstalledInstance instance)
         {
-            return new EmailNotification
+            var emailNotification = new EmailNotification
             {
                 InstanceUrl = instance.BaseUrl,
-                SubscriptionId = payPalCheckoutInfo.subscr_id,
                 ExpirationDate = instance.ExpirationDate,
-                ExpirationDateString = instance.ExpirationDate.ToLongDateString()
+                ExpirationDateString = instance.ExpirationDate.ToLongDateString(),
+                InstanceId = instance.Id,
+                DailyReportAppUrl = ConfigurationService.GetWebBaseUrl()
             };
+            emailNotification.SubscribeInstanceUrl = emailNotification.DailyReportAppUrl + "/app/" + emailNotification.InstanceId + "/projects";
+
+            return emailNotification;
         }
 
         private string GetSubscriptionCancelingEmailBody(EmailNotification model)
@@ -447,9 +452,6 @@ namespace Equilobe.DailyReport.SL
 
         string Verify(bool isSandbox, byte[] parameters)
         {
-
-            string response = "";
-
             string url = isSandbox ?
               "https://www.sandbox.paypal.com/cgi-bin/webscr" : "https://www.paypal.com/cgi-bin/webscr";
 
@@ -457,13 +459,20 @@ namespace Equilobe.DailyReport.SL
             webRequest.Method = "POST";
             webRequest.ContentType = "application/x-www-form-urlencoded";
 
-            //must keep the original intact and pass back to PayPal with a _notify-validate command
             string data = Encoding.ASCII.GetString(parameters);
             data += "&cmd=_notify-validate";
 
             webRequest.ContentLength = data.Length;
 
-            //Send the request to PayPal and get the response                 
+            string response = GetResponse(webRequest, data);
+
+            return response;
+        }
+
+        private static string GetResponse(HttpWebRequest webRequest, string data)
+        {
+            string response = "";
+
             using (StreamWriter streamOut = new StreamWriter(webRequest.GetRequestStream(), System.Text.Encoding.ASCII))
             {
                 streamOut.Write(data);
@@ -475,7 +484,6 @@ namespace Equilobe.DailyReport.SL
                 response = streamIn.ReadToEnd();
                 streamIn.Close();
             }
-
             return response;
         }
 
