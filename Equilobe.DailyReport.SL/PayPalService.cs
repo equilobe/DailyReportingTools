@@ -102,7 +102,8 @@ namespace Equilobe.DailyReport.SL
                     //for debugging
                     var save = log.Id + "    " + ex.Message + "/n" + ex.StackTrace + "/n";
                     var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
-                    path = Path.Combine(path, log.Id.ToString() + DateTime.Now.ToString());
+                    var date = DateTime.Now;
+                    path = Path.Combine(path, (log.Id.ToString() + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
                     File.WriteAllText(path, save);
                 }
             }
@@ -391,9 +392,9 @@ namespace Equilobe.DailyReport.SL
 
         private bool TransactionProcessed(string transactionId)
         {
-            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.RepeatableRead }))
+            var transaction = new Payment();
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.Serializable }))
             {
-                var transaction = new Payment();
                 using (var db = new ReportsDb())
                 {
                     if (db.Payments == null)
@@ -405,7 +406,7 @@ namespace Equilobe.DailyReport.SL
                 scope.Complete();
                 return transaction != null;
             }
-           
+
         }
 
         private static long SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
