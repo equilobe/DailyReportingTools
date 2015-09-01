@@ -11,12 +11,12 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IPayPalService : IService
     {
-        void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager);
+        void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo);
 
         bool CheckSubscriptionPaymentSituation(string subscriptionId);
 
-        bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long id);
+        bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, long id);
 
-        void ProcessIPNLogs(UserManager<ApplicationUser> userManager, long skipLogId);
+        void ProcessIPNLogs(long skipLogId);
     }
 }

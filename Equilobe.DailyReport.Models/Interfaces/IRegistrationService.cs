@@ -11,14 +11,14 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IRegistrationService : IService
     {
-        SimpleResult RegisterUser(RegisterModel model, UserManager<ApplicationUser> userManager);
+        SimpleResult RegisterUser(RegisterModel model);
 
-        SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation, UserManager<ApplicationUser> userManager);
+        SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation);
 
-        SimpleResult Login(LoginModel model, UserManager<ApplicationUser> userManager);
+        SimpleResult Login(LoginModel model);
 
         void Logout();
 
-        SimpleResult CheckRegistrationDetails(RegisterModel model, UserManager<ApplicationUser> userManager);
+        SimpleResult CheckRegistrationDetails(RegisterModel model);
     }
 }

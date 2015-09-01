@@ -20,6 +20,7 @@ using System.IO;
 using Equilobe.DailyReport.Models.Views;
 using System.Net.Http;
 using Equilobe.DailyReport.Models.Data;
+using Equilobe.DailyReport.SL.Interfaces;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -30,8 +31,9 @@ namespace Equilobe.DailyReport.SL
         public ISettingsService SettingsService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
         public IEmailService EmailService { get; set; }
+        public IOwinService OwinService { get; set; }
 
-        public SimpleResult RegisterUser(RegisterModel model, UserManager<ApplicationUser> userManager)
+        public SimpleResult RegisterUser(RegisterModel model)
         {
             try
             {
@@ -52,18 +54,18 @@ namespace Equilobe.DailyReport.SL
             if (searchedUser != null)
                 return SimpleResult.Error(ApplicationErrors.UserAlreadyCreated);
 
-            IdentityResult result = userManager.Create(user, model.Password);
+            IdentityResult result = OwinService.GetApplicationUserManager().Create(user, model.Password);
 
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
-            var callbackUrl = GetCallbackUrl(userManager, user.Id);
+            var callbackUrl = GetCallbackUrl(user.Id);
             SendAccountConfirmationEmail(user, callbackUrl);
 
             return DataService.SaveInstance(model);
         }
 
-        public SimpleResult CheckRegistrationDetails(RegisterModel model, UserManager<ApplicationUser> userManager)
+        public SimpleResult CheckRegistrationDetails(RegisterModel model)
         {
             ValidateRegisterModel(model);
 
@@ -88,13 +90,15 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation, UserManager<ApplicationUser> userManager)
+        public SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation)
         {
             string userId = emailConfirmation.userId;
             string code = HttpUtility.UrlDecode(emailConfirmation.code);
 
             if (userId == null || code == null)
                 return SimpleResult.Error("Invalid activation token.");
+
+            var userManager = OwinService.GetApplicationUserManager();
 
             var user = userManager.FindById(userId);
             if (user == null)
@@ -115,9 +119,10 @@ namespace Equilobe.DailyReport.SL
             return SimpleResult.Success("Your account was activated. You can now sign in.");
         }
 
-        public SimpleResult Login(LoginModel model, UserManager<ApplicationUser> userManager)
+        public SimpleResult Login(LoginModel model)
         {
             ValidateMail(model);
+            var userManager = OwinService.GetApplicationUserManager();
 
             var user = userManager.Find(model.Email, model.Password);
 
@@ -127,7 +132,7 @@ namespace Equilobe.DailyReport.SL
             if (!user.EmailConfirmed)
                 return SimpleResult.Error("Account has not been activated yet.");
 
-            SignIn(user, userManager, model.RememberMe);
+            SignIn(user, model.RememberMe);
 
             return SimpleResult.Success("");
         }
@@ -141,9 +146,9 @@ namespace Equilobe.DailyReport.SL
 
         #region Helpers
 
-        private string GetCallbackUrl(UserManager<ApplicationUser> userManager, string userId)
+        private string GetCallbackUrl(string userId)
         {
-            string code = HttpUtility.UrlEncode(userManager.GenerateEmailConfirmationToken(userId));
+            string code = HttpUtility.UrlEncode(OwinService.GetApplicationUserManager().GenerateEmailConfirmationToken(userId));
 
             return string.Format("{0}/app/confirmEmail?userId={1}&code={2}", ConfigurationService.GetWebBaseUrl(), userId, code);
         }
@@ -162,9 +167,10 @@ namespace Equilobe.DailyReport.SL
                 throw new ArgumentException();
         }
 
-        private void SignIn(ApplicationUser user, UserManager<ApplicationUser> userManager, bool isPersistent)
+        private void SignIn(ApplicationUser user, bool isPersistent)
         {
-            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+            var authenticationManager = OwinService.GetAuthenticationManager();
+            var userManager = OwinService.GetApplicationUserManager();
 
             authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie));

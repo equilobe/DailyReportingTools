@@ -7,6 +7,7 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Views;
 using Equilobe.DailyReport.Models.Web;
+using Equilobe.DailyReport.SL.Interfaces;
 using Equilobe.DailyReport.Utils;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
@@ -29,8 +30,9 @@ namespace Equilobe.DailyReport.SL
         public IRegistrationService RegistrationService { get; set; }
         public IEmailService EmailService { get; set; }
         public IConfigurationService ConfigurationService { get; set; }
+        public IOwinService OwinService { get; set; }
 
-        public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager)
+        public void GetStatus(byte[] parameters, PayPalCheckoutInfo payPalCheckoutInfo)
         {
             long id;
             try
@@ -47,14 +49,14 @@ namespace Equilobe.DailyReport.SL
             if (status == PayPalVariables.InvalidStatus)
                 return;
 
-            var result = ProcessIPN(payPalCheckoutInfo, userManager, id);
-            ProcessIPNLogs(userManager, id);
+            var result = ProcessIPN(payPalCheckoutInfo, id);
+            ProcessIPNLogs(id);
         }
 
-        public bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long ipnId)
+        public bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionSignup)
-                return HandleSubscriptionSignUp(payPalCheckoutInfo, userManager, ipnId);
+                return HandleSubscriptionSignUp(payPalCheckoutInfo, ipnId);
 
             if (payPalCheckoutInfo.txn_type == PayPalVariables.SubscriptionCanceled)
             {
@@ -82,7 +84,7 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        public void ProcessIPNLogs(UserManager<ApplicationUser> userManager, long skipLogId)
+        public void ProcessIPNLogs(long skipLogId)
         {
             var logs = new List<IPNLog>();
 
@@ -96,7 +98,7 @@ namespace Equilobe.DailyReport.SL
                 var paypalInfo = Deserialization.XmlDeserialize<PayPalCheckoutInfo>(log.SerializedPayPalInfo);
                 try
                 {
-                    var result = ProcessIPN(paypalInfo, userManager, log.Id);
+                    var result = ProcessIPN(paypalInfo, log.Id);
                 }
                 catch (Exception ex)
                 {
@@ -129,7 +131,7 @@ namespace Equilobe.DailyReport.SL
 
         #region Helpers
 
-        private void HandleSubscriptionCanceling(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        void HandleSubscriptionCanceling(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             var instance = DataService.GetInstance(payPalCheckoutInfo.subscr_id);
             var user = DataService.GetUser(instance.UserId);
@@ -147,7 +149,7 @@ namespace Equilobe.DailyReport.SL
             SetLogProcessed(ipnId);
         }
 
-        private EmailNotification GetSubscriptionCancelingEmailModel(PayPalCheckoutInfo payPalCheckoutInfo, InstalledInstance instance)
+        EmailNotification GetSubscriptionCancelingEmailModel(PayPalCheckoutInfo payPalCheckoutInfo, InstalledInstance instance)
         {
             var emailNotification = new EmailNotification
             {
@@ -162,14 +164,14 @@ namespace Equilobe.DailyReport.SL
             return emailNotification;
         }
 
-        private string GetSubscriptionCancelingEmailBody(EmailNotification model)
+        string GetSubscriptionCancelingEmailBody(EmailNotification model)
         {
             var template = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"Views\Email\SubscriptionCanceling.cshtml");
 
             return RazorEngine.Razor.Parse(template, model);
         }
 
-        private bool HandleRefund(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        bool HandleRefund(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             var paymentContext = GetPaymentContext(payPalCheckoutInfo);
             try
@@ -188,7 +190,7 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        private bool HandleSubscriptionPayment(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        bool HandleSubscriptionPayment(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             if (payPalCheckoutInfo.payment_status == PayPalVariables.PaymentCompleted)
             {
@@ -218,13 +220,13 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        private void HandleSubscriptionExpiration(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        void HandleSubscriptionExpiration(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             DataService.DeactivateInstance(payPalCheckoutInfo.subscr_id);
             SetLogProcessed(ipnId);
         }
 
-        private bool HandleSubscriptionSignUp(PayPalCheckoutInfo payPalCheckoutInfo, UserManager<ApplicationUser> userManager, long ipnId)
+        bool HandleSubscriptionSignUp(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             var subscriptionContext = new SubscriptionContext();
             string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
@@ -247,7 +249,7 @@ namespace Equilobe.DailyReport.SL
             }
             else
             {
-                var register = Register(userManager, ipnId, registrationInfo);
+                var register = Register(ipnId, registrationInfo);
                 if (!register)
                     return true;
             }
@@ -269,7 +271,7 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        private void SetSubscriptionContext(PayPalCheckoutInfo payPalCheckoutInfo, SubscriptionContext subscriptionContext, RegisterModel registrationInfo)
+        void SetSubscriptionContext(PayPalCheckoutInfo payPalCheckoutInfo, SubscriptionContext subscriptionContext, RegisterModel registrationInfo)
         {
 
             if (!string.IsNullOrEmpty(registrationInfo.Email))
@@ -287,7 +289,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private static bool WasSubscriptionAlreadyProcessed(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
+        bool WasSubscriptionAlreadyProcessed(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             using (var db = new ReportsDb())
             {
@@ -303,20 +305,20 @@ namespace Equilobe.DailyReport.SL
             return false;
         }
 
-        private bool Register(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
+        bool Register(long ipnId, RegisterModel registrationInfo)
         {
-            var user = userManager.FindByEmail(registrationInfo.Email);
+            var user = OwinService.GetApplicationUserManager().FindByEmail(registrationInfo.Email);
             if (user != null)
                 return SaveInstance(ipnId, registrationInfo);
 
-            return RegisterUser(userManager, ipnId, registrationInfo);
+            return RegisterUser(ipnId, registrationInfo);
         }
 
-        private bool RegisterUser(UserManager<ApplicationUser> userManager, long ipnId, RegisterModel registrationInfo)
+        bool RegisterUser(long ipnId, RegisterModel registrationInfo)
         {
             var registrationResult = new SimpleResult();
 
-            registrationResult = RegistrationService.RegisterUser(registrationInfo, userManager);
+            registrationResult = RegistrationService.RegisterUser(registrationInfo);
             if (registrationResult.Message == ApplicationErrors.ValidationError || registrationResult.Message == ApplicationErrors.UserAlreadyCreated)
             {
                 SetLogProcessed(ipnId);
@@ -326,7 +328,7 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        private bool SaveInstance(long ipnId, RegisterModel registrationInfo)
+        bool SaveInstance(long ipnId, RegisterModel registrationInfo)
         {
             var saveInstance = DataService.SaveInstance(registrationInfo);
 
@@ -339,7 +341,7 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        private static void SetLogProcessed(long id)
+        void SetLogProcessed(long id)
         {
             using (var db = new ReportsDb())
             {
@@ -368,7 +370,7 @@ namespace Equilobe.DailyReport.SL
             return false;
         }
 
-        static bool IsOnTrial(Subscription subscription)
+        bool IsOnTrial(Subscription subscription)
         {
             return DateTime.Now < subscription.TrialEndDate;
         }
@@ -381,7 +383,7 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        private PaymentContext GetPaymentContext(PayPalCheckoutInfo checkoutInfo)
+        PaymentContext GetPaymentContext(PayPalCheckoutInfo checkoutInfo)
         {
             return new PaymentContext
             {
@@ -397,7 +399,7 @@ namespace Equilobe.DailyReport.SL
             };
         }
 
-        private bool TransactionProcessed(string transactionId)
+        bool TransactionProcessed(string transactionId)
         {
             var transaction = new Payment();
             using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.Serializable }))
@@ -416,7 +418,7 @@ namespace Equilobe.DailyReport.SL
 
         }
 
-        private static long SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
+        long SaveLog(PayPalCheckoutInfo payPalCheckoutInfo)
         {
             var log = GetLog(payPalCheckoutInfo);
 
@@ -428,7 +430,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private static IPNLog GetLog(PayPalCheckoutInfo payPalCheckoutInfo)
+        static IPNLog GetLog(PayPalCheckoutInfo payPalCheckoutInfo)
         {
             var serializedInfo = Serialization.XmlSerialize(payPalCheckoutInfo);
 
@@ -441,7 +443,7 @@ namespace Equilobe.DailyReport.SL
             return log;
         }
 
-        private static void RemoveUser(RegisterModel registrationInfo)
+        static void RemoveUser(RegisterModel registrationInfo)
         {
             using (var db = new ReportsDb())
             {
@@ -471,7 +473,7 @@ namespace Equilobe.DailyReport.SL
             return response;
         }
 
-        private static string GetResponse(HttpWebRequest webRequest, string data)
+        static string GetResponse(HttpWebRequest webRequest, string data)
         {
             string response = "";
 

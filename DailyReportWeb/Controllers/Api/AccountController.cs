@@ -27,19 +27,6 @@ namespace DailyReportWeb.Controllers.Api
         public IJiraService JiraService { get; set; }
         public IRegistrationService RegistrationService { get; set; }
 
-        private ApplicationUserManager _userManager;
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
-
         //[AllowAnonymous]
         //public SimpleResult Register(RegisterModel model)
         //{
@@ -49,20 +36,20 @@ namespace DailyReportWeb.Controllers.Api
         [AllowAnonymous]
         public SimpleResult CheckRegistrationDetails(RegisterModel model)
         {
-            return RegistrationService.CheckRegistrationDetails(model, UserManager);
+            return RegistrationService.CheckRegistrationDetails(model);
         }
 
         [AllowAnonymous]
         [HttpPost]
         public SimpleResult ConfirmEmail([FromBody]EmailConfirmation emailConfirmation)
         {
-            return RegistrationService.ConfirmEmail(emailConfirmation, UserManager);
+            return RegistrationService.ConfirmEmail(emailConfirmation);
         }
 
         [AllowAnonymous]
         public SimpleResult Login(LoginModel model)
         {
-            return RegistrationService.Login(model, UserManager);
+            return RegistrationService.Login(model);
         }
 
         public void Logout()

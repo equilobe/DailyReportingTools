@@ -107,13 +107,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationUserManager.cs" />
     <Compile Include="ConfigurationService.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="EncryptionService.cs" />
     <Compile Include="ErrorService.cs" />
     <Compile Include="GitHubService.cs" />
+    <Compile Include="Interfaces\IOwinService.cs" />
     <Compile Include="JiraService.cs" />
+    <Compile Include="OwinService.cs" />
     <Compile Include="PayPalService.cs" />
     <Compile Include="RegistrationService.cs" />
     <Compile Include="SettingsService.cs" />
