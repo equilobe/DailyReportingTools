@@ -101,10 +101,12 @@ namespace Equilobe.DailyReport.SL
                 catch (Exception ex)
                 {
                     //for testing purposes
-                    var save = log.Id + "    " + ex.Message + "/n" + ex.StackTrace + "/n";
+                    var save = log.Id + "\n" + DateTime.Now.ToString() + "\n" + ex.Message + "\n" + ex.StackTrace + "\n";
+                    if (ex.InnerException != null)
+                        save += "\n" + "InnerException: \n" + ex.InnerException.Message;
                     var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
                     var date = DateTime.Now;
-                    path = Path.Combine(path, (log.Id.ToString() + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
+                    path = Path.Combine(path, (log.Id.ToString() + "-" + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
                     File.WriteAllText(path, save);
                 }
             }

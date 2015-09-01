@@ -158,28 +158,6 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        //public void ActivateInstance(string username, string baseUrl)
-        //{
-        //    using(var db = new ReportsDb())
-        //    {
-        //        var instance = db.InstalledInstances.Single(i => i.BaseUrl == baseUrl && i.User.UserName == username);
-        //        instance.Active = true;
-
-        //        db.SaveChanges();
-        //    }
-        //}
-
-        //public void ActivateInstance(string subscriptionId)
-        //{
-        //    using (var db = new ReportsDb())
-        //    {
-        //        var instance = db.InstalledInstances.SingleOrDefault(i => i.Subscription.Id == subscriptionId);
-        //        instance.Active = true;
-
-        //        db.SaveChanges();
-        //    }
-        //}
-
         public void DeactivateInstance(string subscriptionId)
         {
             SetInstanceExpirationDate(subscriptionId, DateTime.Now);
