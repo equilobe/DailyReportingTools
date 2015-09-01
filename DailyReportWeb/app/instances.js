@@ -14,6 +14,7 @@ angular.module('app')
         $scope.subscribePhase = false;
         $scope.serializedForm = {};
         $scope.instanceUrl = "";
+        $scope.isSubscriptionOnTrial = false;
 
         $http.get("/api/instances")
             .success(function (list) {
@@ -45,6 +46,18 @@ angular.module('app')
                     baseUrl: $scope.instance.baseUrl
                 };
             }
+
+            $scope.isSubscriptionOnTrial = $scope.isSubscriptionOnTrial($scope.instance.id);
+        };
+
+        $scope.isSubscriptionOnTrial = function (instanceId) {
+            $http.get("/api/instances/isSubscriptionOnTrial/" + instanceId)
+            .success(function (isOnTrial) {
+                return isOnTrial;
+            })
+            .error(function (error) {
+                console.log("Error");
+            });
         };
 
         //$scope.deleteInstance = function ($scope) {

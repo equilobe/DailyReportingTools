@@ -39,6 +39,13 @@ namespace DailyReportWeb.Controllers.Api
             return instance;
         }
 
+        public bool IsSubscriptionOnTrial(long subscriptionId)
+        {
+            var subscriptions = DataService.GetInstanceSubscriptions(subscriptionId);
+
+            return subscriptions.IsEmpty();
+        }
+
         //public List<Instance> Delete(long id)
         //{
         //    var projectKeys = DataService.GetUniqueProjectsKey(id);

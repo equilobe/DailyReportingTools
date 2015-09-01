@@ -103,9 +103,9 @@ namespace Equilobe.DailyReport.SL
                 catch (Exception ex)
                 {
                     //for testing purposes
-                    var save = log.Id + "\n" + DateTime.Now.ToString() + "\n" + ex.Message + "\n" + ex.StackTrace + "\n";
+                    var save = log.Id + "\r\n" + DateTime.Now.ToString() + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n";
                     if (ex.InnerException != null)
-                        save += "\n" + "InnerException: \n" + ex.InnerException.Message;
+                        save += "InnerException: \r\n" + ex.InnerException.Message;
                     var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
                     var date = DateTime.Now;
                     path = Path.Combine(path, (log.Id.ToString() + "-" + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
@@ -243,16 +243,9 @@ namespace Equilobe.DailyReport.SL
 
             var registrationInfo = JsonConvert.DeserializeObject<RegisterModel>(payPalCheckoutInfo.custom);
 
-            if (registrationInfo.InstanceId != null)
-            {
-                DataService.SetInstanceExpirationDate(registrationInfo.InstanceId.Value, GetPeriodEndDate(DateTime.Now, payPalCheckoutInfo.period3));
-            }
-            else
-            {
-                var register = Register(ipnId, registrationInfo);
-                if (!register)
-                    return true;
-            }
+            var register = RegisterInstance(ipnId, registrationInfo, payPalCheckoutInfo);
+            if (!register)
+                return true;
 
             SetSubscriptionContext(payPalCheckoutInfo, subscriptionContext, registrationInfo);
 
@@ -305,25 +298,17 @@ namespace Equilobe.DailyReport.SL
             return false;
         }
 
-        bool Register(long ipnId, RegisterModel registrationInfo)
+        bool RegisterInstance(long ipnId, RegisterModel registrationInfo, PayPalCheckoutInfo payPalCheckoutInfo)
         {
-            var user = OwinService.GetApplicationUserManager().FindByEmail(registrationInfo.Email);
-            if (user != null)
-                return SaveInstance(ipnId, registrationInfo);
+            var instance = new InstalledInstance();
 
-            return RegisterUser(ipnId, registrationInfo);
-        }
-
-        bool RegisterUser(long ipnId, RegisterModel registrationInfo)
-        {
-            var registrationResult = new SimpleResult();
-
-            registrationResult = RegistrationService.RegisterUser(registrationInfo);
-            if (registrationResult.Message == ApplicationErrors.ValidationError || registrationResult.Message == ApplicationErrors.UserAlreadyCreated)
+            if (registrationInfo.InstanceId != null)
             {
-                SetLogProcessed(ipnId);
-                return false;
+                instance = DataService.GetInstance(registrationInfo.InstanceId.Value);
+                DataService.SetInstanceExpirationDate(registrationInfo.InstanceId.Value, GetPeriodEndDate(DateTime.Now, payPalCheckoutInfo.period3));
             }
+            else
+                return SaveInstance(ipnId, registrationInfo);
 
             return true;
         }

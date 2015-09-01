@@ -40,7 +40,7 @@ angular.module('app')
                 jiraPassword : $scope.form.jiraPassword
             };
 
-            $http.post("/api/account/checkRegistrationDetails", $scope.form)
+            $http.post("/api/account/register", $scope.form)
                 .success(function (response) {
                     if (!response.hasError) {
                         $scope.username = $scope.form.email;

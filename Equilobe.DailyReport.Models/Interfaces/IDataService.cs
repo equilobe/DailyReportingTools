@@ -18,6 +18,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void SetInstanceExpirationDate(long instanceId, DateTime date);
         Subscription GetSubscription(string subscriptionId);
         InstalledInstance GetInstance(string subscriptionId);
+        InstalledInstance GetInstance(long instanceId);
         ApplicationUser GetUser(string userId);
         void DeactivateInstance(string subscriptionId);
         bool IsInstanceActive(string subscriptionId);
@@ -38,5 +39,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void AddUserImage(UserImageContext context);
         string GetUserImageKey(string username);
         TimeSpan GetOffsetFromProjectKey(string key);
+        List<Subscription> GetInstanceSubscriptions(long instanceId);
     }
 }

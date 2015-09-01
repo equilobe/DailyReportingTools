@@ -148,6 +148,16 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public InstalledInstance GetInstance(long instanceId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.Single(i => i.Id == instanceId);
+
+                return instance;
+            }
+        }
+
         public ApplicationUser GetUser(string userId)
         {
             using(var db = new ReportsDb())
@@ -413,6 +423,16 @@ namespace Equilobe.DailyReport.SL
         {
             var timeZoneId = GetTimeZoneIdFromProjectKey(key);
             return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
+        }
+
+        public List<Subscription> GetInstanceSubscriptions(long instanceId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var subscriptions = db.Subscriptions.Where(s => s.InstalledInstanceId == instanceId).ToList();
+
+                return subscriptions;
+            }
         }
 
         #region helpers

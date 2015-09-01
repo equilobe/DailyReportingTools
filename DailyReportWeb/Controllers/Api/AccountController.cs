@@ -27,17 +27,17 @@ namespace DailyReportWeb.Controllers.Api
         public IJiraService JiraService { get; set; }
         public IRegistrationService RegistrationService { get; set; }
 
-        //[AllowAnonymous]
-        //public SimpleResult Register(RegisterModel model)
-        //{
-        //    return RegistrationService.RegisterUser(model, UserManager);           
-        //}
-
         [AllowAnonymous]
-        public SimpleResult CheckRegistrationDetails(RegisterModel model)
+        public SimpleResult Register(RegisterModel model)
         {
-            return RegistrationService.CheckRegistrationDetails(model);
+            return RegistrationService.RegisterUser(model);
         }
+
+        //[AllowAnonymous]
+        //public SimpleResult CheckRegistrationDetails(RegisterModel model)
+        //{
+        //    return RegistrationService.CheckRegistrationDetails(model);
+        //}
 
         [AllowAnonymous]
         [HttpPost]

@@ -13,6 +13,7 @@ angular.module('app')
         $scope.$parent.child = $scope;
         $scope.status = "loading";
         $scope.serializedInstance = {};
+        $scope.isSubscriptionOnTrial = false;
 
         $http.get("/api/projects/")
             .success(function (instances) {
@@ -35,6 +36,7 @@ angular.module('app')
                 }
 
                 $scope.instances = instances;
+                $scope.setInstance($scope.instance);
             })
             .finally(function () {
                 $scope.status = "loaded";
@@ -49,5 +51,15 @@ angular.module('app')
                     baseUrl: instance.baseUrl
                 };
             }
-        }
+
+            $scope.isSubscriptionOnTrial = $scope.isSubscriptionOnTrial(instance.id);
+        };
+
+        $scope.isSubscriptionOnTrial = function(instanceId){
+            $http.post("/api/projects/isSubscriptionOnTrial", instanceId)
+            .success(function (isOnTrial){
+                return isOnTrial;
+            });
+        };
+
     }]);

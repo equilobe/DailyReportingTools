@@ -35,26 +35,23 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult RegisterUser(RegisterModel model)
         {
-            try
-            {
-                ValidateRegisterModel(model);
-            }
-            catch
-            {
-                return SimpleResult.Error(ApplicationErrors.ValidationError);
-            }
-
             var user = new ApplicationUser()
             {
                 UserName = model.Email,
                 Email = model.Email
             };
 
-            var searchedUser = SearchUser(model);
-            if (searchedUser != null)
-                return SimpleResult.Error(ApplicationErrors.UserAlreadyCreated);
+            var userManager = OwinService.GetApplicationUserManager();
 
-            IdentityResult result = OwinService.GetApplicationUserManager().Create(user, model.Password);
+            var searchedUser = userManager.FindByEmail(user.Email);
+            if (searchedUser != null)
+                return SimpleResult.Error(ApplicationErrors.EmailNotAvailable(searchedUser.Email));
+
+            var credentialsValid = JiraService.CredentialsValid(model, false);
+            if (!credentialsValid)
+                return SimpleResult.Error(ApplicationErrors.InvalidJiraCredentials);
+
+            IdentityResult result = userManager.Create(user, model.Password);
 
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
@@ -62,32 +59,9 @@ namespace Equilobe.DailyReport.SL
             var callbackUrl = GetCallbackUrl(user.Id);
             SendAccountConfirmationEmail(user, callbackUrl);
 
-            return DataService.SaveInstance(model);
-        }
+            DataService.SaveInstance(model);
 
-        public SimpleResult CheckRegistrationDetails(RegisterModel model)
-        {
-            ValidateRegisterModel(model);
-
-            var credentialsValid = JiraService.CredentialsValid(model, false);
-            if (!credentialsValid)
-                return SimpleResult.Error(ApplicationErrors.InvalidJiraCredentials);
-
-            var user = SearchUser(model);
-
-            if (user != null)
-                return SimpleResult.Error(ApplicationErrors.EmailNotAvailable(model.Email));
-
-            return SimpleResult.Success("Subscribe to finalize account registration and login after you confirm the account activation email.");
-        }
-
-        private static ApplicationUser SearchUser(RegisterModel model)
-        {
-            using (var db = new ReportsDb())
-            {
-                var user = db.Users.SingleOrDefault(u => u.Email == model.Email);
-                return user;
-            }
+            return SimpleResult.Success("Account confirmation details has been sent to your mail.");
         }
 
         public SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation)

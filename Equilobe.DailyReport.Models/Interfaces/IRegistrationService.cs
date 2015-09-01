@@ -18,7 +18,5 @@ namespace Equilobe.DailyReport.Models.Interfaces
         SimpleResult Login(LoginModel model);
 
         void Logout();
-
-        SimpleResult CheckRegistrationDetails(RegisterModel model);
     }
 }

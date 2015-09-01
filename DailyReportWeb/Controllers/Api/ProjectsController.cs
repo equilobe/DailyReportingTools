@@ -19,6 +19,7 @@ namespace DailyReportWeb.Controllers.Api
     {
         public ISettingsService SettingsService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IDataService DataService { get; set; }
 
         public List<BasicReportSettings> Get(long id)
         {
@@ -28,6 +29,13 @@ namespace DailyReportWeb.Controllers.Api
         public List<JiraInstance> Get()
         {
             return SettingsService.GetAllBasicReportSettings(new UserContext());
+        }
+
+        public bool IsSubscriptionOnTrial(long id)
+        {
+            var subscriptions = DataService.GetInstanceSubscriptions(id);
+
+            return subscriptions.IsEmpty();
         }
     }
 }
