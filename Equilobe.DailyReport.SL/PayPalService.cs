@@ -51,6 +51,9 @@ namespace Equilobe.DailyReport.SL
 
             var result = ProcessIPN(payPalCheckoutInfo, id);
             ProcessIPNLogs(id);
+
+            //Task.Factory.StartNew(() => ProcessIPN(payPalCheckoutInfo, id));
+           // Task.Factory.StartNew(() => ProcessIPNLogs(id));
         }
 
         public bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)

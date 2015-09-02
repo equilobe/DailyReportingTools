@@ -130,8 +130,10 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var subscription = db.Subscriptions.Single(s => s.Id == subscriptionId);
+                var subscriptionCopy = new Subscription();
+                subscription.CopyPropertiesOnObjects(subscriptionCopy);
 
-                return subscription;
+                return subscriptionCopy;
             }
         }
 

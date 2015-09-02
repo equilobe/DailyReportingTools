@@ -30,7 +30,7 @@
             Daily Report tool is unable to find any instance.
         </p>
     </div>
-    <div class="container" ng-if="instances.length">
+    <div class="container" ng-if="instances.length" ng-show="!addingInstance && !editingInstance">
         <div class="row" ng-repeat="instance in instances">
             <div class="col-sm-7">
                 <a class="instance" ng-href="app/instances/{{instance.id}}/projects/">
@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="container" ng-show="addingInstance || editingInstance">
-        <form name="form" novalidate>
+        <form name="form" novalidate ng-show="!subscribePhase">
             <h3>
                 JIRA
             </h3>
@@ -69,6 +69,7 @@
                 </label>
                 <div>
                     <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
+                    <span class="form-notification" ng-show="form.timeZone == null"><b>Please select a Time Zone</b></span>
                 </div>
             </div>
             <div class="form-group">
@@ -109,31 +110,35 @@
             </div>
         </form>
 
-        <div class="subscribe" ng-if="isSubscriptionOnTrial && subscribePhase">
-            <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="item_name" value="Daily Report payment for {{instanceUrl}}">
-                <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
-                <input type="hidden" name="hosted_button_id" value="USVJSPUC2AT7W">
-                <input type='hidden' name='rm' value='2'>
-                <input type="hidden" name="custom" value="{{serializedForm}}" />
-                <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-            </form>
-        </div>
+        <div ng-show="subscribePhase">
+            <button type="button" class="btn btn-default mg-btm-30" ng-click="backToInstanceEdit(this)">Back to edit</button>
+            <p>Subscribe for <em>{{instanceUrl}}</em>.</p>
+            <p>It may take up to a few minutes to process the subscription and to update the list of JIRA servers.</p>
+            <div class="subscribe hcenter" ng-if="isSubscriptionOnTrial && subscribePhase">
+                <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="item_name" value="Daily Report subscription for {{instanceUrl}}">
+                    <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
+                    <input type="hidden" name="hosted_button_id" value="USVJSPUC2AT7W">
+                    <input type='hidden' name='rm' value='2'>
+                    <input type="hidden" name="custom" value="{{serializedForm}}" />
+                    <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
+            </div>
 
-        <div class="subscribe" ng-if="!isSubscriptionOnTrial && subscribePhase">
-            <form class="hcenter" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="item_name" value="Daily Report payment for {{instanceUrl}}">
-                <input type="hidden" name="hosted_button_id" value="VFAC7AWMFHERS">
-                <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
-                <input type='hidden' name='rm' value='2'>
-                <input type="hidden" name="custom" value="{{serializedForm}}" />
-                <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-            </form>
-
+            <div class="subscribe hcenter" ng-if="!isSubscriptionOnTrial && subscribePhase">
+                <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="item_name" value="Daily Report subscription for {{instanceUrl}}">
+                    <input type="hidden" name="hosted_button_id" value="VFAC7AWMFHERS">
+                    <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
+                    <input type='hidden' name='rm' value='2'>
+                    <input type="hidden" name="custom" value="{{serializedForm}}" />
+                    <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
+            </div>
         </div>
     </div>
     <div class="container">
