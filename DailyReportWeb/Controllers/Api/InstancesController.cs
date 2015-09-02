@@ -39,9 +39,9 @@ namespace DailyReportWeb.Controllers.Api
             return instance;
         }
 
-        public bool IsSubscriptionOnTrial(long subscriptionId)
+        public bool Get(long id)
         {
-            var subscriptions = DataService.GetInstanceSubscriptions(subscriptionId);
+            var subscriptions = DataService.GetInstanceSubscriptions(id);
 
             return subscriptions.IsEmpty();
         }

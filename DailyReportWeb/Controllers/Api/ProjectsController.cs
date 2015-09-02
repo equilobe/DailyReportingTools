@@ -31,11 +31,12 @@ namespace DailyReportWeb.Controllers.Api
             return SettingsService.GetAllBasicReportSettings(new UserContext());
         }
 
-        public bool IsSubscriptionOnTrial(long id)
-        {
-            var subscriptions = DataService.GetInstanceSubscriptions(id);
+        //[HttpGet]
+        //public bool IsSubscriptionOnTrial(long id)
+        //{
+        //    var subscriptions = DataService.GetInstanceSubscriptions(id);
 
-            return subscriptions.IsEmpty();
-        }
+        //    return subscriptions.IsEmpty();
+        //}
     }
 }

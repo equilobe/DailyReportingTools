@@ -45,15 +45,14 @@ angular.module('app')
                     instanceId: $scope.instance.id,
                     baseUrl: $scope.instance.baseUrl
                 };
+                $scope.setIsOnTrial($scope.instance.id);
             }
-
-            $scope.isSubscriptionOnTrial = $scope.isSubscriptionOnTrial($scope.instance.id);
         };
 
-        $scope.isSubscriptionOnTrial = function (instanceId) {
-            $http.get("/api/instances/isSubscriptionOnTrial/" + instanceId)
+        $scope.setIsOnTrial = function (instanceId) {
+            $http.get("/api/instances/" + instanceId)
             .success(function (isOnTrial) {
-                return isOnTrial;
+                $scope.isSubscriptionOnTrial = isOnTrial;
             })
             .error(function (error) {
                 console.log("Error");
