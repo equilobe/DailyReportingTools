@@ -49,7 +49,8 @@ namespace Equilobe.DailyReport.SL
             if (status == PayPalVariables.InvalidStatus)
                 return;
 
-            var result = ProcessIPN(payPalCheckoutInfo, id);
+            TryProcessIPN(id, payPalCheckoutInfo);
+
             ProcessIPNLogs(id);
 
             //Task.Factory.StartNew(() => ProcessIPN(payPalCheckoutInfo, id));
@@ -99,21 +100,7 @@ namespace Equilobe.DailyReport.SL
             foreach (var log in logs)
             {
                 var paypalInfo = Deserialization.XmlDeserialize<PayPalCheckoutInfo>(log.SerializedPayPalInfo);
-                try
-                {
-                    var result = ProcessIPN(paypalInfo, log.Id);
-                }
-                catch (Exception ex)
-                {
-                    //for testing purposes
-                    var save = log.Id + "\r\n" + DateTime.Now.ToString() + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n";
-                    if (ex.InnerException != null)
-                        save += "InnerException: \r\n" + ex.InnerException.Message;
-                    var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
-                    var date = DateTime.Now;
-                    path = Path.Combine(path, (log.Id.ToString() + "-" + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
-                    File.WriteAllText(path, save);
-                }
+                TryProcessIPN(log.Id, paypalInfo);
             }
         }
 
@@ -133,6 +120,18 @@ namespace Equilobe.DailyReport.SL
         }
 
         #region Helpers
+
+        private void TryProcessIPN(long id, PayPalCheckoutInfo paypalInfo)
+        {
+            try
+            {
+                var result = ProcessIPN(paypalInfo, id);
+            }
+            catch (Exception ex)
+            {
+                SaveException(id, ex);
+            }
+        }
 
         void HandleSubscriptionCanceling(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
@@ -495,6 +494,18 @@ namespace Equilobe.DailyReport.SL
                 return startDate.AddMonths(amount);
 
             return startDate.AddYears(amount);
+        }
+
+        private void SaveException(long logId, Exception ex)
+        {
+            //for testing purposes
+            var save = logId + "\r\n" + DateTime.Now.ToString() + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n";
+            if (ex.InnerException != null)
+                save += "InnerException: \r\n" + ex.InnerException.Message;
+            var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
+            var date = DateTime.Now;
+            path = Path.Combine(path, (logId.ToString() + "-" + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
+            File.WriteAllText(path, save);
         }
 
         #endregion
