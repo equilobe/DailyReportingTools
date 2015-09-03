@@ -31,9 +31,6 @@ angular.module('app')
         $scope.addInstance = function ($scope) {
             $scope.addingInstance = true;
             $scope.form.timeZone = $scope.timeZone;
-            if ($scope.form.timeZone == null) {
-                $scope.form.$setDirty();
-            }
         };
 
         $scope.editInstance = function ($scope) {
@@ -41,10 +38,6 @@ angular.module('app')
             $scope.$parent.$parent.instanceUrl = $scope.instance.baseUrl;
             $scope.form.baseUrl = $scope.instance.baseUrl;
             $scope.form.timeZone = $scope.instance.timeZone;
-
-            if ($scope.form.timeZone == null) {
-                $scope.$parent.$parent.form.$dirty = true;
-            }
 
             if (!$scope.instance.isActive) {
                 $scope.$parent.$parent.subscribePhase = true;

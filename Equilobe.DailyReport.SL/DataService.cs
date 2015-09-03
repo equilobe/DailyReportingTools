@@ -170,6 +170,18 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public ApplicationUser GetUser(long instanceId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var user = new ApplicationUser();
+                var searchUser = db.InstalledInstances.Single(i => i.Id == instanceId).User;
+                searchUser.CopyPropertiesOnObjects(user);
+
+                return user;
+            }
+        }
+
         public void DeactivateInstance(string subscriptionId)
         {
             SetInstanceExpirationDate(subscriptionId, DateTime.Now);

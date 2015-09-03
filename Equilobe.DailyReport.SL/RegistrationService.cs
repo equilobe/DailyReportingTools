@@ -118,6 +118,16 @@ namespace Equilobe.DailyReport.SL
             authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
         }
 
+        public bool IsTrialAvailableForInstance(long instanceId)
+        {
+            var user = DataService.GetUser(instanceId);
+            if (user.InstalledInstances.Count > 1)
+                return false;
+
+            var subscriptions = DataService.GetInstanceSubscriptions(instanceId);
+            return subscriptions.IsEmpty();
+        }
+
         #region Helpers
 
         private string GetCallbackUrl(string userId)

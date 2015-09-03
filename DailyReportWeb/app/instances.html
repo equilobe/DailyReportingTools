@@ -68,8 +68,8 @@
                     Time Zone
                 </label>
                 <div>
-                    <select class="form-control" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
-                    <span class="form-notification" ng-show="form.timeZone == null"><b>Please select a Time Zone</b></span>
+                    <select class="form-control" ng-required="true" ng-model="form.timeZone" ng-options="timeZone.id as timeZone.name for timeZone in timeZoneList"></select>
+                    <!--<span class="form-notification" ng-show="form.timeZone == null"><b>Please select a Time Zone</b></span>-->
                 </div>
             </div>
             <div class="form-group">
@@ -149,7 +149,7 @@
         </div>
     </div>
     <div ng-show="!addingInstance && !editingInstance" class="container mg-top-10">
-        <a href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=UPQDRYSGXEG62">
+        <a href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=UPQDRYSGXEG62" target="_blank">
             <img src="https://www.sandbox.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif" border="0">
         </a>
     </div>

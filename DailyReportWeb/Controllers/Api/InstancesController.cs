@@ -18,6 +18,7 @@ namespace DailyReportWeb.Controllers.Api
         public IDataService DataService { get; set; }
         public IJiraService JiraService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IRegistrationService RegistrationService { get; set; }
 
         public List<Instance> Get()
         {
@@ -41,9 +42,7 @@ namespace DailyReportWeb.Controllers.Api
 
         public bool Get(long id)
         {
-            var subscriptions = DataService.GetInstanceSubscriptions(id);
-
-            return subscriptions.IsEmpty();
+            return RegistrationService.IsTrialAvailableForInstance(id);
         }
 
         //public List<Instance> Delete(long id)

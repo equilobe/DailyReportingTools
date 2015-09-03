@@ -18,5 +18,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         SimpleResult Login(LoginModel model);
 
         void Logout();
+
+        bool IsTrialAvailableForInstance(long instanceId);
     }
 }
