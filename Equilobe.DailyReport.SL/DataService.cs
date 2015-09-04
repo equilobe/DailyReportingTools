@@ -141,11 +141,13 @@ namespace Equilobe.DailyReport.SL
         {
             using(var db = new ReportsDb())
             {
-                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
+                var subscription = db.Subscriptions
+                    .Include(s=>s.InstalledInstance.Subscriptions)
+                    .SingleOrDefault(s => s.Id == subscriptionId);
 
                 if (subscription == null)
                     return null;
-
+                
                 return subscription.InstalledInstance;
             }
         }
@@ -154,7 +156,8 @@ namespace Equilobe.DailyReport.SL
         {
             using(var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.Single(i => i.Id == instanceId);
+                var instance = db.InstalledInstances.Include(i=>i.Subscriptions)
+                                                    .Single(i => i.Id == instanceId);
 
                 return instance;
             }

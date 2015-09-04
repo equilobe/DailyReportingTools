@@ -121,12 +121,12 @@ namespace Equilobe.DailyReport.SL
         public bool IsTrialAvailableForInstance(long instanceId)
         {
             var user = DataService.GetUser(instanceId);
-            
-            if (user.InstalledInstances.Count > 1)
-                return false;
+            var instance = DataService.GetInstance(instanceId);
 
-            var subscriptions = DataService.GetInstanceSubscriptions(instanceId);
-            return subscriptions.IsEmpty();
+            if (user.InstalledInstances.First().Id == instanceId && instance.Subscriptions.IsEmpty())
+                return true;
+
+            return false;
         }
 
         public void ValidateJiraDetails(RegisterModel model)
