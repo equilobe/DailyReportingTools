@@ -236,8 +236,6 @@ namespace Equilobe.DailyReport.SL
                 }
                 scope.Complete();
             }
-
-
         }
 
         public string GetSharedSecret(string baseUrl)
@@ -446,6 +444,17 @@ namespace Equilobe.DailyReport.SL
                 var subscriptions = db.Subscriptions.Where(s => s.InstalledInstanceId == instanceId).ToList();
 
                 return subscriptions;
+            }
+        }
+
+        public void SaveIpnLogError(long id, string error)
+        {
+            using(var db = new ReportsDb())
+            {
+                var log = db.IPNLogs.Single(l => l.Id == id);
+                log.Error = error;
+
+                db.SaveChanges();
             }
         }
 

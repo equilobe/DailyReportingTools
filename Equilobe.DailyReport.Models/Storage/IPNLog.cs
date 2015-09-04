@@ -13,5 +13,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public string SerializedPayPalInfo { get; set; }
         public DateTime DateAdded { get; set; }
         public DateTime? DateProcessed { get; set; }
+        public string Error { get; set; }
     }
 }

@@ -41,5 +41,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetUserImageKey(string username);
         TimeSpan GetOffsetFromProjectKey(string key);
         List<Subscription> GetInstanceSubscriptions(long instanceId);
+        void SaveIpnLogError(long id, string error);
     }
 }

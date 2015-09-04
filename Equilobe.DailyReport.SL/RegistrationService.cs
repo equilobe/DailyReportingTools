@@ -121,11 +121,22 @@ namespace Equilobe.DailyReport.SL
         public bool IsTrialAvailableForInstance(long instanceId)
         {
             var user = DataService.GetUser(instanceId);
+            
             if (user.InstalledInstances.Count > 1)
                 return false;
 
             var subscriptions = DataService.GetInstanceSubscriptions(instanceId);
             return subscriptions.IsEmpty();
+        }
+
+        public void ValidateJiraDetails(RegisterModel model)
+        {
+            if (!Validations.Url(model.BaseUrl))
+                throw new ArgumentException();
+
+            var credentialsValid = JiraService.CredentialsValid(model, false);
+            if (!credentialsValid)
+                throw new ArgumentException();
         }
 
         #region Helpers
@@ -137,7 +148,7 @@ namespace Equilobe.DailyReport.SL
             return string.Format("{0}/app/confirmEmail?userId={1}&code={2}", ConfigurationService.GetWebBaseUrl(), userId, code);
         }
 
-        private static void ValidateRegisterModel(RegisterModel model)
+        private void ValidateRegisterModel(RegisterModel model)
         {
             if (!Validations.Mail(model.Email) ||
                 !Validations.Password(model.Password) ||
@@ -145,7 +156,7 @@ namespace Equilobe.DailyReport.SL
                 throw new ArgumentException();
         }
 
-        private static void ValidateMail(LoginModel model)
+        private void ValidateMail(LoginModel model)
         {
             if (!Validations.Mail(model.Email))
                 throw new ArgumentException();

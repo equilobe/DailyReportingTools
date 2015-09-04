@@ -498,14 +498,11 @@ namespace Equilobe.DailyReport.SL
 
         private void SaveException(long logId, Exception ex)
         {
-            //for testing purposes
-            var save = logId + "\r\n" + DateTime.Now.ToString() + "\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n";
+            var error = ex.Message + "\r\n" + ex.StackTrace + "\r\n";
             if (ex.InnerException != null)
-                save += "InnerException: \r\n" + ex.InnerException.Message;
-            var path = @"C:\Apps\DailyReportWeb-DEV\TemporaryLogs";
-            var date = DateTime.Now;
-            path = Path.Combine(path, (logId.ToString() + "-" + date.Year.ToString() + "-" + date.Month.ToString() + "-" + date.Day.ToString() + "-" + date.Hour + "-" + date.Minute + ".txt"));
-            File.WriteAllText(path, save);
+                error += "InnerException: \r\n" + ex.InnerException.Message;
+
+            DataService.SaveIpnLogError(logId, error);
         }
 
         #endregion

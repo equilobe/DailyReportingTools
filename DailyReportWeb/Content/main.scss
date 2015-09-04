@@ -2,12 +2,12 @@
     font-family: 'Open Sans', sans-serif;
 }
 
-.mg-top-10{
-    margin-top:10px;
+.mg-top-10 {
+    margin-top: 10px;
 }
 
-.mg-btm-30{
-    margin-bottom:30px;
+.mg-btm-30 {
+    margin-bottom: 30px;
 }
 
 .logo {
@@ -51,18 +51,18 @@
     }
 }
 
-.subscribe{
-    max-width:500px;
-    margin-top:30px;
+.subscribe {
+    max-width: 500px;
+    margin-top: 30px;
 }
 
-.legend{
+.legend {
     font-size: 1em;
     color: #BABABA;
 }
 
-.legend-symbol{
-    color:red;
+.legend-symbol {
+    color: red;
 }
 
 [data-page] {
@@ -488,6 +488,10 @@ div.disabled {
 
 [data-page='projects'] {
 
+    h2 {
+        font-size: 25px;
+    }
+
     .projects .help-block {
         margin-top: -10px;
 
@@ -619,6 +623,13 @@ div.disabled {
 
         h4 {
             font-size: 1.2em;
+        }
+    }
+
+    [data-page='projects'] {
+
+        h2 {
+            font-size: 30px;
         }
     }
 }

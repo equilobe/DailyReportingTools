@@ -100,7 +100,29 @@ angular.module('app')
         $scope.saveInstance = function ($scope) {
             $scope.status = 'saving';
             $scope.form.$setPristine();
+            if ($scope.editingInstance) {
+                $scope.updateInstance($scope);
+            }
+            else {
+                $scope.saveNewInstance($scope);
+            }
+        };
 
+        $scope.updateInstance = function ($scope) {
+            var updateInstaceModel = $scope.getUpdateInstanceModel($scope.form);
+            $http.post("api/instances/updateInstance", updateInstaceModel)
+                 .success(function (instance) {
+                     $scope.clearInstanceForm($scope);
+                     $scope.status = "succes";
+                     $scope.message = "Updated";
+                 })
+                 .error(function (error) {
+                     $scope.message = "Invalid JIRA username or password";
+                     $scope.status = "error";
+                 });
+        };
+
+        $scope.saveNewInstance = function ($scope) {
             var newInstanceHostname = $scope.form.baseUrl.substring($scope.form.baseUrl.indexOf('/') + 2, $scope.form.baseUrl.length).split('/')[0];
             $scope.instances.forEach(function (instance) {
                 if (instance.baseUrl.indexOf(newInstanceHostname) != -1) {
@@ -132,10 +154,20 @@ angular.module('app')
                      $scope.instanceUrl = $scope.form.baseUrl;
                      $scope.subscribePhase = true;
                  })
-                 .error(function () {
+                 .error(function (error) {
                      $scope.message = "Invalid JIRA username or password";
                      $scope.status = "error";
                      $scope.subscribePhase = false;
                  });
+        };
+
+        $scope.getUpdateInstanceModel = function (registerForm) {
+            return{
+                baseUrl: registerForm.baseUrl,
+                timeZone: registerForm.timeZone,
+                jiraUsername: registerForm.jiraUsername,
+                jiraPassword: registerForm.jiraPassword,
+                updateInstance: true
+            };
         };
     }]);

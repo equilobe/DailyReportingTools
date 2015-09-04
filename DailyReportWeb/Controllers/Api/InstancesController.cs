@@ -27,15 +27,11 @@ namespace DailyReportWeb.Controllers.Api
 
         public RegisterModel CheckInstanceCredentials([FromBody]RegisterModel instance)
         {
-            if (!Validations.Url(instance.BaseUrl))
-                throw new ArgumentException();
-
-            var credentialsValid = JiraService.CredentialsValid(instance, false);
-            if (!credentialsValid)
-                throw new ArgumentException();
-
+            RegistrationService.ValidateJiraDetails(instance);
             instance.Email = User.GetUsername();
-            //   DataService.SaveInstance(instance); // will be modified
+
+            if(instance.UpdateInstance)
+                DataService.SaveInstance(instance);
 
             return instance;
         }

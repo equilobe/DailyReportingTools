@@ -20,5 +20,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void Logout();
 
         bool IsTrialAvailableForInstance(long instanceId);
+
+        void ValidateJiraDetails(RegisterModel model);
     }
 }
