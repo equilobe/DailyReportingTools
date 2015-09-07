@@ -116,9 +116,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<SprintReport>(request);
         }
 
-        public List<Sprint> GetAllSprints(string rapidViewId)
+        public List<Sprint> GetAllSprints(string rapidViewId, string projectKey)
         {
-            var request = new RestRequest(JiraApiUrls.AllSprints(rapidViewId), Method.GET);
+            var request = new RestRequest(JiraApiUrls.AllSprints(rapidViewId, projectKey), Method.GET);
 
             return ResolveRequest<Sprints>(request).sprints;
         }

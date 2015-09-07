@@ -45,21 +45,21 @@ namespace Equilobe.DailyReport.BL.Jira
             return Client.GetRapidView(activeViewId);
         }
 
-        public SprintContext GetSprintDetails(DateTime date)
+        public SprintContext GetSprintDetails()
         {
             var rapidViewId = GetRapidViewId();
             if (rapidViewId == null)
                 return null;
 
-            var sprints = Client.GetAllSprints(rapidViewId);
+            var sprints = Client.GetAllSprints(rapidViewId, Filter.ProjectKey);
 
             if (sprints == null || sprints.Count == 0)
                 return null;
 
-            return GetSprintContext(date, rapidViewId, sprints);
+            return GetSprintContext(rapidViewId, sprints);
         }
 
-        private SprintContext GetSprintContext(DateTime date, string rapidViewId, List<Sprint> sprints)
+        private SprintContext GetSprintContext(string rapidViewId, List<Sprint> sprints)
         {
             var sprintContext = new SprintContext();
             var futureSprints = new List<Sprint>();
@@ -68,14 +68,15 @@ namespace Equilobe.DailyReport.BL.Jira
             {
                 var sprint = sprints.Last();
                 sprint = GetCompleteSprint(sprint.id.ToString(), rapidViewId);
-                if (sprint.StartDate != null && sprint.StartDate.Value.Date <= date)
+                if (sprint.StartDate != null && sprint.StartDate.Value.Date.ToOriginalTimeZone(Filter.Offset) <= Filter.Date)
                 {
-                    if (sprint.CompletedDate > date)
+                    if (sprint.CompletedDate.ToOriginalTimeZone(Filter.Offset) > Filter.Date)
                         sprint.state = "ACTIVE";
 
                     sprintContext.ReportSprint = sprint;
-                    if (!futureSprints.IsEmpty())
-                        sprintContext.FutureSprint = futureSprints.Last();
+
+                    SetFutureSprint(sprintContext, futureSprints);
+                    SetPastSprint(sprints, sprintContext, rapidViewId);
 
                     return sprintContext;
                 }
@@ -84,6 +85,23 @@ namespace Equilobe.DailyReport.BL.Jira
             }
 
             return sprintContext;
+        }
+
+        private void SetFutureSprint(SprintContext sprintContext, List<Sprint> futureSprints)
+        {
+            if (futureSprints.IsEmpty())
+                return;
+
+            sprintContext.FutureSprint = futureSprints.Last();
+        }
+
+        private void SetPastSprint(List<Sprint> sprints, SprintContext sprintContext, string rapidViewId)
+        {
+            if (sprints.Count < 2)
+                return;
+
+            var pastSprint = sprints[sprints.Count - 2];
+            sprintContext.PastSprint = GetCompleteSprint(pastSprint.id.ToString(), rapidViewId);
         }
 
         private string GetRapidViewId()

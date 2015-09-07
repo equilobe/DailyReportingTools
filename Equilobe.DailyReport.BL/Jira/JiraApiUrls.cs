@@ -43,9 +43,9 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId={0}&sprintId={1}", rapidViewId, sprintId);
         }
 
-        public static string AllSprints(string rapidViewId)
+        public static string AllSprints(string rapidViewId, string projectKey)
         {
-            return string.Format("rest/greenhopper/1.0/sprintquery/{0}?includeHistoricSprints=true&includeFutureSprints=true", rapidViewId);
+            return string.Format("rest/greenhopper/1.0/sprintquery/{0}?jql=project='{1}?includeHistoricSprints=true&includeFutureSprints=true", rapidViewId, projectKey);
         }
 
         public static string Issue(string key)
@@ -65,7 +65,7 @@ namespace Equilobe.DailyReport.BL
 
         public static string ResolvedIssues(string projectKey, string fromDate, string endDate)
         {
-            return string.Format("statusCategory = 'Done' AND resolved >= '{0}' AND resolved <= '{1}' AND project={2}", fromDate, endDate, projectKey);
+            return string.Format("statusCategory = 'Done' AND resolved >= '{0}' AND resolved <= '{1}' AND project='{2}'", fromDate, endDate, projectKey);
         }
 
         public static string IssueInCurrentSprint(string project, string sprintId)

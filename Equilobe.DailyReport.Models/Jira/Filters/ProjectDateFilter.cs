@@ -9,5 +9,6 @@ namespace Equilobe.DailyReport.Models.Jira.Filters
         public string ProjectName { get; set; }
         public string ProjectKey { get; set; }
         public DateTime Date { get; set; }
+        public TimeSpan Offset { get; set; }
     }
 }
