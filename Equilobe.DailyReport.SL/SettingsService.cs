@@ -3,6 +3,7 @@ using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Enums;
 using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
@@ -94,6 +95,9 @@ namespace Equilobe.DailyReport.SL
 
                 instance.CopyPropertiesOnObjects(jiraRequestContext);
                 baseUrl = instance.BaseUrl;
+
+                if (instance.ExpirationDate <= DateTime.Now)
+                    return null;
             }
 
             return JiraService.GetProjectsInfo(jiraRequestContext)
@@ -121,7 +125,7 @@ namespace Equilobe.DailyReport.SL
                               .ToList();
         }
 
-        public List<List<BasicReportSettings>> GetAllBasicReportSettings(UserContext context)
+        public List<JiraInstance> GetAllBasicReportSettings(UserContext context)
         {
             List<InstalledInstance> installedInstances;
             using (var db = new ReportsDb())
@@ -134,11 +138,23 @@ namespace Equilobe.DailyReport.SL
                     return null;
             }
 
-            var instances = new List<List<BasicReportSettings>>();
+            var instances = new List<JiraInstance>();
+
             foreach (var installedInstance in installedInstances)
-            {
+            {              
                 var icontext = new ItemContext(installedInstance.Id);
                 var jiraRequestContext = new JiraRequestContext(installedInstance);
+                var instance = new JiraInstance
+                {
+                    BaseUrl = installedInstance.BaseUrl,
+                    Id = installedInstance.Id,
+                    ExpirationDate = installedInstance.ExpirationDate
+                };
+
+                instances.Add(instance);
+
+                if (installedInstance.ExpirationDate <= DateTime.Now)                   
+                    continue;                
 
                 var projects = JiraService.GetProjectsInfo(jiraRequestContext)
                                           .Select(projectInfo =>
@@ -163,8 +179,7 @@ namespace Equilobe.DailyReport.SL
                                               };
                                           })
                                           .ToList();
-
-                instances.Add(projects);
+                instance.Projects = projects;
             }
 
             return instances;

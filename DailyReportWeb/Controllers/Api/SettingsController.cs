@@ -15,9 +15,13 @@ namespace DailyReportWeb.Controllers.Api
     public class SettingsController : ApiController
     {
         public ISettingsService SettingsService { get; set; }
+        public IDataService DataService { get; set; }
 
         public FullReportSettings Get(long id)
         {
+            if (!DataService.IsInstanceActive(id))
+                return null;
+
             return SettingsService.GetSyncedReportSettings(new ItemContext(id));
         }
 

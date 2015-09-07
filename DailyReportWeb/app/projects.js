@@ -12,6 +12,8 @@ angular.module('app')
         $("body").attr("data-page", "projects");
         $scope.$parent.child = $scope;
         $scope.status = "loading";
+        $scope.serializedInstance = {};
+        $scope.isSubscriptionOnTrial = false;
 
         $http.get("/api/projects/")
             .success(function (instances) {
@@ -20,20 +22,21 @@ angular.module('app')
                 if (instances) {
                     if ($routeParams.instanceId == 0) {
                         $scope.instance = instances[0];
-                        $location.path('/app/instances/' + instances[0][0].installedInstanceId + '/projects', false);
+                        $location.path('/app/instances/' + instances[0].id + '/projects', false);
                     }
                     else {
                         instances.forEach(function (instance) {
-                            if (instance[0].installedInstanceId == $routeParams.instanceId)
+                            if (instance.id == $routeParams.instanceId)
                                 $scope.instance = instance;
                         });
 
-                        if ($scope.instance[0].installedInstanceId != $routeParams.instanceId)
+                        if ($scope.instance.id != $routeParams.instanceId)
                             $scope.instance = instances[0];
                     }
                 }
 
                 $scope.instances = instances;
+                $scope.setInstance($scope.instance);
             })
             .finally(function () {
                 $scope.status = "loaded";
@@ -41,6 +44,24 @@ angular.module('app')
 
         $scope.setInstance = function (instance) {
             $scope.instance = instance;
-            $location.path('/app/instances/' + instance[0].installedInstanceId + '/projects', false);
-        }
+            $location.path('/app/instances/' + instance.id + '/projects', false);
+            if (!instance.isActive) {
+                $scope.serializedInstance = {
+                    instanceId: instance.id,
+                    baseUrl: instance.baseUrl
+                };
+                $scope.setIsOnTrial(instance.id);
+            }
+        };
+
+        $scope.setIsOnTrial = function(instanceId){
+            $http.get("/api/instances/" + instanceId)
+            .success(function (isOnTrial) {
+                $scope.isSubscriptionOnTrial = isOnTrial;
+            })
+            .error(function (error) {
+                console.log("Error");
+            });
+        };
+
     }]);

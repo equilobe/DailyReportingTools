@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models;
+using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
@@ -17,38 +18,40 @@ namespace DailyReportWeb.Controllers.Api
         public IDataService DataService { get; set; }
         public IJiraService JiraService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IRegistrationService RegistrationService { get; set; }
 
         public List<Instance> Get()
         {
             return DataService.GetInstances();
         }
 
-        public List<Instance> Post([FromBody]RegisterModel instance)
+        public RegisterModel CheckInstanceCredentials([FromBody]RegisterModel instance)
         {
-            if (!Validations.Url(instance.BaseUrl))
-                throw new ArgumentException();
-
-            var credentialsValid = JiraService.CredentialsValid(instance, false);
-            if (!credentialsValid)
-                throw new ArgumentException();
-
+            RegistrationService.ValidateJiraDetails(instance);
             instance.Email = User.GetUsername();
-            DataService.SaveInstance(instance);
 
-            return DataService.GetInstances();
+            if(instance.UpdateInstance)
+                DataService.SaveInstance(instance);
+
+            return instance;
         }
 
-        public List<Instance> Delete(long id)
+        public bool Get(long id)
         {
-            var projectKeys = DataService.GetUniqueProjectsKey(id);
-            TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
-            {
-                UniqueProjectKeys = projectKeys
-            });
-
-            DataService.DeleteInstance(id);
-
-            return DataService.GetInstances();
+            return RegistrationService.IsTrialAvailableForInstance(id);
         }
+
+        //public List<Instance> Delete(long id)
+        //{
+        //    var projectKeys = DataService.GetUniqueProjectsKey(id);
+        //    TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
+        //    {
+        //        UniqueProjectKeys = projectKeys
+        //    });
+
+        //    DataService.DeleteInstance(id);
+
+        //    return DataService.GetInstances();
+        //}
     }
 }

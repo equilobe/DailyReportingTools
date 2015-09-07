@@ -184,7 +184,6 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
@@ -200,6 +199,7 @@
     <Compile Include="Controllers\Api\WelcomeController.cs" />
     <Compile Include="Controllers\AvatarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IPNController.cs" />
     <Compile Include="Controllers\PluginController.cs" />
     <Compile Include="DependencyInjection.cs" />
     <Compile Include="Global.asax.cs">
@@ -416,11 +416,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Tools\AngularJS MVC.zip" />
     <Content Include="Views\Email\ConfirmationEmail.cshtml" />
+    <Content Include="Views\Email\SubscriptionCanceling.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Views\Avatar\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
@@ -485,10 +483,11 @@
 xcopy "..\..\config\*.config" /Y
 popd</PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+  <!--To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
+  </Target>-->
   <Target Name="AfterBuild">
-  </Target> -->
+    <TransformXml Source="Web.config" Transform="$(ProjectConfigTransformFileName)" Destination="Web.config" />
+  </Target>
 </Project>

@@ -10,6 +10,7 @@ namespace Equilobe.DailyReport.Models.Web
         public long Id { get; set; }
         public string BaseUrl { get; set; }
         public string TimeZone { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class BasicReportSettings : IBasicSettings

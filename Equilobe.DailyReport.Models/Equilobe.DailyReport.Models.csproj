@@ -54,15 +54,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Data\ApplicationErrors.cs" />
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />
     <Compile Include="Interfaces\IConfigurationService.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
+    <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Interfaces\IEncryptionService.cs" />
     <Compile Include="Interfaces\IErrorService.cs" />
+    <Compile Include="Interfaces\IPayPalService.cs" />
+    <Compile Include="Interfaces\IRegistrationService.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
@@ -70,6 +75,10 @@
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="PayPal\EmailNotification.cs" />
+    <Compile Include="PayPal\PaymentContext.cs" />
+    <Compile Include="PayPal\PayPalCheckoutInfo.cs" />
+    <Compile Include="Storage\IPNLog.cs" />
     <Compile Include="ReportExecution\ExecutionContext.cs" />
     <Compile Include="General\SimpleResult.cs" />
     <Compile Include="ReportExecution\ExecutionInstanceContext.cs" />
@@ -94,6 +103,7 @@
     <Compile Include="ReportFrame\JiraAuthor.cs" />
     <Compile Include="ReportFrame\JiraCommit.cs" />
     <Compile Include="ReportFrame\JiraDayLog.cs" />
+    <Compile Include="Jira\JiraInstance.cs" />
     <Compile Include="ReportFrame\JiraOptions.cs" />
     <Compile Include="ReportFrame\JiraPullRequest.cs" />
     <Compile Include="ReportFrame\JiraReport.cs" />
@@ -102,6 +112,7 @@
     <Compile Include="ReportFrame\ReportTasks.cs" />
     <Compile Include="ReportFrame\SprintContext.cs" />
     <Compile Include="ReportFrame\StatusChartWidths.cs" />
+    <Compile Include="PayPal\SubscriptionContext.cs" />
     <Compile Include="ReportFrame\Summary.cs" />
     <Compile Include="ReportFrame\SummaryGuidelineInfo.cs" />
     <Compile Include="ReportFrame\TimesheetContext.cs" />
@@ -130,6 +141,8 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\IdentityModel.cs" />
+    <Compile Include="Storage\Payment.cs" />
+    <Compile Include="Storage\Subscription.cs" />
     <Compile Include="Storage\UserImage.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />

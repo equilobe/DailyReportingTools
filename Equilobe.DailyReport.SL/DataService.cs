@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
 using System.Net.Http;
+using Equilobe.DailyReport.Models.PayPal;
+using Equilobe.DailyReport.Models.Data;
+using System.Transactions;
 
 
 namespace Equilobe.DailyReport.SL
@@ -40,7 +43,7 @@ namespace Equilobe.DailyReport.SL
             SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
         }
 
-        public void SaveInstance(RegisterModel modelData)
+        public SimpleResult SaveInstance(RegisterModel modelData)
         {
             long instanceId = 0;
             using (var db = new ReportsDb())
@@ -50,11 +53,12 @@ namespace Equilobe.DailyReport.SL
 
                 var installedInstance = user.InstalledInstances.SingleOrDefault(i => i.BaseUrl == modelData.BaseUrl);
                 if (installedInstance != null && !string.IsNullOrEmpty(modelData.Password))
-                    throw new ArgumentException();
+                    return SimpleResult.Error(ApplicationErrors.InstanceAlreadyCreated);
 
                 if (installedInstance == null)
                 {
                     installedInstance = new InstalledInstance();
+                    installedInstance.ExpirationDate = DateTime.Now;
                     db.InstalledInstances.Add(installedInstance);
                     installedInstance.UserId = user.Id;
                 }
@@ -69,6 +73,8 @@ namespace Equilobe.DailyReport.SL
 
             if (instanceId != 0)
                 SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
+
+            return SimpleResult.Success("Succes");
         }
 
         public void DeleteInstance(string pluginKey)
@@ -91,6 +97,147 @@ namespace Equilobe.DailyReport.SL
                 db.InstalledInstances.Remove(installedInstance);
 
                 db.SaveChanges();
+            }
+        }
+
+        public void SetInstanceExpirationDate(string subscriptionId, DateTime date)
+        {
+            using (var db = new ReportsDb())
+            {
+                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
+                if (subscription == null)
+                    return;
+
+                subscription.InstalledInstance.ExpirationDate = date;
+
+                db.SaveChanges();
+            }
+        }
+
+        public void SetInstanceExpirationDate(long instanceId, DateTime date)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.Single(i => i.Id == instanceId);
+                instance.ExpirationDate = date;
+
+                db.SaveChanges();
+            }
+        }
+
+        public Subscription GetSubscription(string subscriptionId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var subscription = db.Subscriptions.Single(s => s.Id == subscriptionId);
+                var subscriptionCopy = new Subscription();
+                subscription.CopyPropertiesOnObjects(subscriptionCopy);
+
+                return subscriptionCopy;
+            }
+        }
+
+        public InstalledInstance GetInstance(string subscriptionId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var subscription = db.Subscriptions
+                    .Include(s=>s.InstalledInstance.Subscriptions)
+                    .SingleOrDefault(s => s.Id == subscriptionId);
+
+                if (subscription == null)
+                    return null;
+                
+                return subscription.InstalledInstance;
+            }
+        }
+
+        public InstalledInstance GetInstance(long instanceId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.Include(i=>i.Subscriptions)
+                                                    .Single(i => i.Id == instanceId);
+
+                return instance;
+            }
+        }
+
+        public ApplicationUser GetUser(string userId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var user = db.Users.SingleOrDefault(u => u.Id == userId);
+
+                return user;
+            }
+        }
+
+        public ApplicationUser GetUser(long instanceId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var user = new ApplicationUser();
+                var searchUser = db.InstalledInstances.Single(i => i.Id == instanceId).User;
+                searchUser.CopyPropertiesOnObjects(user);
+
+                return user;
+            }
+        }
+
+        public void DeactivateInstance(string subscriptionId)
+        {
+            SetInstanceExpirationDate(subscriptionId, DateTime.Now);
+        }
+
+        public bool IsInstanceActive(string subscriptionId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var subscription = db.Subscriptions.SingleOrDefault(s => s.Id == subscriptionId);
+
+                if (subscription == null)
+                    return false;
+
+                return subscription.InstalledInstance.ExpirationDate > DateTime.Now;
+            }
+        }
+
+        public void SaveSubscription(SubscriptionContext context)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = new InstalledInstance();
+                if (context.InstanceId != null)
+                    instance = db.InstalledInstances.Single(i => i.Id == context.InstanceId);
+                else
+                    instance = db.InstalledInstances.Single(i => i.BaseUrl == context.BaseUrl && i.User.UserName == context.Username);
+
+                var subscription = new Subscription();
+                subscription.TrialEndDate = context.TrialEndDate;
+                subscription.SubscriptionDate = context.SubscriptionDate;
+                subscription.SubscriptionPeriod = context.SubscriptionPeriod;
+                subscription.Id = context.SubscriptionId;
+                subscription.InstalledInstanceId = instance.Id;
+                instance.Subscriptions.Add(subscription);
+
+                db.SaveChanges();
+            }
+        }
+
+        public void SavePayment(PaymentContext context)
+        {
+            var payment = new Payment();
+            context.CopyPropertiesOnObjects(payment);
+
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.RepeatableRead}))
+            {
+                using (var db = new ReportsDb())
+                {
+                    db.Payments.Add(payment);
+                    db.SaveChanges();
+                }
+                scope.Complete();
             }
         }
 
@@ -165,7 +312,8 @@ namespace Equilobe.DailyReport.SL
                     {
                         Id = installedInstance.Id,
                         BaseUrl = installedInstance.BaseUrl,
-                        TimeZone = installedInstance.TimeZone
+                        TimeZone = installedInstance.TimeZone,
+                        IsActive = installedInstance.ExpirationDate > DateTime.Now
                     });
                 });
             }
@@ -189,6 +337,16 @@ namespace Equilobe.DailyReport.SL
                 .Where(installedInstance => installedInstance.Id == id)
                 .Select(installedInstance => installedInstance.BaseUrl)
                 .FirstOrDefault();
+            }
+        }
+
+        public bool IsInstanceActive(long basicSettingsId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = SearchInstanceBySettingsId(basicSettingsId);
+
+                return instance.ExpirationDate > DateTime.Now;
             }
         }
 
@@ -282,6 +440,27 @@ namespace Equilobe.DailyReport.SL
             return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
         }
 
+        public List<Subscription> GetInstanceSubscriptions(long instanceId)
+        {
+            using(var db = new ReportsDb())
+            {
+                var subscriptions = db.Subscriptions.Where(s => s.InstalledInstanceId == instanceId).ToList();
+
+                return subscriptions;
+            }
+        }
+
+        public void SaveIpnLogError(long id, string error)
+        {
+            using(var db = new ReportsDb())
+            {
+                var log = db.IPNLogs.Single(l => l.Id == id);
+                log.Error = error;
+
+                db.SaveChanges();
+            }
+        }
+
         #region helpers
         string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey)
         {
@@ -289,6 +468,16 @@ namespace Equilobe.DailyReport.SL
             {
                 var basicSettings = db.BasicSettings.Single(bs => bs.UniqueProjectKey == uniqueProjcetKey);
                 return basicSettings.InstalledInstance.TimeZone;
+            }
+        }
+
+        InstalledInstance SearchInstanceBySettingsId(long settingsId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var basicSettings = db.BasicSettings.Single(bs => bs.Id == settingsId);
+
+                return basicSettings.InstalledInstance;
             }
         }
         #endregion

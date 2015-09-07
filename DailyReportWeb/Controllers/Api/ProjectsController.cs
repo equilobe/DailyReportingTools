@@ -2,6 +2,8 @@
 using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.General;
 using Equilobe.DailyReport.Models.Interfaces;
+using Equilobe.DailyReport.Models.Jira;
+using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.TaskScheduling;
 using Equilobe.DailyReport.Models.Web;
 using Equilobe.DailyReport.Utils;
@@ -17,15 +19,24 @@ namespace DailyReportWeb.Controllers.Api
     {
         public ISettingsService SettingsService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IDataService DataService { get; set; }
 
         public List<BasicReportSettings> Get(long id)
         {
             return SettingsService.GetAllBasicReportSettings(new ItemContext(id));
         }
 
-        public List<List<BasicReportSettings>> Get()
+        public List<JiraInstance> Get()
         {
             return SettingsService.GetAllBasicReportSettings(new UserContext());
         }
+
+        //[HttpGet]
+        //public bool IsSubscriptionOnTrial(long id)
+        //{
+        //    var subscriptions = DataService.GetInstanceSubscriptions(id);
+
+        //    return subscriptions.IsEmpty();
+        //}
     }
 }

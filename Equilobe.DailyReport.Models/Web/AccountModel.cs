@@ -15,6 +15,8 @@ namespace Equilobe.DailyReport.Models.Web
         public string TimeZone { get; set; }
         public string JiraUsername { get; set; }
         public string JiraPassword { get; set; }
+        public long? InstanceId { get; set; }
+        public bool UpdateInstance { get; set; }
     }
 
     public class LoginModel

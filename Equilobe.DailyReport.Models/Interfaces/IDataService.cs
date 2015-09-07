@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Policy;
+﻿using Equilobe.DailyReport.Models.PayPal;
+using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using Equilobe.DailyReport.Models.Web;
@@ -10,9 +11,21 @@ namespace Equilobe.DailyReport.Models.Interfaces
     public interface IDataService : IService
     {
         void SaveInstance(InstalledInstance instanceData);
-        void SaveInstance(RegisterModel modelData);
+        SimpleResult SaveInstance(RegisterModel modelData);
         void DeleteInstance(long id);
         void DeleteInstance(string pluginKey);
+        void SetInstanceExpirationDate(string subscriptionId, DateTime date);
+        void SetInstanceExpirationDate(long instanceId, DateTime date);
+        Subscription GetSubscription(string subscriptionId);
+        InstalledInstance GetInstance(string subscriptionId);
+        InstalledInstance GetInstance(long instanceId);
+        ApplicationUser GetUser(string userId);
+        ApplicationUser GetUser(long instanceId);
+        void DeactivateInstance(string subscriptionId);
+        bool IsInstanceActive(string subscriptionId);
+        void SaveSubscription(SubscriptionContext context);
+        void SavePayment(PaymentContext context);
+        bool IsInstanceActive(long id);
         List<Instance> GetInstances();
         long GetNumberOfReportsGenerated();
         string GetBaseUrl(long id);
@@ -27,5 +40,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void AddUserImage(UserImageContext context);
         string GetUserImageKey(string username);
         TimeSpan GetOffsetFromProjectKey(string key);
+        List<Subscription> GetInstanceSubscriptions(long instanceId);
+        void SaveIpnLogError(long id, string error);
     }
 }
