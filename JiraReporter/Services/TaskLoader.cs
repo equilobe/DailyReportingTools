@@ -24,18 +24,24 @@ namespace JiraReporter.Services
             context.ReportTasks = new ReportTasks();
             if (context.HasSprint)
             {
-                var unfinishedTasks = GetSprintTasks(context, context.Sprint.id.ToString());
-                SetUnfinishedTasks(unfinishedTasks, context);
-                SetFutureSprintTasks(context);
-                context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
-                SortTasks(context.ReportTasks);
-                SetUnassignedTasksErrors(context);
-                SetVisibleUnassignedTasks(context);
+                SetSprintDetails(context);
             }
 
             context.ReportTasks.CompletedTasksAll = GetCompletedTasks(context);
             SetVisibleCompletedTasks(context);
             SetCompletedTasksErrors(context);
+        }
+
+        private void SetSprintDetails(JiraReport context)
+        {
+            var unfinishedTasks = GetSprintTasks(context, context.Sprint.id.ToString());
+            SetUnfinishedTasks(unfinishedTasks, context);
+            context.ReportTasks.FutureSprintTasks = GetAditionalSprintIssues(context, context.FutureSprint);
+            context.ReportTasks.PastSprintTasks = GetAditionalSprintIssues(context, context.PastSprint);
+            context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
+            SortTasks(context.ReportTasks);
+            SetUnassignedTasksErrors(context);
+            SetVisibleUnassignedTasks(context);
         }
 
         private void SetVisibleUnassignedTasks(JiraReport context)
@@ -141,16 +147,13 @@ namespace JiraReporter.Services
                 sprintTasks.UnassignedTasksAll = sprintTasks.UnassignedTasksAll.OrderBy(priority => priority.Priority.id).ToList();
         }
 
-        void SetFutureSprintTasks(JiraReport report)
+        List<JiraIssue> GetAditionalSprintIssues(JiraReport report, Sprint sprint)
         {
-            report.ReportTasks.FutureSprintTasks = new List<JiraIssue>();
+            if (sprint == null)
+                return new List<JiraIssue>();
 
-            if (report.FutureSprint == null)
-                return;
-
-            report.ReportTasks.FutureSprintTasks = GetSprintTasks(report, report.FutureSprint.id.ToString()).issues;
+            return GetSprintTasks(report, sprint.id.ToString()).issues;
         }
-
 
         #region Static Helpers
         static IssueDetailed CreateParent(IssueDetailed task, JiraAuthor author)

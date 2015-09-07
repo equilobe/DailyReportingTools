@@ -24,6 +24,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public List<IssueDetailed> UncompletedTasks { get; set; }
         public List<IssueDetailed> SprintTasksAll { get; set; }
         public List<JiraIssue> FutureSprintTasks { get; set; }
+        public List<JiraIssue> PastSprintTasks { get; set; }
         public int UnassignedTasksErrorCount { get; set; }
         public int CompletedTasksErrorCount { get; set; }  
     }

@@ -449,7 +449,7 @@ namespace JiraReporter.Services
 
             foreach(var issue in _currentAuthor.Issues)
             {
-                if (!_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i=>i.key == issue.Key) && !issue.IsSubtask)
+                if (TaskIsNotFromSprint(issue))
                 {
                     issue.ErrorsCount ++;
                     if (issue.Errors == null)
@@ -459,6 +459,11 @@ namespace JiraReporter.Services
                     issue.NotFromSprint = true;
                 }
             }
+        }
+
+        private bool TaskIsNotFromSprint(IssueDetailed issue)
+        {
+            return !_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i => i.key == issue.Key) && !issue.IsSubtask && !_context.ReportTasks.PastSprintTasks.Exists(t => t.key == issue.Key);
         }
 
         private void SetNotConfirmedError()

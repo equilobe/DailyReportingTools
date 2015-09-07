@@ -135,7 +135,7 @@ namespace Equilobe.DailyReport.SL
                          .Where(installedInstance => installedInstance.ClientKey == pluginKey)
                          .SelectMany(installedInstance => installedInstance.BasicSettings.Select(reportSettings => reportSettings.UniqueProjectKey))
                 .ToList();
-        }
+            }
         }
 
         public List<string> GetUniqueProjectsKey(long id)
@@ -161,13 +161,13 @@ namespace Equilobe.DailyReport.SL
                            .ToList()
                            .ForEach(installedInstance =>
                 {
-                               instances.Add(new Instance
-                               {
-                                   Id = installedInstance.Id,
-                                   BaseUrl = installedInstance.BaseUrl,
-                                   TimeZone = installedInstance.TimeZone
-                               });
-                           });
+                    instances.Add(new Instance
+                    {
+                        Id = installedInstance.Id,
+                        BaseUrl = installedInstance.BaseUrl,
+                        TimeZone = installedInstance.TimeZone
+                    });
+                });
             }
 
             return instances;
@@ -205,8 +205,8 @@ namespace Equilobe.DailyReport.SL
                     .Include(s => s.IndividualDraftConfirmations)
                     .Include(s => s.ReportExecutionInstances)
                     .SingleOrDefault(r => r.UniqueProjectKey == uniqueProjectKey);
-                }
             }
+        }
 
 
 

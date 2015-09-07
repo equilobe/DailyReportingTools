@@ -94,6 +94,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public Sprint Sprint { get; set; }
         public Sprint FutureSprint { get; set; }
+        public Sprint PastSprint { get; set; }
 
         private List<JiraCommit> _commits;
         public List<JiraCommit> Commits

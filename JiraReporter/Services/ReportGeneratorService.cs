@@ -131,6 +131,7 @@ namespace JiraReporter
             if (sprintContext == null)
                 return;
 
+            report.PastSprint = sprintContext.PastSprint;
             report.FutureSprint = sprintContext.FutureSprint;
             report.Sprint = sprintContext.ReportSprint;
         }

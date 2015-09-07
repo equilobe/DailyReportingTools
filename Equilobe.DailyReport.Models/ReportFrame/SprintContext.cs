@@ -11,5 +11,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
     {
         public Sprint ReportSprint { get; set; }
         public Sprint FutureSprint { get; set; }
+        public Sprint PastSprint { get; set; }
     }
 }
