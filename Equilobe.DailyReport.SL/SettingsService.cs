@@ -264,11 +264,19 @@ namespace Equilobe.DailyReport.SL
                 fullSettings.UserOptions.ForEach(user =>
                 {
                     if (user.JiraUserKey == juser.JiraUserKey)
+                    {
+                        user.EmailAdress = juser.EmailAdress;
+                        if (string.IsNullOrEmpty(user.EmailOverride))
+                            user.EmailOverride = user.EmailAdress;
                         syncedUserOptions.Add(user);
+                    }
                 });
 
                 if (!syncedUserOptions.Exists(user => user.JiraUserKey == juser.JiraUserKey))
+                {
+                    juser.EmailOverride = juser.EmailOverride;
                     syncedUserOptions.Add(juser);
+                }
             });
             fullSettings.UserOptions = syncedUserOptions;
 
@@ -289,6 +297,11 @@ namespace Equilobe.DailyReport.SL
                 });
                 user.SourceControlUsernames = validSourceControlUsernames;
             });
+
+            var usedSourceControlAccounts = fullSettings.UserOptions.SelectMany(u => u.SourceControlUsernames).ToList();
+            if (fullSettings.SourceControlUsernames == null)
+                return;
+            fullSettings.SourceControlUsernames = fullSettings.SourceControlUsernames.Where(u => !usedSourceControlAccounts.Exists(user=>user==u)).ToList();
         }
 
         private BasicSettings GetBasicSettings(ItemContext context, long projectId)

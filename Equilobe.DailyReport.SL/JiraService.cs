@@ -57,7 +57,8 @@ namespace Equilobe.DailyReport.SL
                 .Select(user => new User
                 {
                     JiraDisplayName = user.displayName,
-                    JiraUserKey = user.key
+                    JiraUserKey = user.key,
+                    EmailAdress = user.emailAddress
                 })
                 .ToList();
 
