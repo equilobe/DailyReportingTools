@@ -28,6 +28,7 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public virtual ICollection<IndividualDraftConfirmation> IndividualDraftConfirmations { get; set; }
         public virtual ICollection<ReportExecutionInstance> ReportExecutionInstances { get; set; }
+        public virtual ICollection<HtmlReport> HtmlReports { get; set; }
 
     }
 }

@@ -51,6 +51,10 @@ namespace Equilobe.DailyReport.DAL
                 .HasRequired(x => x.InstalledInstance)
                 .WithMany(x => x.Subscriptions)
                 .WillCascadeOnDelete(true);
+            modelBuilder.Entity<HtmlReport>()
+                .HasRequired(x => x.BasicSettings)
+                .WithMany(x => x.HtmlReports)
+                .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Payment>()
                 .HasRequired(x => x.Subscription)
@@ -74,6 +78,7 @@ namespace Equilobe.DailyReport.DAL
         public DbSet<SerializedAdvancedSettings> SerializedAdvancedSettings { get; set; }
         public DbSet<UserImage> UserImages { get; set; }
         public DbSet<Subscription> Subscriptions{ get; set; }
+        public DbSet<HtmlReport> HtmlReports { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<IPNLog> IPNLogs { get; set; }
     }
