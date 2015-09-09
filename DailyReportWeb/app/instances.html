@@ -115,7 +115,7 @@
             <p>Subscribe for <em>{{instanceUrl}}</em>.</p>
             <p>It may take up to a few minutes to process the subscription and to update the list of JIRA servers.</p>
             <div class="subscribe hcenter" ng-if="isSubscriptionOnTrial && subscribePhase">
-                <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <!--<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
                     <input type="hidden" name="cmd" value="_s-xclick">
                     <input type="hidden" name="item_name" value="Daily Report subscription for {{instanceUrl}}">
                     <input type="hidden" name="return" value="http://dailyreport-dev.equilobe.com/app/instances">
@@ -124,11 +124,21 @@
                     <input type="hidden" name="custom" value="{{serializedForm}}" />
                     <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                     <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>-->
+                <form class="hcenter" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="TX3GULY2UD36Y">
+                    <input type="image" src="https://dailyreport.equilobe.com/content/images/subscribe-button.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                    <input type="hidden" name="item_name" value="Daily Report subscription for {{instanceUrl}}">
+                    <input type="hidden" name="return" value="http://dailyreport.equilobe.com/app/instances">
+                    <input type="hidden" name="custom" value="{{serializedForm}}" />
+                    <input type='hidden' name='rm' value='2'>
                 </form>
             </div>
 
             <div class="subscribe hcenter" ng-if="!isSubscriptionOnTrial && subscribePhase">
-                <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <!--<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
                     <input type="hidden" name="cmd" value="_s-xclick">
                     <input type="hidden" name="item_name" value="Daily Report subscription for {{instanceUrl}}">
                     <input type="hidden" name="hosted_button_id" value="VFAC7AWMFHERS">
@@ -137,6 +147,16 @@
                     <input type="hidden" name="custom" value="{{serializedForm}}" />
                     <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                     <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>-->
+                <form class="hcenter" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="YXCUUN4TJDQ9Y">
+                    <input type="image" src="https://dailyreport.equilobe.com/content/images/subscribe-button.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                    <input type="hidden" name="item_name" value="Daily Report subscription for {{instanceUrl}}">
+                    <input type="hidden" name="return" value="http://dailyreport.equilobe.com/app/instances">
+                    <input type='hidden' name='rm' value='2'>
+                    <input type="hidden" name="custom" value="{{serializedForm}}" />
                 </form>
             </div>
         </div>
@@ -149,8 +169,11 @@
         </div>
     </div>
     <div ng-show="!addingInstance && !editingInstance" class="container mg-top-10">
-        <a href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=UPQDRYSGXEG62" target="_blank">
+        <!--<a href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=UPQDRYSGXEG62" target="_blank">
             <img src="https://www.sandbox.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif" border="0">
+        </a>-->
+        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_subscr-find&alias=MBX8JCWNUM95U">
+            <img src="https://dailyreport.equilobe.com/content/images/unsubscribe-button.png" border="0">
         </a>
     </div>
 </div>
