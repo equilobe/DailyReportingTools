@@ -159,7 +159,7 @@
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
     <Compile Include="TaskScheduling\ScheduledTaskContext.cs" />
     <Compile Include="TaskScheduling\ProjectContext.cs" />
-    <Compile Include="Views\ConfirmationMail.cs" />
+    <Compile Include="Views\Email.cs" />
     <Compile Include="Views\Spacing.cs" />
     <Compile Include="Web\DataReportOperation.cs" />
     <Compile Include="Policy\SourceControlOptions.cs" />
@@ -178,6 +178,7 @@
     <Compile Include="Views\Square.cs" />
     <Compile Include="Web\AccountModel.cs" />
     <Compile Include="Web\DataWelcome.cs" />
+    <Compile Include="Web\EmailContext.cs" />
     <Compile Include="Web\ReportSettings.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -56,5 +56,11 @@ namespace DailyReportWeb.Controllers.Api
         {
             RegistrationService.Logout();
         }
+
+        [AllowAnonymous]
+        public SimpleResult SendResetPasswordMail([FromBody] string email)
+        {
+            return RegistrationService.SendResetPasswordEmail(email);
+        }
     }
 }
