@@ -139,6 +139,23 @@ namespace Equilobe.DailyReport.SL
                 throw new ArgumentException();
         }
 
+        public SimpleResult SendResetPasswordEmail(string email)
+        {
+            var userManager = OwinService.GetApplicationUserManager();
+            var user = userManager.FindByEmail(email);
+            if (user == null)
+                return SimpleResult.Error("There is no user registered under " + email + " email adress.");
+
+            if (!user.EmailConfirmed)
+                return SimpleResult.Error("The email adress has not been confirmed. Please confirm your email first!");
+
+            string token = userManager.GeneratePasswordResetToken(user.Id);
+            var callbackUrl = HttpUtility.UrlEncode(OwinService.GetApplicationUserManager().GeneratePasswordResetToken(user.Id));
+            SendPasswordResetEmail(user, callbackUrl);
+
+            return SimpleResult.Success("Details for reseting password have been sent to your email adress");
+        }
+
         #region Helpers
 
         private string GetCallbackUrl(string userId)
@@ -178,14 +195,51 @@ namespace Equilobe.DailyReport.SL
             EmailService.SendEmail(message);
         }
 
+        private void SendPasswordResetEmail(ApplicationUser user, string callbackUrl)
+        {
+            var message = GetPasswordResetMessage(user, callbackUrl);
+
+            EmailService.SendEmail(message);
+        }
+
+        private MailMessage GetEmailMessage(EmailContext context)
+        {
+            var template = File.ReadAllText(context.ViewPath);
+            var body = RazorEngine.Razor.Parse(template, context.Email);
+
+            return EmailService.GetHtmlMessage(context.UserEmail, context.Subject, body);
+        }
+
+        private EmailContext GetEmailContext(string callbackUrl, string userEmail, string viewPath, string subject)
+        {
+            return new EmailContext
+            {
+                Email = new Email
+                {
+                    CallbackUrl = callbackUrl
+                },
+                UserEmail = userEmail,
+                Subject = subject,
+                ViewPath = viewPath
+            };
+        }
+
         private MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
         {
-            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml");
-            var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
-            var body = RazorEngine.Razor.Parse(template, emailModel);
+            var viewPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml";
             var subject = "DailyReport | Account Confirmation";
+            var emailContext = GetEmailContext(callbackUrl, user.Email, viewPath, subject);
 
-            return EmailService.GetHtmlMessage(user.Email, subject, body);
+            return GetEmailMessage(emailContext);
+        }
+
+        private MailMessage GetPasswordResetMessage(ApplicationUser user, string callbackUrl)
+        {
+            var viewPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\PasswordResetEmail.cshtml";
+            var subject = "DailyReport | Account Confirmation";
+            var emailContext = GetEmailContext(callbackUrl, user.Email, viewPath, subject);
+
+            return GetEmailMessage(emailContext);
         }
 
         #endregion

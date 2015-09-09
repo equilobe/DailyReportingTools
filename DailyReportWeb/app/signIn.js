@@ -10,6 +10,7 @@ angular.module('app')
     .controller("SignInController", ['$scope', '$http', '$location', function ($scope, $http, $location) {
         $("body").attr("data-page", "signin");
         $scope.$parent.child = $scope;
+        $scope.forgotPasswordPhase = false;
 
         $scope.signIn = function ($scope) {
             $scope.status = "checking";
@@ -30,4 +31,17 @@ angular.module('app')
                     $scope.status = "error";
                 });
         };
+
+        $scope.forgotPassword = function ($scope) {
+            $scope.forgotPasswordPhase = true;
+        };
+
+        $scope.signInPhase = function ($scope) {
+            $scope.$parent.forgotPasswordPhase = false;
+        };
+
+        $scope.sendMailToResetPassword = function ($scope) {
+            //send mail...
+        }
+
     }]);
