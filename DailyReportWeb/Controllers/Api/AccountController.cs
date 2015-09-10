@@ -58,9 +58,21 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         [AllowAnonymous]
-        public SimpleResult SendResetPasswordMail([FromBody] string email)
+        public SimpleResult SendResetPasswordMail([FromBody] LoginModel loginModel)
         {
-            return RegistrationService.SendResetPasswordEmail(email);
+            return RegistrationService.SendResetPasswordEmail(loginModel.Email);
+        }
+
+        [AllowAnonymous]
+        public SimpleResult ResetPassword([FromBody] EmailConfirmation emailConfirmation)
+        {
+            return RegistrationService.ResetPassword(emailConfirmation);
+        }
+
+        [AllowAnonymous]
+        public SimpleResult ChangePassword([FromBody] ResetPasswordModel passwordModel)
+        {
+            return RegistrationService.ChangePassword(passwordModel);
         }
     }
 }

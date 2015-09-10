@@ -24,5 +24,9 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void ValidateJiraDetails(RegisterModel model);
 
         SimpleResult SendResetPasswordEmail(string email);
+
+        SimpleResult ResetPassword(EmailConfirmation emailConfirmation);
+
+        SimpleResult ChangePassword(ResetPasswordModel passwordModel);
     }
 }

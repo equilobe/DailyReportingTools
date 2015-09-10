@@ -265,6 +265,9 @@
     <Content Include="app\app.js" />
     <Content Include="app\reportSummary.html" />
     <Content Include="app\resetPassword.html" />
+    <Content Include="app\resetPassword.js">
+      <DependentUpon>resetPassword.html</DependentUpon>
+    </Content>
     <Content Include="app\sendDraft.html" />
     <Content Include="app\sendDraft.js">
       <DependentUpon>sendDraft.html</DependentUpon>

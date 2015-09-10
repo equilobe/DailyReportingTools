@@ -180,6 +180,7 @@
     <Compile Include="Web\DataWelcome.cs" />
     <Compile Include="Web\EmailContext.cs" />
     <Compile Include="Web\ReportSettings.cs" />
+    <Compile Include="Web\ResetPasswordModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

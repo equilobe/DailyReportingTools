@@ -38,10 +38,25 @@ angular.module('app')
 
         $scope.signInPhase = function ($scope) {
             $scope.$parent.forgotPasswordPhase = false;
+            $scope.$parent.status = "";
+            $scope.$parent.message = "";
         };
 
         $scope.sendMailToResetPassword = function ($scope) {
-            //send mail...
-        }
+            $http.post("/api/account/sendResetPasswordMail", $scope.form)
+              .success(function (response) {
+                  if (!response.hasError) {
+                      $scope.$parent.message = "Details for resetting your password have been sent to " + $scope.form.email + " email adress";
+                      $scope.$parent.status = "success";
+                  }
+                  else {
+                      $scope.$parent.message = response.message;
+                      $scope.$parent.status = "error";
+                  }
+              })
+            .error(function () {
+                $scope.$parent.status = "error"
+            });
+        };
 
     }]);
