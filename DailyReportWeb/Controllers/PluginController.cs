@@ -30,7 +30,7 @@ namespace DailyReportWeb.Controllers
                 },
                 links = new
                 {
-                    self = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "app/welcome",
+                    self = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/app/welcome",
                     documentation = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/app/howItWorks"
                 },
                 apiVersion = 1,
@@ -57,16 +57,16 @@ namespace DailyReportWeb.Controllers
                             {
                                 value = "DRT"
                             },
-                            url = "/",
+                            url = "/atlassianPlugin/GeneralPage.html",
                             key = "app",
-                            location = "system.top.navigation.bar",
-                            conditions = new[]
-                            {
-                                new
-                                {
-                                    condition = "user_is_admin"
-                                }
-                            }
+                            location = "system.top.navigation.bar"//,
+                            //conditions = new[]
+                            //{
+                            //    new
+                            //    {
+                            //        condition = "user_is_admin"
+                            //    }
+                            //}
                         }
                     }
                 }
@@ -79,8 +79,8 @@ namespace DailyReportWeb.Controllers
         public ActionResult Installed()
         {
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
-            var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
-            DataService.SaveInstance(instanceData);
+          //  var instanceData = JsonConvert.DeserializeObject<InstalledInstance>(bodyText);
+          //  DataService.SaveInstance(instanceData);
 
             return Content(String.Empty);
         }
@@ -91,13 +91,13 @@ namespace DailyReportWeb.Controllers
             var bodyText = new System.IO.StreamReader(Request.InputStream).ReadToEnd();
             var pluginKey = JsonConvert.DeserializeObject<InstalledInstance>(bodyText).ClientKey;
 
-            var projectKeys = DataService.GetUniqueProjectsKey(pluginKey);
-            TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
-            {
-                UniqueProjectKeys = projectKeys
-            });
+           // var projectKeys = DataService.GetUniqueProjectsKey(pluginKey);
+          //  TaskSchedulerService.DeleteMultipleTasks(new ProjectListContext
+         //   {
+         //       UniqueProjectKeys = projectKeys
+         //   });
 
-            DataService.DeleteInstance(pluginKey);
+          //  DataService.DeleteInstance(pluginKey);
 
             return Content(String.Empty);
         }
