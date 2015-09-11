@@ -30,8 +30,8 @@ namespace DailyReportWeb.Controllers
                 },
                 links = new
                 {
-                    self = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/howto",
-                    documentation = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/docs"
+                    self = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "app/welcome",
+                    documentation = UrlExtensions.GetHostUrl(Request.Url.OriginalString) + "/app/howItWorks"
                 },
                 apiVersion = 1,
                 authentication = new
