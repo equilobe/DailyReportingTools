@@ -57,7 +57,7 @@ namespace DailyReportWeb.Controllers
                             {
                                 value = "DRT"
                             },
-                            url = "/atlassianPlugin/GeneralPage.html",
+                            url = "/",
                             key = "app",
                             location = "system.top.navigation.bar"//,
                             //conditions = new[]
