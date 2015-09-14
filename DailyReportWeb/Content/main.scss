@@ -483,6 +483,13 @@ div.disabled {
     }
 }
 
+[data-page='resetPassword'] {
+
+    form {
+        max-width: 500px;
+    }
+}
+
 [data-page='instances'] {
 
     form {

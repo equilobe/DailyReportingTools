@@ -9,7 +9,8 @@ angular.module('app')
     }])
     .controller("ResetPasswordController", ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         $("body").attr("data-page", "resetPassword");
-        $scope.status = "loading";
+        $scope.status = "";
+        $scope.pageStatus = "loading";
 
         var resetPasswordDetails = {
             userId: $routeParams.userId,
@@ -18,7 +19,7 @@ angular.module('app')
         };
 
         $http.post("/api/account/resetPassword", resetPasswordDetails)
-            .succes(function (response) {
+            .success(function (response) {
                 if (response.hasError) {
                     $scope.status = "error";
                     $scope.message = response.message;
@@ -27,12 +28,23 @@ angular.module('app')
             .error(function () {
                 $scope.status = "error";
                 $scope.message = "Cannot reset password";
+            })
+            .finally(function () {
+                $scope.pageStatus = "loaded";
             });
 
         $scope.changePassword = function ($scope) {
-            resetPasswordDetails.newPassword = $scope.newPassword;
+            resetPasswordDetails.newPassword = $scope.form.password;
+            if ($scope.form.password != $scope.form.confirmedPassword)
+            {
+                $scope.message = "Passwords don't match!";
+                $scope.status = "error";
+                $scope.form.$setPristine();
+                return false;
+            }
+
             $http.post("/api/account/changePassword", resetPasswordDetails)
-                .succes(function (response) {
+                .success(function (response) {
                     if (response.hasError) {
                         $scope.status = "error";
                         $scope.message = response.message;
@@ -44,6 +56,9 @@ angular.module('app')
                 })
                 .error(function () {
                     $scope.status = "error";
-                });
+                })
+                .finally(function () {
+                    $scope.form.$setPristine();
+                })
             }
     }]);
