@@ -55,7 +55,7 @@ namespace DailyReportWeb.Controllers
                         {
                             name = new 
                             {
-                                value = "DRT"
+                                value = "DailyReport"
                             },
                             url = "/",
                             key = "app",
