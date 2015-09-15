@@ -10,6 +10,6 @@ namespace Equilobe.DailyReport.Models.Web
     {
         public string UserId { get; set; }
         public string NewPassword { get; set; }
-        public string UserToken { get; set; }
+        public string Code { get; set; }
     }
 }

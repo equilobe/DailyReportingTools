@@ -104,12 +104,12 @@ namespace Equilobe.DailyReport.SL
         {
             var userManager = OwinService.GetApplicationUserManager();
             var user = userManager.FindById(passwordModel.UserId);
-            var code = HttpUtility.UrlDecode(passwordModel.UserToken);
+            var code = HttpUtility.UrlDecode(passwordModel.Code);
 
             if (user == null)
                 return SimpleResult.Error("Invalid token");
 
-            IdentityResult result = userManager.ResetPassword(passwordModel.UserId, passwordModel.UserToken, passwordModel.NewPassword);
+            IdentityResult result = userManager.ResetPassword(passwordModel.UserId, code, passwordModel.NewPassword);
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
@@ -172,7 +172,7 @@ namespace Equilobe.DailyReport.SL
             if (!user.EmailConfirmed)
                 return SimpleResult.Error("The email adress has not been confirmed. Please confirm your email first!");
 
-            string token = userManager.GeneratePasswordResetToken(user.Id);
+           // string token = userManager.GeneratePasswordResetToken(user.Id);
             var callbackUrl = GetResetPasswordCallbackUrl(user.Id);
             SendPasswordResetEmail(user, callbackUrl);
 
@@ -183,9 +183,7 @@ namespace Equilobe.DailyReport.SL
 
         private SimpleResult ValidateUserToken(EmailConfirmation emailConfirmation, ApplicationUser user, string errorMessage)
         {
-            var code = HttpUtility.UrlDecode(emailConfirmation.Code);
-
-            if (emailConfirmation.UserId == null || code == null)
+            if (emailConfirmation.UserId == null || emailConfirmation.Code == null)
                 return SimpleResult.Error(errorMessage);
 
             if (user == null)
@@ -279,7 +277,7 @@ namespace Equilobe.DailyReport.SL
         private MailMessage GetPasswordResetMessage(ApplicationUser user, string callbackUrl)
         {
             var viewPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\PasswordResetEmail.cshtml";
-            var subject = "DailyReport | Account Confirmation";
+            var subject = "DailyReport | Password Reset";
             var emailContext = GetEmailContext(callbackUrl, user.Email, viewPath, subject);
 
             return GetEmailMessage(emailContext);

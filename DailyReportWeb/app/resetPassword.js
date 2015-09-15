@@ -11,6 +11,7 @@ angular.module('app')
         $("body").attr("data-page", "resetPassword");
         $scope.status = "";
         $scope.pageStatus = "loading";
+        $scope.pageHasError = false;
 
         var resetPasswordDetails = {
             userId: $routeParams.userId,
@@ -21,12 +22,12 @@ angular.module('app')
         $http.post("/api/account/resetPassword", resetPasswordDetails)
             .success(function (response) {
                 if (response.hasError) {
-                    $scope.status = "error";
+                    $scope.pageHasError = true;
                     $scope.message = response.message;
                 }
             })
             .error(function () {
-                $scope.status = "error";
+                $scope.pageHasError = true;
                 $scope.message = "Cannot reset password";
             })
             .finally(function () {

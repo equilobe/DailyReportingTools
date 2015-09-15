@@ -36,22 +36,22 @@
             <a class="valign-middle" ng-click="forgotPassword(this)">Forgot password?</a>
         </div>
         <div>
-            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="signIn(this)" ng-if="!forgotPasswordPhase">
+            <button class="btn btn-success" ng-disabled="form.$invalid || form.$pristine && status != 'error' || forgotPasswordPhase" ng-click="signIn(this)" ng-show="!forgotPasswordPhase">
                 Sign In
             </button>
-            <button class="btn btn-default" ng-disabled="form.$invalid || form.$pristine && status != 'error'" ng-click="sendMailToResetPassword(this)" ng-if="forgotPasswordPhase">
+            <button class="btn btn-default" ng-disabled="form.$invalid || form.$pristine && status != 'error' || !forgotPasswordPhase" ng-click="sendMailToResetPassword(this)" ng-show="forgotPasswordPhase">
                 Send Email
             </button>
-            <button type="button" class="btn btn-default" ng-click="signInPhase(this)" ng-if="forgotPasswordPhase">Cancel</button>
+            <button type="button" class="btn btn-default" ng-click="signInPhase(this)" ng-show="forgotPasswordPhase">Cancel</button>
             <span class="status-message" ng-show="status == 'checking'">
                 <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
                 <span>Loading</span>
             </span>
-            <span class="status-message" ng-show="status == 'error' && (form.$pristine || forgotPasswordPhase)">
+            <span class="status-message" ng-show="status == 'error' && form.$pristine">
                 <span class="alert-danger glyphicon glyphicon-remove"></span>
                 <span>{{message}}</span>
             </span>
-            <span class="status-message" ng-show="status == 'success'">
+            <span class="status-message" ng-show="status == 'success' && form.$pristine">
                 <span class="alert-success glyphicon glyphicon-ok"></span>
                 <span>{{message}}</span>
             </span>

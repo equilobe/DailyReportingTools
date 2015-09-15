@@ -13,6 +13,7 @@ angular.module('app')
         $scope.forgotPasswordPhase = false;
 
         $scope.signIn = function ($scope) {
+         //   $scope = $scope.$parent;
             $scope.status = "checking";
             $scope.form.$setPristine();
 
@@ -34,28 +35,34 @@ angular.module('app')
 
         $scope.forgotPassword = function ($scope) {
             $scope.forgotPasswordPhase = true;
+            $scope.form.$setDirty();
         };
 
         $scope.signInPhase = function ($scope) {
-            $scope.$parent.forgotPasswordPhase = false;
-            $scope.$parent.status = "";
-            $scope.$parent.message = "";
+            $scope.forgotPasswordPhase = false;
+            $scope.status = "";
+            $scope.message = "";
+            $scope.form.$setDirty();
         };
 
         $scope.sendMailToResetPassword = function ($scope) {
+            $scope.status = "checking";
             $http.post("/api/account/sendResetPasswordMail", $scope.form)
               .success(function (response) {
                   if (!response.hasError) {
-                      $scope.$parent.message = "Details for resetting your password have been sent to " + $scope.form.email + " email adress";
-                      $scope.$parent.status = "success";
+                      $scope.message = "Details for resetting your password have been sent to " + $scope.form.email + " email adress";
+                      $scope.status = "success";
                   }
                   else {
-                      $scope.$parent.message = response.message;
-                      $scope.$parent.status = "error";
+                      $scope.message = response.message;
+                      $scope.status = "error";
                   }
               })
             .error(function () {
-                $scope.$parent.status = "error"
+                $scope.status = "error"
+            })
+            .finally(function () {
+                $scope.form.$setPristine();
             });
         };
 
