@@ -44,7 +44,8 @@ namespace Equilobe.DailyReport.SL
                 return;
             }
 
-            string status = Verify(true, parameters);
+            bool isSandbox = ConfigurationService.IsPaypalSandbox();
+            string status = Verify(isSandbox, parameters);
 
             if (status == PayPalVariables.InvalidStatus)
                 return;

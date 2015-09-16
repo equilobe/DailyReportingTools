@@ -47,6 +47,10 @@ namespace Equilobe.DailyReport.SL
         {
             return WebConfigurationManager.AppSettings["TimeZoneMappingPath"];
         }
-     
+
+        public bool IsPaypalSandbox()
+        {
+            return Convert.ToBoolean(ConfigurationManager.AppSettings["isPaypalSandbox"]);
+        }
     }
 }

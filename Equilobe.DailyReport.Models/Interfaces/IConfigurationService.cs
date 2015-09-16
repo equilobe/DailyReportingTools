@@ -10,5 +10,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetReportToolPath();
         string GetTaskSchedulerFolderName();
         string GetTimeZoneMappingPath();
+        bool IsPaypalSandbox();
     }
 }
