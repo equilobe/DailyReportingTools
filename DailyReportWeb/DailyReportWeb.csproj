@@ -490,7 +490,10 @@ popd</PreBuildEvent>
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <Target Name="AfterBuild">
+  <!--<Target Name="AfterBuild">
     <TransformXml Source="Web.config" Transform="$(ProjectConfigTransformFileName)" Destination="Web.config" />
+  </Target>-->
+  <Target Name="TransformOnBuild" BeforeTargets="PrepareForBuild">
+    <TransformXml Source="Web.config" Transform="Web.$(Configuration).config" Destination="Web.config" />
   </Target>
 </Project>
