@@ -13,7 +13,6 @@ angular.module('app')
         $scope.forgotPasswordPhase = false;
 
         $scope.signIn = function ($scope) {
-         //   $scope = $scope.$parent;
             $scope.status = "checking";
             $scope.form.$setPristine();
 

@@ -95,7 +95,7 @@ namespace Equilobe.DailyReport.SL
         {
             var userManager = OwinService.GetApplicationUserManager();
             var user = userManager.FindById(emailConfirmation.UserId);
-            var errorMessage = "Invalid password reset token.";
+            var errorMessage = "Invalid password reset token";
 
             return ValidateUserToken(emailConfirmation, user, errorMessage);
         }
@@ -107,7 +107,7 @@ namespace Equilobe.DailyReport.SL
             var code = HttpUtility.UrlDecode(passwordModel.Code);
 
             if (user == null)
-                return SimpleResult.Error("Invalid token");
+                return SimpleResult.Error("Invalid token.");
 
             IdentityResult result = userManager.ResetPassword(passwordModel.UserId, code, passwordModel.NewPassword);
             if (!result.Succeeded)
