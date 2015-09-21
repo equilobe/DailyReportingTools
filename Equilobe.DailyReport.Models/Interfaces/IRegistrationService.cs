@@ -22,5 +22,11 @@ namespace Equilobe.DailyReport.Models.Interfaces
         bool IsTrialAvailableForInstance(long instanceId);
 
         void ValidateJiraDetails(RegisterModel model);
+
+        SimpleResult SendResetPasswordEmail(string email);
+
+        SimpleResult ValidateResetPasswordToken(EmailConfirmation emailConfirmation);
+
+        SimpleResult ResetPassword(ResetPasswordModel passwordModel);
     }
 }

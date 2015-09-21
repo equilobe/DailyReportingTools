@@ -2,6 +2,10 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.valign-middle{
+    vertical-align:middle;
+}
+
 .mg-top-10 {
     margin-top: 10px;
 }
@@ -466,9 +470,20 @@ div.disabled {
     form {
         max-width: 500px;
     }
+
+    .checkbox-inline {
+        margin-right: 0px;
+    }
 }
 
 [data-page='signup'] {
+
+    form {
+        max-width: 500px;
+    }
+}
+
+[data-page='resetPassword'] {
 
     form {
         max-width: 500px;

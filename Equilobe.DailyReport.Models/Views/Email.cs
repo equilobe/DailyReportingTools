@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Views
 {
-    public class ConfirmationMail
+    public class Email
     {
         public string CallbackUrl { get; set; }
     }

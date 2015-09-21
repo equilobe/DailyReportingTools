@@ -56,7 +56,7 @@ namespace Equilobe.DailyReport.SL
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
-            var callbackUrl = GetCallbackUrl(user.Id);
+            var callbackUrl = GetConfirmationEmailCallbackUrl(user.Id);
             SendAccountConfirmationEmail(user, callbackUrl);
 
             DataService.SaveInstance(model);
@@ -66,31 +66,54 @@ namespace Equilobe.DailyReport.SL
 
         public SimpleResult ConfirmEmail(EmailConfirmation emailConfirmation)
         {
-            string userId = emailConfirmation.userId;
-            string code = HttpUtility.UrlDecode(emailConfirmation.code);
-
-            if (userId == null || code == null)
-                return SimpleResult.Error("Invalid activation token.");
-
             var userManager = OwinService.GetApplicationUserManager();
+            var user = userManager.FindById(emailConfirmation.UserId);
+            var code = HttpUtility.UrlDecode(emailConfirmation.Code);
+            var errorMessage = "Invalid activation token.";
 
-            var user = userManager.FindById(userId);
-            if (user == null)
-                return SimpleResult.Error("Invalid activation token.");
+            var validate = ValidateUserToken(emailConfirmation, user, errorMessage);
+            if (validate.HasError)
+                return validate;
+
             if (user.EmailConfirmed)
                 return SimpleResult.Error("Your account was already activated.");
 
-            IdentityResult result = userManager.ConfirmEmail(userId, code);
+            IdentityResult result = userManager.ConfirmEmail(emailConfirmation.UserId, code);
             if (!result.Succeeded)
                 return SimpleResult.Error(result.Errors.First());
 
-            var instanceId = userManager.FindById(userId)
+            var instanceId = userManager.FindById(emailConfirmation.UserId)
                                         .InstalledInstances
                                         .Single()
                                         .Id;
             SettingsService.SyncAllBasicSettings(new ItemContext(instanceId));
 
             return SimpleResult.Success("Your account was activated. You can now sign in.");
+        }
+
+        public SimpleResult ValidateResetPasswordToken(EmailConfirmation emailConfirmation)
+        {
+            var userManager = OwinService.GetApplicationUserManager();
+            var user = userManager.FindById(emailConfirmation.UserId);
+            var errorMessage = "Invalid password reset token";
+
+            return ValidateUserToken(emailConfirmation, user, errorMessage);
+        }
+
+        public SimpleResult ResetPassword(ResetPasswordModel passwordModel)
+        {
+            var userManager = OwinService.GetApplicationUserManager();
+            var user = userManager.FindById(passwordModel.UserId);
+            var code = HttpUtility.UrlDecode(passwordModel.Code);
+
+            if (user == null)
+                return SimpleResult.Error("Invalid token.");
+
+            IdentityResult result = userManager.ResetPassword(passwordModel.UserId, code, passwordModel.NewPassword);
+            if (!result.Succeeded)
+                return SimpleResult.Error(result.Errors.First());
+
+            return SimpleResult.Success("Password successfuly changed. You can sign in now.");
         }
 
         public SimpleResult Login(LoginModel model)
@@ -139,13 +162,48 @@ namespace Equilobe.DailyReport.SL
                 throw new ArgumentException();
         }
 
+        public SimpleResult SendResetPasswordEmail(string email)
+        {
+            var userManager = OwinService.GetApplicationUserManager();
+            var user = userManager.FindByEmail(email);
+            if (user == null)
+                return SimpleResult.Error("There is no user registered with this email adress");
+
+            if (!user.EmailConfirmed)
+                return SimpleResult.Error("The email adress has not been confirmed. Please confirm your email first!");
+
+           // string token = userManager.GeneratePasswordResetToken(user.Id);
+            var callbackUrl = GetResetPasswordCallbackUrl(user.Id);
+            SendPasswordResetEmail(user, callbackUrl);
+
+            return SimpleResult.Success("Details for resetting password have been sent to your email adress");
+        }
+
         #region Helpers
 
-        private string GetCallbackUrl(string userId)
+        private SimpleResult ValidateUserToken(EmailConfirmation emailConfirmation, ApplicationUser user, string errorMessage)
+        {
+            if (emailConfirmation.UserId == null || emailConfirmation.Code == null)
+                return SimpleResult.Error(errorMessage);
+
+            if (user == null)
+                return SimpleResult.Error(errorMessage);
+
+            return SimpleResult.Success(string.Empty);
+        }
+
+        private string GetConfirmationEmailCallbackUrl(string userId)
         {
             string code = HttpUtility.UrlEncode(OwinService.GetApplicationUserManager().GenerateEmailConfirmationToken(userId));
 
             return string.Format("{0}/app/confirmEmail?userId={1}&code={2}", ConfigurationService.GetWebBaseUrl(), userId, code);
+        }
+
+        private string GetResetPasswordCallbackUrl(string userId)
+        {
+            string code = HttpUtility.UrlEncode(OwinService.GetApplicationUserManager().GeneratePasswordResetToken(userId));
+
+            return string.Format("{0}/app/resetPassword?userId={1}&code={2}", ConfigurationService.GetWebBaseUrl(), userId, code);
         }
 
         private void ValidateRegisterModel(RegisterModel model)
@@ -178,14 +236,51 @@ namespace Equilobe.DailyReport.SL
             EmailService.SendEmail(message);
         }
 
+        private void SendPasswordResetEmail(ApplicationUser user, string callbackUrl)
+        {
+            var message = GetPasswordResetMessage(user, callbackUrl);
+
+            EmailService.SendEmail(message);
+        }
+
+        private MailMessage GetEmailMessage(EmailContext context)
+        {
+            var template = File.ReadAllText(context.ViewPath);
+            var body = RazorEngine.Razor.Parse(template, context.Email);
+
+            return EmailService.GetHtmlMessage(context.UserEmail, context.Subject, body);
+        }
+
+        private EmailContext GetEmailContext(string callbackUrl, string userEmail, string viewPath, string subject)
+        {
+            return new EmailContext
+            {
+                Email = new Email
+                {
+                    CallbackUrl = callbackUrl
+                },
+                UserEmail = userEmail,
+                Subject = subject,
+                ViewPath = viewPath
+            };
+        }
+
         private MailMessage GetAccountConfirmationMessage(ApplicationUser user, string callbackUrl)
         {
-            var template = File.ReadAllText(System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml");
-            var emailModel = new ConfirmationMail { CallbackUrl = callbackUrl };
-            var body = RazorEngine.Razor.Parse(template, emailModel);
+            var viewPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\ConfirmationEmail.cshtml";
             var subject = "DailyReport | Account Confirmation";
+            var emailContext = GetEmailContext(callbackUrl, user.Email, viewPath, subject);
 
-            return EmailService.GetHtmlMessage(user.Email, subject, body);
+            return GetEmailMessage(emailContext);
+        }
+
+        private MailMessage GetPasswordResetMessage(ApplicationUser user, string callbackUrl)
+        {
+            var viewPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Views\Email\PasswordResetEmail.cshtml";
+            var subject = "DailyReport | Password Reset";
+            var emailContext = GetEmailContext(callbackUrl, user.Email, viewPath, subject);
+
+            return GetEmailMessage(emailContext);
         }
 
         #endregion

@@ -264,6 +264,10 @@
     </Content>
     <Content Include="app\app.js" />
     <Content Include="app\reportSummary.html" />
+    <Content Include="app\resetPassword.html" />
+    <Content Include="app\resetPassword.js">
+      <DependentUpon>resetPassword.html</DependentUpon>
+    </Content>
     <Content Include="app\sendDraft.html" />
     <Content Include="app\sendDraft.js">
       <DependentUpon>sendDraft.html</DependentUpon>
@@ -420,6 +424,7 @@
     <Content Include="Tools\AngularJS MVC.zip" />
     <Content Include="Views\Email\ConfirmationEmail.cshtml" />
     <Content Include="Views\Email\SubscriptionCanceling.cshtml" />
+    <Content Include="Views\Email\PasswordResetEmail.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -15,6 +15,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string AccesToken { get; set; }
         public string Title { get; set; }
         public string UniqueUserKey { get; set; }
+        public string HtmlContent { get; set; }
 
         public virtual BasicSettings BasicSettings { get; set; }
     }
