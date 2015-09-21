@@ -97,10 +97,10 @@ namespace JiraReporter
         {
             try
             {
-                JiraService.GetProject(jiraRequestContext, projectId);
-            }
-            catch (Exception)
-            {
+                var projects = JiraService.GetProjectsInfo(jiraRequestContext);
+                if (!projects.IsEmpty() && projects.SingleOrDefault(p => p.ProjectId == projectId) != null)
+                    return;
+
                 using (var db = new ReportsDb())
                 {
                     var basicSettings = db.BasicSettings.Where(bs => bs.UniqueProjectKey == options.UniqueProjectKey).Single();
@@ -110,8 +110,10 @@ namespace JiraReporter
                 }
 
                 TaskSchedulerService.DeleteTask(options.UniqueProjectKey);
-
-                throw new ApplicationException("Unable to run report tool due to Project no longer being available in JIRA.");
+            }
+            catch (Exception)
+            {           
+                throw new ApplicationException("Request for JIRA projects failed");
             }
         }
 
