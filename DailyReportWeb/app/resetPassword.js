@@ -13,13 +13,13 @@ angular.module('app')
         $scope.pageStatus = "loading";
         $scope.pageHasError = false;
 
-        var resetPasswordDetails = {
+        var validateResetTokenDetails = {
             userId: $routeParams.userId,
             code: encodeURIComponent($routeParams.code),
             newPassword: ""
         };
 
-        $http.post("/api/account/resetPassword", resetPasswordDetails)
+        $http.post("/api/account/validateResetPasswordToken", validateResetTokenDetails)
             .success(function (response) {
                 if (response.hasError) {
                     $scope.pageHasError = true;
@@ -34,8 +34,8 @@ angular.module('app')
                 $scope.pageStatus = "loaded";
             });
 
-        $scope.changePassword = function ($scope) {
-            resetPasswordDetails.newPassword = $scope.form.password;
+        $scope.resetPassword = function ($scope) {
+            validateResetTokenDetails.newPassword = $scope.form.password;
             if ($scope.form.password != $scope.form.confirmedPassword)
             {
                 $scope.message = "Passwords don't match!";
@@ -44,7 +44,7 @@ angular.module('app')
                 return false;
             }
 
-            $http.post("/api/account/changePassword", resetPasswordDetails)
+            $http.post("/api/account/resetPassword", validateResetTokenDetails)
                 .success(function (response) {
                     if (response.hasError) {
                         $scope.status = "error";

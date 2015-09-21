@@ -91,7 +91,7 @@ namespace Equilobe.DailyReport.SL
             return SimpleResult.Success("Your account was activated. You can now sign in.");
         }
 
-        public SimpleResult ResetPassword(EmailConfirmation emailConfirmation)
+        public SimpleResult ValidateResetPasswordToken(EmailConfirmation emailConfirmation)
         {
             var userManager = OwinService.GetApplicationUserManager();
             var user = userManager.FindById(emailConfirmation.UserId);
@@ -100,7 +100,7 @@ namespace Equilobe.DailyReport.SL
             return ValidateUserToken(emailConfirmation, user, errorMessage);
         }
 
-        public SimpleResult ChangePassword(ResetPasswordModel passwordModel)
+        public SimpleResult ResetPassword(ResetPasswordModel passwordModel)
         {
             var userManager = OwinService.GetApplicationUserManager();
             var user = userManager.FindById(passwordModel.UserId);

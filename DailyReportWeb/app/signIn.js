@@ -37,7 +37,7 @@ angular.module('app')
             $scope.form.$setDirty();
         };
 
-        $scope.signInPhase = function ($scope) {
+        $scope.switchToSignInPhase = function ($scope) {
             $scope.forgotPasswordPhase = false;
             $scope.status = "";
             $scope.message = "";

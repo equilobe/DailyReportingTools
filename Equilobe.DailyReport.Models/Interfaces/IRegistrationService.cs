@@ -25,8 +25,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
 
         SimpleResult SendResetPasswordEmail(string email);
 
-        SimpleResult ResetPassword(EmailConfirmation emailConfirmation);
+        SimpleResult ValidateResetPasswordToken(EmailConfirmation emailConfirmation);
 
-        SimpleResult ChangePassword(ResetPasswordModel passwordModel);
+        SimpleResult ResetPassword(ResetPasswordModel passwordModel);
     }
 }

@@ -64,15 +64,15 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         [AllowAnonymous]
-        public SimpleResult ResetPassword([FromBody] EmailConfirmation emailConfirmation)
+        public SimpleResult ValidateResetPasswordToken([FromBody] EmailConfirmation emailConfirmation)
         {
-            return RegistrationService.ResetPassword(emailConfirmation);
+            return RegistrationService.ValidateResetPasswordToken(emailConfirmation);
         }
 
         [AllowAnonymous]
-        public SimpleResult ChangePassword([FromBody] ResetPasswordModel passwordModel)
+        public SimpleResult ResetPassword([FromBody] ResetPasswordModel passwordModel)
         {
-            return RegistrationService.ChangePassword(passwordModel);
+            return RegistrationService.ResetPassword(passwordModel);
         }
     }
 }
