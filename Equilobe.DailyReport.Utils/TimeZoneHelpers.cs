@@ -10,6 +10,9 @@ namespace Equilobe.DailyReport.Utils
     {
         public static TimeSpan GetOffsetFromTimezoneId(string timeZoneId)
         {
+            if (timeZoneId == null)
+                return new TimeSpan();
+
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
             return timeZoneInfo.GetUtcOffset(DateTime.Now.ToUniversalTime());
         }
