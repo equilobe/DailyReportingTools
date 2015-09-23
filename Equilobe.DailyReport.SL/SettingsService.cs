@@ -154,31 +154,41 @@ namespace Equilobe.DailyReport.SL
                 instances.Add(instance);
 
                 if (installedInstance.ExpirationDate <= DateTime.Now)                   
-                    continue;                
+                    continue;
 
-                var projects = JiraService.GetProjectsInfo(jiraRequestContext)
-                                          .Select(projectInfo =>
-                                          {
-                                              var basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
-                                              if (basicSettings == null)
-                                              {
-                                                  SyncAllBasicSettings(icontext);
-                                                  basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
-                                              }
+                var projects = new List<BasicReportSettings>();
 
-                                              return new BasicReportSettings
-                                              {
-                                                  Id = basicSettings.Id,
-                                                  InstalledInstanceId = basicSettings.InstalledInstanceId,
-                                                  BaseUrl = UrlExtensions.GetAuthority(installedInstance.BaseUrl),
-                                                  ProjectId = basicSettings.ProjectId,
-                                                  ProjectKey = projectInfo.ProjectKey,
-                                                  UniqueProjectKey = basicSettings.UniqueProjectKey,
-                                                  ProjectName = projectInfo.ProjectName,
-                                                  ReportTime = basicSettings.ReportTime
-                                              };
-                                          })
-                                          .ToList();
+                try
+                {
+                    projects = JiraService.GetProjectsInfo(jiraRequestContext)
+                          .Select(projectInfo =>
+                          {
+                              var basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
+                              if (basicSettings == null)
+                              {
+                                  SyncAllBasicSettings(icontext);
+                                  basicSettings = GetBasicSettings(icontext, projectInfo.ProjectId);
+                              }
+
+                              return new BasicReportSettings
+                              {
+                                  Id = basicSettings.Id,
+                                  InstalledInstanceId = basicSettings.InstalledInstanceId,
+                                  BaseUrl = UrlExtensions.GetAuthority(installedInstance.BaseUrl),
+                                  ProjectId = basicSettings.ProjectId,
+                                  ProjectKey = projectInfo.ProjectKey,
+                                  UniqueProjectKey = basicSettings.UniqueProjectKey,
+                                  ProjectName = projectInfo.ProjectName,
+                                  ReportTime = basicSettings.ReportTime
+                              };
+                          })
+                          .ToList();
+                }
+                catch
+                {
+                    projects = null;
+                }
+
                 instance.Projects = projects;
             }
 
