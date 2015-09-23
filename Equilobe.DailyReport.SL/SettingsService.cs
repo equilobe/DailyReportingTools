@@ -100,7 +100,10 @@ namespace Equilobe.DailyReport.SL
                     return null;
             }
 
-            return JiraService.GetProjectsInfo(jiraRequestContext)
+            var projects = new List<BasicReportSettings>();
+            try
+            {
+                projects = JiraService.GetProjectsInfo(jiraRequestContext)
                               .Select(projectInfo =>
                               {
                                   var basicSettings = GetBasicSettings(context, projectInfo.ProjectId);
@@ -123,6 +126,13 @@ namespace Equilobe.DailyReport.SL
                                   };
                               })
                               .ToList();
+            }
+            catch
+            {
+                projects = null;
+            }
+
+            return projects;
         }
 
         public List<JiraInstance> GetAllBasicReportSettings(UserContext context)
@@ -141,7 +151,7 @@ namespace Equilobe.DailyReport.SL
             var instances = new List<JiraInstance>();
 
             foreach (var installedInstance in installedInstances)
-            {              
+            {
                 var icontext = new ItemContext(installedInstance.Id);
                 var jiraRequestContext = new JiraRequestContext(installedInstance);
                 var instance = new JiraInstance
@@ -153,7 +163,7 @@ namespace Equilobe.DailyReport.SL
 
                 instances.Add(instance);
 
-                if (installedInstance.ExpirationDate <= DateTime.Now)                   
+                if (installedInstance.ExpirationDate <= DateTime.Now)
                     continue;
 
                 var projects = new List<BasicReportSettings>();
