@@ -189,6 +189,7 @@
     <Compile Include="Controllers\Api\AccountController.cs" />
     <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
     <Compile Include="Controllers\Api\ConfirmIndividualDraftController.cs" />
+    <Compile Include="Controllers\Api\HelpController.cs" />
     <Compile Include="Controllers\Api\InstancesController.cs" />
     <Compile Include="Controllers\Api\SendDraftController.cs" />
     <Compile Include="Controllers\Api\SendIndividualDraftController.cs" />
@@ -241,6 +242,10 @@
     </Content>
     <Content Include="app\footer.html" />
     <Content Include="app\header.html" />
+    <Content Include="app\help.html" />
+    <Content Include="app\help.js">
+      <DependentUpon>help.html</DependentUpon>
+    </Content>
     <Content Include="app\howItWorks.html" />
     <Content Include="app\howItWorks.js">
       <DependentUpon>howItWorks.html</DependentUpon>
@@ -487,9 +492,11 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>pushd $(ProjectDir)\config
-xcopy "..\..\config\*.config" /Y
-popd</PreBuildEvent>
+    <PreBuildEvent>
+      pushd $(ProjectDir)\config
+      xcopy "..\..\config\*.config" /Y
+      popd
+    </PreBuildEvent>
   </PropertyGroup>
   <!--To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
