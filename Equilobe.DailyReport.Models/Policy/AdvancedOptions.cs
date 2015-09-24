@@ -17,7 +17,7 @@ namespace Equilobe.DailyReport.Models.Policy
         public bool NoDraft { get; set; }
 
         [XmlAttribute]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public bool NoIndividualDraft { get; set; }
 
         [DefaultValue(false)]
@@ -51,7 +51,7 @@ namespace Equilobe.DailyReport.Models.Policy
             ReopenedStatus = "Reopened";
             SendDraftToProjectManager = true;
             SendFinalToAllUsers = true;
-            NoIndividualDraft = false;
+            NoIndividualDraft = true;
             NoDraft = false;
         }
     }
