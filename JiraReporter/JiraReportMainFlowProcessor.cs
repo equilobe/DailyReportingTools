@@ -167,7 +167,7 @@ namespace JiraReporter
 
         private bool RunReport(JiraReport context)
         {
-            if (DateTimeHelpers.CompareDay(context.LastReportSentDate, DateTime.Now, context.OffsetFromUtc) == 1)
+            if (context.LastReportSentDate != null && context.LastReportSentDate != new DateTime() && DateTimeHelpers.CompareDay(context.LastReportSentDate, DateTime.Now, context.OffsetFromUtc) == 1)
                 return false;
 
             if (DatesHelper.IsWeekend(context))

@@ -30,11 +30,17 @@ namespace JiraReporter.Helpers
 
         public static string GetShortName(string name)
         {
-            var names = name.Split(' ');
+            var names = RemoveMultipleSpaces(name).Split(' ');
             if (names.Count() > 1)
                 return names[0] + " " + names[1][0] + ".";
             else
                 return names[0];
+        }
+
+        static string RemoveMultipleSpaces(string word)
+        {
+            Regex regex = new Regex(@"[ ]{2,}", RegexOptions.None);
+            return regex.Replace(word, @" ");
         }
 
 
