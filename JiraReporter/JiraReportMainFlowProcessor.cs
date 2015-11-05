@@ -111,9 +111,9 @@ namespace JiraReporter
 
                 TaskSchedulerService.DeleteTask(options.UniqueProjectKey);
             }
-            catch (Exception)
+            catch (Exception ex)
             {           
-                throw new ApplicationException("Request for JIRA projects failed");
+                throw new ApplicationException("Request for JIRA projects failed", ex);
             }
         }
 
