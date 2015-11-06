@@ -263,9 +263,13 @@ namespace Equilobe.DailyReport.SL
                 if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
                 {
                     basicSettings.ReportTime = updatedFullSettings.ReportTime;
+                    
+                    var offset = TimeZoneHelpers.GetOffsetFromTimezoneId(basicSettings.InstalledInstance.TimeZone);
+                    var serverTime = DateTime.Parse(basicSettings.ReportTime).ToOriginalTimeZone(offset);
+
                     TaskSchedulerService.SetTask(new ScheduledTaskContext
                     {
-                        ReportTime = updatedFullSettings.ReportTime,
+                        ReportTime = serverTime.ToString(),
                         UniqueProjectKey = updatedFullSettings.UniqueProjectKey
                     });
                 }
