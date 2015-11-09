@@ -27,8 +27,8 @@ namespace Equilobe.DailyReport.BL.Jira
             var views = Client.GetRapidViews();
 
             var rapidViews = views
-                .Where(view => view.filter.query.ToLower().Contains(Filter.ProjectKey.ToLower())
-                            || view.filter.query.ToLower().Contains(Filter.ProjectName.ToLower()))
+                .Where(view => view.filter.name.ToLower().Contains(Filter.ProjectKey.ToLower())
+                            || view.filter.name.ToLower().Contains(Filter.ProjectName.ToLower()))
                 .Select(view => view)
                 .ToList();
 
