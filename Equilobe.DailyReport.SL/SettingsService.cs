@@ -265,7 +265,7 @@ namespace Equilobe.DailyReport.SL
                     basicSettings.ReportTime = updatedFullSettings.ReportTime;
                     
                     var offset = TimeZoneHelpers.GetOffsetFromTimezoneId(basicSettings.InstalledInstance.TimeZone);
-                    var serverTime = DateTime.Parse(basicSettings.ReportTime).ToOriginalTimeZone(offset);
+                    var serverTime = DateTime.Parse(basicSettings.ReportTime).ToServerTimeZone(offset);
 
                     TaskSchedulerService.SetTask(new ScheduledTaskContext
                     {

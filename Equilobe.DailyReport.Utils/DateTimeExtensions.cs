@@ -31,6 +31,13 @@ namespace System
             return TimeZoneInfo.ConvertTimeToUtc(date).Add(offsetFromUtc);
         }
 
+        public static DateTime ToServerTimeZone(this DateTime date, TimeSpan offsetFromUtc)
+        {
+            var serverOffset = TimeZoneInfo.Local.BaseUtcOffset;
+
+            return date.Add(offsetFromUtc.Negate()).Add(serverOffset);
+        }
+
         public static DateTime? ToOriginalTimeZone(this DateTime? date, TimeSpan offsetFromUtc)
         {
             if (date == null)
