@@ -58,7 +58,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string MonthStatus { get; set; }
         public string MonthName { get; set; }
 
-        public ChartElement SprintDay { get; set; }
+        public ChartElement ReportDay { get; set; }
+
         public ChartElement SprintEstimated { get; set; }
         public ChartElement SprintDone { get; set; }
         public ChartElement SprintRemaining { get; set; }

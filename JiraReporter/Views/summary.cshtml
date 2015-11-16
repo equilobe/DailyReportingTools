@@ -135,7 +135,7 @@ else
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
                     @if (Model.Timing.AverageWorked >= 0.1)
                     {
-                        @ChartBar("#5CB85C", @Model.SprintDay.Width, @Model.ChartMaxWidth, @Model.SprintDay.ActualValue)
+                        @ChartBar("#5CB85C", @Model.ReportDay.Width, @Model.ChartMaxWidth, @Model.ReportDay.ActualValue)
                     }
                     else
                     {
@@ -198,7 +198,14 @@ else
                 <td width="440" height="55" colspan="3" style="padding:0px; padding-bottom:10px;">
                     @Partial("Views/guidelines.cshtml", Model.GuidelineInfoStatus)
 
-                    @ChartBar("white", @Model.SummaryChartWidth, @Model.ChartMaxWidth, "")
+                    @if (Model.Timing.AverageWorked >= 0.1 && !Model.HasSprint)
+                    {
+                        @ChartBar("#5CB85C", @Model.ReportDay.Width, @Model.ChartMaxWidth, @Model.ReportDay.ActualValue)
+                    }
+                    else
+                    {
+                        @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
+                    }
 
                     @if (Model.Policy.AllocatedHoursPerMonth > 0)
                     {

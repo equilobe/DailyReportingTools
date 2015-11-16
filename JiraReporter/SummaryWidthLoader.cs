@@ -47,7 +47,7 @@ namespace JiraReporter
 
         public void SetStatusElementsWidth(Summary summary)
         {
-            SetChartElementWidth(summary.StatusChartWidth, summary.StatusMaxValue, summary.SprintDay);
+            SetChartElementWidth(summary.StatusChartWidth, summary.StatusMaxValue, summary.ReportDay);
             SetChartElementWidth(summary.StatusChartWidth, summary.StatusMaxValue, summary.SprintDone);
             SetChartElementWidth(summary.StatusChartWidth, summary.StatusMaxValue, summary.SprintEstimated);
             SetChartElementWidth(summary.StatusChartWidth, summary.StatusMaxValue, summary.SprintRemaining);

@@ -80,8 +80,8 @@ namespace JiraReporter.Services
             SetHealthColors();
             SetVariances();
 
-            SetHealth();
-            SetHealthStatuses();
+           // SetHealth();
+          //  SetHealthStatuses();
 
             SetMaxValues();
             SetGuidelines();
@@ -458,14 +458,18 @@ namespace JiraReporter.Services
         {
             GetStatusSprintValues();
             GetStatusMonthValues();
+            GetReportDayValues();
+        }
+
+        private void GetReportDayValues()
+        {
+            _summary.ReportDay = new ChartElement();
+            _summary.ReportDay.ActualValueSeconds = _summary.Timing.AverageWorked;
+            _summary.ReportDay.ActualValue = _summary.Timing.AverageWorkedString;
         }
 
         private void GetStatusSprintValues()
         {
-            _summary.SprintDay = new ChartElement();
-            _summary.SprintDay.ActualValueSeconds = _summary.Timing.AverageWorked;
-            _summary.SprintDay.ActualValue = _summary.Timing.AverageWorkedString;
-
             _summary.SprintEstimated = new ChartElement();
             _summary.SprintEstimated.ActualValueSeconds = _summary.Timing.SprintAverageEstimate;
             _summary.SprintEstimated.ActualValue = _summary.Timing.SprintAverageEstimateString;
