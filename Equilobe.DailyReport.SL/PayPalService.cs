@@ -55,7 +55,7 @@ namespace Equilobe.DailyReport.SL
             ProcessIPNLogs(id);
 
             //Task.Factory.StartNew(() => ProcessIPN(payPalCheckoutInfo, id));
-           // Task.Factory.StartNew(() => ProcessIPNLogs(id));
+            // Task.Factory.StartNew(() => ProcessIPNLogs(id));
         }
 
         public bool ProcessIPN(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
@@ -137,6 +137,12 @@ namespace Equilobe.DailyReport.SL
         void HandleSubscriptionCanceling(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             var instance = DataService.GetInstance(payPalCheckoutInfo.subscr_id);
+            if (instance == null)
+            {
+                SetLogProcessed(ipnId);
+                return;
+            }
+
             var user = DataService.GetUser(instance.UserId);
 
             var emailModel = GetSubscriptionCancelingEmailModel(payPalCheckoutInfo, instance);
@@ -232,8 +238,7 @@ namespace Equilobe.DailyReport.SL
         bool HandleSubscriptionSignUp(PayPalCheckoutInfo payPalCheckoutInfo, long ipnId)
         {
             var subscriptionContext = new SubscriptionContext();
-            string subscriptionDateTZ = payPalCheckoutInfo.subscr_date.Replace("PDT", "-0700");
-            subscriptionContext.SubscriptionDate = Convert.ToDateTime(subscriptionDateTZ);
+            subscriptionContext.SubscriptionDate = GetLocalDate(payPalCheckoutInfo.subscr_date);
 
             if (WasSubscriptionAlreadyProcessed(payPalCheckoutInfo, ipnId))
                 return true;
@@ -504,6 +509,18 @@ namespace Equilobe.DailyReport.SL
                 error += "InnerException: \r\n" + ex.InnerException.Message;
 
             DataService.SaveIpnLogError(logId, error);
+        }
+
+        DateTime GetLocalDate(string date)
+        {
+            string dateTZ = string.Empty;
+
+            if (date.Contains("PDT"))
+                dateTZ = date.Replace("PDT", "-0700");
+            else
+                dateTZ = date.Replace("PST", "-0800");
+
+            return Convert.ToDateTime(dateTZ);
         }
 
         #endregion
