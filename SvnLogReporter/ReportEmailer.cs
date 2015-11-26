@@ -89,8 +89,15 @@ namespace SourceControlLogReporter
                 Body = File.ReadAllText(reportPath),
                 IsBodyHtml = true
             };
+
             foreach (string addr in policy.EmailCollection)
+            {
+                if (!Validations.Mail(addr))
+                    continue;
+
                 message.To.Add(addr);
+            }
+
             return message;
         }
 
