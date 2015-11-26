@@ -82,6 +82,9 @@ namespace JiraReporter
         {
             foreach (string addr in Policy.EmailCollection)
             {
+                if (!Validations.Mail(addr))
+                    continue;
+
                 message.ReplyToList.Add(addr);
                 message.To.Add(addr);
             }

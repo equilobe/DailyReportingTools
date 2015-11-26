@@ -184,6 +184,9 @@ namespace JiraReporter
 
         private void SetLabel()
         {
+            if (_currentJiraIssue.fields.labels == null)
+                return;
+
             foreach (var label in _currentJiraIssue.fields.labels)
                 if (label == _policy.AdvancedOptions.PermanentTaskLabel)
                     _currentIssue.Label = label;
