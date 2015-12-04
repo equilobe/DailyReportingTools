@@ -160,16 +160,16 @@ namespace JiraReporter.Services
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
                 var entryContext = GetEntryContext(fullIssue, fromDate, toDate);
                 IssueAdapter.RemoveWrongEntries(entryContext);
-             //   fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < fromDate || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) > toDate);
+                //   fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < fromDate || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
 
-                foreach(var subtask in fullIssue.SubtasksDetailed)
+                foreach (var subtask in fullIssue.SubtasksDetailed)
                 {
                     entryContext = GetEntryContext(subtask, fromDate, toDate);
                     IssueAdapter.RemoveWrongEntries(entryContext);
                 }
 
-              //  fullIssue.SubtasksDetailed.ForEach(i=>i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
+                //  fullIssue.SubtasksDetailed.ForEach(i=>i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
                 fullIssue.SubtasksDetailed.RemoveAll(s => s.Entries.IsEmpty());
 
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
@@ -432,13 +432,14 @@ namespace JiraReporter.Services
             _currentAuthor.Errors = new List<Error>();
 
             SetCompletedTasksErrors();
-
-            if (!_context.HasSprint)
-                return;
-
-            SetRemainingTasksErrors();
             SetNotConfirmedError();
-            SetTaskFromAnotherSprintErrors();
+
+            if (_context.HasSprint)
+            {
+                SetRemainingTasksErrors();
+                SetTaskFromAnotherSprintErrors();
+            }
+
             SetErrorsMessage();
         }
 
@@ -447,11 +448,11 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            foreach(var issue in _currentAuthor.Issues)
+            foreach (var issue in _currentAuthor.Issues)
             {
                 if (TaskIsNotFromSprint(issue))
                 {
-                    issue.ErrorsCount ++;
+                    issue.ErrorsCount++;
                     if (issue.Errors == null)
                         issue.Errors = new List<Error>();
                     issue.Errors.Add(new Error(ErrorType.NotFromSprint));
