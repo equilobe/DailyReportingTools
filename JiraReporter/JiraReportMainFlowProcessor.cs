@@ -181,7 +181,7 @@ namespace JiraReporter
 
         private bool CheckDayFromOverrides(JiraReport context)
         {
-            if (context.Policy.CurrentOverride != null && context.Policy.CurrentOverride.NonWorkingDays != null)
+            if (context.Policy.CurrentOverride != null && !string.IsNullOrEmpty(context.Policy.CurrentOverride.NonWorkingDays))
                 return context.Policy.CurrentOverride.NonWorkingDaysList.Exists(a => a == DateTime.Now.ToOriginalTimeZone(context.OffsetFromUtc).Day);
             return false;
         }
