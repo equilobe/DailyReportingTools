@@ -137,7 +137,7 @@ namespace JiraReporter.Services
             _currentAuthor.Issues = GetAuthorsTimesheetIssues(_options.FromDate, _options.ToDate);
             if (_sprint != null)
                 _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Value.Date, _options.ToDate);
-            _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _startOfMonth.EndOfMonth());
+            _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _startOfMonth.EndOfMonth().AddDays(1).AddMinutes(-1));
         }
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
