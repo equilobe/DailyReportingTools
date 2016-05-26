@@ -124,7 +124,7 @@ namespace JiraReporter
 
         void SetReportSprintDetails(JiraReport report)
         {
-            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.ToDate.AddDays(-1), ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
+            var projectDateFilter = new ProjectDateFilter { Context = report.JiraRequestContext, Date = report.FromDate, ProjectKey = report.ProjectKey, ProjectName = report.ProjectName };
 
             var sprintContext = JiraService.GetProjectSprintDetailsForDate(projectDateFilter);
 
