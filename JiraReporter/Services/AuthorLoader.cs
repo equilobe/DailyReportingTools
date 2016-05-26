@@ -138,6 +138,10 @@ namespace JiraReporter.Services
             if (_sprint != null)
                 _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Value.Date, _options.ToDate);
             _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _startOfMonth.EndOfMonth().AddDays(1).AddMinutes(-1));
+            if (_sprint == null)
+            {
+                _currentAuthor.Last7DaysIssues = GetAuthorsTimesheetIssues(DateTime.Today.AddDays(-7), DateTime.Today);
+            }
         }
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
@@ -207,13 +211,19 @@ namespace JiraReporter.Services
             _currentAuthor.Timing.TotalTimeSeconds = GetSecondsWorked(_currentAuthor.Issues);
             _currentAuthor.Timing.TotalTimeString = _currentAuthor.Timing.TotalTimeSeconds.SetTimeFormat8Hour();
             _currentAuthor.Timing.TimeLogged = _currentAuthor.Timing.TotalTimeSeconds.SetTimeFormat();
+
             _currentAuthor.Timing.MonthSecondsWorked = GetSecondsWorked(_currentAuthor.MonthIssues);
+            _currentAuthor.Timing.Last7DaySecondsWorked = GetSecondsWorked(_currentAuthor.Last7DaysIssues);
+
             if (_currentAuthor.SprintIssues != null)
                 _currentAuthor.Timing.SprintSecondsWorked = GetSecondsWorked(_currentAuthor.SprintIssues);
         }
 
         private int GetSecondsWorked(List<IssueDetailed> issues)
         {
+            if (issues.IsEmpty())
+                return 0;
+
             return issues.Sum(i => i.Entries.Sum(t => t.TimeSpent));
         }
 

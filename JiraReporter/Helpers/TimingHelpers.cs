@@ -13,6 +13,7 @@ namespace JiraReporter.Helpers
         {
             timing.AverageWorkedMonthString = (timing.AverageWorkedMonth / 3600).RoundDoubleOneDecimal();
             timing.AverageWorkedSprintString = (timing.AverageWorkedSprint / 3600).RoundDoubleOneDecimal();
+            timing.AverageWorkedLast7DaysString = (timing.AverageWorkedLast7Days / 3600).RoundDoubleOneDecimal();
             timing.AverageWorkedString = (timing.AverageWorked / 3600).RoundDoubleOneDecimal();
         }
 

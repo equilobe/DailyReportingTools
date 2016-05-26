@@ -52,16 +52,25 @@ namespace JiraReporter.Helpers
             return commits;
         }
 
-        public static void SetAuthorAverageWorkPerDay(JiraAuthor author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays)
+        public static void SetAuthorAverageWorkPerDay(JiraAuthor author, int monthWorkedDays, int sprintWorkedDays, int reportWorkingDays, bool hasSprint)//TODO: refactor parameters
         {
             if (monthWorkedDays == 0)
                 author.Timing.AverageWorkedMonth = 0;
             else
                 author.Timing.AverageWorkedMonth = author.Timing.MonthSecondsWorked / monthWorkedDays;
-            if (sprintWorkedDays == 0)
-                author.Timing.AverageWorkedSprint = 0;
+
+            if (hasSprint)
+            {
+                if (sprintWorkedDays == 0)
+                    author.Timing.AverageWorkedSprint = 0;
+                else
+                    author.Timing.AverageWorkedSprint = author.Timing.SprintSecondsWorked / sprintWorkedDays;
+            }
             else
-                author.Timing.AverageWorkedSprint = author.Timing.SprintSecondsWorked / sprintWorkedDays;
+            {
+                author.Timing.AverageWorkedLast7Days = author.Timing.Last7DaySecondsWorked / 7;
+            }
+    
             if (reportWorkingDays == 0)
                 author.Timing.AverageWorked = 0;
             else

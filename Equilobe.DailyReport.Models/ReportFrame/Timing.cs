@@ -20,6 +20,14 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string TimeLogged { get; set; }
         public int MonthSecondsWorked { get; set; }
         public double MonthHoursWorked { get; set; }
+        public int Last7DaySecondsWorked { get; set; }
+        public double Last7DaysHoursWorked
+        {
+            get
+            {
+                return (double)Last7DaySecondsWorked / 3600;
+            }
+        }
         public double SprintHoursWorked { get; set; }
         public int SprintSecondsWorked { get; set; }
 
@@ -41,6 +49,17 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
         public string AverageWorkedSprintString { get; set; }
+
+        public double AverageWorkedLast7Days { get; set; }
+        public double AverageWorkedLast7DaysHours
+        {
+            get
+            {
+                return AverageWorkedSprint / 3600;
+            }
+        }
+        public string AverageWorkedLast7DaysString { get; set; }
+
         public double AverageWorkedMonth { get; set; }
         public double AverageWorkedMonthHours
         {

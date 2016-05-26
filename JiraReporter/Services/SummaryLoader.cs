@@ -80,8 +80,8 @@ namespace JiraReporter.Services
             SetHealthColors();
             SetVariances();
 
-           // SetHealth();
-          //  SetHealthStatuses();
+            // SetHealth();
+            //  SetHealthStatuses();
 
             SetMaxValues();
             SetGuidelines();
@@ -211,6 +211,10 @@ namespace JiraReporter.Services
             _summary.Timing.MonthHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.MonthSecondsWorked) / 3600;
             if (_report.HasSprint)
                 _summary.Timing.SprintHoursWorked = (double)_summary.Authors.Sum(a => a.Timing.SprintSecondsWorked) / 3600;
+            else
+            {
+                _summary.Timing.Last7DaySecondsWorked = _summary.Authors.Sum(a => a.Timing.Last7DaySecondsWorked);
+            }
         }
 
         private void SetAverageTimeWorkedPerDay()
@@ -225,6 +229,9 @@ namespace JiraReporter.Services
                 _summary.Timing.AverageWorkedMonth = (_summary.Timing.MonthHoursWorked * 3600) / _summary.WorkingDays.MonthWorkedDays;
             if (_report.HasSprint)
                 _summary.Timing.AverageWorkedSprint = (_summary.Timing.SprintHoursWorked * 3600) / _summary.WorkingDays.SprintWorkedDays;
+            else
+                _summary.Timing.AverageWorkedLast7Days = (double)_summary.Timing.Last7DaySecondsWorked / 7;
+
             if (_summary.WorkingDays.ReportWorkingDays > 0)
                 _summary.Timing.AverageWorked = (double)_summary.Timing.TotalTimeSeconds / _summary.WorkingDays.ReportWorkingDays;
 
@@ -268,7 +275,7 @@ namespace JiraReporter.Services
         {
             foreach (var author in _summary.Authors)
             {
-                AuthorHelpers.SetAuthorAverageWorkPerDay(author, _summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.ReportWorkingDays);
+                AuthorHelpers.SetAuthorAverageWorkPerDay(author, _summary.WorkingDays.MonthWorkedDays, _summary.WorkingDays.SprintWorkedDays, _summary.WorkingDays.ReportWorkingDays, _report.HasSprint);
                 AuthorHelpers.SetAuthorAverageRemainig(author, _summary.WorkingDays.SprintWorkingDaysLeft);
             }
         }

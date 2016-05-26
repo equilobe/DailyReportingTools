@@ -1,5 +1,6 @@
 ﻿@{
     var day = string.Empty;
+    var sprint = string.Empty;
     var imgSrc = string.Empty;
     var items = "";
     var colspanAtr = "";
@@ -12,6 +13,16 @@ else
 {
     day = "Work logged on " + Model.FromDate.DayOfWeek.ToString();
 }
+
+@if (Model.HasSprint)
+{
+    sprint = "Avg.work logged in" + Model.Sprint.name + "(h / day)";
+}
+else
+{
+    sprint = "Avg.work logged in last 7 days (h / day)";
+}
+
 <br />
 <table style="border:1px solid #DDD; border-collapse:collapse; min-width:250px;">
 
@@ -262,7 +273,7 @@ else
             </td>
         </tr>
 
-        @Spacing(20,5)
+        @Spacing(20, 5)
 
         <tr>
             <td colspan="5">
@@ -272,14 +283,18 @@ else
 
         @Spacing(5, 5)
 
-        @if (Model.Sprint == null)
-        {
-            colspanAtr = "colspan='4'";
-        }
-        else
-        {
+        @*@if (Model.Sprint == null)
+            {
+                colspanAtr = "colspan='4'";
+            }
+            else
+            {
+                colspanAtr = "colspan='2'";
+            }*@
+        @{
             colspanAtr = "colspan='2'";
         }
+
         <tr>
             <td>
                 @Square("#5CB85C")
@@ -288,16 +303,12 @@ else
                 <span style="color:black; font-size:11px; padding-left:2px">@day</span>
             </td>
 
-            @if (Model.Sprint != null)
-            {
-                <td>
-                    @Square("#F60")
-                </td>
-                <td>
-                    <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Sprint.name (h/day)</span>
-                </td>
-            }
-
+            <td>
+                @Square("#F60")
+            </td>
+            <td>
+                <span style="color:black; font-size:11px; padding-left:2px">@sprint</span>
+            </td>
         </tr>
         <tr>
             <td>
@@ -307,13 +318,13 @@ else
                 <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.MonthName (h/day)</span>
             </td>
             @if (Model.Sprint != null)
-            {
+                {
                 <td>
                     @Square("#337AB7")
                 </td>
-                <td>
-                    <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
-                </td>
+                    <td>
+                        <span style="color:black; font-size:11px; padding-left:2px">Avg. remaining work (h/day)</span>
+                    </td>
             }
         </tr>
         @Spacing(20, 5)
@@ -382,7 +393,7 @@ else
 
                     </td>
                 </tr>
-                @Spacing(20, 5)
+                    @Spacing(20, 5)
             }
         }
 
@@ -417,4 +428,4 @@ else
         }
 
     </table>
-}
+            }
