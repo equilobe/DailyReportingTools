@@ -180,8 +180,14 @@ else
                     <tr>
 
                         <td colspan="3">
-                            <h3 style="color:orange; margin:0px">There is no logged work or assigned issues</h3>
-
+                            @if (Model.HasSprint)
+                            {
+                                <h3 style="color:orange; margin:0px">There is no logged work or assigned issues</h3>
+                            }
+                            else
+                            {
+                                <h3 style="color:orange; margin:0px">There is no logged work </h3>
+                            }
                         </td>
                     </tr>
                 }
