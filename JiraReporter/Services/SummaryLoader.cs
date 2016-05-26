@@ -59,7 +59,7 @@ namespace JiraReporter.Services
             _summary.WorkingDays = LoadWorkingDaysInfo();
             _summary.Timing = new TimingDetailed();
             _summary.IsFinalDraft = _report.IsFinalDraft;
-            _summary.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_report.Options.ToDate.AddDays(-1).Month);
+            _summary.MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(_report.Options.FromDate.Month);
 
             SetDates();
             SetReportDate();

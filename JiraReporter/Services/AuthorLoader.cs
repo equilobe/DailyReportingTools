@@ -39,7 +39,7 @@ namespace JiraReporter.Services
         public AuthorLoader(JiraReport context)
         {
             this._context = context;
-            _startOfMonth = GetStartOfMonth();
+            _startOfMonth = _options.FromDate.StartOfMonth();
         }
 
         public List<JiraAuthor> GetAuthors()
@@ -57,14 +57,6 @@ namespace JiraReporter.Services
             individualReportService.SetIndividualDraftInfo(authors, _context);
 
             return authors;
-        }
-
-        private DateTime GetStartOfMonth()
-        {
-            if (_options.FromDate.Month != _options.ToDate.AddDays(-1).Month)
-                return _options.ToDate.AddDays(-1).StartOfMonth();
-
-            return _options.FromDate.StartOfMonth();
         }
 
         public JiraAuthor CreateAuthorByKey(JiraReport context)
@@ -145,7 +137,7 @@ namespace JiraReporter.Services
             _currentAuthor.Issues = GetAuthorsTimesheetIssues(_options.FromDate, _options.ToDate);
             if (_sprint != null)
                 _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Value.Date, _options.ToDate);
-            _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _options.ToDate);
+            _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _startOfMonth.EndOfMonth());
         }
 
         private List<IssueDetailed> GetAuthorsTimesheetIssues(DateTime fromDate, DateTime toDate)
@@ -160,7 +152,6 @@ namespace JiraReporter.Services
                 var fullIssue = IssueAdapter.GetBasicIssue(issue);
                 var entryContext = GetEntryContext(fullIssue, fromDate, toDate);
                 IssueAdapter.RemoveWrongEntries(entryContext);
-                //   fullIssue.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < fromDate || e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) > toDate);
                 issueProcessor.SetIssue(fullIssue, issue);
 
                 foreach (var subtask in fullIssue.SubtasksDetailed)
@@ -168,8 +159,6 @@ namespace JiraReporter.Services
                     entryContext = GetEntryContext(subtask, fromDate, toDate);
                     IssueAdapter.RemoveWrongEntries(entryContext);
                 }
-
-                //  fullIssue.SubtasksDetailed.ForEach(i=>i.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < fromDate || e.StartDate > toDate));
                 fullIssue.SubtasksDetailed.RemoveAll(s => s.Entries.IsEmpty());
 
                 IssueAdapter.SetLoggedAuthor(fullIssue, _currentAuthor.Name);
