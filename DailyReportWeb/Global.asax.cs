@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -16,6 +17,7 @@ namespace DailyReportWeb
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteTable.Routes.RegisterRoutes();
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
 		//protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
