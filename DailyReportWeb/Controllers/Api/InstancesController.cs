@@ -30,8 +30,9 @@ namespace DailyReportWeb.Controllers.Api
             RegistrationService.ValidateJiraDetails(instance);
             instance.Email = User.GetUsername();
 
-            if(instance.UpdateInstance)
-                DataService.SaveInstance(instance);
+            //TODO: reinstall the line below if payment for each new instance is wanted.
+            //if(instance.UpdateInstance)
+            DataService.SaveInstance(instance);
 
             return instance;
         }

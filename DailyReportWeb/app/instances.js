@@ -16,17 +16,22 @@ angular.module('app')
         $scope.instanceUrl = "";
         $scope.isSubscriptionOnTrial = false;
 
-        $http.get("/api/instances")
-            .success(function (list) {
-                list.forEach(function (item) {
-                    item.hostname = item.baseUrl.substring(item.baseUrl.indexOf('/') + 2, item.baseUrl.length).split('/')[0];
-                });
+        function loadInstances() {
+            $scope.status = "loading";
+            $http.get("/api/instances")
+                .success(function (list) {
+                    list.forEach(function (item) {
+                        item.hostname = item.baseUrl.substring(item.baseUrl.indexOf('/') + 2, item.baseUrl.length).split('/')[0];
+                    });
 
-                $scope.instances = list;
-            })
-            .finally(function () {
-                $scope.status = "loaded";
-            });
+                    $scope.instances = list;
+                })
+                .finally(function () {
+                    $scope.status = "loaded";
+                });
+        }
+
+        loadInstances();
 
         $scope.addInstance = function ($scope) {
             $scope.addingInstance = true;
@@ -122,6 +127,29 @@ angular.module('app')
                  });
         };
 
+        function gotoPayment($scope) {
+            $scope.status = "success";
+            $scope.message = "Please subscribe for the Jira instance. It may take a few minutes to process the subscription.";
+            $scope.serializedForm =
+            {
+                baseUrl: $scope.form.baseUrl,
+                timeZone: $scope.form.timeZone,
+                jiraUsername: $scope.form.jiraUsername,
+                jiraPassword: $scope.form.jiraPassword,
+                email: instance.email
+            };
+            $scope.instanceUrl = $scope.form.baseUrl;
+        }
+
+        function addInstanceWithoutPayment($scope) {
+            $scope.clearInstanceForm($scope);
+            $scope.status = "succes";
+            $scope.message = "Instance added";
+
+            loadInstances();
+        }
+
+
         $scope.saveNewInstance = function ($scope) {
             var newInstanceHostname = $scope.form.baseUrl.substring($scope.form.baseUrl.indexOf('/') + 2, $scope.form.baseUrl.length).split('/')[0];
             $scope.instances.forEach(function (instance) {
@@ -138,21 +166,11 @@ angular.module('app')
             }
 
             $http.post("/api/instances/checkInstanceCredentials", $scope.form)
-                 .success(function (instance) {
-                     // $scope.$parent.instances = list;
-                     //  $scope.clearInstanceForm($scope);
-                     $scope.status = "success";
-                     $scope.message = "Please subscribe for the Jira instance. It may take a few minutes to process the subscription.";
-                     $scope.serializedForm =
-                     {
-                         baseUrl: $scope.form.baseUrl,
-                         timeZone: $scope.form.timeZone,
-                         jiraUsername: $scope.form.jiraUsername,
-                         jiraPassword: $scope.form.jiraPassword,
-                         email: instance.email
-                     };
-                     $scope.instanceUrl = $scope.form.baseUrl;
-                     $scope.subscribePhase = true;
+                 .success(function (instance) {                     
+                     // uncomment the line below and comment the next line if you want payment activated for the instance
+                     // some changes need to be made server side as well
+                     // gotoPayment($scope);
+                     addInstanceWithoutPayment($scope);                     
                  })
                  .error(function (error) {
                      $scope.message = "Invalid JIRA username or password";

@@ -58,7 +58,7 @@ namespace Equilobe.DailyReport.SL
                 if (installedInstance == null)
                 {
                     installedInstance = new InstalledInstance();
-                    installedInstance.ExpirationDate = DateTime.Now;
+                    installedInstance.ExpirationDate = DateTime.MaxValue;
                     db.InstalledInstances.Add(installedInstance);
                     installedInstance.UserId = user.Id;
                 }
