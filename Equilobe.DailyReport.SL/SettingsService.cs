@@ -260,19 +260,7 @@ namespace Equilobe.DailyReport.SL
                 var userId = new UserContext().UserId;
                 var basicSettings = db.BasicSettings.Where(bs => bs.InstalledInstance.UserId == userId && bs.UniqueProjectKey == updatedFullSettings.UniqueProjectKey).Single();
 
-                if (basicSettings.ReportTime != updatedFullSettings.ReportTime)
-                {
-                    basicSettings.ReportTime = updatedFullSettings.ReportTime;
-                    
-                    var offset = TimeZoneHelpers.GetOffsetFromTimezoneId(basicSettings.InstalledInstance.TimeZone);
-                    var serverTime = DateTime.Parse(basicSettings.ReportTime).ToServerTimeZone(offset);
-
-                    TaskSchedulerService.SetTask(new ScheduledTaskContext
-                    {
-                        ReportTime = serverTime.ToString(),
-                        UniqueProjectKey = updatedFullSettings.UniqueProjectKey
-                    });
-                }
+                UpdateReportTime(updatedFullSettings, basicSettings);
 
                 var advancedSettings = new AdvancedReportSettings();
                 updatedFullSettings.CopyTo<IAdvancedSettings>(advancedSettings);
@@ -283,6 +271,36 @@ namespace Equilobe.DailyReport.SL
 
                 db.SaveChanges();
             }
+        }
+
+        private void UpdateReportTime(FullReportSettings updatedFullSettings, BasicSettings basicSettings)
+        {
+            if (basicSettings.ReportTime == updatedFullSettings.ReportTime)
+                return;
+
+            basicSettings.ReportTime = updatedFullSettings.ReportTime;
+
+            if (string.IsNullOrEmpty(basicSettings.ReportTime))
+            {
+                TaskSchedulerService.DeleteTask(basicSettings.UniqueProjectKey);
+            }
+            else
+            {
+                TaskSchedulerService.SetTask(
+                    new ScheduledTaskContext
+                    {
+                        ReportTime = GetTaskTime(basicSettings).ToString(),
+                        UniqueProjectKey = updatedFullSettings.UniqueProjectKey
+                    });
+            }
+
+        }
+
+        private static DateTime GetTaskTime(BasicSettings basicSettings)
+        {
+            var offset = TimeZoneHelpers.GetOffsetFromTimezoneId(basicSettings.InstalledInstance.TimeZone);
+            var serverTime = DateTime.Parse(basicSettings.ReportTime).ToServerTimeZone(offset);
+            return serverTime;
         }
 
         public FullReportSettings GetSyncedReportSettings(ItemContext context)
