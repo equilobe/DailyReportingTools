@@ -17,6 +17,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
+using System.Reflection;
+using Newtonsoft.Json;
 
 namespace JiraReporter
 {
@@ -87,9 +90,14 @@ namespace JiraReporter
                 RunReportTool(report);
                 UpdateOnSucces(report);
             }
+            catch(RazorEngine.Templating.TemplateCompilationException ex)
+            {
+                var serializedException = JsonConvert.SerializeObject(ex.Errors);
+                UpdateOnFailed(report, "Failed. " + ex.Message + " " + serializedException);
+            }
             catch (Exception ex)
             {
-                UpdateOnFailed(report, "Failed. " + ex.Message + "." + ex.StackTrace);
+                UpdateOnFailed(report, "Failed. " + ex.Message + " " + ex.GetType().FullName.ToString());
             }
         }
 
