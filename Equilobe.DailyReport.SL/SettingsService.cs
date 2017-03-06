@@ -282,6 +282,7 @@ namespace Equilobe.DailyReport.SL
 
             if (string.IsNullOrEmpty(basicSettings.ReportTime))
             {
+                basicSettings.ReportTime = null;
                 TaskSchedulerService.DeleteTask(basicSettings.UniqueProjectKey);
             }
             else
