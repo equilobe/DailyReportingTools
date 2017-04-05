@@ -510,10 +510,25 @@ namespace JiraReporter.Services
             var workingDaysInfo = new WorkingDaysInfo();
             var now = DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc);
             var reportDate = _report.ToDate.AddDays(-1);
+            var reportMonthStart = _report.FromDate.StartOfMonth();
+            var reportMonthEnd = _report.FromDate.EndOfMonth();
+
             workingDaysInfo.ReportWorkingDays = SummaryHelpers.GetWorkingDays(_options.FromDate, reportDate.AddDays(1), _report.WorkingDaysContext);
-            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.EndOfMonth().AddDays(1), _report.WorkingDaysContext); ;
-            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportDate.EndOfMonth().AddDays(1), _report.WorkingDaysContext);
-            workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportDate.StartOfMonth(), reportDate.AddDays(1), _report.WorkingDaysContext);
+
+            workingDaysInfo.MonthWorkingDays = SummaryHelpers.GetWorkingDays(reportMonthStart, reportMonthEnd.AddDays(1), _report.WorkingDaysContext);
+
+            workingDaysInfo.MonthWorkingDaysLeft = SummaryHelpers.GetWorkingDays(reportDate.AddDays(1), reportMonthEnd.AddDays(1), _report.WorkingDaysContext);
+
+            if(reportMonthEnd <= reportDate)
+            {
+                workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportMonthStart, reportMonthEnd.AddDays(1), _report.WorkingDaysContext);
+            }
+            else
+            {
+                workingDaysInfo.MonthWorkedDays = SummaryHelpers.GetWorkingDays(reportMonthStart, reportDate.AddDays(1), _report.WorkingDaysContext);
+            }
+
+
             if (_sprint != null)
             {
                 var sprintEndDate = _sprint.EndDate.ToOriginalTimeZone(_report.OffsetFromUtc);
