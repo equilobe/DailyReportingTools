@@ -328,7 +328,8 @@ namespace JiraReporter.Services
                 AuthorName = _currentAuthor.Name
             };
 
-            _currentAuthor.InProgressTasks.Issues = _currentAuthor.InProgressTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+            if (_context.IssuePriorityEnabled)
+                _currentAuthor.InProgressTasks.Issues = _currentAuthor.InProgressTasks.Issues.OrderBy(task => task.Priority.id).ToList();
         }
 
         private void SetAuthorRemainingTasksSection()
@@ -534,7 +535,8 @@ namespace JiraReporter.Services
                 AuthorName = _currentAuthor.Name
             };
 
-            _currentAuthor.OpenTasks.Issues = _currentAuthor.OpenTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+            if (_context.IssuePriorityEnabled)
+                _currentAuthor.OpenTasks.Issues = _currentAuthor.OpenTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
         }
 
         private List<IssueDetailed> GetAuthorTasks(List<IssueDetailed> tasks)
