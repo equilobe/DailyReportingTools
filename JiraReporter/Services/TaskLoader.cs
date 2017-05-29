@@ -39,7 +39,7 @@ namespace JiraReporter.Services
             context.ReportTasks.FutureSprintTasks = GetAditionalSprintIssues(context, context.FutureSprint);
             context.ReportTasks.PastSprintTasks = GetAditionalSprintIssues(context, context.PastSprint);
             context.ReportTasks.UncompletedTasks = context.ReportTasks.InProgressTasks.Concat(context.ReportTasks.OpenTasks).ToList();
-            SortTasks(context.ReportTasks);
+            SortTasks(context);
             SetUnassignedTasksErrors(context);
             SetVisibleUnassignedTasks(context);
         }
@@ -137,14 +137,17 @@ namespace JiraReporter.Services
             return issue;
         }
 
-        void SortTasks(ReportTasks sprintTasks)
+        void SortTasks(JiraReport context)
         {
-            if (sprintTasks.InProgressTasks != null)
-                sprintTasks.InProgressTasks = sprintTasks.InProgressTasks.OrderBy(priority => priority.Priority.id).ToList();
-            if (sprintTasks.OpenTasks != null)
-                sprintTasks.OpenTasks = sprintTasks.OpenTasks.OrderBy(priority => priority.Priority.id).ToList();
-            if (sprintTasks.UnassignedTasksAll != null)
-                sprintTasks.UnassignedTasksAll = sprintTasks.UnassignedTasksAll.OrderBy(priority => priority.Priority.id).ToList();
+            if (!context.IssuePriorityEnabled)
+                return;
+
+            if (context.ReportTasks.InProgressTasks != null)
+                context.ReportTasks.InProgressTasks = context.ReportTasks.InProgressTasks.OrderBy(task => task.Priority.id).ToList();
+            if (context.ReportTasks.OpenTasks != null)
+                context.ReportTasks.OpenTasks = context.ReportTasks.OpenTasks.OrderBy(task => task.Priority.id).ToList();
+            if (context.ReportTasks.UnassignedTasksAll != null)
+                context.ReportTasks.UnassignedTasksAll = context.ReportTasks.UnassignedTasksAll.OrderBy(task => task.Priority.id).ToList();
         }
 
         List<JiraIssue> GetAditionalSprintIssues(JiraReport report, Sprint sprint)

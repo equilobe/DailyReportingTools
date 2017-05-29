@@ -18,9 +18,13 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             Policy = p;
             Options = o;
             UniqueProjectKey = Options.UniqueProjectKey;
+            IssuePriorityEnabled = true;
         }
 
-        public JiraReport() { }
+        public JiraReport()
+        {
+            IssuePriorityEnabled = true;
+        }
 
         public BasicSettings Settings { get; set; }
 
@@ -198,5 +202,6 @@ namespace Equilobe.DailyReport.Models.ReportFrame
             }
         }
 
+        public bool IssuePriorityEnabled { get; set; }
     }
 }

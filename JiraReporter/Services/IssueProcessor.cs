@@ -57,6 +57,9 @@ namespace JiraReporter
             }
             if (issue.Subtasks != null)
                 SetSubtasks(issue);
+
+            if (issue.Priority == null)
+                _context.IssuePriorityEnabled = false;
         }
 
         private void SetGenericIssue(IssueDetailed issue, JiraIssue jiraIssue)
