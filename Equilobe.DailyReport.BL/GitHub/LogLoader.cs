@@ -43,6 +43,9 @@ namespace Equilobe.DailyReport.BL.GitHub
 
         private static LogEntry GetLogEntry(GitHubCommit commit)
         {
+            if (commit.Author == null)
+                return null;
+
             return new LogEntry
             {
                 Author = commit.Author.Login,

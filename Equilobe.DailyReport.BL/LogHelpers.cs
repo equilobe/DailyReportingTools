@@ -18,8 +18,7 @@ namespace Equilobe.DailyReport.BL
                 log.Entries.Remove(log.Entries.First());
 
             log.Entries = log.Entries
-                         .Where(e => e.Author != null)
-                         .Where(e => e.Date != default(DateTime))
+                         .Where(e => e!= null && e.Author != null && e.Date != default(DateTime))
                          .ToList();
         }
     }
