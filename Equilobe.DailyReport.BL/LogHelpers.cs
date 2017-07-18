@@ -11,10 +11,10 @@ namespace Equilobe.DailyReport.BL
     {
         public static void RemoveWrongEntries(DateTime fromDate, Log log)
         {
-            if (!log.Entries.Any())
+            if (log == null || log.Entries.IsEmpty())
                 return;
 
-            if (log.Entries.First().Date < fromDate)
+            if (log.Entries.First() != null && log.Entries.First().Date < fromDate)
                 log.Entries.Remove(log.Entries.First());
 
             log.Entries = log.Entries

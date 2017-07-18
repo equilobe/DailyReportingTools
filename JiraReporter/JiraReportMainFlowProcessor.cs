@@ -97,7 +97,7 @@ namespace JiraReporter
             }
             catch (Exception ex)
             {
-                UpdateOnFailed(report, "Failed. " + ex.Message + " " + ex.GetType().FullName.ToString());
+                UpdateOnFailed(report, "Failed. " + ex.Message + " " + ex.GetType().FullName.ToString() + "\n" + ex.StackTrace);
             }
         }
 
