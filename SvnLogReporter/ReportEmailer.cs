@@ -32,7 +32,7 @@ namespace SourceControlLogReporter
 
         }
 
-        protected virtual void SendEmails()
+        public virtual void SendEmails()
         {
             if (options.NoEmail)
                 return;
@@ -41,31 +41,7 @@ namespace SourceControlLogReporter
 
             foreach (var file in Directory.GetFiles(policy.UnsentReportsPath))
             {
-                TryEmailReport(file);
-            }
-        }
-
-        public void TrySendEmails()
-        {
-            try
-            {
-                SendEmails();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        public void TryEmailReport(string path)
-        {
-            try
-            {
-                EmailReport(path);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                EmailReport(file);
             }
         }
 

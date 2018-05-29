@@ -95,7 +95,7 @@ namespace JiraReporter
             return Report.EmailSubject;
         }
 
-        protected override void SendEmails()
+        public override void SendEmails()
         {
             Validations.EnsureDirectoryExists(Report.UnsentReportsPath);
 

@@ -58,7 +58,7 @@ namespace SourceControlLogReporter
             Reporter.WriteReport(policy, report, processor.PathToLog);
 
             var emailer = new ReportEmailer(policy, options);
-            emailer.TrySendEmails();
+            emailer.SendEmails();
         }
 
         private static void SetAppConfigFile()

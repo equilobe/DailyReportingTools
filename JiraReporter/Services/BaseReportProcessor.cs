@@ -56,7 +56,7 @@ namespace JiraReporter
         {
             var emailer = new ReportEmailerJira(Report);
 
-            emailer.TrySendEmails();
+            emailer.SendEmails();
         }
 
         protected void SetEmailCollection(List<JiraAuthor> authors)
