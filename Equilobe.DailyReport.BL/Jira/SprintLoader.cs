@@ -51,17 +51,21 @@ namespace Equilobe.DailyReport.BL.Jira
 
             if (string.IsNullOrEmpty(boardId))
                 return null;
+
+            var sprints = Client.GetAllSprints(boardId);
+
+            return null;
                 
-            var rapidViewId = GetRapidViewId();
-            if (rapidViewId == null)
-                return null;
+            //var rapidViewId = GetRapidViewId();
+            //if (rapidViewId == null)
+            //    return null;
 
-            var sprints = Client.GetAllSprints(rapidViewId, Filter.ProjectKey);
+            //var sprints = Client.GetAllSprints(rapidViewId, Filter.ProjectKey);
 
-            if (sprints == null || sprints.Count == 0)
-                return null;
+            //if (sprints == null || sprints.Count == 0)
+            //    return null;
 
-            return GetSprintContext(rapidViewId, sprints);
+            //return GetSprintContext(rapidViewId, sprints);
         }
 
         private SprintContext GetSprintContext(string rapidViewId, List<Sprint> sprints)

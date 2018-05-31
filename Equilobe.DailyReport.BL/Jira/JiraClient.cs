@@ -183,5 +183,12 @@ namespace Equilobe.DailyReport.BL.Jira
 
             return ResolveJiraRequest<JiraBoard>(request).values[0];
         }
+
+        public JiraSprints GetAllSprints(string boardId)
+        {
+            var request = new RestRequest(JiraApiUrls.AllSprints(boardId), Method.GET);
+
+            return ResolveJiraRequest<JiraSprints>(request);
+        }
     }
 }
