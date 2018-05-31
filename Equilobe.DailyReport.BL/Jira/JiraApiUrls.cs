@@ -93,9 +93,9 @@ namespace Equilobe.DailyReport.BL
             return string.Format("project = {0} AND worklogAuthor = '{1}' AND worklogDate >= '{2}' AND worklogDate <= '{3}'", projectKey, author, fromDate, endDate);
         }
 
-        public static string Boards()
+        public static string Board(string projectKey)
         {
-            return string.Format("rest/agile/1.0/board");
+            return string.Format("rest/agile/1.0/board?projectKeyOrId={0}", projectKey);
         }
     }
 }

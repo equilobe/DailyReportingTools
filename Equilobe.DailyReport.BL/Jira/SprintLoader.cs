@@ -47,6 +47,11 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public SprintContext GetSprintDetails()
         {
+            var boardId = Client.Board(Filter.ProjectKey).id;
+
+            if (string.IsNullOrEmpty(boardId))
+                return null;
+                
             var rapidViewId = GetRapidViewId();
             if (rapidViewId == null)
                 return null;

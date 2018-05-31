@@ -177,11 +177,11 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<JiraBasicIssues>(request).issues;
         }
 
-        public JiraBoard Boards()
+        public Board Board(string projectKey)
         {
-            var request = new RestRequest(JiraApiUrls.Boards(), Method.GET);
+            var request = new RestRequest(JiraApiUrls.Board(projectKey), Method.GET);
 
-            return ResolveJiraRequest<JiraBoard>(request);
+            return ResolveJiraRequest<JiraBoard>(request).values[0];
         }
     }
 }
