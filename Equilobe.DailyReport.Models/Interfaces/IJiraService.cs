@@ -15,10 +15,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<JiraIssue> GetTimesheetForUser(TimesheetContext context);
         JiraUser GetUser(JiraRequestContext context, string username);
         List<JiraUser> GetUsers(JiraRequestContext context, string projectKey);
-        RapidView GetRapidView(JiraRequestContext context, string id);
-        List<View> GetRapidViews(JiraRequestContext context);
-        SprintReport GetSprintReport(JiraRequestContext context,string rapidViewId, string sprintId);
-        List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId, string projectKey);
         JiraIssue GetIssue(JiraRequestContext context, string issueKey);
         JiraIssues GetCompletedIssues(IssuesContext context);
         JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId);

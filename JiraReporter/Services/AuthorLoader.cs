@@ -121,7 +121,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.AssignedUncompletedIssues(_currentAuthor.UserKey, _context.ProjectKey, _context.Sprint.id));
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.AssignedUncompletedIssues(_currentAuthor.UserKey, _context.ProjectKey, Int32.Parse(_context.Sprint.id)));
         }
 
         private void SetName()

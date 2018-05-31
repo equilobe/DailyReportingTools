@@ -51,7 +51,7 @@ namespace JiraReporter.Services
 
             context.ReportTasks.UnassignedTasksVisible = context.ReportTasks.UnassignedTasksAll.Where(t=> !t.IsSubtask).Take(5).ToList();
             context.ReportTasks.AdditionalUnassignedTasks = context.ReportTasks.UnassignedTasksAll.Count(t=>!t.IsSubtask) - context.ReportTasks.UnassignedTasksVisible.Count;
-            context.ReportTasks.UnassignedTasksSearchUrl = new Uri(context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.UnassignedUncompletedIssues(context.ProjectKey, context.Sprint.id));
+            context.ReportTasks.UnassignedTasksSearchUrl = new Uri(context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.UnassignedUncompletedIssues(context.ProjectKey, Int32.Parse(context.Sprint.id)));
         }
 
         void SetCompletedTasksErrors(JiraReport report)

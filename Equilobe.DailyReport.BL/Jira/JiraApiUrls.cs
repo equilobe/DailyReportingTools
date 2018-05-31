@@ -28,26 +28,6 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/api/2/user/assignable/search?project={0}", project);
         }
 
-        public static string RapidView(string id)
-        {
-            return string.Format("rest/greenhopper/1.0/xboard/work/allData/?rapidViewId={0}", id);
-        }
-
-        public static string RapidViews()
-        {
-            return "rest/greenhopper/1.0/rapidviews/list";
-        }
-
-        public static string Sprint(string rapidViewId, string sprintId)
-        {
-            return string.Format("rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId={0}&sprintId={1}", rapidViewId, sprintId);
-        }
-
-        public static string AllSprints(string rapidViewId, string projectKey)
-        {
-            return string.Format("rest/greenhopper/1.0/sprintquery/{0}?jql=project='{1}?includeHistoricSprints=true&includeFutureSprints=true", rapidViewId, projectKey);
-        }
-
         public static string Issue(string key)
         {
             return string.Format("rest/api/2/issue/{0}", key);

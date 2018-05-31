@@ -73,7 +73,7 @@
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
-    <Compile Include="Jira\JiraSprint.cs" />
+    <Compile Include="Jira\Sprint.cs" />
     <Compile Include="Jira\JiraBoard.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
@@ -130,11 +130,6 @@
     <Compile Include="Jira\JiraIssue.cs" />
     <Compile Include="Jira\JiraUser.cs" />
     <Compile Include="Jira\Project.cs" />
-    <Compile Include="Jira\RapidView.cs" />
-    <Compile Include="Jira\Sprint.cs" />
-    <Compile Include="Jira\SprintReport.cs" />
-    <Compile Include="Jira\Sprints.cs" />
-    <Compile Include="Jira\SprintsData.cs" />
     <Compile Include="Jira\View.cs" />
     <Compile Include="Jira\Views.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

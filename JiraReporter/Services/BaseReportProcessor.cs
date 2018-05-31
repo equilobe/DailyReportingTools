@@ -63,12 +63,10 @@ namespace JiraReporter
         {
             Policy.EmailCollection = new List<string>();
 
-            //if (Report.IsFinalDraft)
-            //    SetDraftEmailCollection(authors);
-            //else
-            //    SetFinalReportEmailCollection(authors);
-
-            Policy.EmailCollection = new List<string>() { "georgian.tanase@equilobe.com" };
+            if (Report.IsFinalDraft)
+                SetDraftEmailCollection(authors);
+            else
+                SetFinalReportEmailCollection(authors);
 
             Policy.EmailCollection = Policy.EmailCollection.Distinct().ToList();
         }

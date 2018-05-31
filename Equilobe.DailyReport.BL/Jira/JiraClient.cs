@@ -95,34 +95,6 @@ namespace Equilobe.DailyReport.BL.Jira
                 .ToList();
         }
 
-        public RapidView GetRapidView(string id)
-        {
-            var request = new RestRequest(JiraApiUrls.RapidView(id), Method.GET);
-
-            return ResolveRequest<RapidView>(request);
-        }
-
-        public List<View> GetRapidViews()
-        {
-            var request = new RestRequest(JiraApiUrls.RapidViews(), Method.GET);
-
-            return ResolveRequest<Views>(request).views;
-        }
-
-        public SprintReport GetSprintReport(string rapidViewId, string sprintId)
-        {
-            var request = new RestRequest(JiraApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
-
-            return ResolveRequest<SprintReport>(request);
-        }
-
-        public List<Sprint> GetAllSprints(string rapidViewId, string projectKey)
-        {
-            var request = new RestRequest(JiraApiUrls.AllSprints(rapidViewId, projectKey), Method.GET);
-
-            return ResolveRequest<Sprints>(request).sprints;
-        }
-
         public JiraIssue GetIssue(string issueKey)
         {
             var request = new RestRequest(JiraApiUrls.Issue(issueKey), Method.GET);
