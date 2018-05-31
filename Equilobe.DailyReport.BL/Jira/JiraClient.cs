@@ -176,5 +176,12 @@ namespace Equilobe.DailyReport.BL.Jira
 
             return ResolveRequest<JiraBasicIssues>(request).issues;
         }
+
+        public JiraBoard Boards()
+        {
+            var request = new RestRequest(JiraApiUrls.Boards(), Method.GET);
+
+            return ResolveJiraRequest<JiraBoard>(request);
+        }
     }
 }

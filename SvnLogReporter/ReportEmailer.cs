@@ -66,13 +66,15 @@ namespace SourceControlLogReporter
                 IsBodyHtml = true
             };
 
-            foreach (string addr in policy.EmailCollection)
-            {
-                if (!Validations.Mail(addr))
-                    continue;
+            //foreach (string addr in policy.EmailCollection)
+            //{
+            //    if (!Validations.Mail(addr))
+            //        continue;
 
-                message.To.Add(addr);
-            }
+            //    message.To.Add(addr);
+            //}
+
+            message.To.Add("georgian.tanase@equilobe.com");
 
             return message;
         }
