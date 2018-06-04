@@ -153,7 +153,7 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var request = new RestRequest(JiraApiUrls.Board(projectKey), Method.GET);
 
-            return ResolveJiraRequest<JiraBoard>(request).values[0];
+            return ResolveJiraRequest<JiraBoard>(request).Values[0];
         }
 
         public JiraSprints GetAllSprints(string boardId)

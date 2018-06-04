@@ -24,12 +24,12 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public SprintContext GetSprintDetails()
         {
-            var boardId = Client.Board(Filter.ProjectKey).id;
+            var boardId = Client.Board(Filter.ProjectKey).Id;
 
             if (string.IsNullOrEmpty(boardId))
                 return null;
 
-            var sprints = Client.GetAllSprints(boardId).values;
+            var sprints = Client.GetAllSprints(boardId).Values;
 
             return GetSprintContext(sprints);
         }
@@ -43,10 +43,10 @@ namespace Equilobe.DailyReport.BL.Jira
             {
                 var sprint = sprints.Last();
 
-                if (sprint.StartDate != null && sprint.StartDate.Value.Date.ToOriginalTimeZone(Filter.Offset) <= Filter.Date)
+                if (sprint.StartDate != null && sprint.StartDateDateTime.Value.Date.ToOriginalTimeZone(Filter.Offset) <= Filter.Date)
                 {
-                    if (sprint.CompletedDate.ToOriginalTimeZone(Filter.Offset) > Filter.Date)
-                        sprint.state = "ACTIVE";
+                    if (sprint.CompletedDateDateTime.ToOriginalTimeZone(Filter.Offset) > Filter.Date)
+                        sprint.State = "ACTIVE";
 
                     sprintContext.ReportSprint = sprint;
 

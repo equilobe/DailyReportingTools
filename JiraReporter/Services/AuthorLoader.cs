@@ -121,7 +121,7 @@ namespace JiraReporter.Services
             if (!_context.HasSprint)
                 return;
 
-            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.AssignedUncompletedIssues(_currentAuthor.UserKey, _context.ProjectKey, Int32.Parse(_context.Sprint.id)));
+            _currentAuthor.IssueSearchUrl = new Uri(_context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.AssignedUncompletedIssues(_currentAuthor.UserKey, _context.ProjectKey, _context.Sprint.Id));
         }
 
         private void SetName()
@@ -136,7 +136,7 @@ namespace JiraReporter.Services
         {
             _currentAuthor.Issues = GetAuthorsTimesheetIssues(_options.FromDate, _options.ToDate);
             if (_sprint != null)
-                _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Value.Date, _options.ToDate);
+                _currentAuthor.SprintIssues = GetAuthorsTimesheetIssues(_sprint.StartDateDateTime.ToOriginalTimeZone(_context.OffsetFromUtc).Value.Date, _options.ToDate);
             _currentAuthor.MonthIssues = GetAuthorsTimesheetIssues(_startOfMonth, _startOfMonth.EndOfMonth().AddDays(1).AddMinutes(-1));
             if (_sprint == null)
             {

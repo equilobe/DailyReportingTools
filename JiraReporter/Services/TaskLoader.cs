@@ -34,7 +34,7 @@ namespace JiraReporter.Services
 
         private void SetSprintDetails(JiraReport context)
         {
-            var unfinishedTasks = GetSprintTasks(context, context.Sprint.id.ToString());
+            var unfinishedTasks = GetSprintTasks(context, context.Sprint.Id.ToString());
             SetUnfinishedTasks(unfinishedTasks, context);
             context.ReportTasks.FutureSprintTasks = GetAditionalSprintIssues(context, context.FutureSprint);
             context.ReportTasks.PastSprintTasks = GetAditionalSprintIssues(context, context.PastSprint);
@@ -51,7 +51,7 @@ namespace JiraReporter.Services
 
             context.ReportTasks.UnassignedTasksVisible = context.ReportTasks.UnassignedTasksAll.Where(t=> !t.IsSubtask).Take(5).ToList();
             context.ReportTasks.AdditionalUnassignedTasks = context.ReportTasks.UnassignedTasksAll.Count(t=>!t.IsSubtask) - context.ReportTasks.UnassignedTasksVisible.Count;
-            context.ReportTasks.UnassignedTasksSearchUrl = new Uri(context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.UnassignedUncompletedIssues(context.ProjectKey, Int32.Parse(context.Sprint.id)));
+            context.ReportTasks.UnassignedTasksSearchUrl = new Uri(context.Settings.BaseUrl + "/issues/?jql=" + JiraApiUrls.UnassignedUncompletedIssues(context.ProjectKey, context.Sprint.Id));
         }
 
         void SetCompletedTasksErrors(JiraReport report)
@@ -155,7 +155,7 @@ namespace JiraReporter.Services
             if (sprint == null)
                 return new List<JiraIssue>();
 
-            return GetSprintTasks(report, sprint.id.ToString()).issues;
+            return GetSprintTasks(report, sprint.Id.ToString()).issues;
         }
 
         #region Static Helpers

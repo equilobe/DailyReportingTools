@@ -8,32 +8,32 @@ namespace Equilobe.DailyReport.Models.Jira
 {
     public class JiraSprints
     {
-        public long maxResults { get; set; }
-        public long startAt { get; set; }
-        public long total { get; set; }
-        public bool isLast { get; set; }
-        public List<Sprint> values { get; set; }
+        public long MaxResults { get; set; }
+        public long StartAt { get; set; }
+        public long Total { get; set; }
+        public bool IsLast { get; set; }
+        public List<Sprint> Values { get; set; }
     }
 
     public class Sprint
     {
-        public string id { get; set; }
-        public string self { get; set; }
-        public string state { get; set; }
-        public string name { get; set; }
-        public string originalBoardId { get; set; }
-        public string goal { get; set; }
-        public string startDate { get; set; }
-        public string endDate { get; set; }
-        public string completeDate { get; set; }
+        public int Id { get; set; }
+        public string Self { get; set; }
+        public string State { get; set; }
+        public string Name { get; set; }
+        public string OriginalBoardId { get; set; }
+        public string Goal { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string CompleteDate { get; set; }
 
-        public DateTime? StartDate
+        public DateTime? StartDateDateTime
         {
             get
             {
                 try
                 {
-                    return Convert.ToDateTime(startDate);
+                    return Convert.ToDateTime(StartDate);
                 }
                 catch (Exception)
                 {
@@ -42,13 +42,13 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public DateTime? EndDate
+        public DateTime? EndDateDateTime
         {
             get
             {
                 try
                 {
-                    return Convert.ToDateTime(endDate);
+                    return Convert.ToDateTime(EndDate);
                 }
                 catch
                 {
@@ -57,13 +57,13 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public DateTime? CompletedDate
+        public DateTime? CompletedDateDateTime
         {
             get
             {
                 try
                 {
-                    return Convert.ToDateTime(completeDate);
+                    return Convert.ToDateTime(CompleteDate);
                 }
                 catch (Exception)
                 {
