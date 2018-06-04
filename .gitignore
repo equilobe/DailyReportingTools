@@ -75,3 +75,8 @@ packages/
 **/[Cc]onfig/*.config
 /DailyReportWeb/Content/main.css
 /DailyReportWeb/Content/main.css.map
+/.vs/DailyReportTool/DesignTimeBuild/.dtbcache
+/.vs/DailyReportTool/v15/Server/sqlite3/db.lock
+/.vs/DailyReportTool/v15/Server/sqlite3/storage.ide
+/.vs/DailyReportTool/v15/Server/sqlite3/storage.ide-shm
+/.vs/DailyReportTool/v15/Server/sqlite3/storage.ide-wal
