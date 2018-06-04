@@ -44,13 +44,13 @@ namespace Equilobe.DailyReport.BL.Jira
             {
                 var sprintsResponse = Client.GetAllSprints(boardId, startAt.ToString());
                 
-                if (sprintsResponse.Values.Capacity < minimumSprints)
+                if (sprintsResponse.Values.Count < minimumSprints)
                 {
                     if (total == 0)
                         return sprintsResponse.Values;
 
                     if (sprintsResponse.IsLast)
-                        startAt -= minimumSprints - sprintsResponse.Values.Capacity;
+                        startAt -= minimumSprints - sprintsResponse.Values.Count;
                 }
                 else
                 {
