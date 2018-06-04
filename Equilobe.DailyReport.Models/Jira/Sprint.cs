@@ -27,7 +27,7 @@ namespace Equilobe.DailyReport.Models.Jira
         public string EndDate { get; set; }
         public string CompleteDate { get; set; }
 
-        public DateTime? StartDateDateTime
+        public DateTime? StartedAt
         {
             get
             {
@@ -42,7 +42,7 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public DateTime? EndDateDateTime
+        public DateTime? EndedAt
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public DateTime? CompletedDateDateTime
+        public DateTime? CompletedAt
         {
             get
             {

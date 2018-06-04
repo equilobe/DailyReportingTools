@@ -531,8 +531,8 @@ namespace JiraReporter.Services
 
             if (_sprint != null)
             {
-                var sprintEndDate = _sprint.EndDateDateTime.ToOriginalTimeZone(_report.OffsetFromUtc);
-                var sprintStartDate = _sprint.StartDateDateTime.ToOriginalTimeZone(_report.OffsetFromUtc);
+                var sprintEndDate = _sprint.EndedAt.ToOriginalTimeZone(_report.OffsetFromUtc);
+                var sprintStartDate = _sprint.StartedAt.ToOriginalTimeZone(_report.OffsetFromUtc);
                 workingDaysInfo.SprintWorkingDaysLeft = SummaryHelpers.GetWorkingDays(DateTime.Now.ToOriginalTimeZone(_report.OffsetFromUtc), sprintEndDate.Value.AddDays(1), _report.WorkingDaysContext);
                 workingDaysInfo.SprintWorkingDays = SummaryHelpers.GetWorkingDays(sprintStartDate.Value, sprintEndDate.Value.AddDays(1), _report.WorkingDaysContext);
                 workingDaysInfo.SprintWorkedDays = SummaryHelpers.GetWorkingDays(sprintStartDate.Value, _report.ToDate, _report.WorkingDaysContext);
