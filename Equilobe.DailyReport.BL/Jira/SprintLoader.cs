@@ -29,12 +29,13 @@ namespace Equilobe.DailyReport.BL.Jira
             if (string.IsNullOrEmpty(boardId))
                 return null;
 
-            var lastSprints = GetLastSprints(boardId);
+            var minimumSprints = 3;
+            var lastSprints = GetLastSprints(boardId, minimumSprints);
 
             return GetSprintContext(lastSprints);
         }
 
-        private List<Sprint> GetLastSprints(string boardId)
+        private List<Sprint> GetLastSprints(string boardId, long minimumSprints)
         {
             var startAt = (long)0;
             var total = (long)0;
@@ -43,13 +44,13 @@ namespace Equilobe.DailyReport.BL.Jira
             {
                 var sprintsResponse = Client.GetAllSprints(boardId, startAt.ToString());
                 
-                if (sprintsResponse.Values.Capacity < 3)
+                if (sprintsResponse.Values.Capacity < minimumSprints)
                 {
                     if (total == 0)
                         return sprintsResponse.Values;
 
                     if (sprintsResponse.IsLast)
-                        startAt -= 3 - sprintsResponse.Values.Capacity;
+                        startAt -= minimumSprints - sprintsResponse.Values.Capacity;
                 }
                 else
                 {
