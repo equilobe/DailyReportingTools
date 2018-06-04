@@ -29,9 +29,37 @@ namespace Equilobe.DailyReport.BL.Jira
             if (string.IsNullOrEmpty(boardId))
                 return null;
 
-            var sprints = Client.GetAllSprints(boardId).Values;
+            var lastSprints = GetLastSprints(boardId);
 
-            return GetSprintContext(sprints);
+            return GetSprintContext(lastSprints);
+        }
+
+        private List<Sprint> GetLastSprints(string boardId)
+        {
+            var startAt = (long)0;
+            var total = (long)0;
+
+            while (true)
+            {
+                var sprintsResponse = Client.GetAllSprints(boardId, startAt.ToString());
+                
+                if (sprintsResponse.Values.Capacity < 3)
+                {
+                    if (total == 0)
+                        return sprintsResponse.Values;
+
+                    if (sprintsResponse.IsLast)
+                        startAt -= 3 - sprintsResponse.Values.Capacity;
+                }
+                else
+                {
+                    if (sprintsResponse.IsLast)
+                        return sprintsResponse.Values;
+
+                    startAt += sprintsResponse.MaxResults;
+                    total += sprintsResponse.MaxResults;
+                }
+            }
         }
 
         private SprintContext GetSprintContext(List<Sprint> sprints)

@@ -78,9 +78,9 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/agile/1.0/board?projectKeyOrId={0}", projectKey);
         }
 
-        public static string AllSprints(string boardId)
+        public static string AllSprints(string boardId, string startAt)
         {
-            return string.Format("rest/agile/1.0/board/{0}/sprint", boardId);
+            return string.Format("rest/agile/1.0/board/{0}/sprint?startAt={1}", boardId, startAt);
         }
     }
 }

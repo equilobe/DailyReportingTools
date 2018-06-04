@@ -16,7 +16,7 @@ else
 
 @if (Model.HasSprint)
 {
-    sprint = "Avg.work logged in" + Model.Sprint.name + "(h / day)";
+    sprint = "Avg.work logged in" + Model.Sprint.Name + "(h / day)";
 }
 else
 {
@@ -132,7 +132,7 @@ else
                         </tr>
                         <tr>
                             <td width="90" align="center" style="text-align:center">
-                                <span style="color:black;">@Model.Sprint.name</span>
+                                <span style="color:black;">@Model.Sprint.Name</span>
                             </td>
                         </tr>
                         <tr>
@@ -171,7 +171,7 @@ else
                     {
                         @ChartBar("white", @Model.StatusChartWidth, @Model.ChartMaxWidth, "")
                     }
-                    @if (Model.Timing.RemainingSprintAverageHours >= 0.1 && Model.Sprint.state != "CLOSED")
+                    @if (Model.Timing.RemainingSprintAverageHours >= 0.1 && Model.Sprint.State != "CLOSED")
                     {
                         @ChartBar("#337AB7", @Model.SprintRemaining.Width, @Model.ChartMaxWidth, @Model.SprintRemaining.ActualValue)
                     }
@@ -381,7 +381,7 @@ else
 
                         @if (Model.Sprint != null)
                         {
-                            if ((author.Timing.TotalRemainingAverage >= 0.1 || author.Remaining.Width > 1) && Model.Sprint.state != "CLOSED")
+                            if ((author.Timing.TotalRemainingAverage >= 0.1 || author.Remaining.Width > 1) && Model.Sprint.State != "CLOSED")
                             {
                                 @ChartBar("#337AB7", @author.Remaining.Width, @Model.ChartMaxWidth, @author.Remaining.ActualValue)
                             }
@@ -399,7 +399,7 @@ else
 
 
 
-        @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1 && Model.Sprint.state != "CLOSED")
+        @if (Model.Timing.UnassignedTasksHoursAverageLeft >= 0.1 && Model.Sprint.State != "CLOSED")
         {
             <tr>
                 <td width="90" colspan="2" style="border-right:1px solid #ABABAB;text-align:center; vertical-align:middle; color:black">
