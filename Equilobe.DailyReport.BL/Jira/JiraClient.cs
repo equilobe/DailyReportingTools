@@ -95,34 +95,6 @@ namespace Equilobe.DailyReport.BL.Jira
                 .ToList();
         }
 
-        public RapidView GetRapidView(string id)
-        {
-            var request = new RestRequest(JiraApiUrls.RapidView(id), Method.GET);
-
-            return ResolveRequest<RapidView>(request);
-        }
-
-        public List<View> GetRapidViews()
-        {
-            var request = new RestRequest(JiraApiUrls.RapidViews(), Method.GET);
-
-            return ResolveRequest<Views>(request).views;
-        }
-
-        public SprintReport GetSprintReport(string rapidViewId, string sprintId)
-        {
-            var request = new RestRequest(JiraApiUrls.Sprint(rapidViewId, sprintId), Method.GET);
-
-            return ResolveRequest<SprintReport>(request);
-        }
-
-        public List<Sprint> GetAllSprints(string rapidViewId, string projectKey)
-        {
-            var request = new RestRequest(JiraApiUrls.AllSprints(rapidViewId, projectKey), Method.GET);
-
-            return ResolveRequest<Sprints>(request).sprints;
-        }
-
         public JiraIssue GetIssue(string issueKey)
         {
             var request = new RestRequest(JiraApiUrls.Issue(issueKey), Method.GET);
@@ -175,6 +147,20 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = GetIssuesByJql(JiraApiUrls.WorkLogs(projectKey, author, fromDate, toDate));
 
             return ResolveRequest<JiraBasicIssues>(request).issues;
+        }
+
+        public Board Board(string projectKey)
+        {
+            var request = new RestRequest(JiraApiUrls.Board(projectKey), Method.GET);
+
+            return ResolveJiraRequest<JiraBoard>(request).Values[0];
+        }
+
+        public JiraSprints GetAllSprints(string boardId, string startAt)
+        {
+            var request = new RestRequest(JiraApiUrls.AllSprints(boardId, startAt), Method.GET);
+
+            return ResolveJiraRequest<JiraSprints>(request);
         }
     }
 }

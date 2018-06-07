@@ -81,7 +81,7 @@ else
                                 @Square("#F60")
                             </td>
                             <td height="12" style="line-height:12px">
-                                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.Sprint.name (h/day)</span>
+                                <span style="color:black; font-size:11px; padding-left:2px">Avg. work logged in @Model.Summary.Sprint.Name (h/day)</span>
                             </td>
                         }
 
@@ -145,7 +145,7 @@ else
                             }
                             @if (Model.HasSprint)
                             {
-                                if (Model.Author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.state != "CLOSED")
+                                if (Model.Author.Timing.TotalRemainingAverage >= 0.1 && Model.Sprint.State != "CLOSED")
                                 {
                                     @ChartBar("#337AB7", @Model.Author.Remaining.Width, @Model.Summary.ChartMaxWidth, @Model.Author.Remaining.ActualValue)
                                 }

@@ -1,52 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
+    public class JiraSprints
+    {
+        public long MaxResults { get; set; }
+        public long StartAt { get; set; }
+        public long Total { get; set; }
+        public bool IsLast { get; set; }
+        public List<Sprint> Values { get; set; }
+    }
+
     public class Sprint
     {
-        [DataMember]
-        public int id { get; set; }
-        [DataMember]
-        public int sequence { get; set; }
-        [DataMember]
-        public string name { get; set; }
-        [DataMember]
-        public string state { get; set; }
-        [DataMember]
-        public int linkedPagesCount { get; set; }
-        [DataMember]
-        public string startDate { get; set; }
-        [DataMember]
-        public string endDate { get; set; }
-        [DataMember]
-        public string completeDate { get; set; }
+        public int Id { get; set; }
+        public string Self { get; set; }
+        public string State { get; set; }
+        public string Name { get; set; }
+        public string OriginalBoardId { get; set; }
+        public string Goal { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string CompleteDate { get; set; }
 
-        public DateTime? StartDate
+        public DateTime? StartedAt
         {
             get
             {
                 try
                 {
-                    return Convert.ToDateTime(startDate);
+                    return Convert.ToDateTime(StartDate);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return null;
                 }
             }
         }
-        public DateTime? EndDate
+
+        public DateTime? EndedAt
         {
             get
             {
                 try
                 {
-                    return Convert.ToDateTime(endDate);
+                    return Convert.ToDateTime(EndDate);
                 }
                 catch
                 {
@@ -55,15 +57,15 @@ namespace Equilobe.DailyReport.Models.Jira
             }
         }
 
-        public DateTime? CompletedDate
+        public DateTime? CompletedAt
         {
             get
             {
                 try
                 {
-                    return Convert.ToDateTime(completeDate);
+                    return Convert.ToDateTime(CompleteDate);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return null;
                 }

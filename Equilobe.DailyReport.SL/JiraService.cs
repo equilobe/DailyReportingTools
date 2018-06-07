@@ -93,26 +93,6 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetUsers(projectKey);
         }
 
-        public RapidView GetRapidView(JiraRequestContext context, string id)
-        {
-            return GetClient(context).GetRapidView(id);
-        }
-
-        public List<View> GetRapidViews(JiraRequestContext context)
-        {
-            return GetClient(context).GetRapidViews();
-        }
-
-        public SprintReport GetSprintReport(JiraRequestContext context, string rapidViewId, string sprintId)
-        {
-            return GetClient(context).GetSprintReport(rapidViewId, sprintId);
-        }
-
-        public List<Sprint> GetAllSprints(JiraRequestContext context, string rapidViewId, string projectKey)
-        {
-            return GetClient(context).GetAllSprints(rapidViewId, projectKey);
-        }
-
         public JiraIssue GetIssue(JiraRequestContext context, string issueKey)
         {
             return GetClient(context).GetIssue(issueKey);

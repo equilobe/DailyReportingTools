@@ -22,44 +22,48 @@ namespace Equilobe.DailyReport.BL.Jira
             Client = client;
         }
 
-        List<View> GetRapidViewsFromProject()
-        {
-            var views = Client.GetRapidViews();
-
-            var rapidViews = views
-                .Where(view => view.filter.name.ToLower().Contains(Filter.ProjectKey.ToLower())
-                            || view.filter.name.ToLower().Contains(Filter.ProjectName.ToLower()))
-                .Select(view => view)
-                .ToList();
-
-            return rapidViews;
-        }
-
-        View GetActiveView(List<View> views)
-        {
-            return views.Find(v => v.sprintSupportEnabled == true);
-        }
-
-        RapidView GetRapidView(string activeViewId)
-        {
-            return Client.GetRapidView(activeViewId);
-        }
-
         public SprintContext GetSprintDetails()
         {
-            var rapidViewId = GetRapidViewId();
-            if (rapidViewId == null)
+            var boardId = Client.Board(Filter.ProjectKey).Id;
+
+            if (string.IsNullOrEmpty(boardId))
                 return null;
 
-            var sprints = Client.GetAllSprints(rapidViewId, Filter.ProjectKey);
+            var minimumSprints = 3;
+            var lastSprints = GetLastSprints(boardId, minimumSprints);
 
-            if (sprints == null || sprints.Count == 0)
-                return null;
-
-            return GetSprintContext(rapidViewId, sprints);
+            return GetSprintContext(lastSprints);
         }
 
-        private SprintContext GetSprintContext(string rapidViewId, List<Sprint> sprints)
+        private List<Sprint> GetLastSprints(string boardId, long minimumSprints)
+        {
+            var startAt = (long)0;
+            var total = (long)0;
+
+            while (true)
+            {
+                var sprintsResponse = Client.GetAllSprints(boardId, startAt.ToString());
+                
+                if (sprintsResponse.Values.Count < minimumSprints)
+                {
+                    if (total == 0)
+                        return sprintsResponse.Values;
+
+                    if (sprintsResponse.IsLast)
+                        startAt -= minimumSprints - sprintsResponse.Values.Count;
+                }
+                else
+                {
+                    if (sprintsResponse.IsLast)
+                        return sprintsResponse.Values;
+
+                    startAt += sprintsResponse.MaxResults;
+                    total += sprintsResponse.MaxResults;
+                }
+            }
+        }
+
+        private SprintContext GetSprintContext(List<Sprint> sprints)
         {
             var sprintContext = new SprintContext();
             var futureSprints = new List<Sprint>();
@@ -67,19 +71,20 @@ namespace Equilobe.DailyReport.BL.Jira
             while (sprints.Count > 0)
             {
                 var sprint = sprints.Last();
-                sprint = GetCompleteSprint(sprint.id.ToString(), rapidViewId);
-                if (sprint.StartDate != null && sprint.StartDate.Value.Date.ToOriginalTimeZone(Filter.Offset) <= Filter.Date)
+
+                if (sprint.StartDate != null && sprint.StartedAt.Value.Date.ToOriginalTimeZone(Filter.Offset) <= Filter.Date)
                 {
-                    if (sprint.CompletedDate.ToOriginalTimeZone(Filter.Offset) > Filter.Date)
-                        sprint.state = "ACTIVE";
+                    if (sprint.CompletedAt.ToOriginalTimeZone(Filter.Offset) > Filter.Date)
+                        sprint.State = "ACTIVE";
 
                     sprintContext.ReportSprint = sprint;
 
                     SetFutureSprint(sprintContext, futureSprints);
-                    SetPastSprint(sprints, sprintContext, rapidViewId);
+                    SetPastSprint(sprints, sprintContext);
 
                     return sprintContext;
                 }
+
                 futureSprints.Add(sprint);
                 sprints.Remove(sprints.Last());
             }
@@ -95,33 +100,12 @@ namespace Equilobe.DailyReport.BL.Jira
             sprintContext.FutureSprint = futureSprints.Last();
         }
 
-        private void SetPastSprint(List<Sprint> sprints, SprintContext sprintContext, string rapidViewId)
+        private void SetPastSprint(List<Sprint> sprints, SprintContext sprintContext)
         {
             if (sprints.Count < 2)
                 return;
 
-            var pastSprint = sprints[sprints.Count - 2];
-            sprintContext.PastSprint = GetCompleteSprint(pastSprint.id.ToString(), rapidViewId);
-        }
-
-        private string GetRapidViewId()
-        {
-            var projectViews = GetRapidViewsFromProject();
-            var activeView = GetActiveView(projectViews);
-
-            if (activeView == null)
-                return null;
-
-            var rapidView = GetRapidView(activeView.id.ToString());
-            var rapidViewId = rapidView.rapidViewId.ToString();
-            return rapidViewId;
-        }
-
-        Sprint GetCompleteSprint(string sprintId, string rapidViewId)
-        {
-            var completedSprint = Client.GetSprintReport(rapidViewId, sprintId).sprint;
-
-            return completedSprint;
+            sprintContext.PastSprint = sprints[sprints.Count - 2];
         }
     }
 }
