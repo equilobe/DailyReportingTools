@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationUserManager.cs" />
+    <Compile Include="BitBucketService.cs" />
     <Compile Include="ConfigurationService.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="EmailService.cs" />

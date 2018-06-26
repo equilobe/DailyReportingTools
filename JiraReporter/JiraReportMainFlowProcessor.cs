@@ -33,6 +33,7 @@ namespace JiraReporter
         public IConfigurationService ConfigurationService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public ITimeZoneService TimeZoneService { get; set; }
+        public IBitBucketService BitBucketService { get; set; }
 
         public void Execute(string[] args)
         {
@@ -67,6 +68,8 @@ namespace JiraReporter
             report.JiraRequestContext = jiraRequestContext;
             LoadReportDates(report);
             SetExecutionInstance(report);
+
+            BitBucketService.GetPullRequests(report.Policy);
 
             var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);

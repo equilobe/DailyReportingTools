@@ -54,12 +54,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitBucket\Author.cs" />
+    <Compile Include="BitBucket\Branch.cs" />
+    <Compile Include="BitBucket\Commit.cs" />
+    <Compile Include="BitBucket\Link.cs" />
+    <Compile Include="BitBucket\Markup.cs" />
+    <Compile Include="BitBucket\PullRequest.cs" />
+    <Compile Include="BitBucket\PullRequests.cs" />
+    <Compile Include="BitBucket\Repository.cs" />
+    <Compile Include="BitBucket\SourceOrDestination.cs" />
+    <Compile Include="BitBucket\State.cs" />
+    <Compile Include="BitBucket\Summary.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Data\ApplicationErrors.cs" />
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />
+    <Compile Include="Interfaces\IBitBucketService.cs" />
     <Compile Include="Interfaces\IConfigurationService.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IDb.cs" />
