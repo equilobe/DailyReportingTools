@@ -4,6 +4,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IBitBucketService : IService
     {
-        void GetPullRequests(JiraPolicy policy);
+        void GetPullRequests(SourceControlOptions sourceControlOptions);
     }
 }

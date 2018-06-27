@@ -7,17 +7,26 @@ namespace Equilobe.DailyReport.SL
 {
     public class BitBucketService : IBitBucketService
     {
-        public void GetPullRequests(JiraPolicy policy)
-        {
-            var credentials = policy.SourceControlOptions.Credentials;
-            var baseUrl = policy.BaseUrl;
+        public IConfigurationService ConfigurationService { get; set; }
 
-            GetClient(credentials, baseUrl).GetPullRequests(policy.SourceControlOptions.RepoOwner, policy.SourceControlOptions.Repo);
+        public void GetPullRequests(SourceControlOptions sourceControlOptions)
+        {
+            var credentials = sourceControlOptions.Credentials;
+            var baseUrl = GetBaseUrl();
+
+            var client = GetClient(credentials, baseUrl);
+
+            client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo);
         }
 
         private BitBucketClient GetClient(Credentials credentials, string baseUrl)
         {
             return BitBucketClient.CreateWithBasicAuth(baseUrl, credentials.Username, credentials.Password);
+        }
+
+        private string GetBaseUrl()
+        {
+            return ConfigurationService.GetBitBucketApiClientUrl();
         }
     }
 }

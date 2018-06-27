@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.BitBucket;
+using Equilobe.DailyReport.Models.Interfaces;
 using RestSharp;
 
 namespace Equilobe.DailyReport.BL.BitBucket
@@ -6,6 +7,7 @@ namespace Equilobe.DailyReport.BL.BitBucket
     public class BitBucketClient
     {
         RestClient Client { get; set; }
+        IConfigurationService ConfigurationService { get; set; }
 
         public static BitBucketClient CreateWithBasicAuth(string baseUrl, string username, string password)
         {

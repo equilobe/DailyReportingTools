@@ -1,4 +1,6 @@
-﻿namespace Equilobe.DailyReport.Models.BitBucket
+﻿using System;
+
+namespace Equilobe.DailyReport.Models.BitBucket
 {
     public enum State
     {
