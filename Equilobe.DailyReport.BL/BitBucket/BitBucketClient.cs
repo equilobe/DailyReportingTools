@@ -21,13 +21,11 @@ namespace Equilobe.DailyReport.BL.BitBucket
         {
         }
 
-        public void GetPullRequests(string owner, string repository)
+        public PullRequests GetPullRequests(string owner, string repository, string page = "1")
         {
-            var request = new RestRequest(BitBucketApiUrls.PullRequests(owner, repository), Method.GET);
+            var request = new RestRequest(BitBucketApiUrls.PullRequests(owner, repository, page), Method.GET);
 
-            var calumea = RestApiHelper.ResolveRequest<PullRequests>(Client, request);
-
-            var checking = 2;
+            return RestApiHelper.ResolveRequest<PullRequests>(Client, request);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Equilobe.DailyReport.Models.BitBucket
 {
@@ -16,7 +15,7 @@ namespace Equilobe.DailyReport.Models.BitBucket
         public string AccountId { get; set; }
 
         [DataMember(Name = "links")]
-        public List<Link> Links { get; set; }
+        public Links Links { get; set; }
 
         [DataMember(Name = "type")]
         public string Type { get; set; }
