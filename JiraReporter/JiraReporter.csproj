@@ -107,6 +107,7 @@
     <Compile Include="MonthlyOptionsHelpers.cs" />
     <Compile Include="Services\JiraContextService.cs" />
     <Compile Include="Services\ReportEmailerJira.cs" />
+    <Compile Include="SourceControl\BitBucketSourceControl.cs" />
     <Compile Include="SourceControl\GitHubReportSourceControl.cs" />
     <Compile Include="SourceControl\ReportBaseSourceControl.cs" />
     <Compile Include="SourceControl\SvnReportSourceControl.cs" />

@@ -18,27 +18,38 @@ namespace Equilobe.DailyReport.SL
             try
             {
                 if (sourceControlOptions.Type == SourceControlType.GitHub)
-                    return GitHubService.GetAllContributors(sourceControlOptions.Credentials, sourceControlOptions.RepoOwner, sourceControlOptions.Repo)
-                                        .Select(qr => qr.Login)
-                                        .ToList();
+                    GetContributorsGithub(sourceControlOptions);
 
                 if (sourceControlOptions.Type == SourceControlType.SVN)
-                {
-                    var context = new SourceControlContext
-                    {
-                        SourceControlOptions = sourceControlOptions,
-                        FromDate = DateTime.Now,
-                        ToDate = DateTime.Now.AddMonths(-3)
-                    };
-                    
-                    return SvnService.GetAllAuthors(context);
-                }
+                    GetConstributorsSVN(sourceControlOptions);
+
+                if (sourceControlOptions.Type == SourceControlType.BitBucket)
+                    throw new NotImplementedException();
             }
             catch (Exception)
             {
             }
 
             return null;
+        }
+
+        private List<string> GetContributorsGithub(SourceControlOptions sourceControlOptions)
+        {
+            return GitHubService.GetAllContributors(sourceControlOptions.Credentials, sourceControlOptions.RepoOwner, sourceControlOptions.Repo)
+                .Select(qr => qr.Login)
+                .ToList();
+        }
+
+        private List<string> GetConstributorsSVN(SourceControlOptions sourceControlOptions)
+        {
+            var context = new SourceControlContext
+            {
+                SourceControlOptions = sourceControlOptions,
+                FromDate = DateTime.Now,
+                ToDate = DateTime.Now.AddMonths(-3)
+            };
+
+            return SvnService.GetAllAuthors(context);
         }
     }
 }

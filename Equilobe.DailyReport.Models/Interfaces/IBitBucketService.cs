@@ -6,6 +6,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IBitBucketService : IService
     {
-        List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions);
+        Log GetLog(ISourceControlContext context);
     }
 }

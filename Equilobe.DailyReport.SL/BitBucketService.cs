@@ -3,7 +3,11 @@ using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.BitBucket;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.SourceControl;
+using Equilobe.DailyReport.Utils;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -11,11 +15,18 @@ namespace Equilobe.DailyReport.SL
     {
         public IConfigurationService ConfigurationService { get; set; }
 
-        public List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions)
+        public Log GetLog(ISourceControlContext context)
+        {
+            var pullRequests = GetAllPullRequests(context.SourceControlOptions);
+            var commits = GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate);
+
+            throw new NotImplementedException();
+        }
+
+        private List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions)
         {
             var credentials = sourceControlOptions.Credentials;
-            var baseUrl = GetBaseUrl();
-            var client = GetClient(credentials, baseUrl);
+            var client = GetClient(credentials, GetBaseUrl());
             var pullRequests = new List<PullRequest>();
             var page = 1;
 
@@ -35,6 +46,32 @@ namespace Equilobe.DailyReport.SL
             return pullRequests;
         }
 
+        private List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate)
+        {
+            var credentials = sourceControlOptions.Credentials;
+            var client = GetClient(credentials, GetBaseUrl());
+            var commits = new List<Commit>();
+            var page = 1;
+
+            while (true)
+            {
+                var commitsPage = client.GetCommits(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, page.ToString());
+
+                if (commitsPage.Values != null)
+                    commits.AddRange(commitsPage.Values);
+
+                if (commitsPage.Next == null)
+                    break;
+
+                if (IsAnyCommitOutOfRange(commitsPage.Values, fromDate))
+                    break;
+
+                page++;
+            }
+
+            return ExtractOutOfRangeCommits(commits, fromDate, toDate);
+        }
+
         private BitBucketClient GetClient(Credentials credentials, string baseUrl)
         {
             return BitBucketClient.CreateWithBasicAuth(baseUrl, credentials.Username, credentials.Password);
@@ -43,6 +80,19 @@ namespace Equilobe.DailyReport.SL
         private string GetBaseUrl()
         {
             return ConfigurationService.GetBitBucketApiClientUrl();
+        }
+
+        private bool IsAnyCommitOutOfRange(List<Commit> commits, DateTime fromDate)
+        {
+            return commits
+                .Any(p => p.CreatedAt < fromDate);
+        }
+
+        private List<Commit> ExtractOutOfRangeCommits(List<Commit> commits, DateTime fromDate, DateTime toDate)
+        {
+            commits.RemoveAll(p => p.CreatedAt < fromDate || p.CreatedAt > toDate);
+
+            return commits;
         }
     }
 }

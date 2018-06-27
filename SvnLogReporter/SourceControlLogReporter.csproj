@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitBucketReport.cs" />
     <Compile Include="DependencyInjection.cs" />
     <Compile Include="DoubeExtensions.cs" />
     <Compile Include="Extensions.cs" />

@@ -29,6 +29,7 @@ namespace JiraReporter
             builder.RegisterType<JiraReportMainFlowProcessor>().AsSelf().PropertiesAutowired();
             builder.RegisterType<GitHubReportSourceControl>().AsSelf().PropertiesAutowired();
             builder.RegisterType<SvnReportSourceControl>().AsSelf().PropertiesAutowired();
+            builder.RegisterType<BitBucketSourceControl>().AsSelf().PropertiesAutowired();
 
             Container = builder.Build();
         }

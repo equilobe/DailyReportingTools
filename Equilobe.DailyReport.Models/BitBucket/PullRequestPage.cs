@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Equilobe.DailyReport.Models.BitBucket
 {
     [DataContract]
-    public class PullRequests
+    public class PullRequestPage
     {
         [DataMember(Name = "size")]
         public int Size { get; set; }

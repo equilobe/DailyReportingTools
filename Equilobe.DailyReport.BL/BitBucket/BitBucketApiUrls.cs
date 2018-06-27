@@ -6,5 +6,10 @@
         {
             return string.Format("repositories/{0}/{1}/pullrequests?page={2}", owner, repository, page);
         }
+
+        public static string Commits(string owner, string repository, string page)
+        {
+            return string.Format("repositories/{0}/{1}/commits?page={2}", owner, repository, page);
+        }
     }
 }

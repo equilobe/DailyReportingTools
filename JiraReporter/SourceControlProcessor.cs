@@ -19,6 +19,7 @@ namespace JiraReporter
         {
             {SourceControlType.GitHub, ReportBaseSourceControl.Create<GitHubReportSourceControl>},
             {SourceControlType.SVN, ReportBaseSourceControl.Create<SvnReportSourceControl>},
+            {SourceControlType.BitBucket, ReportBaseSourceControl.Create<BitBucketSourceControl>}
         };
 
         public static Log GetSourceControlLog(JiraReport report)

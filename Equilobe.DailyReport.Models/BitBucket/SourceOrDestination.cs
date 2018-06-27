@@ -6,7 +6,7 @@ namespace Equilobe.DailyReport.Models.BitBucket
     public class SourceOrDestination
     {
         [DataMember(Name = "commit")]
-        public Commit Commit { get; set; }
+        public PullRequestCommit Commit { get; set; }
 
         [DataMember(Name = "repository")]
         public Repository Repository { get; set; }

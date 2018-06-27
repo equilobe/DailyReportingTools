@@ -63,8 +63,6 @@ namespace JiraReporter
             LoadReportDates(report);
             SetExecutionInstance(report);
 
-            var a = BitBucketService.GetAllPullRequests(report.Policy.SourceControlOptions);
-
             var project = JiraService.GetProject(report.JiraRequestContext, report.Policy.ProjectId);
             SetProjectInfo(report, project);
 
