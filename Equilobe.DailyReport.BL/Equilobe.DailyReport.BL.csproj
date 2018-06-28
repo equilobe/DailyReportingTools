@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="BitBucket\BitBucketApiUrls.cs" />
     <Compile Include="BitBucket\BitBucketClient.cs" />
+    <Compile Include="BitBucket\BitBucketLogHelper.cs" />
     <Compile Include="GitHub\GithubClient.cs" />
     <Compile Include="GitHub\LogLoader.cs" />
     <Compile Include="Jira\JiraApiUrls.cs" />

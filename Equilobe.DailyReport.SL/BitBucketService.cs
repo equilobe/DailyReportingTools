@@ -3,8 +3,6 @@ using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.BitBucket;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
-using Equilobe.DailyReport.Models.SourceControl;
-using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +18,10 @@ namespace Equilobe.DailyReport.SL
             var pullRequests = GetAllPullRequests(context.SourceControlOptions);
             var commits = GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate);
 
-            throw new NotImplementedException();
+            return BitBucketLogHelper.LoadLog(commits, pullRequests, context.FromDate);
         }
 
-        private List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions)
+        public List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions)
         {
             var credentials = sourceControlOptions.Credentials;
             var client = GetClient(credentials, GetBaseUrl());
@@ -46,7 +44,7 @@ namespace Equilobe.DailyReport.SL
             return pullRequests;
         }
 
-        private List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate)
+        public List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate)
         {
             var credentials = sourceControlOptions.Credentials;
             var client = GetClient(credentials, GetBaseUrl());
@@ -72,16 +70,6 @@ namespace Equilobe.DailyReport.SL
             return ExtractOutOfRangeCommits(commits, fromDate, toDate);
         }
 
-        private BitBucketClient GetClient(Credentials credentials, string baseUrl)
-        {
-            return BitBucketClient.CreateWithBasicAuth(baseUrl, credentials.Username, credentials.Password);
-        }
-
-        private string GetBaseUrl()
-        {
-            return ConfigurationService.GetBitBucketApiClientUrl();
-        }
-
         private bool IsAnyCommitOutOfRange(List<Commit> commits, DateTime fromDate)
         {
             return commits
@@ -93,6 +81,16 @@ namespace Equilobe.DailyReport.SL
             commits.RemoveAll(p => p.CreatedAt < fromDate || p.CreatedAt > toDate);
 
             return commits;
+        }
+
+        private BitBucketClient GetClient(Credentials credentials, string baseUrl)
+        {
+            return BitBucketClient.CreateWithBasicAuth(baseUrl, credentials.Username, credentials.Password);
+        }
+
+        private string GetBaseUrl()
+        {
+            return ConfigurationService.GetBitBucketApiClientUrl();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Equilobe.DailyReport.Models.BitBucket
         public Link Diff { get; set; }
 
         [DataMember(Name = "approve")]
-        public Link approve { get; set; }
+        public Link Approve { get; set; }
 
         [DataMember(Name = "statuses")]
         public Link Statuses { get; set; }

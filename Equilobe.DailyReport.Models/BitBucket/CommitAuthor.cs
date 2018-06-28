@@ -12,6 +12,6 @@ namespace Equilobe.DailyReport.Models.BitBucket
         public string Type { get; set; }
 
         [DataMember(Name = "user")]
-        public Author Author { get; set; }
+        public Author User { get; set; }
     }
 }
