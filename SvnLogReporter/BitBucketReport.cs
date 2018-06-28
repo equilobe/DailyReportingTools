@@ -22,7 +22,12 @@ namespace SourceControlLogReporter
 
         public override Log CreateLog()
         {
-            var context = new SourceControlContext { SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate };
+            var context = new SourceControlContext
+            {
+                SourceControlOptions = Policy.SourceControlOptions,
+                FromDate = Options.FromDate,
+                ToDate = Options.ToDate
+            };
 
             return BitBucketService.GetLog(context);
         }

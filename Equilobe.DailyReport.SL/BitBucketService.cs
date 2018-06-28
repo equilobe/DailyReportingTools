@@ -24,13 +24,13 @@ namespace Equilobe.DailyReport.SL
         public List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions)
         {
             var credentials = sourceControlOptions.Credentials;
-            var client = GetClient(credentials, GetBaseUrl());
+            var client = GetClient(credentials);
             var pullRequests = new List<PullRequest>();
             var page = 1;
 
             while (true)
             {
-                var pullRequestPage = client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, page.ToString());
+                var pullRequestPage = client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, page);
 
                 if (pullRequestPage.Values != null)
                     pullRequests.AddRange(pullRequestPage.Values);
@@ -47,13 +47,13 @@ namespace Equilobe.DailyReport.SL
         public List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate)
         {
             var credentials = sourceControlOptions.Credentials;
-            var client = GetClient(credentials, GetBaseUrl());
+            var client = GetClient(credentials);
             var commits = new List<Commit>();
             var page = 1;
 
             while (true)
             {
-                var commitsPage = client.GetCommits(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, page.ToString());
+                var commitsPage = client.GetCommits(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, page);
 
                 if (commitsPage.Values != null)
                     commits.AddRange(commitsPage.Values);
@@ -61,31 +61,26 @@ namespace Equilobe.DailyReport.SL
                 if (commitsPage.Next == null)
                     break;
 
-                if (IsAnyCommitOutOfRange(commitsPage.Values, fromDate))
+                if (IsAnyCommitOutdated(commitsPage.Values, fromDate))
                     break;
 
                 page++;
             }
 
-            return ExtractOutOfRangeCommits(commits, fromDate, toDate);
+            return commits
+                .Where(p => p.CreatedAt >= fromDate && p.CreatedAt <= toDate)
+                .ToList();
         }
 
-        private bool IsAnyCommitOutOfRange(List<Commit> commits, DateTime fromDate)
+        private bool IsAnyCommitOutdated(List<Commit> commits, DateTime fromDate)
         {
             return commits
                 .Any(p => p.CreatedAt < fromDate);
         }
 
-        private List<Commit> ExtractOutOfRangeCommits(List<Commit> commits, DateTime fromDate, DateTime toDate)
+        private BitBucketClient GetClient(Credentials credentials)
         {
-            commits.RemoveAll(p => p.CreatedAt < fromDate || p.CreatedAt > toDate);
-
-            return commits;
-        }
-
-        private BitBucketClient GetClient(Credentials credentials, string baseUrl)
-        {
-            return BitBucketClient.CreateWithBasicAuth(baseUrl, credentials.Username, credentials.Password);
+            return BitBucketClient.CreateWithBasicAuth(GetBaseUrl(), credentials.Username, credentials.Password);
         }
 
         private string GetBaseUrl()

@@ -10,12 +10,11 @@ namespace Equilobe.DailyReport.BL.BitBucket
     {
         public static Log LoadLog(List<Commit> commits, List<PullRequest> pullRequests, DateTime fromDate)
         {
-            var log = new Log();
-
-            if (pullRequests != null)
-                log.PullRequests = pullRequests.Select(ToOctokitPullRequest).ToList();
-
-            log.Entries = commits.Select(GetLogEntry).ToList();
+            var log = new Log()
+            {
+                PullRequests = pullRequests.Select(ToOctokitPullRequest).ToList(),
+                Entries = commits.Select(GetLogEntry).ToList()
+            }; 
 
             LogHelpers.RemoveWrongEntries(fromDate, log);
 
@@ -39,7 +38,7 @@ namespace Equilobe.DailyReport.BL.BitBucket
 
             return new LogEntry
             {
-                Author = commit.Author.User != null ? commit.Author.User.Links.Html.Href : null,
+                Author = commit.Author.User?.Links?.Html?.Href,
                 Date = Convert.ToDateTime(commit.Date),
                 Message = commit.Message,
                 Revision = commit.Links.Html.Href,

@@ -24,7 +24,6 @@ namespace DailyReportWeb
             var builder = new ContainerBuilder();
 
             builder.RegisterServicesFromAssembly<JiraService>();
-            builder.RegisterServicesFromAssembly<BitBucketService>();
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly)
                    .PropertiesAutowired();

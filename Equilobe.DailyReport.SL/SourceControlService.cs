@@ -18,10 +18,10 @@ namespace Equilobe.DailyReport.SL
             try
             {
                 if (sourceControlOptions.Type == SourceControlType.GitHub)
-                    GetContributorsGithub(sourceControlOptions);
+                    return GetGithubContributors(sourceControlOptions);
 
                 if (sourceControlOptions.Type == SourceControlType.SVN)
-                    GetConstributorsSVN(sourceControlOptions);
+                    return GetSVNContributors(sourceControlOptions);
 
                 if (sourceControlOptions.Type == SourceControlType.BitBucket)
                     throw new NotImplementedException();
@@ -33,14 +33,14 @@ namespace Equilobe.DailyReport.SL
             return null;
         }
 
-        private List<string> GetContributorsGithub(SourceControlOptions sourceControlOptions)
+        private List<string> GetGithubContributors(SourceControlOptions sourceControlOptions)
         {
             return GitHubService.GetAllContributors(sourceControlOptions.Credentials, sourceControlOptions.RepoOwner, sourceControlOptions.Repo)
                 .Select(qr => qr.Login)
                 .ToList();
         }
 
-        private List<string> GetConstributorsSVN(SourceControlOptions sourceControlOptions)
+        private List<string> GetSVNContributors(SourceControlOptions sourceControlOptions)
         {
             var context = new SourceControlContext
             {

@@ -24,10 +24,14 @@ namespace JiraReporter.SourceControl
 
         public override Log CreateLog()
         {
-            var context = new SourceControlContext { SourceControlOptions = Policy.SourceControlOptions, FromDate = Options.FromDate, ToDate = Options.ToDate };
-            var log = BitBucketService.GetLog(context);
+            var context = new SourceControlContext
+            {
+                SourceControlOptions = Policy.SourceControlOptions,
+                FromDate = Options.FromDate,
+                ToDate = Options.ToDate
+            };
 
-            return log;
+            return BitBucketService.GetLog(context);
         }
     }
 }
