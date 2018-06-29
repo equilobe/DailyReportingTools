@@ -2,8 +2,8 @@
 {
     public enum Markup
     {
-        markdown,
-        creole,
-        plaintext
+        Markdown,
+        Creole,
+        Plaintext
     }
 }

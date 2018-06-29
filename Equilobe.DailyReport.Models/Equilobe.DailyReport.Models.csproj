@@ -70,6 +70,7 @@
     <Compile Include="BitBucket\State.cs" />
     <Compile Include="BitBucket\Summary.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
+    <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Data\ApplicationErrors.cs" />
     <Compile Include="General\ItemContext.cs" />
