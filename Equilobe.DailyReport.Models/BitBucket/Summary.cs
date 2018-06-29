@@ -15,7 +15,7 @@ namespace Equilobe.DailyReport.Models.BitBucket
         [DataMember(Name = "html")]
         public string Html { get; set; }
 
-        public Markup? Markup
+        public Markup Markup
         {
             get
             {

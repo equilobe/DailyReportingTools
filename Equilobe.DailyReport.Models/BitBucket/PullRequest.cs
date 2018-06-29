@@ -82,7 +82,7 @@ namespace Equilobe.DailyReport.Models.BitBucket
             }
         }
 
-        public State? State
+        public State State
         {
             get
             {
