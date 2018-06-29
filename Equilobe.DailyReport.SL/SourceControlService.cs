@@ -12,6 +12,7 @@ namespace Equilobe.DailyReport.SL
     {
         public IGitHubService GitHubService { get; set; }
         public ISvnService SvnService { get; set; }
+        public IBitBucketService BitBucketService { get; set; }
 
         public List<string> GetContributors(SourceControlOptions sourceControlOptions)
         {
@@ -24,7 +25,7 @@ namespace Equilobe.DailyReport.SL
                     return GetSVNContributors(sourceControlOptions);
 
                 if (sourceControlOptions.Type == SourceControlType.BitBucket)
-                    throw new NotImplementedException();
+                    return GetBitBucketContributors(sourceControlOptions);
             }
             catch (Exception)
             {
@@ -50,6 +51,18 @@ namespace Equilobe.DailyReport.SL
             };
 
             return SvnService.GetAllAuthors(context);
+        }
+
+        private List<string> GetBitBucketContributors(SourceControlOptions sourceControlOptions)
+        {
+            var context = new SourceControlContext
+            {
+                SourceControlOptions = sourceControlOptions,
+                FromDate = DateTime.Now,
+                ToDate = DateTime.Now.AddMonths(-3)
+            };
+
+            return BitBucketService.GetAllContributors(context);
         }
     }
 }
