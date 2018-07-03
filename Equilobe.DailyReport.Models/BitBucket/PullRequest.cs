@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Enums;
+using System;
 using System.Runtime.Serialization;
 
 namespace Equilobe.DailyReport.Models.BitBucket
@@ -81,18 +82,11 @@ namespace Equilobe.DailyReport.Models.BitBucket
             }
         }
 
-        public State? State
+        public State State
         {
             get
             {
-                try
-                {
-                    return (State)Enum.Parse(typeof(State), StateType);
-                }
-                catch
-                {
-                    return null;
-                }
+                return StateType.ToEnum<State>(true);
             }
         }
     }

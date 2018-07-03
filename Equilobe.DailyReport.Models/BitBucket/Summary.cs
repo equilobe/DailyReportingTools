@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Equilobe.DailyReport.Models.Enums;
 using System.Runtime.Serialization;
 
 namespace Equilobe.DailyReport.Models.BitBucket
@@ -15,18 +15,11 @@ namespace Equilobe.DailyReport.Models.BitBucket
         [DataMember(Name = "html")]
         public string Html { get; set; }
 
-        public Markup? Markup
+        public Markup Markup
         {
             get
             {
-                try
-                {
-                    return (Markup)Enum.Parse(typeof(Markup), MarkupType);
-                }
-                catch
-                {
-                    return null;
-                }
+                return MarkupType.ToEnum<Markup>(true);
             }
         }
     }

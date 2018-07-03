@@ -3,6 +3,7 @@ using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.BitBucket;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Policy;
+using Equilobe.DailyReport.Models.SourceControl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,15 @@ namespace Equilobe.DailyReport.SL
 
             return commits
                 .Where(p => p.CreatedAt >= fromDate && p.CreatedAt <= toDate)
+                .ToList();
+        }
+
+        public List<string> GetAllContributors(SourceControlContext context)
+        {
+            return GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate)
+                .Where(p => p.Author != null && p.Author.User != null)
+                .Select(p => p.Author.User.DisplayName)
+                .Distinct()
                 .ToList();
         }
 
