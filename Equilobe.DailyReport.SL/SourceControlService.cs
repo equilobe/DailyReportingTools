@@ -58,8 +58,8 @@ namespace Equilobe.DailyReport.SL
             var context = new SourceControlContext
             {
                 SourceControlOptions = sourceControlOptions,
-                FromDate = DateTime.Now,
-                ToDate = DateTime.Now.AddMonths(-3)
+                FromDate = DateTime.Now.AddDays(-14),
+                ToDate = DateTime.Now
             };
 
             return BitBucketService.GetAllContributors(context);

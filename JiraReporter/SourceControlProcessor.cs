@@ -35,7 +35,7 @@ namespace JiraReporter
         public static List<JiraPullRequest> GetPullRequests(Log log)
         {
             if (log.PullRequests == null)
-                return new List<JiraPullRequest>(); ;
+                return new List<JiraPullRequest>();
 
             return log.PullRequests.Select(pr => new JiraPullRequest { GithubPullRequest = pr }).ToList();
         }
