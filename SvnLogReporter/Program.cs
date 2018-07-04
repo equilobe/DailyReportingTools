@@ -16,7 +16,7 @@ namespace SourceControlLogReporter
         {
             {SourceControlType.GitHub, ReportBase.Create<GitHubReport>},
             {SourceControlType.SVN, ReportBase.Create<SvnReport>},
-            {SourceControlType.BitBucket, ReportBase.Create<BitBucketReport>}
+            {SourceControlType.Bitbucket, ReportBase.Create<BitBucketReport>}
         };
 
         static void Main(string[] args)

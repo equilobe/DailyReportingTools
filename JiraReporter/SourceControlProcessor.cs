@@ -19,7 +19,7 @@ namespace JiraReporter
         {
             {SourceControlType.GitHub, ReportBaseSourceControl.Create<GitHubReportSourceControl>},
             {SourceControlType.SVN, ReportBaseSourceControl.Create<SvnReportSourceControl>},
-            {SourceControlType.BitBucket, ReportBaseSourceControl.Create<BitBucketSourceControl>}
+            {SourceControlType.Bitbucket, ReportBaseSourceControl.Create<BitBucketSourceControl>}
         };
 
         public static Log GetSourceControlLog(JiraReport report)
@@ -39,7 +39,10 @@ namespace JiraReporter
                 return pullRequests;
 
             foreach (var pullRequest in log.PullRequests)
-                pullRequests.Add();
+                pullRequests.Add(new JiraPullRequest
+                {
+                    GithubPullRequest = pullRequest
+                });
 
             return pullRequests;
         }

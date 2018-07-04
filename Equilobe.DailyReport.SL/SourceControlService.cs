@@ -24,7 +24,7 @@ namespace Equilobe.DailyReport.SL
                 if (sourceControlOptions.Type == SourceControlType.SVN)
                     return GetSVNContributors(sourceControlOptions);
 
-                if (sourceControlOptions.Type == SourceControlType.BitBucket)
+                if (sourceControlOptions.Type == SourceControlType.Bitbucket)
                     return GetBitBucketContributors(sourceControlOptions);
             }
             catch (Exception)
