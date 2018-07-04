@@ -25,7 +25,7 @@ namespace Equilobe.DailyReport.BL.BitBucket
         {
             return new Octokit.PullRequest
             {
-                HtmlUrl = new Uri(pullRequest.Links.Html.Href),
+                HtmlUrl = new Uri(pullRequest?.Links?.Html?.Href),
                 Title = pullRequest.Title,
                 Number = pullRequest.Id
             };
@@ -41,8 +41,8 @@ namespace Equilobe.DailyReport.BL.BitBucket
                 Author = commit.Author.User?.Username,
                 Date = Convert.ToDateTime(commit.Date),
                 Message = commit.Message,
-                Revision = commit.Links.Html.Href,
-                Link = commit.Links.Html.Href
+                Revision = commit.Links?.Html?.Href,
+                Link = commit.Links?.Html?.Href
             };
         }
     }

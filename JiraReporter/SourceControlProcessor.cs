@@ -35,10 +35,12 @@ namespace JiraReporter
         public static List<JiraPullRequest> GetPullRequests(Log log)
         {
             var pullRequests = new List<JiraPullRequest>();
-            if(log.PullRequests!=null)
-                if(log.PullRequests.Count>0)
-                    foreach (var pullRequest in log.PullRequests)
-                        pullRequests.Add(new JiraPullRequest { GithubPullRequest = pullRequest });
+            if (log.PullRequests == null)
+                return pullRequests;
+
+            foreach (var pullRequest in log.PullRequests)
+                pullRequests.Add();
+
             return pullRequests;
         }
 
