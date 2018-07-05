@@ -76,7 +76,7 @@
         
         @if (Model.StatusCategory.name == "Done")
         {
-            if (Model.Resolution != "Fixed" && Model.Resolution != "Done")
+            if (Model.Resolution != "Fixed" && Model.Resolution != "Done" && Model.Resolution != null)
             {
                 <span style="color:#ABABAB; padding:1.5px"> (@Model.Resolution)</span>
             }

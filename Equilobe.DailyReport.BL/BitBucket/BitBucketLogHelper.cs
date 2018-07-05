@@ -41,7 +41,7 @@ namespace Equilobe.DailyReport.BL.BitBucket
                 Author = commit.Author.User?.DisplayName,
                 Date = Convert.ToDateTime(commit.Date),
                 Message = commit.Message,
-                Revision = commit.Links?.Html?.Href,
+                Revision = commit.Hash,
                 Link = commit.Links?.Html?.Href
             };
         }
