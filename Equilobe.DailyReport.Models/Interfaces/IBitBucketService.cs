@@ -11,6 +11,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         Log GetLog(ISourceControlContext context);
         List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions);
         List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate);
-        List<string> GetAllContributors(SourceControlContext context);
+        List<string> GetContributorsFromCommits(SourceControlContext context);
+        List<string> GetAllContributors(SourceControlOptions sourceControlOptions);
     }
 }

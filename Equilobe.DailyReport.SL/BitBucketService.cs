@@ -73,13 +73,38 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
         }
 
-        public List<string> GetAllContributors(SourceControlContext context)
+        public List<string> GetContributorsFromCommits(SourceControlContext context)
         {
             return GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate)
                 .Where(p => p.Author != null && p.Author.User != null)
                 .Select(p => p.Author.User.DisplayName)
                 .Distinct()
                 .ToList();
+        }
+
+        public List<string> GetAllContributors(SourceControlOptions options)
+        {
+            var credentials = options.Credentials;
+            var client = GetClient(credentials);
+            var contributors = new List<Contributor>();
+            var page = 1;
+
+            while (true)
+            {
+                var contributorsPage = client.GetContributors(options.RepoOwner, page);
+
+                if (contributorsPage.Values == null)
+                    break;
+
+                contributors.AddRange(contributorsPage.Values);
+
+                if (contributorsPage.Next == null)
+                    break;
+
+                page++;
+            }
+
+            return contributors.Select(p => p.DisplayName).ToList();
         }
 
         private bool IsAnyCommitOutdated(List<Commit> commits, DateTime fromDate)

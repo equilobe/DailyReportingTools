@@ -38,7 +38,7 @@ namespace Equilobe.DailyReport.BL.BitBucket
 
             return new LogEntry
             {
-                Author = commit.Author.User?.Username,
+                Author = commit.Author.User?.DisplayName,
                 Date = Convert.ToDateTime(commit.Date),
                 Message = commit.Message,
                 Revision = commit.Links?.Html?.Href,

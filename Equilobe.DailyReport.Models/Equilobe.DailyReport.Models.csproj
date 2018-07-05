@@ -54,17 +54,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitBucket\BitBucketResponsePage.cs" />
     <Compile Include="BitBucket\Commit.cs" />
     <Compile Include="BitBucket\CommitAuthor.cs" />
-    <Compile Include="BitBucket\CommitPage.cs" />
     <Compile Include="BitBucket\CommitParent.cs" />
     <Compile Include="BitBucket\Author.cs" />
     <Compile Include="BitBucket\Branch.cs" />
+    <Compile Include="BitBucket\Contributor.cs" />
     <Compile Include="BitBucket\PullRequestCommit.cs" />
     <Compile Include="BitBucket\Link.cs" />
     <Compile Include="BitBucket\Markup.cs" />
     <Compile Include="BitBucket\PullRequest.cs" />
-    <Compile Include="BitBucket\PullRequestPage.cs" />
     <Compile Include="BitBucket\Repository.cs" />
     <Compile Include="BitBucket\SourceOrDestination.cs" />
     <Compile Include="BitBucket\State.cs" />

@@ -4,16 +4,16 @@ using System.Runtime.Serialization;
 namespace Equilobe.DailyReport.Models.BitBucket
 {
     [DataContract]
-    public class PullRequestPage
+    public class BitBucketResponsePage<T>
     {
+        [DataMember(Name = "pagelen")]
+        public int PageLength { get; set; }
+
         [DataMember(Name = "size")]
         public int Size { get; set; }
 
         [DataMember(Name = "page")]
         public int Page { get; set; }
-
-        [DataMember(Name = "pagelen")]
-        public int PageLength { get; set; }
 
         [DataMember(Name = "next")]
         public string Next { get; set; }
@@ -22,6 +22,6 @@ namespace Equilobe.DailyReport.Models.BitBucket
         public string Previous { get; set; }
 
         [DataMember(Name = "values")]
-        public List<PullRequest> Values { get; set; }
+        public List<T> Values { get; set; }
     }
 }

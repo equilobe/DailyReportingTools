@@ -37,6 +37,18 @@ namespace Equilobe.DailyReport.Models.BitBucket
 
         [DataMember(Name = "avatar")]
         public Link Avatar { get; set; }
+
+        [DataMember(Name = "repositories")]
+        public Link Repositories { get; set; }
+
+        [DataMember(Name = "followers")]
+        public Link Followers { get; set; }
+
+        [DataMember(Name = "snippets")]
+        public Link Snippets { get; set; }
+
+        [DataMember(Name = "hooks")]
+        public Link Hooks { get; set; }
     }
 
     [DataContract]

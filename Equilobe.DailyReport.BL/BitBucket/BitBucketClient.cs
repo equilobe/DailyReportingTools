@@ -21,18 +21,25 @@ namespace Equilobe.DailyReport.BL.BitBucket
         {
         }
 
-        public PullRequestPage GetPullRequests(string owner, string repository, int page = 1)
+        public BitBucketResponsePage<PullRequest> GetPullRequests(string owner, string repository, int page = 1)
         {
             var request = new RestRequest(BitBucketApiUrls.PullRequests(owner, repository, page), Method.GET);
 
-            return RestApiHelper.ResolveRequest<PullRequestPage>(Client, request);
+            return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequest>>(Client, request);
         }
 
-        public CommitPage GetCommits(string owner, string repository, int page = 1)
+        public BitBucketResponsePage<Commit> GetCommits(string owner, string repository, int page = 1)
         {
             var request = new RestRequest(BitBucketApiUrls.Commits(owner, repository, page), Method.GET);
 
-            return RestApiHelper.ResolveRequest<CommitPage>(Client, request);
+            return RestApiHelper.ResolveRequest<BitBucketResponsePage<Commit>>(Client, request);
+        }
+
+        public BitBucketResponsePage<Contributor> GetContributors(string team, int page = 1)
+        {
+            var request = new RestRequest(BitBucketApiUrls.Contributors(team, page), Method.GET);
+
+            return RestApiHelper.ResolveRequest<BitBucketResponsePage<Contributor>>(Client, request);
         }
     }
 }

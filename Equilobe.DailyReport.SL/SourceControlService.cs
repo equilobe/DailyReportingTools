@@ -55,6 +55,16 @@ namespace Equilobe.DailyReport.SL
 
         private List<string> GetBitBucketContributors(SourceControlOptions sourceControlOptions)
         {
+            var contributors = BitBucketService.GetAllContributors(sourceControlOptions);
+
+            if (!contributors.Any())
+                return GetBitbucketContributorsFromCommits(sourceControlOptions);
+
+            return contributors;
+        }
+
+        private List<string> GetBitbucketContributorsFromCommits(SourceControlOptions sourceControlOptions)
+        {
             var context = new SourceControlContext
             {
                 SourceControlOptions = sourceControlOptions,
@@ -62,7 +72,7 @@ namespace Equilobe.DailyReport.SL
                 ToDate = DateTime.Now
             };
 
-            return BitBucketService.GetAllContributors(context);
+            return BitBucketService.GetContributorsFromCommits(context);
         }
     }
 }
