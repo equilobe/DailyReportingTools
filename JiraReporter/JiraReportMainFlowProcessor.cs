@@ -6,20 +6,14 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportExecution;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
-using Equilobe.DailyReport.SL;
 using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 using JiraReporter.Model;
 using JiraReporter.Services;
+using Newtonsoft.Json;
 using RazorEngine;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Serialization;
-using System.Reflection;
-using Newtonsoft.Json;
 
 namespace JiraReporter
 {
@@ -33,6 +27,7 @@ namespace JiraReporter
         public IConfigurationService ConfigurationService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public ITimeZoneService TimeZoneService { get; set; }
+        public IBitBucketService BitBucketService { get; set; }
 
         public void Execute(string[] args)
         {

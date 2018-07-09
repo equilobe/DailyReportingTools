@@ -11,5 +11,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetTaskSchedulerFolderName();
         string GetTimeZoneMappingPath();
         bool IsPaypalSandbox();
+        string GetBitBucketApiClientUrl();
     }
 }

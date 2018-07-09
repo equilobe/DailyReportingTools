@@ -19,6 +19,7 @@ namespace JiraReporter
         {
             {SourceControlType.GitHub, ReportBaseSourceControl.Create<GitHubReportSourceControl>},
             {SourceControlType.SVN, ReportBaseSourceControl.Create<SvnReportSourceControl>},
+            {SourceControlType.Bitbucket, ReportBaseSourceControl.Create<BitBucketSourceControl>}
         };
 
         public static Log GetSourceControlLog(JiraReport report)
@@ -33,28 +34,28 @@ namespace JiraReporter
 
         public static List<JiraPullRequest> GetPullRequests(Log log)
         {
-            var pullRequests = new List<JiraPullRequest>();
-            if(log.PullRequests!=null)
-                if(log.PullRequests.Count>0)
-                    foreach (var pullRequest in log.PullRequests)
-                        pullRequests.Add(new JiraPullRequest { GithubPullRequest = pullRequest });
-            return pullRequests;
+            if (log.PullRequests == null)
+                return new List<JiraPullRequest>();
+
+            return log.PullRequests.Select(pr => new JiraPullRequest { GithubPullRequest = pr }).ToList();
         }
 
         public static List<JiraCommit> GetCommits(Log log)
         {
-            var commits = new List<JiraCommit>();
-            if(log.Entries!=null)
-                if(log.Entries.Count>0)
-                    foreach (var entry in log.Entries)
-                    {
-                        commits.Add(new JiraCommit { Entry = entry });
-                        commits.Last().Entry.Message = EditMessage(commits.Last().Entry.Message);
-                    }
-            return commits;
+            if (log.Entries == null)
+                return new List<JiraCommit>();
+
+            return log.Entries.Select(e => new JiraCommit { Entry = GetEntryWithTrimmedMessage(e) }).ToList();      
         }
 
-        public static string EditMessage(string message)
+        public static LogEntry GetEntryWithTrimmedMessage(LogEntry entry)
+        {
+            entry.Message = GetTrimmedMessage(entry.Message);
+
+            return entry;
+        }
+
+        public static string GetTrimmedMessage(string message)
         {
             return SourceControlLogReporter.LogProcessor.GetNonEmptyTrimmedLines(message);
         }

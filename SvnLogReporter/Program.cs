@@ -15,7 +15,8 @@ namespace SourceControlLogReporter
         private static readonly Dictionary<SourceControlType, Func<Policy, Options, ReportBase>> Processors = new Dictionary<SourceControlType, Func<Policy, Options, ReportBase>>()
         {
             {SourceControlType.GitHub, ReportBase.Create<GitHubReport>},
-            {SourceControlType.SVN, ReportBase.Create<SvnReport>}
+            {SourceControlType.SVN, ReportBase.Create<SvnReport>},
+            {SourceControlType.Bitbucket, ReportBase.Create<BitBucketReport>}
         };
 
         static void Main(string[] args)

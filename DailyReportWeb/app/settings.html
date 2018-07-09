@@ -151,6 +151,10 @@
                                 <input type="radio" value="SVN" ng-model="data.sourceControlOptions.type" />
                                 SVN
                             </label>
+                            <label class="radio-inline">
+                                <input type="radio" value="Bitbucket" ng-model="data.sourceControlOptions.type"/>
+                                Bitbucket
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -260,6 +264,66 @@
                                 </label>
                                 <div>
                                     <input type="password" name="svnPassword" class="form-control" placeholder="" ng-model="data.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" ng-if="data.sourceControlOptions.type == 'Bitbucket'">
+                <div class="panel-heading">
+                    <h4>
+                        {{data.sourceControlOptions.type}}
+                        <small class="pull-right" ng-show="sourceControlStatus && sourceControlForm.$valid && sourceControlForm.$dirty">
+                            <a role="button" ng-click="updateContributors(this)">
+                                Check availability:
+                            </a>
+                            <span class="alert-warning glyphicon glyphicon-share-alt" ng-show="sourceControlStatus == 'changed'"></span>
+                            <span class="alert-info glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-show="sourceControlStatus == 'loading'"></span>
+                            <span class="alert-success glyphicon glyphicon-ok" ng-show="sourceControlStatus == 'success'"></span>
+                            <span class="alert-danger glyphicon glyphicon-remove" ng-show="sourceControlStatus == 'error'"></span>
+                        </small>
+                    </h4>
+                </div>
+                <div class="panel-body" ng-form="sourceControlForm">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Repository Owner:
+                                </label>
+                                <div>
+                                    <input type="text" name="bitbucketRepoOwner" class="form-control" ng-model="data.sourceControlOptions.repoOwner" ng-blur="sourceControlStatus = 'changed'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Repository Name:
+                                </label>
+                                <div>
+                                    <input type="text" name="bitbucketRepoName" class="form-control" ng-model="data.sourceControlOptions.repo" ng-blur="sourceControlStatus = 'changed'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Username:
+                                </label>
+                                <div>
+                                    <input type="text" name="bitbucketUsername" class="form-control" ng-model="data.sourceControlOptions.credentials.username" ng-blur="sourceControlStatus = 'changed'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>
+                                    Password:
+                                </label>
+                                <div>
+                                    <input type="password" name="bitbucketPassword" class="form-control" ng-model="data.sourceControlOptions.credentials.password" ng-blur="sourceControlStatus = 'changed'" />
                                 </div>
                             </div>
                         </div>

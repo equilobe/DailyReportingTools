@@ -21,6 +21,7 @@ namespace SourceControlLogReporter
 
             builder.RegisterType<GitHubReport>().AsSelf().PropertiesAutowired();
             builder.RegisterType<SvnReport>().AsSelf().PropertiesAutowired();
+            builder.RegisterType<BitBucketReport>().AsSelf().PropertiesAutowired();
 
             Container = builder.Build();
         }

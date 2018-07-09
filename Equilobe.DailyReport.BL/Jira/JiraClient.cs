@@ -17,10 +17,7 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             return new JiraClient
             {
-                Client = new RestClient(baseUrl)
-                {
-                    Authenticator = new HttpBasicAuthenticator(username, password)
-                }
+                Client = RestApiHelper.BasicAuthentication(baseUrl, username, password)
             };
         }
 
@@ -28,10 +25,7 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             return new JiraClient
             {
-                Client = new RestClient(baseUrl)
-                {
-                    Authenticator = new JwtAuthenticator(sharedSecret, addonKey)
-                }
+                Client =  RestApiHelper.JwtAuthentication(baseUrl, sharedSecret, addonKey)
             };
         }
 
@@ -40,26 +34,14 @@ namespace Equilobe.DailyReport.BL.Jira
         {
         }
 
-
-        T ResolveRequest<T>(RestRequest request, bool isXml = false)
+        T ResolveRequest<T>(RestRequest request, bool isXml = false) where T : new()
         {
-            var response = Client.Execute(request);
-
-            ValidateResponse(response);
-
-            if (isXml)
-                return Deserialization.XmlDeserialize<T>(response.Content);
-            else
-                return Deserialization.JsonDeserialize<T>(response.Content);
+            return RestApiHelper.ResolveRequest<T>(Client, request, isXml);
         }
 
         T ResolveJiraRequest<T>(RestRequest request) where T : new()
         {
-            var response = Client.Execute<T>(request);
-
-            ValidateResponse(response);
-
-            return response.Data;
+            return RestApiHelper.ResolveJiraRequest<T>(Client, request);
         }
 
         static void ValidateResponse(IRestResponse response)

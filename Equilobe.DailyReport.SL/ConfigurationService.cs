@@ -52,5 +52,10 @@ namespace Equilobe.DailyReport.SL
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["isPaypalSandbox"]);
         }
+
+        public string GetBitBucketApiClientUrl()
+        {
+            return ConfigurationManager.AppSettings["bitBucketApiClientUrl"];
+        }
     }
 }
