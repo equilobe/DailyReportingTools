@@ -25,7 +25,7 @@ namespace Equilobe.DailyReport.BL
 
         public static string Users(string project)
         {
-            return string.Format("rest/api/2/user/assignable/search?project={0}", project);
+            return string.Format("rest/api/2/user/assignable/search?project={0}&maxResults=1000", project);
         }
 
         public static string Issue(string key)
