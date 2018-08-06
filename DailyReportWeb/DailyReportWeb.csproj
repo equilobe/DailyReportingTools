@@ -187,6 +187,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
+    <Compile Include="Controllers\Api\ReportController.cs" />
     <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
     <Compile Include="Controllers\Api\ConfirmIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\HelpController.cs" />
@@ -252,6 +253,13 @@
     </Content>
     <Content Include="app\howItWorks.test.js">
       <DependentUpon>howItWorks.html</DependentUpon>
+    </Content>
+    <Content Include="app\report.html" />
+    <Content Include="app\report.js">
+      <DependentUpon>report.html</DependentUpon>
+    </Content>
+    <Content Include="app\report.test.js">
+      <DependentUpon>report.html</DependentUpon>
     </Content>
     <Content Include="app\instances.html" />
     <Content Include="app\instances.js">

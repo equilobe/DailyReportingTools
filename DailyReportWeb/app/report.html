@@ -1,0 +1,20 @@
+﻿<div class="jumbotron jumbo" ng-if="reportCtrl.isLoading">
+    <div class="container">
+        <h1>
+            Report Dashboard
+        </h1>
+        <p class="help-block">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+        </p>
+    </div>
+</div>
+
+<form name="form" ng-if="!reportCtrl.isLoading">
+    <div class="jumbotron jumbo">
+        <div class="container">
+            <h1>
+                TODO
+            </h1>
+        </div>
+    </div>
+</form>
