@@ -7,16 +7,17 @@ angular.module('app')
             controller: 'ReportController'
         });
     }])
-    .controller("ReportController", ["$scope", "$http", '$routeParams', function ($scope, $http, $routeParams) {
-        $("body").attr("data-page", "report");
-        $scope.$parent.child = $scope;
-        $scope.status = "loading";
+    .controller("ReportController", ["$scope", "$http", '$routeParams',
+        function reportCtrl($scope, $http, $routeParams) {
+            var ctrl = this;
+            ctrl.isLoading = true;
+            ctrl.data = {};
 
-        $http.get("/api/report/" + $routeParams.instanceId)
-            .success(function (data) {
-                $scope.data = data;
-            })
-            .finally(function () {
-                $scope.status = "loaded";
-            });
+            $http.get("/api/report/" + $routeParams.instanceId)
+                .success(function (data) {
+                    ctrl.data = data;
+                })
+                .finally(function () {
+                    ctrl.isLoading = false;
+                });
     }])

@@ -1,4 +1,4 @@
-﻿<div class="jumbotron jumbo" ng-if="status == 'loading'">
+﻿<div class="jumbotron jumbo" ng-if="reportCtrl.isLoading">
     <div class="container">
         <h1>
             Report Dashboard
@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<form name="form" ng-if="status == 'loaded'">
+<form name="form" ng-if="!reportCtrl.isLoading">
     <div class="jumbotron jumbo">
         <div class="container">
             <h1>
