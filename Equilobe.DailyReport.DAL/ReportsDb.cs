@@ -66,7 +66,7 @@ namespace Equilobe.DailyReport.DAL
 			modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
 			modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles");
-            modelBuilder.Entity<JiraUser>().ToTable("JiraUser");
+            modelBuilder.Entity<AtlassianUser>().ToTable("AtlassianUser");
 
         }
 
@@ -82,6 +82,6 @@ namespace Equilobe.DailyReport.DAL
         public DbSet<HtmlReport> HtmlReports { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<IPNLog> IPNLogs { get; set; }
-        public DbSet<JiraUser> JiraUser { get; set; }
+        public DbSet<AtlassianUser> AtlassianUser { get; set; }
     }
 }

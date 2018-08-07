@@ -9,5 +9,10 @@ namespace DailyReportWeb.Controllers.Api
         {
             return null;
         }
+
+        public void Post([FromBody] long id)
+        {
+            var a = 5;
+        }
     }
 }

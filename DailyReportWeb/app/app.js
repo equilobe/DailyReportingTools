@@ -17,6 +17,10 @@
             .when('/', {
                 redirectTo: '/app/welcome'
             })
+            .when('/app/instances/:instanceId/report', {
+                templateUrl: 'app/report.html',
+                controller: 'ReportCtrl as reportCtrl'
+            })
             .otherwise({
                 redirectTo: '/'
             });
