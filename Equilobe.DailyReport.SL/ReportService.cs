@@ -18,9 +18,23 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var users = GetUsersFromInstance(db, instanceId);
+                var users = GetUsersFromInstance(db, instanceId)
+                    .Select(ToAtlassianUser)
+                    .ToList();
 
-                //TODO - add in DB 
+                var dbUsers = db.AtlassianUser.ToList();
+
+                foreach (var user in users)
+                {
+                    var dbUser = dbUsers.Where(p => p.Key == user.Key).Single();
+
+                    if (dbUser == null)
+                        db.AtlassianUser.Add(user);
+                    else
+                        UpdateDbUser(dbUser, user);
+                }
+
+                db.SaveChanges();
             }
         }
         #endregion
@@ -54,6 +68,31 @@ namespace Equilobe.DailyReport.SL
                 .GroupBy(p => p.emailAddress)
                 .Select(p => p.First())
                 .ToList();
+        }
+
+        private AtlassianUser ToAtlassianUser(JiraUser user)
+        {
+            return new AtlassianUser
+            {
+                DisplayName = user.displayName,
+                Key = user.key,
+                EmailAddress = user.emailAddress,
+                Avatar16x16 = user.avatarUrls.VerySmall.AbsolutePath,
+                Avatar24x24 = user.avatarUrls.Small.AbsolutePath,
+                Avatar32x32 = user.avatarUrls.Med.AbsolutePath,
+                Avatar48x48 = user.avatarUrls.Big.AbsolutePath
+            };
+        }
+
+        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser updatedUser)
+        {
+            dbUser.DisplayName = updatedUser.DisplayName;
+            dbUser.Key = updatedUser.Key;
+            dbUser.EmailAddress = updatedUser.EmailAddress;
+            dbUser.Avatar16x16 = updatedUser.Avatar16x16;
+            dbUser.Avatar24x24 = updatedUser.Avatar24x24;
+            dbUser.Avatar32x32 = updatedUser.Avatar32x32;
+            dbUser.Avatar48x48 = updatedUser.Avatar48x48;
         }
         #endregion
     }
