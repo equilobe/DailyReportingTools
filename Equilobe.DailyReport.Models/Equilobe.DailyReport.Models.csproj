@@ -85,6 +85,7 @@
     <Compile Include="Interfaces\IErrorService.cs" />
     <Compile Include="Interfaces\IPayPalService.cs" />
     <Compile Include="Interfaces\IRegistrationService.cs" />
+    <Compile Include="Interfaces\IReportService.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
