@@ -26,7 +26,7 @@ namespace Equilobe.DailyReport.SL
 
                 foreach (var user in users)
                 {
-                    var dbUser = dbUsers.Where(p => p.Key == user.Key).Single();
+                    var dbUser = dbUsers.Where(p => p.Key == user.Key).SingleOrDefault();
 
                     if (dbUser == null)
                         db.AtlassianUser.Add(user);

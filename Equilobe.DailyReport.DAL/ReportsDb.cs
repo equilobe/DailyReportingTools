@@ -66,8 +66,6 @@ namespace Equilobe.DailyReport.DAL
 			modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
 			modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles");
-            modelBuilder.Entity<AtlassianUser>().ToTable("AtlassianUser");
-
         }
 
         public DbSet<BasicSettings> BasicSettings { get; set; }
