@@ -18,7 +18,7 @@ namespace Equilobe.DailyReport.SL
         {
             var projects = GetProjectsFromInstance(instanceId);
             var users = GetUsersFromProjects(projects)
-                .Select(ToAtlassianUser)
+                .Select(p => ToAtlassianUser(p, instanceId))
                 .ToList();
 
             using (var db = new ReportsDb())
@@ -32,7 +32,7 @@ namespace Equilobe.DailyReport.SL
                     if (dbUser == null)
                         db.AtlassianUser.Add(user);
                     else
-                        UpdateDbUser(dbUser, user);
+                        UpdateDbUser(dbUser, user, instanceId);
                 }
 
                 db.SaveChanges();
@@ -87,11 +87,12 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
         }
 
-        private AtlassianUser ToAtlassianUser(JiraUser user)
+        private AtlassianUser ToAtlassianUser(JiraUser user, long instanceId)
         {
             return new AtlassianUser
             {
                 DisplayName = user.displayName,
+                InstalledInstanceId = instanceId,
                 Key = user.key,
                 EmailAddress = user.emailAddress,
                 Avatar16x16 = user.avatarUrls.VerySmall.AbsoluteUri,
@@ -101,9 +102,10 @@ namespace Equilobe.DailyReport.SL
             };
         }
 
-        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser updatedUser)
+        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser updatedUser, long instanceId)
         {
             dbUser.DisplayName = updatedUser.DisplayName;
+            dbUser.InstalledInstanceId = instanceId;
             dbUser.Key = updatedUser.Key;
             dbUser.EmailAddress = updatedUser.EmailAddress;
             dbUser.Avatar16x16 = updatedUser.Avatar16x16;
