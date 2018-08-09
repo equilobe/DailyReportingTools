@@ -16,12 +16,13 @@ namespace Equilobe.DailyReport.SL
         #region IJiraService Implementation
         public void UpdateDashboardData(long instanceId)
         {
+            var projects = GetProjectsFromInstance(instanceId);
+            var users = GetUsersFromProjects(projects)
+                .Select(ToAtlassianUser)
+                .ToList();
+
             using (var db = new ReportsDb())
             {
-                var users = GetUsersFromInstance(db, instanceId)
-                    .Select(ToAtlassianUser)
-                    .ToList();
-
                 var dbUsers = db.AtlassianUser.ToList();
 
                 foreach (var user in users)
@@ -40,9 +41,23 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
-        private List<JiraUser> GetUsersFromInstance(ReportsDb db, long instanceId)
+        private List<BasicSettings> GetProjectsFromInstance(long instanceId)
         {
-            var basicSettings = db.BasicSettings.Where(p => p.InstalledInstanceId == instanceId).Select(p => new { p.ProjectId, p.InstalledInstance }).ToList();
+            using (var db = new ReportsDb())
+            {
+                return db.BasicSettings
+                    .Where(p => p.InstalledInstanceId == instanceId)
+                    .Select(p => new BasicSettings
+                    {
+                        ProjectId = p.ProjectId,
+                        InstalledInstance = p.InstalledInstance
+                    })
+                .ToList();
+            }
+        }
+
+        private List<JiraUser> GetUsersFromProjects(List<BasicSettings> basicSettings)
+        {
             var jiraContext = new JiraRequestContext();
             var users = new List<JiraUser>();
 
