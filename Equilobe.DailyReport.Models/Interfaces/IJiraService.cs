@@ -1,5 +1,4 @@
 ﻿using Equilobe.DailyReport.Models.Jira;
-using System;
 using System.Collections.Generic;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -13,6 +12,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         JiraPolicy GetJiraInfo(ItemContext context);
         Project GetProject(JiraRequestContext context, long id);
         List<JiraIssue> GetTimesheetForUser(TimesheetContext context);
+        List<JiraUser> GetInstanceUsers(JiraRequestContext context);
         JiraUser GetUser(JiraRequestContext context, string username);
         List<JiraUser> GetUsers(JiraRequestContext context, string projectKey);
         JiraIssue GetIssue(JiraRequestContext context, string issueKey);

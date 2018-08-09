@@ -18,6 +18,11 @@ namespace Equilobe.DailyReport.BL
             return "rest/api/2/project";
         }
 
+        public static string InstanceUsers()
+        {
+            return string.Format("rest/api/2/user/search?username=_");
+        }
+
         public static string User(string userName)
         {
             return string.Format("rest/api/latest/user?username={0}", userName);
