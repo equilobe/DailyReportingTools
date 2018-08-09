@@ -41,32 +41,34 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
-        private List<BasicSettings> GetProjectsFromInstance(long instanceId)
+        private List<AtlassianProject> GetProjectsFromInstance(long instanceId)
         {
             using (var db = new ReportsDb())
             {
                 return db.BasicSettings
                     .Where(p => p.InstalledInstanceId == instanceId)
-                    .Select(p => new BasicSettings
+                    .Select(p => new AtlassianProject()
                     {
                         ProjectId = p.ProjectId,
-                        InstalledInstance = p.InstalledInstance
+                        BaseUrl = p.InstalledInstance.BaseUrl,
+                        JiraPassword = p.InstalledInstance.JiraPassword,
+                        JiraUsername = p.InstalledInstance.JiraUsername
                     })
                 .ToList();
             }
         }
 
-        private List<JiraUser> GetUsersFromProjects(List<BasicSettings> basicSettings)
+        private List<JiraUser> GetUsersFromProjects(List<AtlassianProject> instanceProjects)
         {
             var jiraContext = new JiraRequestContext();
             var users = new List<JiraUser>();
 
-            foreach (var setting in basicSettings)
+            foreach (var projectSettings in instanceProjects)
             {
                 try
                 {
-                    setting.InstalledInstance.CopyPropertiesOnObjects(jiraContext);
-                    var project = JiraService.GetProject(jiraContext, setting.ProjectId);
+                    projectSettings.CopyPropertiesOnObjects(jiraContext);
+                    var project = JiraService.GetProject(jiraContext, projectSettings.ProjectId);
                     var projectUsers = JiraService.GetUsers(jiraContext, project.Key);
 
                     users.AddRange(projectUsers);
@@ -92,10 +94,10 @@ namespace Equilobe.DailyReport.SL
                 DisplayName = user.displayName,
                 Key = user.key,
                 EmailAddress = user.emailAddress,
-                Avatar16x16 = user.avatarUrls.VerySmall.AbsolutePath,
-                Avatar24x24 = user.avatarUrls.Small.AbsolutePath,
-                Avatar32x32 = user.avatarUrls.Med.AbsolutePath,
-                Avatar48x48 = user.avatarUrls.Big.AbsolutePath
+                Avatar16x16 = user.avatarUrls.VerySmall.AbsoluteUri,
+                Avatar24x24 = user.avatarUrls.Small.AbsoluteUri,
+                Avatar32x32 = user.avatarUrls.Med.AbsoluteUri,
+                Avatar48x48 = user.avatarUrls.Big.AbsoluteUri
             };
         }
 
