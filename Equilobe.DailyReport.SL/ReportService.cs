@@ -12,7 +12,7 @@ namespace Equilobe.DailyReport.SL
     {
         public IJiraService JiraService { get; set; }
 
-        #region IJiraService Implementation
+        #region IReportService Implementation
         public void UpdateDashboardData(long instanceId)
         {
             var jiraRequestContext = GetJiraRequestContext(instanceId);
