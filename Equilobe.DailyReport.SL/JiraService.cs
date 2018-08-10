@@ -82,9 +82,9 @@ namespace Equilobe.DailyReport.SL
             return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(context.ProjectKey, context.TargetUser, context.StartDate, context.EndDate);
         }
 
-        public List<JiraUser> GetInstanceUsers(JiraRequestContext context)
+        public List<JiraUser> GetAllUsers(JiraRequestContext context)
         {
-            return GetClient(context).GetInstanceUsers();
+            return GetClient(context).GetAllUsers();
         }
 
         public JiraUser GetUser(JiraRequestContext context, string username)

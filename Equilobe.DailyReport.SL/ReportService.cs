@@ -15,14 +15,23 @@ namespace Equilobe.DailyReport.SL
         #region IReportService Implementation
         public void UpdateDashboardData(long instanceId)
         {
+            UpdateAtlassianUsers(instanceId);
+        }
+        #endregion
+
+        #region Helpers
+        private void UpdateAtlassianUsers(long instanceId)
+        {
             var jiraRequestContext = GetJiraRequestContext(instanceId);
-            var users = JiraService.GetInstanceUsers(jiraRequestContext)
+            var users = JiraService.GetAllUsers(jiraRequestContext)
                 .Select(p => ToAtlassianUser(p, instanceId))
                 .ToList();
 
             using (var db = new ReportsDb())
             {
-                var dbUsers = db.AtlassianUser.ToList();
+                var dbUsers = db.AtlassianUser
+                    .Where(p => p.InstalledInstanceId == instanceId)
+                    .ToList();
 
                 foreach (var user in users)
                 {
@@ -31,15 +40,13 @@ namespace Equilobe.DailyReport.SL
                     if (dbUser == null)
                         db.AtlassianUser.Add(user);
                     else
-                        UpdateDbUser(dbUser, user, instanceId);
+                        UpdateDbUser(dbUser, user);
                 }
 
                 db.SaveChanges();
             }
         }
-        #endregion
 
-        #region Helpers
         private JiraRequestContext GetJiraRequestContext(long instanceId)
         {
             using (var db = new ReportsDb())
@@ -64,20 +71,21 @@ namespace Equilobe.DailyReport.SL
                 Avatar16x16 = user.avatarUrls.VerySmall.AbsoluteUri,
                 Avatar24x24 = user.avatarUrls.Small.AbsoluteUri,
                 Avatar32x32 = user.avatarUrls.Med.AbsoluteUri,
-                Avatar48x48 = user.avatarUrls.Big.AbsoluteUri
+                Avatar48x48 = user.avatarUrls.Big.AbsoluteUri,
+                IsActive = user.active
             };
         }
 
-        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser updatedUser, long instanceId)
+        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser updatedUser)
         {
             dbUser.DisplayName = updatedUser.DisplayName;
-            dbUser.InstalledInstanceId = instanceId;
             dbUser.Key = updatedUser.Key;
             dbUser.EmailAddress = updatedUser.EmailAddress;
             dbUser.Avatar16x16 = updatedUser.Avatar16x16;
             dbUser.Avatar24x24 = updatedUser.Avatar24x24;
             dbUser.Avatar32x32 = updatedUser.Avatar32x32;
             dbUser.Avatar48x48 = updatedUser.Avatar48x48;
+            dbUser.IsActive = updatedUser.IsActive;
         }
         #endregion
     }

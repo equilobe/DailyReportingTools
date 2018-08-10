@@ -60,9 +60,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<Project>(request);
         }
 
-        public List<JiraUser> GetInstanceUsers()
+        public List<JiraUser> GetAllUsers()
         {
-            var request = new RestRequest(JiraApiUrls.InstanceUsers(), Method.GET);
+            var request = new RestRequest(JiraApiUrls.AllUsers(), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(request)
                 .Where(p => !p.key.StartsWith("addon_"))

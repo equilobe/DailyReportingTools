@@ -11,6 +11,7 @@
         public string Avatar32x32 { get; set; }
         public string Avatar24x24 { get; set; }
         public string Avatar16x16 { get; set; }
+        public bool IsActive { get; set; }
 
         public virtual InstalledInstance InstalledInstance { get; set; }
     }

@@ -12,7 +12,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         JiraPolicy GetJiraInfo(ItemContext context);
         Project GetProject(JiraRequestContext context, long id);
         List<JiraIssue> GetTimesheetForUser(TimesheetContext context);
-        List<JiraUser> GetInstanceUsers(JiraRequestContext context);
+        List<JiraUser> GetAllUsers(JiraRequestContext context);
         JiraUser GetUser(JiraRequestContext context, string username);
         List<JiraUser> GetUsers(JiraRequestContext context, string projectKey);
         JiraIssue GetIssue(JiraRequestContext context, string issueKey);
