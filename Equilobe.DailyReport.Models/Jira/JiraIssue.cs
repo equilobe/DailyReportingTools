@@ -234,6 +234,7 @@ namespace Equilobe.DailyReport.Models.Jira
         public string timeSpent { get; set; }
         public int timeSpentSeconds { get; set; }
         public string id { get; set; }
+        public long issueId { get; set; }
     }
 
     public class Worklogs

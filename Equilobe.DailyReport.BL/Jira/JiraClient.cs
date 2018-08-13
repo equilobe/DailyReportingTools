@@ -132,11 +132,23 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
+        public RestRequest GetIssuesWorklogByJql(string jql)
+        {
+            return new RestRequest(JiraApiUrls.SearchSelectedField(jql), Method.GET);
+        }
+
         public List<JiraBasicIssue> GetWorklogs(string projectKey, string author, string fromDate, string toDate)
         {
             var request = GetIssuesByJql(JiraApiUrls.WorkLogs(projectKey, author, fromDate, toDate));
 
             return ResolveRequest<JiraBasicIssues>(request).issues;
+        }
+
+        public List<JiraIssueWorklog> GetAllWorklogs(string authors, string startDate, string endDate)
+        {
+            var request = GetIssuesWorklogByJql(JiraApiUrls.AllWorklogs(authors, startDate, endDate));
+
+            return ResolveRequest<List<JiraIssueWorklog>>(request);
         }
 
         public Board Board(string projectKey)

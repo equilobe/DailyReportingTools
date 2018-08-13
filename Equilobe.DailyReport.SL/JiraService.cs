@@ -87,6 +87,15 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetAllUsers();
         }
 
+        public List<JiraIssueWorklog> GetAllWorklogs(JiraRequestContext context, List<string> authors, DateTime fromDate, DateTime toDate)
+        {
+            var startDate = fromDate.ToString("YYYY-MM-DD");
+            var endDate = toDate.ToString("YYYY-MM-DD");
+            var worklogAuthors = string.Join(",", authors);
+
+            return GetClient(context).GetAllWorklogs(worklogAuthors, startDate, endDate);
+        }
+
         public JiraUser GetUser(JiraRequestContext context, string username)
         {
             return GetClient(context).GetUser(username);

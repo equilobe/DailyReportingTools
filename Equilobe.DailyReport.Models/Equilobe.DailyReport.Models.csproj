@@ -91,6 +91,7 @@
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
+    <Compile Include="Jira\JiraIssueWorklog.cs" />
     <Compile Include="Jira\Sprint.cs" />
     <Compile Include="Jira\JiraBoard.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Policy\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedAdvancedSettings.cs" />
+    <Compile Include="Storage\AtlassianWorklog.cs" />
     <Compile Include="TimeZone\TimeZones.cs" />
     <Compile Include="ReportFrame\AuthorTasks.cs" />
     <Compile Include="TaskScheduling\ProjectListContext.cs" />
