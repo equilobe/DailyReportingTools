@@ -8,7 +8,6 @@ using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 
 namespace Equilobe.DailyReport.SL
@@ -81,6 +80,11 @@ namespace Equilobe.DailyReport.SL
             var client = GetClient(context.RequestContext);
 
             return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(context.ProjectKey, context.TargetUser, context.StartDate, context.EndDate);
+        }
+
+        public List<JiraUser> GetAllUsers(JiraRequestContext context)
+        {
+            return GetClient(context).GetAllUsers();
         }
 
         public JiraUser GetUser(JiraRequestContext context, string username)

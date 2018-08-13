@@ -1,5 +1,4 @@
-﻿using Equilobe.DailyReport.JWT;
-using Equilobe.DailyReport.Models.Jira;
+﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Utils;
 using RestSharp;
 using System;
@@ -59,6 +58,15 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = new RestRequest(JiraApiUrls.Project(id), Method.GET);
 
             return ResolveRequest<Project>(request);
+        }
+
+        public List<JiraUser> GetAllUsers()
+        {
+            var request = new RestRequest(JiraApiUrls.AllUsers(), Method.GET);
+
+            return ResolveRequest<List<JiraUser>>(request)
+                .Where(p => !p.key.StartsWith("addon_"))
+                .ToList();
         }
 
         public JiraUser GetUser(string username)
