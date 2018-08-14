@@ -144,11 +144,11 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<JiraBasicIssues>(request).issues;
         }
 
-        public List<JiraIssueWorklog> GetAllWorklogs(string authors, string startDate, string endDate)
+        public List<JiraIssue> GetAllWorklogs(string authors, string startDate, string endDate)
         {
             var request = GetIssuesWorklogByJql(JiraApiUrls.AllWorklogs(authors, startDate, endDate));
 
-            return ResolveRequest<List<JiraIssueWorklog>>(request);
+            return ResolveRequest<JiraIssues>(request).issues;
         }
 
         public Board Board(string projectKey)

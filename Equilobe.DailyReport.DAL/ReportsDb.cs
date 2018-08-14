@@ -81,5 +81,6 @@ namespace Equilobe.DailyReport.DAL
         public DbSet<Payment> Payments { get; set; }
         public DbSet<IPNLog> IPNLogs { get; set; }
         public DbSet<AtlassianUser> AtlassianUser { get; set; }
+        public DbSet<AtlassianWorklog> AtlassianWorklog { get; set; }
     }
 }

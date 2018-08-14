@@ -24,6 +24,30 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private void UpdateUsersWorklogs(long instanceId)
         {
+            var worklogs = GetAtlassianWorklogs(instanceId);
+
+            using (var db = new ReportsDb())
+            {
+                var dbWorklogs = db.AtlassianWorklog
+                    .Where(p => p.InstalledInstanceId == instanceId)
+                    .ToList();
+
+                foreach (var worklog in worklogs)
+                {
+                    var dbWorklog = dbWorklogs.Where(p => p.JiraWorklogId == worklog.JiraWorklogId).SingleOrDefault();
+
+                    if (dbWorklog == null)
+                        db.AtlassianWorklog.Add(worklog);
+                    else
+                        UpdateDbWorklog(dbWorklog, worklog);
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId)
+        {
             var jiraRequestContext = GetJiraRequestContext(instanceId);
             var users = GetAllAtlassianUsers(instanceId);
             var userKeys = users
@@ -31,9 +55,9 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
 
             var issueWorklogs = JiraService.GetAllWorklogs(jiraRequestContext, userKeys, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
-            var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users);
+            var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
 
-            //TODO update db table
+            return worklogs;
         }
 
         private void UpdateAtlassianUsers(long instanceId)
@@ -100,21 +124,22 @@ namespace Equilobe.DailyReport.SL
             };
         }
 
-        private List<AtlassianWorklog> GetWorklogsFromIssueWorklogs(List<JiraIssueWorklog> issueWorklog, List<AtlassianUser> users)
+        private List<AtlassianWorklog> GetWorklogsFromIssueWorklogs(List<JiraIssue> issueWorklog, List<AtlassianUser> users, long instanceId)
         {
             var worklogs = new List<AtlassianWorklog>();
 
             foreach (var issue in issueWorklog)
             {
-                foreach (var worklog in issue.Fields.worklog.worklogs)
+                foreach (var worklog in issue.fields.worklog.worklogs)
                 {
                     var user = users.SingleOrDefault(p => p.Key == worklog.author.name);
 
                     worklogs.Add(new AtlassianWorklog()
                     {
                         JiraWorklogId = Int64.Parse(worklog.id),
+                        InstalledInstanceId = instanceId,
                         IssueId = worklog.issueId,
-                        IssueKey = issue.Key,
+                        IssueKey = issue.key,
                         Comment = worklog.comment,
                         CreatedAt = DateTime.Parse(worklog.created),
                         UpdatedAt = DateTime.Parse(worklog.updated),
@@ -128,16 +153,23 @@ namespace Equilobe.DailyReport.SL
             return worklogs;
         }
 
-        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser updatedUser)
+        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser jiraUser)
         {
-            dbUser.DisplayName = updatedUser.DisplayName;
-            dbUser.Key = updatedUser.Key;
-            dbUser.EmailAddress = updatedUser.EmailAddress;
-            dbUser.Avatar16x16 = updatedUser.Avatar16x16;
-            dbUser.Avatar24x24 = updatedUser.Avatar24x24;
-            dbUser.Avatar32x32 = updatedUser.Avatar32x32;
-            dbUser.Avatar48x48 = updatedUser.Avatar48x48;
-            dbUser.IsActive = updatedUser.IsActive;
+            dbUser.DisplayName = jiraUser.DisplayName;
+            dbUser.Key = jiraUser.Key;
+            dbUser.EmailAddress = jiraUser.EmailAddress;
+            dbUser.Avatar16x16 = jiraUser.Avatar16x16;
+            dbUser.Avatar24x24 = jiraUser.Avatar24x24;
+            dbUser.Avatar32x32 = jiraUser.Avatar32x32;
+            dbUser.Avatar48x48 = jiraUser.Avatar48x48;
+            dbUser.IsActive = jiraUser.IsActive;
+        }
+
+        private void UpdateDbWorklog(AtlassianWorklog dbWorklog, AtlassianWorklog jiraWorklog)
+        {
+            dbWorklog.Comment = jiraWorklog.Comment;
+            dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
+            dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
         }
         #endregion
     }

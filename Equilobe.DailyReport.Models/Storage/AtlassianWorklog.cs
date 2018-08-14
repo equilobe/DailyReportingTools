@@ -5,6 +5,7 @@ namespace Equilobe.DailyReport.Models.Storage
     public class AtlassianWorklog
     {
         public long Id { get; set; }
+        public long InstalledInstanceId { get; set; }
         public long AtlassianUserId { get; set; }
         public long IssueId { get; set; }
         public string IssueKey { get; set; }
