@@ -16,13 +16,13 @@ namespace Equilobe.DailyReport.SL
         #region IReportService Implementation
         public void UpdateDashboardData(long instanceId)
         {
-            UpdateAtlassianUsers(instanceId);
-            UpdateUsersWorklogs(instanceId);
+            SyncAtlassianUsers(instanceId);
+            SyncAtlassianWorklogs(instanceId);
         }
         #endregion
 
         #region Helpers
-        private void UpdateUsersWorklogs(long instanceId)
+        private void SyncAtlassianWorklogs(long instanceId)
         {
             var worklogs = GetAtlassianWorklogs(instanceId);
 
@@ -60,7 +60,7 @@ namespace Equilobe.DailyReport.SL
             return worklogs;
         }
 
-        private void UpdateAtlassianUsers(long instanceId)
+        private void SyncAtlassianUsers(long instanceId)
         {
             var jiraRequestContext = GetJiraRequestContext(instanceId);
             var users = JiraService.GetAllUsers(jiraRequestContext)
