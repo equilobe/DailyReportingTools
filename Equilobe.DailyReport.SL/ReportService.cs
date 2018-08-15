@@ -135,9 +135,9 @@ namespace Equilobe.DailyReport.SL
                 {
                     var user = users.SingleOrDefault(p => p.Key == worklog.author.name);
 
-                    worklogs.Add(new AtlassianWorklog()
+                    worklogs.Add(new AtlassianWorklog
                     {
-                        JiraWorklogId = Int64.Parse(worklog.id),
+                        JiraWorklogId = worklog.id,
                         InstalledInstanceId = instanceId,
                         IssueId = worklog.issueId,
                         IssueKey = issue.key,

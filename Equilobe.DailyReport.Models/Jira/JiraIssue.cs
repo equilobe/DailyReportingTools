@@ -233,7 +233,7 @@ namespace Equilobe.DailyReport.Models.Jira
         public string started { get; set; }
         public string timeSpent { get; set; }
         public int timeSpentSeconds { get; set; }
-        public string id { get; set; }
+        public long id { get; set; }
         public long issueId { get; set; }
     }
 
