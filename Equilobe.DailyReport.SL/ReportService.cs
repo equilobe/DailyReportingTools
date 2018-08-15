@@ -25,6 +25,7 @@ namespace Equilobe.DailyReport.SL
         private void SyncAtlassianWorklogs(long instanceId)
         {
             var worklogs = GetAtlassianWorklogs(instanceId);
+            //TODO deleted worklog
 
             using (var db = new ReportsDb())
             {
@@ -54,7 +55,7 @@ namespace Equilobe.DailyReport.SL
                 .Select(p => p.Key)
                 .ToList();
 
-            var issueWorklogs = JiraService.GetAllWorklogs(jiraRequestContext, userKeys, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
+            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(jiraRequestContext, userKeys, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
 
             return worklogs;

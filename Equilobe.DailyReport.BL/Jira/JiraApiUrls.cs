@@ -73,12 +73,12 @@ namespace Equilobe.DailyReport.BL
             return string.Format("assignee='{0}' and project='{1}' and sprint={2} and statusCategory != 'Done'", assignee, projectKey, sprintId);
         }
 
-        public static string WorkLogs(string projectKey, string author, string fromDate, string endDate)
+        public static string WorkLogsForUser(string projectKey, string author, string fromDate, string endDate)
         {
             return string.Format("project = {0} AND worklogAuthor = '{1}' AND worklogDate >= '{2}' AND worklogDate <= '{3}'", projectKey, author, fromDate, endDate);
         }
 
-        public static string AllWorklogs(string authors, string startDate, string endDate)
+        public static string WorklogsForMultipleUsers(string authors, string startDate, string endDate)
         {
             return string.Format("worklogAuthor in ({0}) AND worklogDate >= '{1}' AND worklogDate <= '{2}'", authors, startDate, endDate);
         }
