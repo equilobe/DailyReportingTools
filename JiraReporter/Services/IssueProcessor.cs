@@ -97,13 +97,13 @@ namespace JiraReporter
 
         private void SetSubtasks()
         {
-            if (_currentJiraIssue.fields.subtasks != null)
-                _currentIssue.Subtasks = _currentJiraIssue.fields.subtasks;
+            if (_currentJiraIssue.Fields.Subtasks != null)
+                _currentIssue.Subtasks = _currentJiraIssue.Fields.Subtasks;
         }
 
         private void SetPriority()
         {
-            _currentIssue.Priority = _currentJiraIssue.fields.priority;
+            _currentIssue.Priority = _currentJiraIssue.Fields.Priority;
         }
 
         private void SetEmptyEntries()
@@ -114,43 +114,43 @@ namespace JiraReporter
 
         private void SetIssueType()
         {
-            _currentIssue.Type = _currentJiraIssue.fields.issuetype.name;
-            _currentIssue.IsSubtask = _currentJiraIssue.fields.issuetype.subtask;
+            _currentIssue.Type = _currentJiraIssue.Fields.IssueType.Name;
+            _currentIssue.IsSubtask = _currentJiraIssue.Fields.IssueType.Subtask;
         }
 
         private void SetAssignee()
         {
-            if (_currentJiraIssue.fields.assignee != null)
-                _currentIssue.Assignee = AuthorHelpers.GetCleanName(_currentJiraIssue.fields.assignee.displayName);
+            if (_currentJiraIssue.Fields.Assignee != null)
+                _currentIssue.Assignee = AuthorHelpers.GetCleanName(_currentJiraIssue.Fields.Assignee.DisplayName);
         }
 
         private void SetStatus()
         {
-            _currentIssue.Status = _currentJiraIssue.fields.status.name;
+            _currentIssue.Status = _currentJiraIssue.Fields.Status.Name;
             _currentIssue.PolicyReopenedStatus = _policy.AdvancedOptions.ReopenedStatus;
-            _currentIssue.StatusCategory = _currentJiraIssue.fields.status.statusCategory;
+            _currentIssue.StatusCategory = _currentJiraIssue.Fields.Status.StatusCategory;
         }
 
         private void SetTimeSpent()
         {
             IssueAdapter.TimeSpentFromEntries(_currentIssue);
-            _currentIssue.TimeSpentOnTask = _currentJiraIssue.fields.timespent;
-            _currentIssue.TimeSpentTotal = _currentJiraIssue.fields.aggregatetimespent;
+            _currentIssue.TimeSpentOnTask = _currentJiraIssue.Fields.TimeSpent;
+            _currentIssue.TimeSpentTotal = _currentJiraIssue.Fields.AggregateTimeSpent;
         }
 
         private void SetDates()
         {
-            _currentIssue.Created = Convert.ToDateTime(_currentJiraIssue.fields.created);
-            _currentIssue.Updated = _currentJiraIssue.fields.updated;
+            _currentIssue.Created = Convert.ToDateTime(_currentJiraIssue.Fields.Created);
+            _currentIssue.Updated = _currentJiraIssue.Fields.Updated;
             _currentIssue.UpdatedDate = Convert.ToDateTime(_currentIssue.Updated);
         }
 
         private void SetResolution()
         {
-            if (_currentJiraIssue.fields.resolution != null)
+            if (_currentJiraIssue.Fields.Resolution != null)
             {
-                _currentIssue.Resolution = _currentJiraIssue.fields.resolution.name;
-                _currentIssue.StringResolutionDate = _currentJiraIssue.fields.resolutiondate;
+                _currentIssue.Resolution = _currentJiraIssue.Fields.Resolution.Name;
+                _currentIssue.StringResolutionDate = _currentJiraIssue.Fields.ResolutionDate;
                 _currentIssue.ResolutionDate = Convert.ToDateTime(_currentIssue.StringResolutionDate);
                 _currentIssue.CompletedTimeAgo = TimeFormatting.GetStringDay(_currentIssue.ResolutionDate.ToOriginalTimeZone(_context.OffsetFromUtc), _context.ReportDate);
             }
@@ -158,15 +158,15 @@ namespace JiraReporter
 
         private void SetEstimatesAndRemaining()
         {
-            _currentIssue.RemainingEstimateSeconds = _currentJiraIssue.fields.aggregatetimeestimate;
-            _currentIssue.TotalRemainingSeconds = _currentJiraIssue.fields.aggregatetimeestimate;
-            _currentIssue.OriginalEstimateSecondsTotal = _currentJiraIssue.fields.aggregatetimeoriginalestimate;
-            _currentIssue.OriginalEstimateSeconds = _currentJiraIssue.fields.timeoriginalestimate;
+            _currentIssue.RemainingEstimateSeconds = _currentJiraIssue.Fields.AggregateTimeEstimate;
+            _currentIssue.TotalRemainingSeconds = _currentJiraIssue.Fields.AggregateTimeEstimate;
+            _currentIssue.OriginalEstimateSecondsTotal = _currentJiraIssue.Fields.AggregaTetimeOriginalEstimate;
+            _currentIssue.OriginalEstimateSeconds = _currentJiraIssue.Fields.TimeOriginalEstimate;
         }
 
         private void SetParent(JiraIssue jiraIssue)
         {
-            _currentIssue.Parent = new IssueDetailed { Key = jiraIssue.fields.parent.key, Summary = jiraIssue.fields.parent.fields.summary };
+            _currentIssue.Parent = new IssueDetailed { Key = jiraIssue.Fields.Parent.Key, Summary = jiraIssue.Fields.Parent.Fields.Summary };
             var parent = JiraService.GetIssue(_context.JiraRequestContext, _currentIssue.Parent.Key);
             SetGenericIssue(_currentIssue.Parent, parent);
         }
@@ -177,7 +177,7 @@ namespace JiraReporter
             issue.SubtasksDetailed = new List<IssueDetailed>();
             foreach (var task in issue.Subtasks)
             {
-                jiraIssue = JiraService.GetIssue(_context.JiraRequestContext, task.key);
+                jiraIssue = JiraService.GetIssue(_context.JiraRequestContext, task.Key);
                 var subtask = new IssueDetailed(jiraIssue);
                 issue.SubtasksDetailed.Add(subtask);
                 IssueAdapter.GetEntriesFromJiraWorklogs(jiraIssue, subtask);
@@ -187,10 +187,10 @@ namespace JiraReporter
 
         private void SetLabel()
         {
-            if (_currentJiraIssue.fields.labels == null)
+            if (_currentJiraIssue.Fields.Labels == null)
                 return;
 
-            foreach (var label in _currentJiraIssue.fields.labels)
+            foreach (var label in _currentJiraIssue.Fields.Labels)
                 if (label == _policy.AdvancedOptions.PermanentTaskLabel)
                     _currentIssue.Label = label;
         }
@@ -228,7 +228,7 @@ namespace JiraReporter
 
         private void SetStatusType()
         {
-            if (_currentIssue.StatusCategory.name == "In Progress")
+            if (_currentIssue.StatusCategory.Name == "In Progress")
                 _currentIssue.StatusType = "In Progress";
             else
                 if (_currentIssue.Resolution == null)

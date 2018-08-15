@@ -92,11 +92,11 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraIssue>(request);
         }
 
-        public Worklogs GetIssueWorklogs(string issueKey)
+        public JiraResponse<Worklog> GetIssueWorklogs(string issueKey)
         {
             var request = new RestRequest(JiraApiUrls.IssueWorklogs(issueKey), Method.GET);
 
-            return ResolveJiraRequest<Worklogs>(request);
+            return ResolveJiraRequest<JiraResponse<Worklog>>(request);
         }
 
         public JiraResponse<JiraIssue> GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
@@ -146,7 +146,7 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraResponse<JiraBasicIssue>>(request).Values[0];
         }
 
-        public JiraResponse<Sprint> GetAllSprints(string boardId, string startAt)
+        public JiraResponse<Sprint> GetAllSprints(long boardId, string startAt)
         {
             var request = new RestRequest(JiraApiUrls.AllSprints(boardId, startAt), Method.GET);
 

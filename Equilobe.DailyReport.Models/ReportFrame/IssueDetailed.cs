@@ -37,10 +37,10 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string Label { get; set; }
         public string StringResolutionDate { get; set; }
         public DateTime ResolutionDate { get; set; }
-        public StatusCategory StatusCategory { get; set; }
+        public Status StatusCategory { get; set; }
         public string Updated { get; set; }
         public DateTime UpdatedDate { get; set; }
-        public List<Subtask> Subtasks { get; set; }
+        public List<JiraIssue> Subtasks { get; set; }
         public List<IssueDetailed> SubtasksDetailed { get; set; }
         public bool ExistsInTimesheet { get; set; }
         public DateTime Created { get; set; }
@@ -126,8 +126,8 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public IssueDetailed(JiraIssue jiraIssue)
         {
-            Summary = jiraIssue.fields.summary;
-            Key = jiraIssue.key;
+            Summary = jiraIssue.Fields.Summary;
+            Key = jiraIssue.Key;
         }
     }
 }

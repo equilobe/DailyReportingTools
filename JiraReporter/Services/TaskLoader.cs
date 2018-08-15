@@ -74,9 +74,9 @@ namespace JiraReporter.Services
 
             var completedTasks = new List<IssueDetailed>();
             var issues = JiraService.GetCompletedIssues(issuesContext);
-            foreach (var jiraIssue in issues.issues)
+            foreach (var jiraIssue in issues.Issues)
             {
-                if (jiraIssue.fields.issuetype.subtask == false)
+                if (jiraIssue.Fields.IssueType.Subtask == false)
                 {
                     var issue = GetCompleteIssue(context, jiraIssue);
 
@@ -114,7 +114,7 @@ namespace JiraReporter.Services
                 var issue = GetCompleteIssue(context, jiraIssue);
                 tasks.SprintTasksAll.Add(issue);
 
-                if (issue.StatusCategory.name == "In Progress")
+                if (issue.StatusCategory.Name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
                 else
                     if (issue.Resolution == null)
@@ -122,7 +122,7 @@ namespace JiraReporter.Services
                         IssueAdapter.HasSubtasksInProgress(issue);
                         tasks.OpenTasks.Add(issue);
                     }
-                if (issue.Assignee == null && issue.StatusCategory.name != "Done")
+                if (issue.Assignee == null && issue.StatusCategory.Name != "Done")
                     tasks.UnassignedTasksAll.Add(issue);
             }
         }
@@ -143,11 +143,11 @@ namespace JiraReporter.Services
                 return;
 
             if (context.ReportTasks.InProgressTasks != null)
-                context.ReportTasks.InProgressTasks = context.ReportTasks.InProgressTasks.OrderBy(task => task.Priority.id).ToList();
+                context.ReportTasks.InProgressTasks = context.ReportTasks.InProgressTasks.OrderBy(task => task.Priority.Id).ToList();
             if (context.ReportTasks.OpenTasks != null)
-                context.ReportTasks.OpenTasks = context.ReportTasks.OpenTasks.OrderBy(task => task.Priority.id).ToList();
+                context.ReportTasks.OpenTasks = context.ReportTasks.OpenTasks.OrderBy(task => task.Priority.Id).ToList();
             if (context.ReportTasks.UnassignedTasksAll != null)
-                context.ReportTasks.UnassignedTasksAll = context.ReportTasks.UnassignedTasksAll.OrderBy(task => task.Priority.id).ToList();
+                context.ReportTasks.UnassignedTasksAll = context.ReportTasks.UnassignedTasksAll.OrderBy(task => task.Priority.Id).ToList();
         }
 
         List<JiraIssue> GetAditionalSprintIssues(JiraReport report, Sprint sprint)
