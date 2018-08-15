@@ -1,30 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
-    public class JiraSprints
-    {
-        public long MaxResults { get; set; }
-        public long StartAt { get; set; }
-        public long Total { get; set; }
-        public bool IsLast { get; set; }
-        public List<Sprint> Values { get; set; }
-    }
-
+    [DataContract]
     public class Sprint
     {
+        [DataMember(Name = "id")]
         public int Id { get; set; }
+
+        [DataMember(Name = "self")]
         public string Self { get; set; }
+
+        [DataMember(Name = "state")]
         public string State { get; set; }
+
+        [DataMember(Name = "name")]
         public string Name { get; set; }
+
+        [DataMember(Name = "originalBoardId")]
         public string OriginalBoardId { get; set; }
+
+        [DataMember(Name = "goal")]
         public string Goal { get; set; }
+
+        [DataMember(Name = "startDate")]
         public string StartDate { get; set; }
+
+        [DataMember(Name = "endDate")]
         public string EndDate { get; set; }
+
+        [DataMember(Name = "completeDate")]
         public string CompleteDate { get; set; }
 
         public DateTime? StartedAt
@@ -35,7 +41,7 @@ namespace Equilobe.DailyReport.Models.Jira
                 {
                     return Convert.ToDateTime(StartDate);
                 }
-                catch (Exception)
+                catch
                 {
                     return null;
                 }
@@ -65,7 +71,7 @@ namespace Equilobe.DailyReport.Models.Jira
                 {
                     return Convert.ToDateTime(CompleteDate);
                 }
-                catch (Exception)
+                catch
                 {
                     return null;
                 }

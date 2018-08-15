@@ -96,12 +96,12 @@ namespace JiraReporter.Services
             context.ReportTasks.AdditionalCompletedTasks = context.ReportTasks.CompletedTasksAll.Count - context.ReportTasks.CompletedTasksVisible.Count;
         }
 
-        JiraIssues GetSprintTasks(JiraReport context, string sprintId)
+        JiraResponse<JiraIssue> GetSprintTasks(JiraReport context, string sprintId)
         {
             return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey, sprintId);
         }
 
-        void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
+        void SetUnfinishedTasks(JiraResponse<JiraIssue> jiraIssues, JiraReport context)
         {
             var tasks = context.ReportTasks;
             tasks.InProgressTasks = new List<IssueDetailed>();
@@ -109,7 +109,7 @@ namespace JiraReporter.Services
             tasks.UnassignedTasksAll = new List<IssueDetailed>();
             tasks.SprintTasksAll = new List<IssueDetailed>();
 
-            foreach (var jiraIssue in jiraIssues.issues)
+            foreach (var jiraIssue in jiraIssues.Issues)
             {
                 var issue = GetCompleteIssue(context, jiraIssue);
                 tasks.SprintTasksAll.Add(issue);
@@ -155,7 +155,7 @@ namespace JiraReporter.Services
             if (sprint == null)
                 return new List<JiraIssue>();
 
-            return GetSprintTasks(report, sprint.Id.ToString()).issues;
+            return GetSprintTasks(report, sprint.Id.ToString()).Issues;
         }
 
         #region Static Helpers
