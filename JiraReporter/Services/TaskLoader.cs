@@ -74,7 +74,7 @@ namespace JiraReporter.Services
 
             var completedTasks = new List<IssueDetailed>();
             var issues = JiraService.GetCompletedIssues(issuesContext);
-            foreach (var jiraIssue in issues.issues)
+            foreach (var jiraIssue in issues.Issues)
             {
                 if (jiraIssue.fields.issuetype.subtask == false)
                 {
