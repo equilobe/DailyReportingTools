@@ -41,5 +41,10 @@ namespace Equilobe.DailyReport.Utils
 
             return 0;
         }
+
+        public static long ToUnixTimestamp(DateTime date)
+        {
+            return (long)date.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+        }
     }
 }

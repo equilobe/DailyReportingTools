@@ -24,5 +24,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         byte[] GetUserAvatar(JiraRequestContext context, string url);
         SprintContext GetProjectSprintDetailsForDate(ProjectDateFilter filter);
         List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate, DateTime toDate);
+        List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since);
     }
 }

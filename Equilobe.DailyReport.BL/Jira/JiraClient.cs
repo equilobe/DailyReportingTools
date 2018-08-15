@@ -151,6 +151,15 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<JiraIssues>(request).issues;
         }
 
+        public List<long> GetDeletedWorklogsIds(long sinceUnixTimestamp)
+        {
+            var request = new RestRequest(JiraApiUrls.DeletedWorklogs(sinceUnixTimestamp), Method.GET);
+
+            return ResolveJiraRequest<JiraDeletedWorklogs>(request).Values?
+                .Select(p => p.WorklogId)
+                .ToList();
+        }
+
         public Board Board(string projectKey)
         {
             var request = new RestRequest(JiraApiUrls.Board(projectKey), Method.GET);

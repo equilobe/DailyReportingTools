@@ -13,9 +13,13 @@ namespace Equilobe.DailyReport.SL
     {
         public IJiraService JiraService { get; set; }
 
+        public JiraRequestContext JiraRequestContext { get; set; }
+
         #region IReportService Implementation
         public void UpdateDashboardData(long instanceId)
         {
+            JiraRequestContext = GetJiraRequestContext(instanceId);
+
             SyncAtlassianUsers(instanceId);
             SyncAtlassianWorklogs(instanceId);
         }
@@ -24,8 +28,38 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private void SyncAtlassianWorklogs(long instanceId)
         {
+            SyncDeletedWorklogs(instanceId);
+            SyncUpdatedWorklogs(instanceId);
+        }
+
+        private void SyncDeletedWorklogs(long instanceId)
+        {
+            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(JiraRequestContext, DateTime.UtcNow.AddMonths(-7));
+
+            if (deletedWorklogsIds == null)
+                return;
+
+            using (var db = new ReportsDb())
+            {
+                var dbWorklogs = db.AtlassianWorklog
+                    .Where(p => p.InstalledInstanceId == instanceId)
+                    .ToList();
+
+                foreach (var worklogId in deletedWorklogsIds)
+                {
+                    var dbWorklog = dbWorklogs.SingleOrDefault(p => p.JiraWorklogId == worklogId);
+
+                    if (dbWorklog != null)
+                        db.AtlassianWorklog.Remove(dbWorklog);
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        private void SyncUpdatedWorklogs(long instanceId)
+        {
             var worklogs = GetAtlassianWorklogs(instanceId);
-            //TODO deleted worklog
 
             using (var db = new ReportsDb())
             {
@@ -49,13 +83,12 @@ namespace Equilobe.DailyReport.SL
 
         private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId)
         {
-            var jiraRequestContext = GetJiraRequestContext(instanceId);
             var users = GetAllAtlassianUsers(instanceId);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
 
-            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(jiraRequestContext, userKeys, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
+            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(JiraRequestContext, userKeys, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
 
             return worklogs;
@@ -63,8 +96,7 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncAtlassianUsers(long instanceId)
         {
-            var jiraRequestContext = GetJiraRequestContext(instanceId);
-            var users = JiraService.GetAllUsers(jiraRequestContext)
+            var users = JiraService.GetAllUsers(JiraRequestContext)
                 .Select(p => ToAtlassianUser(p, instanceId))
                 .ToList();
 

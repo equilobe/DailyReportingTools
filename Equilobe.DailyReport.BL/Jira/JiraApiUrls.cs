@@ -83,6 +83,11 @@ namespace Equilobe.DailyReport.BL
             return string.Format("worklogAuthor in ({0}) AND worklogDate >= '{1}' AND worklogDate <= '{2}'", authors, startDate, endDate);
         }
 
+        public static string DeletedWorklogs(long since)
+        {
+            return string.Format("rest/api/2/worklog/deleted?since={0}", since);
+        }
+
         public static string SearchSelectedField(string jql)
         {
             return string.Format("rest/api/2/search?fields=project,summary,worklog&jql={0}&startAt=0&maxResults=1000", jql);
