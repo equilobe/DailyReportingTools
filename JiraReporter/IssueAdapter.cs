@@ -22,7 +22,10 @@ namespace JiraReporter
             if (context.Issue.Entries == null)
                 return;
 
-            context.Issue.Entries.RemoveAll(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || context.AuthorName != e.AuthorFullName);
+            context.Issue.Entries
+                .RemoveAll(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || 
+                                e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || 
+                                context.AuthorName != e.AuthorFullName);
         }
 
         public static void RemoveWrongIssues(List<IssueDetailed> issues)

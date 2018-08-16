@@ -282,7 +282,11 @@ namespace JiraReporter.Services
         {
             foreach (var subtask in issue.SubtasksDetailed)
             {
-                subtask.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartedAt < _context.FromDate || e.StartedAt > _context.ToDate);
+                subtask.Entries
+                    .RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || 
+                                    e.StartedAt < _context.FromDate || 
+                                    e.StartedAt > _context.ToDate);
+
                 IssueAdapter.TimeSpentFromEntries(subtask);
                 IssueAdapter.SetTimeFormat(subtask);
             }
