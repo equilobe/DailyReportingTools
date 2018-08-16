@@ -73,7 +73,7 @@ namespace Equilobe.DailyReport.SL
 
                     if (dbWorklog == null)
                         db.AtlassianWorklog.Add(worklog);
-                    else
+                    else if (dbWorklog.UpdatedAt != worklog.UpdatedAt)
                         UpdateDbWorklog(dbWorklog, worklog);
                 }
 
