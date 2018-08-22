@@ -77,11 +77,11 @@ namespace Equilobe.DailyReport.Models.ReportFrame
 
         public JiraAuthor(JiraUser user)
         {
-            Name = user.displayName;
-            EmailAdress = user.emailAddress;
-            Username = user.name;
-            UserKey = user.key;
-            JiraAvatarLink = user.avatarUrls.Big;
+            Name = user.DisplayName;
+            EmailAdress = user.EmailAddress;
+            Username = user.Name;
+            UserKey = user.Key;
+            JiraAvatarLink = user.AvatarUrls.Big;
         }
 
         public bool HasIssues()

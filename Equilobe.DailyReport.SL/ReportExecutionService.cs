@@ -311,8 +311,8 @@ namespace Equilobe.DailyReport.SL
             {
                 context.Users.ForEach(jiraUser =>
                 {
-                    if (usernameToConfirm == jiraUser.name)
-                        usersToConfirm.Add(jiraUser.displayName);
+                    if (usernameToConfirm == jiraUser.Name)
+                        usersToConfirm.Add(jiraUser.DisplayName);
                 });
             });
 

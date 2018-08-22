@@ -55,8 +55,8 @@ namespace Equilobe.DailyReport.SL
             var options = GetUsers(jiraContext, project.Key)
                 .Select(user => new User
                 {
-                    JiraDisplayName = user.displayName,
-                    JiraUserKey = user.key
+                    JiraDisplayName = user.DisplayName,
+                    JiraUserKey = user.Key
                 })
                 .ToList();
 
@@ -102,12 +102,12 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetIssue(issueKey);
         }
 
-        public JiraIssues GetCompletedIssues(IssuesContext context)
+        public JiraResponse<JiraIssue> GetCompletedIssues(IssuesContext context)
         {
             return GetClient(context.RequestContext).GetCompletedIssues(context.ProjectKey, context.StartDate, context.EndDate);
         }
 
-        public JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId)
+        public JiraResponse<JiraIssue> GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId)
         {
             return GetClient(context).GetSprintTasks(projectKey, sprintId);
         }

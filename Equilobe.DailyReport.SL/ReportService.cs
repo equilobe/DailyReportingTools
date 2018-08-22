@@ -64,15 +64,15 @@ namespace Equilobe.DailyReport.SL
         {
             return new AtlassianUser
             {
-                DisplayName = user.displayName,
+                DisplayName = user.DisplayName,
                 InstalledInstanceId = instanceId,
-                Key = user.key,
-                EmailAddress = user.emailAddress,
-                Avatar16x16 = user.avatarUrls.VerySmall.AbsoluteUri,
-                Avatar24x24 = user.avatarUrls.Small.AbsoluteUri,
-                Avatar32x32 = user.avatarUrls.Med.AbsoluteUri,
-                Avatar48x48 = user.avatarUrls.Big.AbsoluteUri,
-                IsActive = user.active
+                Key = user.Key,
+                EmailAddress = user.EmailAddress,
+                Avatar16x16 = user.AvatarUrls.VerySmall.AbsoluteUri,
+                Avatar24x24 = user.AvatarUrls.Small.AbsoluteUri,
+                Avatar32x32 = user.AvatarUrls.Med.AbsoluteUri,
+                Avatar48x48 = user.AvatarUrls.Big.AbsoluteUri,
+                IsActive = user.IsActive
             };
         }
 

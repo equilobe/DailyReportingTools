@@ -41,7 +41,7 @@ namespace DailyReportWeb.Controllers.Api
 
             var jiraProject = JiraService.GetProject(jiraRequestContext, projectId);
             var jiraUsers = JiraService.GetUsers(jiraRequestContext, jiraProject.Key);
-            var jiraDisplayName = JiraService.GetUser(jiraRequestContext, username).displayName;
+            var jiraDisplayName = JiraService.GetUser(jiraRequestContext, username).DisplayName;
 
             var confirmationResult = ReportExecutionService.ConfirmIndividualDraft(context);
             var confirmationDetails = GetIndividualDraftConfirmationDetails(context, advancedSettings, jiraUsers, confirmationResult.HasError);

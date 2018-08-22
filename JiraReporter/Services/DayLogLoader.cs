@@ -71,7 +71,11 @@ namespace JiraReporter.Services
             issue.CopyTo<IssueDetailed>(currentIssue);
             currentIssue.ExistsInTimesheet = true;
 
-            currentIssue.Entries = issue.Entries.Where(e => e.AuthorFullName == _author.Name && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Date >= _date && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < _date.AddDays(1)).ToList(); 
+            currentIssue.Entries = issue.Entries
+                .Where(e => e.AuthorFullName == _author.Name)
+                .Where(e => e.StartedAt.ToOriginalTimeZone(_context.OffsetFromUtc).Date >= _date)
+                .Where(e => e.StartedAt.ToOriginalTimeZone(_context.OffsetFromUtc) < _date.AddDays(1))
+                .ToList(); 
 
             IssueAdapter.TimeSpentFromEntries(currentIssue);
             IssueAdapter.SetTimeFormat(currentIssue);
@@ -87,7 +91,12 @@ namespace JiraReporter.Services
 
             foreach(var subtask in issue.SubtasksDetailed)
             {
-                subtask.Entries = subtask.Entries.Where(e => e.AuthorFullName == _author.Name && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc).Date >= _date && e.StartDate.ToOriginalTimeZone(_context.OffsetFromUtc) < _date.AddDays(1)).ToList();
+                subtask.Entries = subtask.Entries
+                    .Where(e => e.AuthorFullName == _author.Name)
+                    .Where(e => e.StartedAt.ToOriginalTimeZone(_context.OffsetFromUtc).Date >= _date)
+                    .Where(e => e.StartedAt.ToOriginalTimeZone(_context.OffsetFromUtc) < _date.AddDays(1))
+                    .ToList();
+
                 IssueAdapter.TimeSpentFromEntries(subtask);
                 IssueAdapter.SetTimeFormat(subtask);
             }

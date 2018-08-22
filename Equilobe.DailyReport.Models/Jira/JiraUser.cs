@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.IO;
+﻿using System.Runtime.Serialization;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
     public class JiraUser
     {
-        [DataMember]
-        public string self { get; set; }
-        [DataMember]
-        public string key { get; set; }
-        [DataMember]
-        public string name { get; set; }
-        [DataMember]
-        public string emailAddress { get; set; }
-        [DataMember]
-        public string displayName { get; set; }
-        [DataMember]
-        public bool active { get; set; }
-        [DataMember]
-        public Avatar avatarUrls { get; set; }
+        [DataMember(Name = "self")]
+        public string Self { get; set; }
+
+        [DataMember(Name = "key")]
+        public string Key { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "emailAddress")]
+        public string EmailAddress { get; set; }
+
+        [DataMember(Name = "displayName")]
+        public string DisplayName { get; set; }
+
+        [DataMember(Name = "active")]
+        public bool IsActive { get; set; }
+
+        [DataMember(Name = "avatarUrls")]
+        public Avatar AvatarUrls { get; set; }
     }
 }

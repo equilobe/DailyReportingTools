@@ -65,7 +65,7 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = new RestRequest(JiraApiUrls.AllUsers(), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(request)
-                .Where(p => !p.key.StartsWith("addon_"))
+                .Where(p => !p.Key.StartsWith("addon_"))
                 .ToList();
         }
 
@@ -81,7 +81,7 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = new RestRequest(JiraApiUrls.Users(projectKey), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(request)
-                .Where(user => !user.key.StartsWith("addon_"))
+                .Where(user => !user.Key.StartsWith("addon_"))
                 .ToList();
         }
 
@@ -99,18 +99,18 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<Worklogs>(request);
         }
 
-        public JiraIssues GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
+        public JiraResponse<JiraIssue> GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
         {
             var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(projectKey, TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
 
-            return ResolveJiraRequest<JiraIssues>(request);
+            return ResolveJiraRequest<JiraResponse<JiraIssue>>(request);
         }
 
-        public JiraIssues GetSprintTasks(string projectKey, string sprintId)
+        public JiraResponse<JiraIssue> GetSprintTasks(string projectKey, string sprintId)
         {
             var request = GetIssuesByJql(JiraApiUrls.IssueInCurrentSprint(projectKey, sprintId));
 
-            return ResolveJiraRequest<JiraIssues>(request);
+            return ResolveJiraRequest<JiraResponse<JiraIssue>>(request);
         }
 
         public ProjectInfo GetProjectInfo(long id)
@@ -136,21 +136,21 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var request = GetIssuesByJql(JiraApiUrls.WorkLogs(projectKey, author, fromDate, toDate));
 
-            return ResolveRequest<JiraBasicIssues>(request).issues;
+            return ResolveRequest<JiraResponse<JiraBasicIssue>>(request).Issues;
         }
 
-        public Board Board(string projectKey)
+        public JiraBasicIssue Board(string projectKey)
         {
             var request = new RestRequest(JiraApiUrls.Board(projectKey), Method.GET);
 
-            return ResolveJiraRequest<JiraBoard>(request).Values[0];
+            return ResolveJiraRequest<JiraResponse<JiraBasicIssue>>(request).Values[0];
         }
 
-        public JiraSprints GetAllSprints(string boardId, string startAt)
+        public JiraResponse<Sprint> GetAllSprints(string boardId, string startAt)
         {
             var request = new RestRequest(JiraApiUrls.AllSprints(boardId, startAt), Method.GET);
 
-            return ResolveJiraRequest<JiraSprints>(request);
+            return ResolveJiraRequest<JiraResponse<Sprint>>(request);
         }
     }
 }
