@@ -144,9 +144,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<JiraBasicIssues>(request).issues;
         }
 
-        public List<JiraIssue> GetWorklogsForMultipleUsers(string authors, string startDate, string endDate)
+        public List<JiraIssue> GetWorklogsForMultipleUsers(string authors, string startDate)
         {
-            var request = GetIssuesWorklogByJql(JiraApiUrls.WorklogsForMultipleUsers(authors, startDate, endDate));
+            var request = GetIssuesWorklogByJql(JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
 
             return ResolveRequest<JiraIssues>(request).issues;
         }

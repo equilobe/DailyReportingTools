@@ -12,6 +12,7 @@ namespace Equilobe.DailyReport.SL
     public class ReportService : IReportService
     {
         public IJiraService JiraService { get; set; }
+        public IDataService DataService { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
 
@@ -28,13 +29,25 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private void SyncAtlassianWorklogs(long instanceId)
         {
-            SyncDeletedWorklogs(instanceId);
-            SyncUpdatedWorklogs(instanceId);
+            var lastSync = GetLastSyncDate(instanceId);
+
+            SyncDeletedWorklogs(instanceId, lastSync);
+            SyncUpdatedWorklogs(instanceId, lastSync);
         }
 
-        private void SyncDeletedWorklogs(long instanceId)
+        private DateTime GetLastSyncDate(long instanceId)
         {
-            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(JiraRequestContext, DateTime.UtcNow.AddMonths(-7));
+            using (var db = new ReportsDb())
+            {
+                var worklogs = db.AtlassianWorklog.OrderByDescending(p => p.LastSync).FirstOrDefault();
+                
+                return worklogs == null ? DateTime.UtcNow.AddMonths(-1) : worklogs.LastSync;
+            }
+        }
+
+        private void SyncDeletedWorklogs(long instanceId, DateTime lastSync)
+        {
+            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(JiraRequestContext, lastSync);
 
             if (deletedWorklogsIds == null)
                 return;
@@ -43,23 +56,19 @@ namespace Equilobe.DailyReport.SL
             {
                 var dbWorklogs = db.AtlassianWorklog
                     .Where(p => p.InstalledInstanceId == instanceId)
+                    .Where(p => deletedWorklogsIds.Contains(p.JiraWorklogId))
                     .ToList();
 
-                foreach (var worklogId in deletedWorklogsIds)
-                {
-                    var dbWorklog = dbWorklogs.SingleOrDefault(p => p.JiraWorklogId == worklogId);
-
-                    if (dbWorklog != null)
-                        db.AtlassianWorklog.Remove(dbWorklog);
-                }
+                db.AtlassianWorklog.RemoveRange(dbWorklogs);
 
                 db.SaveChanges();
             }
         }
 
-        private void SyncUpdatedWorklogs(long instanceId)
+        private void SyncUpdatedWorklogs(long instanceId, DateTime lastSync)
         {
-            var worklogs = GetAtlassianWorklogs(instanceId);
+            var worklogs = GetAtlassianWorklogs(instanceId, lastSync);
+            var now = DateTime.UtcNow;
 
             using (var db = new ReportsDb())
             {
@@ -74,21 +83,23 @@ namespace Equilobe.DailyReport.SL
                     if (dbWorklog == null)
                         db.AtlassianWorklog.Add(worklog);
                     else if (dbWorklog.UpdatedAt != worklog.UpdatedAt)
-                        UpdateDbWorklog(dbWorklog, worklog);
+                        UpdateDbWorklog(dbWorklog, worklog, now);
                 }
 
                 db.SaveChanges();
             }
         }
 
-        private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId)
+        private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId, DateTime lastSync)
         {
             var users = GetAllAtlassianUsers(instanceId);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
 
-            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(JiraRequestContext, userKeys, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
+            var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);
+            var fromDate = lastSync.ToOriginalTimeZone(offsetFromUtc);
+            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(JiraRequestContext, userKeys, fromDate);
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
 
             return worklogs;
@@ -160,6 +171,7 @@ namespace Equilobe.DailyReport.SL
         private List<AtlassianWorklog> GetWorklogsFromIssueWorklogs(List<JiraIssue> issueWorklog, List<AtlassianUser> users, long instanceId)
         {
             var worklogs = new List<AtlassianWorklog>();
+            var now = DateTime.UtcNow;
 
             foreach (var issue in issueWorklog)
             {
@@ -178,6 +190,7 @@ namespace Equilobe.DailyReport.SL
                         UpdatedAt = DateTime.Parse(worklog.updated),
                         StartedAt = DateTime.Parse(worklog.started),
                         TimeSpentInSeconds = worklog.timeSpentSeconds,
+                        LastSync = now,
                         AtlassianUserId = user.Id
                     });
                 }
@@ -198,11 +211,12 @@ namespace Equilobe.DailyReport.SL
             dbUser.IsActive = jiraUser.IsActive;
         }
 
-        private void UpdateDbWorklog(AtlassianWorklog dbWorklog, AtlassianWorklog jiraWorklog)
+        private void UpdateDbWorklog(AtlassianWorklog dbWorklog, AtlassianWorklog jiraWorklog, DateTime now)
         {
             dbWorklog.Comment = jiraWorklog.Comment;
             dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
             dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
+            dbWorklog.LastSync = now;
         }
         #endregion
     }

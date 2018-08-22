@@ -23,7 +23,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<ProjectInfo> GetProjectsInfo(JiraRequestContext context);
         byte[] GetUserAvatar(JiraRequestContext context, string url);
         SprintContext GetProjectSprintDetailsForDate(ProjectDateFilter filter);
-        List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate, DateTime toDate);
+        List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate);
         List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since);
     }
 }

@@ -40,6 +40,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void AddUserImage(UserImageContext context);
         string GetUserImageKey(string username);
         TimeSpan GetOffsetFromProjectKey(string key);
+        TimeSpan GetOffsetFromInstanceId(long instanceId);
         List<Subscription> GetInstanceSubscriptions(long instanceId);
         void SaveIpnLogError(long id, string error);
     }

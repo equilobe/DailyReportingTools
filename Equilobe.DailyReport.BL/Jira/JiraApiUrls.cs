@@ -78,9 +78,9 @@ namespace Equilobe.DailyReport.BL
             return string.Format("project = {0} AND worklogAuthor = '{1}' AND worklogDate >= '{2}' AND worklogDate <= '{3}'", projectKey, author, fromDate, endDate);
         }
 
-        public static string WorklogsForMultipleUsers(string authors, string startDate, string endDate)
+        public static string WorklogsForMultipleUsers(string authors, string startDate)
         {
-            return string.Format("worklogAuthor in ({0}) AND worklogDate >= '{1}' AND worklogDate <= '{2}'", authors, startDate, endDate);
+            return string.Format("worklogAuthor in ({0}) AND worklogDate >= '{1}'", authors, startDate);
         }
 
         public static string DeletedWorklogs(long since)
