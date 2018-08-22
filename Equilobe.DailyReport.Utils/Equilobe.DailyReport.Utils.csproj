@@ -49,6 +49,7 @@
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Ensure.cs" />
+    <Compile Include="LinqExtensions.cs" />
     <Compile Include="RandomString.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="ReportDateFormatter.cs" />
