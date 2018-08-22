@@ -39,7 +39,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var worklogs = db.AtlassianWorklog.OrderByDescending(p => p.LastSync).FirstOrDefault();
+                var worklogs = db.AtlassianWorklogs.OrderByDescending(p => p.LastSync).FirstOrDefault();
                 
                 return worklogs == null ? DateTime.UtcNow.AddMonths(-1) : worklogs.LastSync;
             }
@@ -54,12 +54,12 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
-                var dbWorklogs = db.AtlassianWorklog
+                var dbWorklogs = db.AtlassianWorklogs
                     .Where(p => p.InstalledInstanceId == instanceId)
                     .Where(p => deletedWorklogsIds.Contains(p.JiraWorklogId))
                     .ToList();
 
-                db.AtlassianWorklog.RemoveRange(dbWorklogs);
+                db.AtlassianWorklogs.RemoveRange(dbWorklogs);
 
                 db.SaveChanges();
             }
@@ -72,7 +72,7 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
-                var dbWorklogs = db.AtlassianWorklog
+                var dbWorklogs = db.AtlassianWorklogs
                     .Where(p => p.InstalledInstanceId == instanceId)
                     .ToList();
 
@@ -81,7 +81,7 @@ namespace Equilobe.DailyReport.SL
                     var dbWorklog = dbWorklogs.Where(p => p.JiraWorklogId == worklog.JiraWorklogId).SingleOrDefault();
 
                     if (dbWorklog == null)
-                        db.AtlassianWorklog.Add(worklog);
+                        db.AtlassianWorklogs.Add(worklog);
                     else if (dbWorklog.UpdatedAt != worklog.UpdatedAt)
                         UpdateDbWorklog(dbWorklog, worklog, now);
                 }
@@ -120,7 +120,7 @@ namespace Equilobe.DailyReport.SL
                     var dbUser = dbUsers.Where(p => p.Key == user.Key).SingleOrDefault();
 
                     if (dbUser == null)
-                        db.AtlassianUser.Add(user);
+                        db.AtlassianUsers.Add(user);
                     else
                         UpdateDbUser(dbUser, user);
                 }
@@ -133,7 +133,7 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                return db.AtlassianUser
+                return db.AtlassianUsers
                     .Where(p => p.InstalledInstanceId == instanceId)
                     .ToList();
             }
