@@ -91,7 +91,6 @@
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
-    <Compile Include="Jira\JiraResponse.cs" />
     <Compile Include="Jira\Comment.cs" />
     <Compile Include="Jira\FixVersion.cs" />
     <Compile Include="Jira\IssueLink.cs" />
@@ -102,7 +101,6 @@
     <Compile Include="Jira\JiraIdentifiableResponse.cs" />
     <Compile Include="Jira\JiraFields.cs" />
     <Compile Include="Jira\JiraResponse.cs" />
-    <Compile Include="Jira\Priority.cs" />
     <Compile Include="Jira\Progress.cs" />
     <Compile Include="Jira\Sprint.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />

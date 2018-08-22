@@ -43,7 +43,7 @@ namespace Equilobe.DailyReport.Models.Jira
         public string Description { get; set; }
 
         [DataMember(Name = "priority")]
-        public Priority Priority { get; set; }
+        public Status Priority { get; set; }
 
         [DataMember(Name = "duedate")]
         public string DueDate { get; set; }

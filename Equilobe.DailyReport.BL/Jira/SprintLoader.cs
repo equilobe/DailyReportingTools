@@ -24,7 +24,7 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public SprintContext GetSprintDetails()
         {
-            var boardId = Client.Board(Filter.ProjectKey).id;
+            var boardId = Client.Board(Filter.ProjectKey).Id;
 
             if (boardId == 0)
                 return null;

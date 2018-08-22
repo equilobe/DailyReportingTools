@@ -23,7 +23,7 @@ namespace Equilobe.DailyReport.Models.ReportFrame
         public string Status { get; set; }
         public string Assignee { get; set; }
         public string LoggedAuthor { get; set; }
-        public Priority Priority { get; set; }
+        public Status Priority { get; set; }
         public int RemainingEstimateSeconds { get; set; }
         public string RemainingEstimate { get; set; }
         public int TotalRemainingSeconds { get; set; }
