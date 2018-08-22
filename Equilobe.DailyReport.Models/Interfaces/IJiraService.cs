@@ -17,8 +17,8 @@ namespace Equilobe.DailyReport.Models.Interfaces
         JiraUser GetUser(JiraRequestContext context, string username);
         List<JiraUser> GetUsers(JiraRequestContext context, string projectKey);
         JiraIssue GetIssue(JiraRequestContext context, string issueKey);
-        JiraIssues GetCompletedIssues(IssuesContext context);
-        JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId);
+        JiraResponse<JiraIssue> GetCompletedIssues(IssuesContext context);
+        JiraResponse<JiraIssue> GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId);
         ProjectInfo GetProjectInfo(JiraRequestContext context, long id);
         List<ProjectInfo> GetProjectsInfo(JiraRequestContext context);
         byte[] GetUserAvatar(JiraRequestContext context, string url);

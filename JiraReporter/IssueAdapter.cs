@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter
 {
@@ -22,7 +23,10 @@ namespace JiraReporter
             if (context.Issue.Entries == null)
                 return;
 
-            context.Issue.Entries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || context.AuthorName != e.AuthorFullName);
+            context.Issue.Entries
+                .RemoveWhere(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate)
+                .RemoveWhere(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate)
+                .RemoveWhere(e => context.AuthorName != e.AuthorFullName);
         }
 
         public static void RemoveWrongIssues(List<IssueDetailed> issues)
@@ -209,9 +213,9 @@ namespace JiraReporter
                 {
                     Author = wk.author.name,
                     AuthorFullName = wk.author.displayName,
-                    StartDate = Convert.ToDateTime(wk.started),
-                    Created = Convert.ToDateTime(wk.created),
-                    Updated = Convert.ToDateTime(wk.updated),
+                    StartedAt = Convert.ToDateTime(wk.started),
+                    CreatedAt = Convert.ToDateTime(wk.created),
+                    UpdatedAt = Convert.ToDateTime(wk.updated),
                     Comment = wk.comment,
                     TimeSpent = wk.timeSpentSeconds,
                     UpdateAuthor = wk.updateAuthor.name,

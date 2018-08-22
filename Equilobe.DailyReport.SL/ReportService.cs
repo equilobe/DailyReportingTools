@@ -33,15 +33,20 @@ namespace Equilobe.DailyReport.SL
 
             SyncDeletedWorklogs(instanceId, lastSync);
             SyncUpdatedWorklogs(instanceId, lastSync);
+
+            UpdateLastSyncDate(instanceId);
         }
 
         private DateTime GetLastSyncDate(long instanceId)
         {
             using (var db = new ReportsDb())
             {
-                var worklogs = db.AtlassianWorklogs.OrderByDescending(p => p.LastSync).FirstOrDefault();
+                var lastSync = db.InstalledInstances
+                    .Where(p => p.Id == instanceId)
+                    .Select(p => p.LastSync)
+                    .SingleOrDefault();
                 
-                return worklogs == null ? DateTime.UtcNow.AddMonths(-1) : worklogs.LastSync;
+                return lastSync ?? DateTime.UtcNow.AddMonths(-1);
             }
         }
 
@@ -68,7 +73,6 @@ namespace Equilobe.DailyReport.SL
         private void SyncUpdatedWorklogs(long instanceId, DateTime lastSync)
         {
             var worklogs = GetAtlassianWorklogs(instanceId, lastSync);
-            var now = DateTime.UtcNow;
 
             using (var db = new ReportsDb())
             {
@@ -83,8 +87,20 @@ namespace Equilobe.DailyReport.SL
                     if (dbWorklog == null)
                         db.AtlassianWorklogs.Add(worklog);
                     else if (dbWorklog.UpdatedAt != worklog.UpdatedAt)
-                        UpdateDbWorklog(dbWorklog, worklog, now);
+                        UpdateDbWorklog(dbWorklog, worklog);
                 }
+
+                db.SaveChanges();
+            }
+        }
+
+        private void UpdateLastSyncDate(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.SingleOrDefault(p => p.Id == instanceId);
+
+                instance.LastSync = DateTime.UtcNow;
 
                 db.SaveChanges();
             }
@@ -156,22 +172,21 @@ namespace Equilobe.DailyReport.SL
         {
             return new AtlassianUser
             {
-                DisplayName = user.displayName,
+                DisplayName = user.DisplayName,
                 InstalledInstanceId = instanceId,
-                Key = user.key,
-                EmailAddress = user.emailAddress,
-                Avatar16x16 = user.avatarUrls.VerySmall.AbsoluteUri,
-                Avatar24x24 = user.avatarUrls.Small.AbsoluteUri,
-                Avatar32x32 = user.avatarUrls.Med.AbsoluteUri,
-                Avatar48x48 = user.avatarUrls.Big.AbsoluteUri,
-                IsActive = user.active
+                Key = user.Key,
+                EmailAddress = user.EmailAddress,
+                Avatar16x16 = user.AvatarUrls.VerySmall.AbsoluteUri,
+                Avatar24x24 = user.AvatarUrls.Small.AbsoluteUri,
+                Avatar32x32 = user.AvatarUrls.Med.AbsoluteUri,
+                Avatar48x48 = user.AvatarUrls.Big.AbsoluteUri,
+                IsActive = user.IsActive
             };
         }
 
         private List<AtlassianWorklog> GetWorklogsFromIssueWorklogs(List<JiraIssue> issueWorklog, List<AtlassianUser> users, long instanceId)
         {
             var worklogs = new List<AtlassianWorklog>();
-            var now = DateTime.UtcNow;
 
             foreach (var issue in issueWorklog)
             {
@@ -190,7 +205,6 @@ namespace Equilobe.DailyReport.SL
                         UpdatedAt = DateTime.Parse(worklog.updated),
                         StartedAt = DateTime.Parse(worklog.started),
                         TimeSpentInSeconds = worklog.timeSpentSeconds,
-                        LastSync = now,
                         AtlassianUserId = user.Id
                     });
                 }
@@ -211,12 +225,11 @@ namespace Equilobe.DailyReport.SL
             dbUser.IsActive = jiraUser.IsActive;
         }
 
-        private void UpdateDbWorklog(AtlassianWorklog dbWorklog, AtlassianWorklog jiraWorklog, DateTime now)
+        private void UpdateDbWorklog(AtlassianWorklog dbWorklog, AtlassianWorklog jiraWorklog)
         {
             dbWorklog.Comment = jiraWorklog.Comment;
             dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
             dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
-            dbWorklog.LastSync = now;
         }
         #endregion
     }

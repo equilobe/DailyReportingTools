@@ -31,7 +31,7 @@ namespace DailyReportWeb.Controllers.Api
                 projectId = individualConfirmation.BasicSettings.ProjectId;
             }
 
-            var jiraDisplayName = JiraService.GetUser(jiraRequestContext, username).displayName;
+            var jiraDisplayName = JiraService.GetUser(jiraRequestContext, username).DisplayName;
             var jiraProject = JiraService.GetProject(jiraRequestContext, projectId);
             var confirmationResult = ReportExecutionService.SendIndividualDraft(context);
 

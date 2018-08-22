@@ -1,27 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Equilobe.DailyReport.Models.Jira
 {
-    public class JiraIssues
-    {
-        public int startAt { get; set; }
-        public int maxResults { get; set; }
-        public int total { get; set; }
-        public List<JiraIssue> issues { get; set; }
-    }
-
-    public class JiraBasicIssues
-    {
-        public int startAt { get; set; }
-        public int maxResults { get; set; }
-        public int total { get; set; }
-        public List<JiraBasicIssue> issues { get; set; }
-    }
-
     public class JiraIssue : JiraBasicIssue
     {
         public const string FIELD_PROGRESS = "progress";

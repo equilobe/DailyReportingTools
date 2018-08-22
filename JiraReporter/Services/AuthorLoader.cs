@@ -6,6 +6,7 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace JiraReporter.Services
 
         private bool UserIsNotIgnored(JiraUser u)
         {
-            var userJiraOptions = _policy.UserOptions.Find(user => user.JiraUserKey == u.key);
+            var userJiraOptions = _policy.UserOptions.Find(user => user.JiraUserKey == u.Key);
             if (userJiraOptions == null)
                 return true;
 
@@ -282,7 +283,11 @@ namespace JiraReporter.Services
         {
             foreach (var subtask in issue.SubtasksDetailed)
             {
-                subtask.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < _context.FromDate || e.StartDate > _context.ToDate);
+                subtask.Entries
+                    .RemoveWhere(e => e.AuthorFullName != _currentAuthor.Name)
+                    .RemoveWhere(e => e.StartedAt < _context.FromDate)
+                    .RemoveWhere(e => e.StartedAt > _context.ToDate);
+
                 IssueAdapter.TimeSpentFromEntries(subtask);
                 IssueAdapter.SetTimeFormat(subtask);
             }

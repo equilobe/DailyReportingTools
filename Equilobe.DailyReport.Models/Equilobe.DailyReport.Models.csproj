@@ -92,8 +92,8 @@
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Jira\JiraDeletedWorklogs.cs" />
+    <Compile Include="Jira\JiraResponse.cs" />
     <Compile Include="Jira\Sprint.cs" />
-    <Compile Include="Jira\JiraBoard.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
     <Compile Include="PayPal\EmailNotification.cs" />
@@ -145,12 +145,9 @@
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
     <Compile Include="Jira\Avatar.cs" />
     <Compile Include="Jira\Entries.cs" />
-    <Compile Include="Jira\Filter.cs" />
     <Compile Include="Jira\JiraIssue.cs" />
     <Compile Include="Jira\JiraUser.cs" />
     <Compile Include="Jira\Project.cs" />
-    <Compile Include="Jira\View.cs" />
-    <Compile Include="Jira\Views.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IGitHubService.cs" />
     <Compile Include="Interfaces\ISvnService.cs" />

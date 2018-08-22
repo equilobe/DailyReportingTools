@@ -239,7 +239,7 @@ namespace JiraReporter
             report.ProjectName = project.Name;
             report.ProjectKey = project.Key;
             if (project.Lead != null)
-                report.ProjectManager = project.Lead.key;
+                report.ProjectManager = project.Lead.Key;
         }
 
         void UpdateOnSucces(JiraReport report)
