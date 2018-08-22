@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter
 {
@@ -22,7 +23,10 @@ namespace JiraReporter
             if (context.Issue.Entries == null)
                 return;
 
-            context.Issue.Entries.RemoveAll(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || context.AuthorName != e.AuthorFullName);
+            context.Issue.Entries
+                .RemoveWhere(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate)
+                .RemoveWhere(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate)
+                .RemoveWhere(e => context.AuthorName != e.AuthorFullName);
         }
 
         public static void RemoveWrongIssues(List<IssueDetailed> issues)

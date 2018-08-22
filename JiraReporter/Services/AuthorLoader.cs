@@ -6,6 +6,7 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
@@ -282,7 +283,11 @@ namespace JiraReporter.Services
         {
             foreach (var subtask in issue.SubtasksDetailed)
             {
-                subtask.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartedAt < _context.FromDate || e.StartedAt > _context.ToDate);
+                subtask.Entries
+                    .RemoveWhere(e => e.AuthorFullName != _currentAuthor.Name)
+                    .RemoveWhere(e => e.StartedAt < _context.FromDate)
+                    .RemoveWhere(e => e.StartedAt > _context.ToDate);
+
                 IssueAdapter.TimeSpentFromEntries(subtask);
                 IssueAdapter.SetTimeFormat(subtask);
             }
