@@ -8,5 +8,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         void DeleteMultipleTasks(ProjectListContext context);
         bool TryRunReportTask(ProjectContext context);
         void SetTask(ScheduledTaskContext context);
+        void CreateJiraDBSyncTask(string instanceUniqueKey);
+        void DeleteSyncJiraDBTask(string instanceUniqueKey);
     }
 }
