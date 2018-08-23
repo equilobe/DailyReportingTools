@@ -19,5 +19,8 @@ namespace Equilobe.DailyReport.Models.Jira
 
         [DataMember(Name = "timeSpentSeconds")]
         public int TimeSpentSeconds { get; set; }
+
+        [DataMember(Name = "issueId")]
+        public long IssueId { get; set; }
     }
 }

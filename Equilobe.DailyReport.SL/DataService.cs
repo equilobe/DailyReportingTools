@@ -440,6 +440,18 @@ namespace Equilobe.DailyReport.SL
             return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
         }
 
+        public TimeSpan GetOffsetFromInstanceId(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var timeZoneId = db.InstalledInstances
+                    .First(p => p.Id == instanceId)
+                    .TimeZone;
+
+                return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
+            }
+        }
+
         public List<Subscription> GetInstanceSubscriptions(long instanceId)
         {
             using(var db = new ReportsDb())

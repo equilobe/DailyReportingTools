@@ -1,4 +1,6 @@
-﻿namespace Equilobe.DailyReport.Models.Storage
+﻿using System.Collections.Generic;
+
+namespace Equilobe.DailyReport.Models.Storage
 {
     public class AtlassianUser
     {
@@ -14,5 +16,6 @@
         public bool IsActive { get; set; }
 
         public virtual InstalledInstance InstalledInstance { get; set; }
+        public virtual ICollection<AtlassianWorklog> Worklogs { get; set; }
     }
 }

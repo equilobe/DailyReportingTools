@@ -12,8 +12,8 @@ namespace Equilobe.DailyReport.Models.Jira
         [DataMember(Name = "updated")]
         public string Updated { get; set; }
 
-        [DataMember(Name = "startDate")]
-        public string StartDate { get; set; }
+        [DataMember(Name = "started")]
+        public string Started { get; set; }
 
         public DateTime CreatedAt
         {
@@ -31,7 +31,7 @@ namespace Equilobe.DailyReport.Models.Jira
         {
             get
             {
-                return Convert.ToDateTime(StartDate);
+                return Convert.ToDateTime(Started);
             }
             set
             {

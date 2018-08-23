@@ -6,6 +6,7 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,21 @@ namespace Equilobe.DailyReport.SL
         public List<JiraUser> GetAllUsers(JiraRequestContext context)
         {
             return GetClient(context).GetAllUsers();
+        }
+
+        public List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate)
+        {
+            var startDate = fromDate.ToString("yyyy-MM-dd");
+            var worklogAuthors = string.Join(",", authors);
+
+            return GetClient(context).GetWorklogsForMultipleUsers(worklogAuthors, startDate);
+        }
+
+        public List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since)
+        {
+            var unixTimestamp = DateTimeHelpers.ToUnixTimestamp(since);
+
+            return GetClient(context).GetDeletedWorklogsIds(unixTimestamp);
         }
 
         public JiraUser GetUser(JiraRequestContext context, string username)

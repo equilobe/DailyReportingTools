@@ -17,6 +17,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string ClientKey { get; set; }
         public string SharedSecret { get; set; }
         public DateTime ExpirationDate { get; set; }
+        public DateTime? LastSync { get; set; }
     
 
         public virtual ICollection<BasicSettings> BasicSettings { get; set; }

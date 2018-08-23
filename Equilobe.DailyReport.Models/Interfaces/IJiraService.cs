@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Policy;
+using System;
 
 namespace Equilobe.DailyReport.Models.Interfaces
 {
@@ -22,5 +23,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<ProjectInfo> GetProjectsInfo(JiraRequestContext context);
         byte[] GetUserAvatar(JiraRequestContext context, string url);
         SprintContext GetProjectSprintDetailsForDate(ProjectDateFilter filter);
+        List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate);
+        List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since);
     }
 }
