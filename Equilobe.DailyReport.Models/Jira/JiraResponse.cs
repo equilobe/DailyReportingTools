@@ -23,5 +23,11 @@ namespace Equilobe.DailyReport.Models.Jira
 
         [DataMember(Name = "issues")]
         public List<T> Issues { get; set; }
+
+        [DataMember(Name = "worklogs")]
+        public List<T> Worklogs { get; set; }
+
+        [DataMember(Name = "comments")]
+        public List<T> Comments { get; set; }
     }
 }

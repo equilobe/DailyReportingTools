@@ -22,9 +22,9 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var updatedIssues = Client.GetWorklogs(projectKey, author, fromDate.ToString("yyyy/MM/dd"), toDate.ToString("yyyy/MM/dd"));
             var timesheetIssues = updatedIssues
-                .Select(issue => Client.GetIssue(issue.key))
+                .Select(issue => Client.GetIssue(issue.Key))
                 .ToList();
-            timesheetIssues.ForEach(issue => issue.fields.worklog = Client.GetIssueWorklogs(issue.key));
+            timesheetIssues.ForEach(issue => issue.Fields.Worklog = Client.GetIssueWorklogs(issue.Key));
 
             return timesheetIssues;
         }

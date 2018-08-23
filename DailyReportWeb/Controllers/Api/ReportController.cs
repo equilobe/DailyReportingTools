@@ -8,11 +8,13 @@ namespace DailyReportWeb.Controllers.Api
     {
         public IReportService ReportService { get; set; }
 
+        [HttpGet]
         public object Get(long id)
         {
             return null;
         }
 
+        [HttpPost]
         public void Post(long id)
         {
             ReportService.UpdateDashboardData(id);

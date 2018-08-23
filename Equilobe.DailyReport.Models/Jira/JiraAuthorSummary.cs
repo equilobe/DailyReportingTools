@@ -3,7 +3,7 @@
 namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
-    public class JiraUser : JiraIdentifiableResponse
+    public class JiraAuthorSummary : JiraIdentifiableResponse
     {
         [DataMember(Name = "emailAddress")]
         public string EmailAddress { get; set; }
@@ -12,9 +12,6 @@ namespace Equilobe.DailyReport.Models.Jira
         public string DisplayName { get; set; }
 
         [DataMember(Name = "active")]
-        public bool IsActive { get; set; }
-
-        [DataMember(Name = "avatarUrls")]
-        public Avatar AvatarUrls { get; set; }
+        public bool Active { get; set; }
     }
 }
