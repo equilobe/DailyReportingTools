@@ -24,9 +24,9 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public SprintContext GetSprintDetails()
         {
-            var boardId = Client.Board(Filter.ProjectKey).id;
+            var boardId = Client.Board(Filter.ProjectKey).Id;
 
-            if (string.IsNullOrEmpty(boardId))
+            if (boardId == 0)
                 return null;
 
             var minimumSprints = 3;
@@ -35,7 +35,7 @@ namespace Equilobe.DailyReport.BL.Jira
             return GetSprintContext(lastSprints);
         }
 
-        private List<Sprint> GetLastSprints(string boardId, long minimumSprints)
+        private List<Sprint> GetLastSprints(long boardId, long minimumSprints)
         {
             var startAt = (long)0;
             var total = (long)0;

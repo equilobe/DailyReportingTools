@@ -4,19 +4,10 @@ using System.Runtime.Serialization;
 namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
-    public class Sprint
+    public class Sprint : JiraIdentifiableResponse
     {
-        [DataMember(Name = "id")]
-        public int Id { get; set; }
-
-        [DataMember(Name = "self")]
-        public string Self { get; set; }
-
         [DataMember(Name = "state")]
         public string State { get; set; }
-
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
 
         [DataMember(Name = "originalBoardId")]
         public string OriginalBoardId { get; set; }

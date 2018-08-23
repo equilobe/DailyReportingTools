@@ -63,12 +63,12 @@ namespace Equilobe.DailyReport.BL
             return string.Format("project = '{0}' AND sprint in openSprints()", project);
         }
 
-        public static string UnassignedUncompletedIssues(string projectKey, int sprintId)
+        public static string UnassignedUncompletedIssues(string projectKey, long sprintId)
         {
             return string.Format("assignee=null and project='{0}' and sprint={1} and statusCategory != 'Done' and issueType != 'sub-task'", projectKey, sprintId);
         }
 
-        public static string AssignedUncompletedIssues(string assignee, string projectKey, int sprintId)
+        public static string AssignedUncompletedIssues(string assignee, string projectKey, long sprintId)
         {
             return string.Format("assignee='{0}' and project='{1}' and sprint={2} and statusCategory != 'Done'", assignee, projectKey, sprintId);
         }
@@ -98,7 +98,7 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/agile/1.0/board?projectKeyOrId={0}", projectKey);
         }
 
-        public static string AllSprints(string boardId, string startAt)
+        public static string AllSprints(long boardId, string startAt)
         {
             return string.Format("rest/agile/1.0/board/{0}/sprint?startAt={1}", boardId, startAt);
         }

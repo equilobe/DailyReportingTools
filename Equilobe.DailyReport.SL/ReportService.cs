@@ -189,21 +189,21 @@ namespace Equilobe.DailyReport.SL
 
             foreach (var issue in issueWorklog)
             {
-                foreach (var worklog in issue.fields.worklog.worklogs)
+                foreach (var worklog in issue.Fields.Worklog.Worklogs)
                 {
-                    var user = users.SingleOrDefault(p => p.Key == worklog.author.name);
+                    var user = users.SingleOrDefault(p => p.Key == worklog.Author.Name);
 
                     worklogs.Add(new AtlassianWorklog
                     {
-                        JiraWorklogId = worklog.id,
+                        JiraWorklogId = worklog.Id,
                         InstalledInstanceId = instanceId,
-                        IssueId = worklog.issueId,
-                        IssueKey = issue.key,
-                        Comment = worklog.comment,
-                        CreatedAt = DateTime.Parse(worklog.created),
-                        UpdatedAt = DateTime.Parse(worklog.updated),
-                        StartedAt = DateTime.Parse(worklog.started),
-                        TimeSpentInSeconds = worklog.timeSpentSeconds,
+                        IssueId = worklog.IssueId,
+                        IssueKey = issue.Key,
+                        Comment = worklog.Comment,
+                        CreatedAt = worklog.CreatedAt,
+                        UpdatedAt = worklog.UpdatedAt,
+                        StartedAt = worklog.StartedAt,
+                        TimeSpentInSeconds = worklog.TimeSpentSeconds,
                         AtlassianUserId = user.Id
                     });
                 }
