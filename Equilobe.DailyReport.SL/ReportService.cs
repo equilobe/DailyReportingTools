@@ -42,9 +42,8 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var lastSync = db.InstalledInstances
-                    .Where(p => p.Id == instanceId)
-                    .Select(p => p.LastSync)
-                    .SingleOrDefault();
+                    .First(p => p.Id == instanceId)
+                    .LastSync;
                 
                 return lastSync ?? DateTime.UtcNow.AddMonths(-1);
             }

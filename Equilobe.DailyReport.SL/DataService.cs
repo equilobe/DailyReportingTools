@@ -445,9 +445,8 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var timeZoneId = db.InstalledInstances
-                    .Where(p => p.Id == instanceId)
-                    .Select(p => p.TimeZone)
-                    .FirstOrDefault();
+                    .First(p => p.Id == instanceId)
+                    .TimeZone;
 
                 return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
             }
