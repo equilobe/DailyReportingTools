@@ -22,9 +22,9 @@ namespace DailyReportWeb.Controllers.Api
         }
 
         [HttpPost]
-        public SimpleResult SyncJiraDB(string instanceUniqueKey)
+        public SimpleResult SyncDashboardData(string instanceUniqueKey)
         {
-            return ReportService.TrySyncJiraDB(instanceUniqueKey);
+            return ReportService.SyncDashboardData(instanceUniqueKey);
         }
     }
 }

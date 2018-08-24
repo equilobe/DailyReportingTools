@@ -25,7 +25,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void CreateJiraDBSyncTask(string instanceUniqueKey)
+        public void CreateDashboardDataSyncTask(string instanceUniqueKey)
         {
             var taskKey = GetJiraDBSyncTaskKey(instanceUniqueKey);
             var toolPath = ConfigurationService.GetJiraDBSyncToolPath();
@@ -112,7 +112,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void DeleteSyncJiraDBTask(string instanceUniqueKey)
+        public void DeleteDashboardDataSyncTask(string instanceUniqueKey)
         {
             using (var taskService = new TaskService())
             {
@@ -160,7 +160,7 @@ namespace Equilobe.DailyReport.SL
         {
             var instance = DataService.GetInstanceByKey(instanceUniqueKey);
 
-            return instance.BaseUrl + "report/getJiraDbSyncTask?instanceUniqueKey=" + instanceUniqueKey;
+            return instance.BaseUrl + "report/syncDashboardData?instanceUniqueKey=" + instanceUniqueKey;
         }
         #endregion
     }

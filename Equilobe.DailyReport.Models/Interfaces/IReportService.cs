@@ -3,6 +3,6 @@
     public interface IReportService : IService
     {
         void UpdateDashboardData(long instanceId);
-        SimpleResult TrySyncJiraDB(string instanceUniqueKey);
+        SimpleResult SyncDashboardData(string instanceUniqueKey);
     }
 }

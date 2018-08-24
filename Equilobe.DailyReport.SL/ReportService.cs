@@ -19,13 +19,13 @@ namespace Equilobe.DailyReport.SL
         public JiraRequestContext JiraRequestContext { get; set; }
 
         #region IReportService Implementation
-        public SimpleResult TrySyncJiraDB(string instanceUniqueKey)
+        public SimpleResult SyncDashboardData(string instanceUniqueKey)
         {
             var instance = DataService.GetInstanceByKey(instanceUniqueKey);
 
             if (instance == null)
             {
-                TaskSchedulerService.DeleteSyncJiraDBTask(instanceUniqueKey);
+                TaskSchedulerService.DeleteDashboardDataSyncTask(instanceUniqueKey);
                 return SimpleResult.Error("Invalid instance unique key");
             }
 
@@ -139,7 +139,7 @@ namespace Equilobe.DailyReport.SL
         {
             var instanceKey = DataService.GetInstance(instanceId).UniqueKey;
 
-            TaskSchedulerService.CreateJiraDBSyncTask(instanceKey);
+            TaskSchedulerService.CreateDashboardDataSyncTask(instanceKey);
         }
 
         private DateTime GetLastSyncDate(long instanceId)
