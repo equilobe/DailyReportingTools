@@ -28,10 +28,10 @@ namespace Equilobe.DailyReport.SL
         public void CreateDashboardDataSyncTask(string instanceUniqueKey)
         {
             var taskKey = GetJiraDBSyncTaskKey(instanceUniqueKey);
-            var toolPath = ConfigurationService.GetDashboardDataSyncToolPath();
-            var arguments = GetSyncingApiEndpoint(instanceUniqueKey);
+            var toolPath = ConfigurationService.GetPowershell();
+            var arguments = GetSyncTaskArguments(instanceUniqueKey);
             var trigger = new TimeTrigger();
-            trigger.Repetition.Interval = TimeSpan.FromMinutes(15);
+            trigger.Repetition.Interval = TimeSpan.FromMinutes(1);
 
             CreateOrUpdateTask(taskKey, toolPath, arguments, trigger);
         }
@@ -156,11 +156,15 @@ namespace Equilobe.DailyReport.SL
             return taskFolder;
         }
 
-        private string GetSyncingApiEndpoint(string instanceUniqueKey)
+        private string GetSyncTaskArguments(string instanceUniqueKey)
         {
             var instance = DataService.GetInstanceByKey(instanceUniqueKey);
+            var apiEndpoint = "\"http://localhost:59489/api/dashboardSync?instanceUniqueKey=" + instanceUniqueKey + "\"";
+            var scriptPath = ConfigurationService.GetDashboardDataSyncScriptPath();
 
-            return instance.BaseUrl + "report/syncDashboardData?instanceUniqueKey=" + instanceUniqueKey;
+            return scriptPath + " -ApiEndpoint " + apiEndpoint;
+
+            //return instance.BaseUrl + "report/syncDashboardData?instanceUniqueKey=" + instanceUniqueKey;
         }
         #endregion
     }

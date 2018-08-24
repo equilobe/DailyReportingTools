@@ -55,9 +55,14 @@ namespace Equilobe.DailyReport.SL
             return ConfigurationManager.AppSettings["bitBucketApiClientUrl"];
         }
 
-        public string GetDashboardDataSyncToolPath()
+        public string GetDashboardDataSyncScriptPath()
         {
-            return ConfigurationManager.AppSettings["dashboardDataSyncToolPath"];
+            return ConfigurationManager.AppSettings["dashboardDataSyncScriptPath"];
+        }
+
+        public string GetPowershell()
+        {
+            return ConfigurationManager.AppSettings["powershell"];
         }
     }
 }

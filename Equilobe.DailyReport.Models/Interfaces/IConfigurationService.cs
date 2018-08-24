@@ -11,6 +11,7 @@
         string GetTimeZoneMappingPath();
         bool IsPaypalSandbox();
         string GetBitBucketApiClientUrl();
-        string GetDashboardDataSyncToolPath();
+        string GetDashboardDataSyncScriptPath();
+        string GetPowershell();
     }
 }
