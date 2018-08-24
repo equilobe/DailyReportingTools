@@ -55,9 +55,9 @@ namespace Equilobe.DailyReport.SL
             return ConfigurationManager.AppSettings["bitBucketApiClientUrl"];
         }
 
-        public string GetJiraDBSyncToolPath()
+        public string GetDashboardDataSyncToolPath()
         {
-            return ConfigurationManager.AppSettings["jiraDBSyncToolPath"];
+            return ConfigurationManager.AppSettings["dashboardDataSyncToolPath"];
         }
     }
 }

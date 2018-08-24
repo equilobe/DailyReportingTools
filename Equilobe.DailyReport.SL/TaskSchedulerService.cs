@@ -28,7 +28,7 @@ namespace Equilobe.DailyReport.SL
         public void CreateDashboardDataSyncTask(string instanceUniqueKey)
         {
             var taskKey = GetJiraDBSyncTaskKey(instanceUniqueKey);
-            var toolPath = ConfigurationService.GetJiraDBSyncToolPath();
+            var toolPath = ConfigurationService.GetDashboardDataSyncToolPath();
             var arguments = GetSyncingApiEndpoint(instanceUniqueKey);
             var trigger = new TimeTrigger();
             trigger.Repetition.Interval = TimeSpan.FromMinutes(15);
