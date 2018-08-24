@@ -31,7 +31,7 @@ namespace Equilobe.DailyReport.SL
             var toolPath = ConfigurationService.GetPowershell();
             var arguments = GetSyncTaskArguments(instanceUniqueKey);
             var trigger = new TimeTrigger();
-            trigger.Repetition.Interval = TimeSpan.FromMinutes(1);
+            trigger.Repetition.Interval = TimeSpan.FromMinutes(15);
 
             CreateOrUpdateTask(taskKey, toolPath, arguments, trigger);
         }
