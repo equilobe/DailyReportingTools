@@ -6,6 +6,6 @@ namespace Equilobe.DailyReport.Models.Dashboard
     {
         public string DisplayName { get; set; }
         public string AvatarUrl { get; set; }
-        public List<DashboardWorklogs> Worklogs { get; set; }
+        public List<DashboardWorklogsGroup> Worklogs { get; set; }
     }
 }

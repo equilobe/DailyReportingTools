@@ -9,10 +9,12 @@
                 ctrl.isLoading = true;
                 ctrl.data = {};
                 ctrl.actions = {};
+                ctrl.pageSize = 10;
+                ctrl.pageIndex = 1;
 
                 var filter = {
-                    pageSize: 10,
-                    pageIndex: 1,
+                    pageSize: ctrl.pageSize,
+                    pageIndex: ctrl.pageIndex,
                     instanceId: ctrl.instanceId
                 };
 

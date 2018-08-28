@@ -72,9 +72,9 @@
     <Compile Include="Dashboard\DashboardItem.cs" />
     <Compile Include="Dashboard\InstanceFilter.cs" />
     <Compile Include="Dashboard\Page.cs" />
-    <Compile Include="Dashboard\DashboardWorklogs.cs" />
+    <Compile Include="Dashboard\DashboardWorklogsGroup.cs" />
     <Compile Include="Dashboard\PagedFilter.cs" />
-    <Compile Include="Dashboard\Worklog.cs" />
+    <Compile Include="Dashboard\DashboardWorklog.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\Enums.cs" />

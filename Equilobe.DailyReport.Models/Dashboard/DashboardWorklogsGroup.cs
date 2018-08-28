@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Equilobe.DailyReport.Models.Dashboard
 {
-    public class DashboardWorklogs
+    public class DashboardWorklogsGroup
     {
         public DateTime Date { get; set; }
-        public List<Worklog> WorklogGroup { get; set; }
+        public List<DashboardWorklog> WorklogGroup { get; set; }
 
         public long TotalTimeSpentInSeconds
         {

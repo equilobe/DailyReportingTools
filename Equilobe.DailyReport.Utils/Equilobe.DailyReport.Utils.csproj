@@ -46,6 +46,7 @@
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="CommandLine.cs" />
     <Compile Include="CommandLineText.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Ensure.cs" />

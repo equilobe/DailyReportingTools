@@ -8,6 +8,7 @@ using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Equilobe.DailyReport.Utils;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -25,7 +26,7 @@ namespace Equilobe.DailyReport.SL
             return new Page<DashboardItem>
             {
                 Items = GetDashboardUsers(filter),
-                TotalRecords = GetTotalAtlassianUsers(filter.InstanceId),
+                TotalRecords = GetAtlassianUsersCount(filter.InstanceId),
                 PageIndex = filter.PageIndex,
                 PageSize = filter.PageSize
             };
@@ -61,10 +62,25 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private List<DashboardItem> GetDashboardUsers(InstanceFilter filter)
         {
-            return new List<DashboardItem>();
+            var users = GetAtlassianUsers(filter);
+            var usersIds = users.Select(p => p.Id).ToList();
+            var worklogs = GetLastWorklogsByUsers(usersIds, filter.InstanceId);
+            var dashboardItems = new List<DashboardItem>();
+
+            foreach (var user in users)
+            {
+                var item = ToDashboardItem(user);
+
+                if (worklogs.ContainsKey(user.Id))
+                    item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user));
+
+                dashboardItems.Add(item);
+            }
+
+            return dashboardItems;
         }
 
-        private int GetTotalAtlassianUsers(long instanceId)
+        private int GetAtlassianUsersCount(long instanceId)
         {
             using (var db = new ReportsDb())
             {
@@ -196,6 +212,19 @@ namespace Equilobe.DailyReport.SL
             return worklogs;
         }
 
+        private List<AtlassianUser> GetAtlassianUsers(InstanceFilter filter)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.AtlassianUsers
+                    .Where(p => p.InstalledInstanceId == filter.InstanceId)
+                    .OrderBy(p => p.DisplayName)
+                    .Skip(filter.Offset)
+                    .Take(filter.PageSize)
+                    .ToList();
+            }
+        }
+
         private List<AtlassianUser> GetAllAtlassianUsers(long instanceId)
         {
             using (var db = new ReportsDb())
@@ -222,6 +251,75 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        private Dictionary<long, List<DashboardWorklog>> GetLastWorklogsByUsers(List<long> ids, long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var baseUrl = db.InstalledInstances
+                    .Single(p => p.Id == instanceId)
+                    .BaseUrl;
+
+                return db.AtlassianWorklogs
+                    .Where(p => ids.Contains(p.AtlassianUserId))
+                    .OrderByDescending(p => p.StartedAt)
+                    .Take(Constants.NumberOfDaysForWorklog * 2)
+                    .GroupBy(p => p.AtlassianUserId)
+                    .ToDictionary(p => p.Key, p => p.Select(q => ToDashboardWorklog(q, baseUrl)).ToList());
+            }
+        }
+
+        private List<DashboardWorklogsGroup> GetLastWorklogsGroupForUser(Dictionary<long, List<DashboardWorklog>> worklogs, AtlassianUser user)
+        {
+            var userWorklogs = worklogs[user.Id];
+            var worklogsGroupedByDay = GroupWorklogsByDay(userWorklogs);
+            var lastBusinessDaysOfWork = GetLastBusinessDaysOfWork();
+            var worklogGroups = new List<DashboardWorklogsGroup>();
+
+            foreach (var worklogDay in lastBusinessDaysOfWork)
+            {
+                var worklogsList = worklogsGroupedByDay.ContainsKey(worklogDay) ? worklogsGroupedByDay[worklogDay] : new List<DashboardWorklog>();
+
+                worklogGroups.Add(new DashboardWorklogsGroup
+                {
+                    Date = worklogDay,
+                    WorklogGroup = worklogsList
+                });
+            }
+
+            return worklogGroups;
+        }
+
+        private Dictionary<DateTime, List<DashboardWorklog>> GroupWorklogsByDay(List<DashboardWorklog> worklogs)
+        {
+            return worklogs
+                .GroupBy(p => p.Date.Date)
+                .ToDictionary(p => p.Key, p => p.ToList());
+        }
+
+        private List<DateTime> GetLastBusinessDaysOfWork()
+        {
+            var now = DateTime.UtcNow;
+
+            return Enumerable
+                .Range(0, Constants.NumberOfDaysForWorklog * 2)
+                .Select(p => now.AddDays(-p).Date)
+                .Where(p => p.DayOfWeek != DayOfWeek.Saturday && p.DayOfWeek != DayOfWeek.Sunday)
+                .Take(Constants.NumberOfDaysForWorklog)
+                .ToList();
+        }
+
+        private DashboardWorklog ToDashboardWorklog(AtlassianWorklog worklog, string baseUrl)
+        {
+            return new DashboardWorklog
+            {
+                Comment = worklog.Comment,
+                IssueKey = worklog.IssueKey,
+                IssueUrl = baseUrl + "browse/" + worklog.IssueKey,
+                TimeSpentInSeconds = worklog.TimeSpentInSeconds,
+                Date = worklog.StartedAt
+            };
+        }
+
         private AtlassianUser ToAtlassianUser(JiraUser user, long instanceId)
         {
             return new AtlassianUser
@@ -235,6 +333,16 @@ namespace Equilobe.DailyReport.SL
                 Avatar32x32 = user.AvatarUrls.Med.AbsoluteUri,
                 Avatar48x48 = user.AvatarUrls.Big.AbsoluteUri,
                 IsActive = user.IsActive
+            };
+        }
+
+        private DashboardItem ToDashboardItem(AtlassianUser user)
+        {
+            return new DashboardItem
+            {
+                AvatarUrl = user.Avatar32x32,
+                DisplayName = user.DisplayName,
+                Worklogs = new List<DashboardWorklogsGroup>()
             };
         }
 
