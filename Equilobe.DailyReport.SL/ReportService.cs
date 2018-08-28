@@ -277,7 +277,9 @@ namespace Equilobe.DailyReport.SL
 
             foreach (var worklogDay in lastBusinessDaysOfWork)
             {
-                var worklogsList = worklogsGroupedByDay.ContainsKey(worklogDay) ? worklogsGroupedByDay[worklogDay] : new List<DashboardWorklog>();
+                var worklogsList = worklogsGroupedByDay.ContainsKey(worklogDay) ? 
+                    worklogsGroupedByDay[worklogDay] : 
+                    new List<DashboardWorklog>();
 
                 worklogGroups.Add(new DashboardWorklogsGroup
                 {
@@ -300,12 +302,16 @@ namespace Equilobe.DailyReport.SL
         {
             var now = DateTime.UtcNow;
 
-            return Enumerable
+            var days = Enumerable
                 .Range(0, Constants.NumberOfDaysForWorklog * 2)
                 .Select(p => now.AddDays(-p).Date)
                 .Where(p => p.DayOfWeek != DayOfWeek.Saturday && p.DayOfWeek != DayOfWeek.Sunday)
                 .Take(Constants.NumberOfDaysForWorklog)
                 .ToList();
+
+            days.Reverse();
+
+            return days;
         }
 
         private DashboardWorklog ToDashboardWorklog(AtlassianWorklog worklog, string baseUrl)

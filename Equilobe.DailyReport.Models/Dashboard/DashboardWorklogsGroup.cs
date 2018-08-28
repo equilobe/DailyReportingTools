@@ -37,6 +37,12 @@ namespace Equilobe.DailyReport.Models.Dashboard
             }
         }
 
-
+        public string DayHumanReadable
+        {
+            get
+            {
+                return Date.ToString("dd/MMM");
+            }
+        }
     }
 }

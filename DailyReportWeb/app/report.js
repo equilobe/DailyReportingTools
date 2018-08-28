@@ -9,22 +9,40 @@
                 ctrl.isLoading = true;
                 ctrl.data = {};
                 ctrl.actions = {};
-                ctrl.pageSize = 9;
+                ctrl.pageSize = 3;
                 ctrl.pageIndex = 1;
 
-                var filter = {
-                    pageSize: ctrl.pageSize,
-                    pageIndex: ctrl.pageIndex,
-                    instanceId: ctrl.instanceId
-                };
+                ctrl.actions.getDashboardData = function () {
+                    var filter = {
+                        pageSize: ctrl.pageSize,
+                        pageIndex: ctrl.pageIndex,
+                        instanceId: ctrl.instanceId
+                    };
 
-                $http.get("/api/report/", { params: filter })
-                    .success(function (data) {
-                        ctrl.data = data;
-                    })
-                    .finally(function () {
-                        ctrl.isLoading = false;
-                    });
+                    ctrl.isLoading = true;
+
+                    $http.get("/api/report/", { params: filter })
+                        .success(function (data) {
+                            ctrl.data = data
+                        })
+                        .finally(function () {
+                            ctrl.isLoading = false;
+                        });
+                }
+
+                ctrl.actions.previousPage = function () {
+                    ctrl.pageIndex--;
+
+                    ctrl.actions.getDashboardData();
+                }
+
+                ctrl.actions.nextPage = function () {
+                    ctrl.pageIndex++;
+
+                    ctrl.actions.getDashboardData();
+                }
+
+                ctrl.actions.getDashboardData();
 
                 ctrl.actions.updateDashboardData = function () {
                     ctrl.isLoading = true;
