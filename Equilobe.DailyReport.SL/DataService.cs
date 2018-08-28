@@ -163,6 +163,14 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public InstalledInstance GetInstanceByKey(string instanceUniqueKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances.SingleOrDefault(p => p.UniqueKey == instanceUniqueKey);
+            }
+        }
+
         public ApplicationUser GetUser(string userId)
         {
             using(var db = new ReportsDb())

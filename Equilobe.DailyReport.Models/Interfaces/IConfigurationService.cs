@@ -1,5 +1,4 @@
-﻿using System;
-namespace Equilobe.DailyReport.Models.Interfaces
+﻿namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IConfigurationService : IService
     {
@@ -12,5 +11,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         string GetTimeZoneMappingPath();
         bool IsPaypalSandbox();
         string GetBitBucketApiClientUrl();
+        string GetDashboardDataSyncScriptPath();
+        string GetSyncTaskScriptPath();
     }
 }

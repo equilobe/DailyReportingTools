@@ -43,5 +43,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         TimeSpan GetOffsetFromInstanceId(long instanceId);
         List<Subscription> GetInstanceSubscriptions(long instanceId);
         void SaveIpnLogError(long id, string error);
+        InstalledInstance GetInstanceByKey(string instanceUniqueKey);
     }
 }

@@ -1,10 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Configuration;
 
 namespace Equilobe.DailyReport.SL
@@ -56,6 +53,16 @@ namespace Equilobe.DailyReport.SL
         public string GetBitBucketApiClientUrl()
         {
             return ConfigurationManager.AppSettings["bitBucketApiClientUrl"];
+        }
+
+        public string GetDashboardDataSyncScriptPath()
+        {
+            return ConfigurationManager.AppSettings["dashboardDataSyncScriptPath"];
+        }
+
+        public string GetSyncTaskScriptPath()
+        {
+            return ConfigurationManager.AppSettings["syncTaskScriptPath"];
         }
     }
 }
