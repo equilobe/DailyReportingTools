@@ -10,6 +10,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public long Id { get; set; }
         [Required]
         public string BaseUrl { get; set; }
+        public string UniqueKey { get; set; }
         public string TimeZone { get; set; }
         public string UserId { get; set; }
         public string JiraUsername { get; set; }

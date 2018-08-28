@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.DAL;
 using Equilobe.DailyReport.Models.Dashboard;
+using Equilobe.DailyReport.Models;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -14,6 +15,7 @@ namespace Equilobe.DailyReport.SL
     {
         public IJiraService JiraService { get; set; }
         public IDataService DataService { get; set; }
+        public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
 
@@ -29,12 +31,30 @@ namespace Equilobe.DailyReport.SL
             };
         }
 
+        public SimpleResult SyncDashboardData(string instanceUniqueKey)
+        {
+            var instance = DataService.GetInstanceByKey(instanceUniqueKey);
+
+            if (instance == null)
+            {
+                TaskSchedulerService.DeleteDashboardDataSyncTask(instanceUniqueKey);
+                return SimpleResult.Error("Invalid instance unique key");
+            }
+
+            UpdateDashboardData(instance.Id);
+
+            return SimpleResult.Success("Sync successfuly");
+        }
+
         public void UpdateDashboardData(long instanceId)
         {
             JiraRequestContext = GetJiraRequestContext(instanceId);
 
             SyncAtlassianUsers(instanceId);
             SyncAtlassianWorklogs(instanceId);
+            UpdateLastSyncDate(instanceId);
+
+            CreateOrUpdateSyncScheduleTask(instanceId);
         }
         #endregion
 
@@ -60,20 +80,6 @@ namespace Equilobe.DailyReport.SL
 
             SyncDeletedWorklogs(instanceId, lastSync);
             SyncUpdatedWorklogs(instanceId, lastSync);
-
-            UpdateLastSyncDate(instanceId);
-        }
-
-        private DateTime GetLastSyncDate(long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                var lastSync = db.InstalledInstances
-                    .First(p => p.Id == instanceId)
-                    .LastSync;
-                
-                return lastSync ?? DateTime.UtcNow.AddMonths(-1);
-            }
         }
 
         private void SyncDeletedWorklogs(long instanceId, DateTime lastSync)
@@ -120,33 +126,6 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void UpdateLastSyncDate(long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                var instance = db.InstalledInstances.SingleOrDefault(p => p.Id == instanceId);
-
-                instance.LastSync = DateTime.UtcNow;
-
-                db.SaveChanges();
-            }
-        }
-
-        private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId, DateTime lastSync)
-        {
-            var users = GetAllAtlassianUsers(instanceId);
-            var userKeys = users
-                .Select(p => p.Key)
-                .ToList();
-
-            var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);
-            var fromDate = lastSync.ToOriginalTimeZone(offsetFromUtc);
-            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(JiraRequestContext, userKeys, fromDate);
-            var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
-
-            return worklogs;
-        }
-
         private void SyncAtlassianUsers(long instanceId)
         {
             var users = JiraService.GetAllUsers(JiraRequestContext)
@@ -171,6 +150,52 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        private void UpdateLastSyncDate(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var instance = db.InstalledInstances.SingleOrDefault(p => p.Id == instanceId);
+
+                instance.LastSync = DateTime.UtcNow;
+
+                db.SaveChanges();
+            }
+        }
+
+        private void CreateOrUpdateSyncScheduleTask(long instanceId)
+        {
+            var instanceKey = DataService.GetInstance(instanceId).UniqueKey;
+
+            TaskSchedulerService.CreateDashboardDataSyncTask(instanceKey);
+        }
+
+        private DateTime GetLastSyncDate(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var lastSync = db.InstalledInstances
+                    .First(p => p.Id == instanceId)
+                    .LastSync;
+
+                return lastSync ?? DateTime.UtcNow.AddMonths(-1);
+            }
+        }
+
+        private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId, DateTime lastSync)
+        {
+            var users = GetAllAtlassianUsers(instanceId);
+            var userKeys = users
+                .Select(p => p.Key)
+                .ToList();
+
+            var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);
+            var fromDate = lastSync.ToOriginalTimeZone(offsetFromUtc);
+            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(JiraRequestContext, userKeys, fromDate);
+            var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
+
+            return worklogs;
+        }
+
         private List<AtlassianUser> GetAllAtlassianUsers(long instanceId)
         {
             using (var db = new ReportsDb())
@@ -185,8 +210,11 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var instance = db.InstalledInstances.Single(p => p.Id == instanceId);
+                var instance = db.InstalledInstances.SingleOrDefault(p => p.Id == instanceId);
                 var jiraRequestContext = new JiraRequestContext();
+
+                if (instance == null)
+                    throw new Exception("Invalid instance id");
 
                 instance.CopyPropertiesOnObjects(jiraRequestContext);
 

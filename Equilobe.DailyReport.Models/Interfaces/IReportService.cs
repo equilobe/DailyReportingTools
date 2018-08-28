@@ -6,5 +6,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
     {
         Page<DashboardItem> GetDashboardData(InstanceFilter filter);
         void UpdateDashboardData(long instanceId);
+        SimpleResult SyncDashboardData(string instanceUniqueKey);
     }
 }

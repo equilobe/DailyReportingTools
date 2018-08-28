@@ -59,6 +59,7 @@ namespace Equilobe.DailyReport.SL
                 {
                     installedInstance = new InstalledInstance();
                     installedInstance.ExpirationDate = DateTime.MaxValue;
+                    installedInstance.UniqueKey = RandomString.Get();
                     db.InstalledInstances.Add(installedInstance);
                     installedInstance.UserId = user.Id;
                 }
@@ -160,6 +161,14 @@ namespace Equilobe.DailyReport.SL
                                                     .Single(i => i.Id == instanceId);
 
                 return instance;
+            }
+        }
+
+        public InstalledInstance GetInstanceByKey(string instanceUniqueKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances.SingleOrDefault(p => p.UniqueKey == instanceUniqueKey);
             }
         }
 
