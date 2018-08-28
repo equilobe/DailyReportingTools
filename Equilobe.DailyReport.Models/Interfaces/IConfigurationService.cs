@@ -12,6 +12,6 @@
         bool IsPaypalSandbox();
         string GetBitBucketApiClientUrl();
         string GetDashboardDataSyncScriptPath();
-        string GetPowershell();
+        string GetSyncTaskScriptPath();
     }
 }

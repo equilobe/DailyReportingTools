@@ -60,9 +60,9 @@ namespace Equilobe.DailyReport.SL
             return ConfigurationManager.AppSettings["dashboardDataSyncScriptPath"];
         }
 
-        public string GetPowershell()
+        public string GetSyncTaskScriptPath()
         {
-            return ConfigurationManager.AppSettings["powershell"];
+            return ConfigurationManager.AppSettings["syncTaskScriptPath"];
         }
     }
 }
