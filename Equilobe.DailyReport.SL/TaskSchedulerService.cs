@@ -163,8 +163,6 @@ namespace Equilobe.DailyReport.SL
             var scriptPath = ConfigurationService.GetDashboardDataSyncScriptPath();
 
             return scriptPath + " -ApiEndpoint " + apiEndpoint;
-
-            //return instance.BaseUrl + "report/syncDashboardData?instanceUniqueKey=" + instanceUniqueKey;
         }
         #endregion
     }
