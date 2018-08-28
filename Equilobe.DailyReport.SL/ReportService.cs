@@ -1,4 +1,5 @@
 ﻿using Equilobe.DailyReport.DAL;
+using Equilobe.DailyReport.Models.Dashboard;
 using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.ReportFrame;
@@ -17,6 +18,17 @@ namespace Equilobe.DailyReport.SL
         public JiraRequestContext JiraRequestContext { get; set; }
 
         #region IReportService Implementation
+        public Page<DashboardItem> GetDashboardData(InstanceFilter filter)
+        {
+            return new Page<DashboardItem>
+            {
+                Items = GetDashboardUsers(filter),
+                TotalRecords = GetTotalAtlassianUsers(filter.InstanceId),
+                PageIndex = filter.PageIndex,
+                PageSize = filter.PageSize
+            };
+        }
+
         public void UpdateDashboardData(long instanceId)
         {
             JiraRequestContext = GetJiraRequestContext(instanceId);
@@ -27,6 +39,21 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
+        private List<DashboardItem> GetDashboardUsers(InstanceFilter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        private int GetTotalAtlassianUsers(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.AtlassianUsers
+                    .Where(p => p.InstalledInstanceId == instanceId)
+                    .Count();
+            }
+        }
+
         private void SyncAtlassianWorklogs(long instanceId)
         {
             var lastSync = GetLastSyncDate(instanceId);

@@ -1,4 +1,5 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models.Dashboard;
+using Equilobe.DailyReport.Models.Interfaces;
 using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
@@ -9,9 +10,9 @@ namespace DailyReportWeb.Controllers.Api
         public IReportService ReportService { get; set; }
 
         [HttpGet]
-        public object Get(long id)
+        public object Get([FromBody] InstanceFilter filter)
         {
-            return null;
+            return ReportService.GetDashboardData(filter);
         }
 
         [HttpPost]
