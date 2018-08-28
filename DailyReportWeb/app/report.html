@@ -14,4 +14,22 @@
             Update Dashboard Data
         </button>
     </div>
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3" ng-repeat="dashboardItem in reportCtrl.data.items">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>
+                            {{ dashboardItem.displayName }}
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="center-block text-center" href="{{dashboardItem.avatarUrl}}"></a>
+                    </div>
+                    <!-- TODO show the worklogs-->
+                </div>
+            </div>
+        </div>
+    </div>
 </form>

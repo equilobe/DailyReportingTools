@@ -9,7 +9,7 @@
                 ctrl.isLoading = true;
                 ctrl.data = {};
                 ctrl.actions = {};
-                ctrl.pageSize = 10;
+                ctrl.pageSize = 9;
                 ctrl.pageIndex = 1;
 
                 var filter = {
