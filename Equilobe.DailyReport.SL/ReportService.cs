@@ -61,7 +61,7 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private List<DashboardItem> GetDashboardUsers(InstanceFilter filter)
         {
-            throw new NotImplementedException();
+            return new List<DashboardItem>();
         }
 
         private int GetTotalAtlassianUsers(long instanceId)

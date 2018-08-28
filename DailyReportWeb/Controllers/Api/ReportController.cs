@@ -10,7 +10,7 @@ namespace DailyReportWeb.Controllers.Api
         public IReportService ReportService { get; set; }
 
         [HttpGet]
-        public object Get([FromBody] InstanceFilter filter)
+        public Page<DashboardItem> Get([FromUri] InstanceFilter filter)
         {
             return ReportService.GetDashboardData(filter);
         }

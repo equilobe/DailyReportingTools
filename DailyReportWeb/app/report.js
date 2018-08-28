@@ -10,7 +10,13 @@
                 ctrl.data = {};
                 ctrl.actions = {};
 
-                $http.get("/api/report/" + ctrl.instanceId)
+                var filter = {
+                    pageSize: 10,
+                    pageIndex: 1,
+                    instanceId: ctrl.instanceId
+                };
+
+                $http.get("/api/report/", { params: filter })
                     .success(function (data) {
                         ctrl.data = data;
                     })
