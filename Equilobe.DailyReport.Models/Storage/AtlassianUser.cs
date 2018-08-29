@@ -9,7 +9,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string DisplayName { get; set; }
         public string Key { get; set; }
         public string EmailAddress { get; set; }
-        public string AvatarUrl { get; set; }
+        public string AvatarFileName { get; set; }
         public bool IsActive { get; set; }
 
         public virtual InstalledInstance InstalledInstance { get; set; }

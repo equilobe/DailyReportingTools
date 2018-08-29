@@ -27,11 +27,12 @@ namespace Equilobe.DailyReport.SL
             var users = GetAllAtlassianUsers(instanceId);
             var usersIds = users.Select(p => p.Id).ToList();
             var worklogs = GetLastWorklogsByUsers(usersIds, instanceId);
+            var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
             var dashboardItems = new List<DashboardItem>();
 
             foreach (var user in users)
             {
-                var item = ToDashboardItem(user);
+                var item = ToDashboardItem(user, avatarsFolderPath);
 
                 if (worklogs.ContainsKey(user.Id))
                     item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user));
@@ -159,22 +160,22 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncAtlassianUserAvatars(List<AtlassianUser> users, long instanceId)
         {
-            var folderPath = AppDomain.CurrentDomain.BaseDirectory + "Content\\Images\\UserAvatars";
+            var folderPath = ImageHelper.GetUserAvatarsFullPath();
 
             foreach (var user in users)
             {
-                var image = JiraService.GetUserAvatar(JiraRequestContext, user.AvatarUrl);
+                var image = JiraService.GetUserAvatar(JiraRequestContext, user.AvatarFileName);
                 var imageName = user.Key + ".jpg";
                 var path = Path.Combine(folderPath, imageName);
 
                 try
                 {
                     File.WriteAllBytes(path, image);
-                    user.AvatarUrl = imageName;
+                    user.AvatarFileName = imageName;
                 }
                 catch
                 {
-                    user.AvatarUrl = null;
+                    user.AvatarFileName = null;
                 }
             }
         }
@@ -332,16 +333,16 @@ namespace Equilobe.DailyReport.SL
                 InstalledInstanceId = instanceId,
                 Key = user.Key,
                 EmailAddress = user.EmailAddress,
-                AvatarUrl = user.AvatarUrls.Big.AbsoluteUri,
+                AvatarFileName = user.AvatarUrls.Big.AbsoluteUri,
                 IsActive = user.IsActive
             };
         }
 
-        private DashboardItem ToDashboardItem(AtlassianUser user)
+        private DashboardItem ToDashboardItem(AtlassianUser user, string avatarsFolderPath)
         {
             return new DashboardItem
             {
-                AvatarUrl = user.Avatar32x32,
+                AvatarUrl = Path.Combine(avatarsFolderPath, user.AvatarFileName),
                 DisplayName = user.DisplayName,
                 Worklogs = new List<DashboardWorklogsGroup>()
             };
@@ -381,7 +382,7 @@ namespace Equilobe.DailyReport.SL
             dbUser.DisplayName = jiraUser.DisplayName;
             dbUser.Key = jiraUser.Key;
             dbUser.EmailAddress = jiraUser.EmailAddress;
-            dbUser.AvatarUrl = jiraUser.AvatarUrl;
+            dbUser.AvatarFileName = jiraUser.AvatarFileName;
             dbUser.IsActive = jiraUser.IsActive;
         }
 
