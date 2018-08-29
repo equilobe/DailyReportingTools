@@ -7,6 +7,7 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Equilobe.DailyReport.Utils;
 
@@ -114,8 +115,7 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var dbWorklogs = db.AtlassianWorklogs
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .ToList();
+                    .Where(p => p.InstalledInstanceId == instanceId);
 
                 foreach (var worklog in worklogs)
                 {
@@ -137,10 +137,12 @@ namespace Equilobe.DailyReport.SL
                 .Select(p => ToAtlassianUser(p, instanceId))
                 .ToList();
 
-            var dbUsers = GetAllAtlassianUsers(instanceId);
+            SyncAtlassianUserAvatars(users, instanceId);
 
             using (var db = new ReportsDb())
             {
+                var dbUsers = db.AtlassianUsers.Where(p => p.InstalledInstanceId == instanceId);
+
                 foreach (var user in users)
                 {
                     var dbUser = dbUsers.Where(p => p.Key == user.Key).SingleOrDefault();
@@ -152,6 +154,28 @@ namespace Equilobe.DailyReport.SL
                 }
 
                 db.SaveChanges();
+            }
+        }
+
+        private void SyncAtlassianUserAvatars(List<AtlassianUser> users, long instanceId)
+        {
+            var folderPath = AppDomain.CurrentDomain.BaseDirectory + "Content\\Images\\UserAvatars";
+
+            foreach (var user in users)
+            {
+                var image = JiraService.GetUserAvatar(JiraRequestContext, user.AvatarUrl);
+                var imageName = user.Key + ".jpg";
+                var path = Path.Combine(folderPath, imageName);
+
+                try
+                {
+                    File.WriteAllBytes(path, image);
+                    user.AvatarUrl = imageName;
+                }
+                catch
+                {
+                    user.AvatarUrl = null;
+                }
             }
         }
 
@@ -308,10 +332,7 @@ namespace Equilobe.DailyReport.SL
                 InstalledInstanceId = instanceId,
                 Key = user.Key,
                 EmailAddress = user.EmailAddress,
-                Avatar16x16 = user.AvatarUrls.VerySmall.AbsoluteUri,
-                Avatar24x24 = user.AvatarUrls.Small.AbsoluteUri,
-                Avatar32x32 = user.AvatarUrls.Med.AbsoluteUri,
-                Avatar48x48 = user.AvatarUrls.Big.AbsoluteUri,
+                AvatarUrl = user.AvatarUrls.Big.AbsoluteUri,
                 IsActive = user.IsActive
             };
         }
@@ -360,10 +381,7 @@ namespace Equilobe.DailyReport.SL
             dbUser.DisplayName = jiraUser.DisplayName;
             dbUser.Key = jiraUser.Key;
             dbUser.EmailAddress = jiraUser.EmailAddress;
-            dbUser.Avatar16x16 = jiraUser.Avatar16x16;
-            dbUser.Avatar24x24 = jiraUser.Avatar24x24;
-            dbUser.Avatar32x32 = jiraUser.Avatar32x32;
-            dbUser.Avatar48x48 = jiraUser.Avatar48x48;
+            dbUser.AvatarUrl = jiraUser.AvatarUrl;
             dbUser.IsActive = jiraUser.IsActive;
         }
 
