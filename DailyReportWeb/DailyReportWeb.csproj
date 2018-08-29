@@ -440,7 +440,9 @@
     <Content Include="Views\Email\SubscriptionCanceling.cshtml" />
     <Content Include="Views\Email\PasswordResetEmail.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\Images\UserAvatars\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
