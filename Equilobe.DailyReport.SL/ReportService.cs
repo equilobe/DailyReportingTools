@@ -21,15 +21,24 @@ namespace Equilobe.DailyReport.SL
         public JiraRequestContext JiraRequestContext { get; set; }
 
         #region IReportService Implementation
-        public Page<DashboardItem> GetDashboardData(InstanceFilter filter)
+        public List<DashboardItem> GetDashboardData(long instanceId)
         {
-            return new Page<DashboardItem>
+            var users = GetAllAtlassianUsers(instanceId);
+            var usersIds = users.Select(p => p.Id).ToList();
+            var worklogs = GetLastWorklogsByUsers(usersIds, instanceId);
+            var dashboardItems = new List<DashboardItem>();
+
+            foreach (var user in users)
             {
-                Items = GetDashboardUsers(filter),
-                TotalRecords = GetAtlassianUsersCount(filter.InstanceId),
-                PageIndex = filter.PageIndex,
-                PageSize = filter.PageSize
-            };
+                var item = ToDashboardItem(user);
+
+                if (worklogs.ContainsKey(user.Id))
+                    item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user));
+
+                dashboardItems.Add(item);
+            }
+
+            return dashboardItems;
         }
 
         public SimpleResult SyncDashboardData(string instanceUniqueKey)
@@ -60,26 +69,6 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
-        private List<DashboardItem> GetDashboardUsers(InstanceFilter filter)
-        {
-            var users = GetAtlassianUsers(filter);
-            var usersIds = users.Select(p => p.Id).ToList();
-            var worklogs = GetLastWorklogsByUsers(usersIds, filter.InstanceId);
-            var dashboardItems = new List<DashboardItem>();
-
-            foreach (var user in users)
-            {
-                var item = ToDashboardItem(user);
-
-                if (worklogs.ContainsKey(user.Id))
-                    item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user));
-
-                dashboardItems.Add(item);
-            }
-
-            return dashboardItems;
-        }
-
         private int GetAtlassianUsersCount(long instanceId)
         {
             using (var db = new ReportsDb())
@@ -212,19 +201,6 @@ namespace Equilobe.DailyReport.SL
             return worklogs;
         }
 
-        private List<AtlassianUser> GetAtlassianUsers(InstanceFilter filter)
-        {
-            using (var db = new ReportsDb())
-            {
-                return db.AtlassianUsers
-                    .Where(p => p.InstalledInstanceId == filter.InstanceId)
-                    .OrderBy(p => p.DisplayName)
-                    .Skip(filter.Offset)
-                    .Take(filter.PageSize)
-                    .ToList();
-            }
-        }
-
         private List<AtlassianUser> GetAllAtlassianUsers(long instanceId)
         {
             using (var db = new ReportsDb())
@@ -308,8 +284,6 @@ namespace Equilobe.DailyReport.SL
                 .Where(p => p.DayOfWeek != DayOfWeek.Saturday && p.DayOfWeek != DayOfWeek.Sunday)
                 .Take(Constants.NumberOfDaysForWorklog)
                 .ToList();
-
-            days.Reverse();
 
             return days;
         }

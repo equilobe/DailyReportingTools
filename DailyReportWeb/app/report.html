@@ -17,7 +17,7 @@
     <br />
     <div class="container mg-btm-30">
         <div class="row">
-            <div class="col-sm-6" ng-repeat="dashboardItem in reportCtrl.data.items">
+            <div class="col-sm-6" ng-repeat="dashboardItem in reportCtrl.data">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4>
@@ -28,12 +28,18 @@
                         <a class="center-block text-center mg-btm-30" href="{{dashboardItem.avatarUrl}}"></a>
                         <table border="1" align="center">
                             <tr>
-                                <td class="left-right-spacing" ng-repeat="worklogGroup in dashboardItem.worklogs" align="center">
+                                <td class="left-right-spacing text-large" align="center">
+                                    {{ dashboardItem.worklogs[0].dayHumanReadable }}
+                                </td>
+                                <td class="left-right-spacing" ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0" align="center">
                                     {{ worklogGroup.dayHumanReadable }}
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-center" ng-repeat="worklogGroup in dashboardItem.worklogs">
+                                <td class="left-right-spacing text-large" align="center">
+                                    {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
+                                </td>
+                                <td class="text-center" ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0">
                                     {{ worklogGroup.totalTimeSpentHumanReadable }}
                                 </td>
                             </tr>
@@ -42,10 +48,5 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container text-center">
-        <a ng-if="reportCtrl.data.pageIndex > 1" ng-click="reportCtrl.actions.previousPage()"> &lt;&lt; Previous</a> 
-        <span ng-if="(reportCtrl.data.pageIndex > 1) && !(reportCtrl.data.pageIndex == reportCtrl.data.totalPages)">|</span>
-        <a ng-if="!(reportCtrl.data.pageIndex == reportCtrl.data.totalPages)" ng-click="reportCtrl.actions.nextPage()">Next &gt;&gt;</a>
     </div>
 </form>
