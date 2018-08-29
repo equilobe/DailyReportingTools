@@ -70,10 +70,7 @@
     <Compile Include="BitBucket\State.cs" />
     <Compile Include="BitBucket\Summary.cs" />
     <Compile Include="Dashboard\DashboardItem.cs" />
-    <Compile Include="Dashboard\InstanceFilter.cs" />
-    <Compile Include="Dashboard\Page.cs" />
     <Compile Include="Dashboard\DashboardWorklogsGroup.cs" />
-    <Compile Include="Dashboard\PagedFilter.cs" />
     <Compile Include="Dashboard\DashboardWorklog.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
