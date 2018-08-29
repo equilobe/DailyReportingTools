@@ -105,7 +105,7 @@ namespace Equilobe.DailyReport.SL
                 .Select(p => ToAtlassianUser(p, instanceId))
                 .ToList();
 
-            SyncAtlassianUsersAvatars(users, instanceId);
+            SyncAtlassianUserAvatars(users, instanceId);
 
             using (var db = new ReportsDb())
             {
@@ -125,15 +125,15 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void SyncAtlassianUsersAvatars(List<AtlassianUser> users, long instanceId)
+        private void SyncAtlassianUserAvatars(List<AtlassianUser> users, long instanceId)
         {
-            var folderPath = AppDomain.CurrentDomain.BaseDirectory + "Content\\Images\\UsersAvatars\\";
+            var folderPath = AppDomain.CurrentDomain.BaseDirectory + "Content\\Images\\UserAvatars";
 
             foreach (var user in users)
             {
                 var image = JiraService.GetUserAvatar(JiraRequestContext, user.AvatarUrl);
                 var imageName = user.Key + ".jpg";
-                var path = folderPath + imageName;
+                var path = Path.Combine(folderPath, imageName);
 
                 try
                 {
