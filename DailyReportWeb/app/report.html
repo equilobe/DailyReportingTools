@@ -19,28 +19,32 @@
         <div class="row">
             <div class="col-sm-6" ng-repeat="dashboardItem in reportCtrl.data">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="mg-btm-30">
-                            {{ dashboardItem.displayName }}
-                            <img class="img-circle pull-right" src="{{dashboardItem.avatarUrl}}" />
-                        </h4>
-                    </div>
                     <div class="panel-body">
-                        <table class="table mg-top-10" align="center" ng-if="dashboardItem.worklogs.length > 0">
+                        <table width="100%">
                             <tr>
-                                <td class="bg-success">
-                                    {{ dashboardItem.worklogs[0].dayHumanReadable }}
+                                <td valign="middle" align="center">
+                                    <img class="img-circle border" src="{{ dashboardItem.avatarUrl }}" />
+                                    <br />
+                                    <strong>{{ dashboardItem.displayName }}</strong>
                                 </td>
-                                <td ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0" align="center">
-                                    {{ worklogGroup.dayHumanReadable }}
+                                <td valign="middle" align="center">
+                                    <div class="text-large">
+                                        {{ dashboardItem.worklogs[0].dayHumanReadable }}
+                                        <br />
+                                        {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
+                                    </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td class="bg-success text-center" ng-class="{'bg-danger': dashboardItem.worklogs[0].totalTimeSpentInSeconds == 0}">
-                                    {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
-                                </td>
-                                <td ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0"  ng-class="{'bg-danger': worklogGroup.totalTimeSpentInSeconds == 0}">
-                                    {{ worklogGroup.totalTimeSpentHumanReadable }}
+                                <td>
+                                    <table class="table">
+                                        <tr ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0">
+                                            <td>
+                                                {{ worklogGroup.dayHumanReadable }}
+                                            </td>
+                                            <td ng-class="{'text-color-red': worklogGroup.totalTimeSpentInSeconds == 0}">
+                                                {{ worklogGroup.totalTimeSpentHumanReadable }}
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
                         </table>
