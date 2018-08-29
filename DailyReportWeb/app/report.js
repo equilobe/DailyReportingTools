@@ -6,17 +6,22 @@
             function reportCtrl($scope, $http, $routeParams) {
                 var ctrl = this;
                 ctrl.instanceId = $routeParams.instanceId;
-                ctrl.isLoading = true;
                 ctrl.data = {};
                 ctrl.actions = {};
 
-                $http.get("/api/report/" + ctrl.instanceId)
-                    .success(function (data) {
-                        ctrl.data = data
-                    })
-                    .finally(function () {
-                        ctrl.isLoading = false;
-                    });
+                ctrl.actions.getDashboardData = function () {
+                    ctrl.isLoading = true;
+
+                    $http.get("/api/report/" + ctrl.instanceId)
+                        .success(function (data) {
+                            ctrl.data = data
+                        })
+                        .finally(function () {
+                            ctrl.isLoading = false;
+                        });
+                }
+
+                ctrl.actions.getDashboardData();
 
                 ctrl.actions.updateDashboardData = function () {
                     ctrl.isLoading = true;
@@ -25,9 +30,12 @@
                         .error(function () {
                             console.log("Error updating dashboard");
                         })
+                        .success(function () {
+                            ctrl.actions.getDashboardData();
+                        })
                         .finally(function () {
                             ctrl.isLoading = false;
-                        })
+                        });
                 }
             }])
 })();
