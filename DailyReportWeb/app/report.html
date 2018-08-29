@@ -39,7 +39,7 @@
                                 <td class="bg-success text-center" ng-class="{'bg-danger': dashboardItem.worklogs[0].totalTimeSpentInSeconds == 0}">
                                     {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
                                 </td>
-                                <td class="text-center" ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0"  ng-class="{'bg-danger': worklogGroup.totalTimeSpentInSeconds == 0}">
+                                <td ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0"  ng-class="{'bg-danger': worklogGroup.totalTimeSpentInSeconds == 0}">
                                     {{ worklogGroup.totalTimeSpentHumanReadable }}
                                 </td>
                             </tr>
