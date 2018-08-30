@@ -72,7 +72,7 @@ namespace Equilobe.DailyReport.SL
                 if (trigger != null)
                     taskDefinition.Triggers.Add(trigger);
 
-                //GetTaskFolder(ts).RegisterTaskDefinition(taskKey, taskDefinition, TaskCreation.CreateOrUpdate, WindowsIdentity.GetCurrent().Name);
+                GetTaskFolder(ts).RegisterTaskDefinition(taskKey, taskDefinition, TaskCreation.CreateOrUpdate, WindowsIdentity.GetCurrent().Name);
             }
         }
 
