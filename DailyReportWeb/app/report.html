@@ -10,14 +10,14 @@
         </div>
     </div>
     <div class="container">
-        <button ng-click="reportCtrl.actions.updateDashboardData()" ng-disabled="reportCtrl.isLoading">
+        <button class="btn btn-success" ng-click="reportCtrl.actions.updateDashboardData()" ng-disabled="reportCtrl.isLoading">
             Update Dashboard Data
         </button>
     </div>
     <br />
     <div class="container mg-btm-30">
         <div class="row">
-            <div class="col-sm-6" ng-repeat="dashboardItem in reportCtrl.data">
+            <div class="col-sm-4" ng-repeat="dashboardItem in reportCtrl.data">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <table width="100%">
@@ -26,12 +26,15 @@
                                     <img class="img-circle border" src="{{ dashboardItem.avatarUrl }}" />
                                     <br />
                                     <strong>{{ dashboardItem.displayName }}</strong>
-                                </td>
-                                <td valign="middle" align="center">
+                                    <br />
+                                    <br />
+                                    <br />
                                     <div class="text-large">
                                         {{ dashboardItem.worklogs[0].dayHumanReadable }}
                                         <br />
-                                        {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
+                                        <span ng-class="{'text-color-red': dashboardItem.worklogs[0].totalTimeSpentInSeconds == 0}">
+                                            {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
+                                        </span>
                                     </div>
                                 </td>
                                 <td>

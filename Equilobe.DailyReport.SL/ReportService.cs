@@ -139,23 +139,8 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
 
             SyncAtlassianUserAvatars(users, instanceId);
-
-            using (var db = new ReportsDb())
-            {
-                var dbUsers = db.AtlassianUsers.Where(p => p.InstalledInstanceId == instanceId);
-
-                foreach (var user in users)
-                {
-                    var dbUser = dbUsers.Where(p => p.Key == user.Key).SingleOrDefault();
-
-                    if (dbUser == null)
-                        db.AtlassianUsers.Add(user);
-                    else
-                        UpdateDbUser(dbUser, user);
-                }
-
-                db.SaveChanges();
-            }
+            AddOrUpdateDbUsers(users, instanceId);
+            MarkStallingUsersAsInactive(instanceId);
         }
 
         private void SyncAtlassianUserAvatars(List<AtlassianUser> users, long instanceId)
@@ -164,6 +149,9 @@ namespace Equilobe.DailyReport.SL
 
             foreach (var user in users)
             {
+                if (!user.IsActive)
+                    continue;
+
                 var image = JiraService.GetUserAvatar(JiraRequestContext, user.AvatarFileName);
                 var imageName = user.Key + ".jpg";
                 var path = Path.Combine(folderPath, imageName);
@@ -187,6 +175,61 @@ namespace Equilobe.DailyReport.SL
                 var instance = db.InstalledInstances.SingleOrDefault(p => p.Id == instanceId);
 
                 instance.LastSync = DateTime.UtcNow;
+
+                db.SaveChanges();
+            }
+        }
+
+        private void AddOrUpdateDbUsers(List<AtlassianUser> users, long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var dbUsers = db.AtlassianUsers.Where(p => p.InstalledInstanceId == instanceId);
+
+                foreach (var user in users)
+                {
+                    var dbUser = dbUsers.Where(p => p.Key == user.Key).SingleOrDefault();
+
+                    if (dbUser == null)
+                        db.AtlassianUsers.Add(user);
+                    else
+                        UpdateDbUser(dbUser, user);
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        private void MarkStallingUsersAsInactive(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var users = db.AtlassianUsers
+                    .Where(p => p.IsActive)
+                    .Where(p => p.InstalledInstanceId == instanceId);
+
+                var usersIds = users.Select(p => p.Id).ToList();
+                var worklogs = db.AtlassianWorklogs
+                    .Where(p => usersIds.Contains(p.AtlassianUserId))
+                    .GroupBy(p => p.AtlassianUserId)
+                    .ToDictionary(p => p.Key, p => p.ToList());
+
+                foreach (var user in users)
+                {
+                    if (!worklogs.ContainsKey(user.Id))
+                    {
+                        user.IsActive = false;
+                        continue;
+                    }
+
+                    var lastWorklog = worklogs[user.Id]
+                        .OrderByDescending(p => p.StartedAt)
+                        .Select(p => p.StartedAt)
+                        .First();
+
+                    if (lastWorklog < DateTime.UtcNow.AddMonths(-1))
+                        user.IsActive = false;
+                }
 
                 db.SaveChanges();
             }
@@ -232,6 +275,7 @@ namespace Equilobe.DailyReport.SL
             {
                 return db.AtlassianUsers
                     .Where(p => p.InstalledInstanceId == instanceId)
+                    .Where(p => p.IsActive)
                     .ToList();
             }
         }
@@ -342,7 +386,7 @@ namespace Equilobe.DailyReport.SL
         {
             return new DashboardItem
             {
-                AvatarUrl = Path.Combine(avatarsFolderPath, user.AvatarFileName),
+                AvatarUrl = avatarsFolderPath + "/" + user.AvatarFileName,
                 DisplayName = user.DisplayName,
                 Worklogs = new List<DashboardWorklogsGroup>()
             };
