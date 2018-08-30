@@ -11,6 +11,7 @@ namespace Equilobe.DailyReport.Models.Storage
         public string EmailAddress { get; set; }
         public string AvatarFileName { get; set; }
         public bool IsActive { get; set; }
+        public bool IsStalling { get; set; }
 
         public virtual InstalledInstance InstalledInstance { get; set; }
         public virtual ICollection<AtlassianWorklog> Worklogs { get; set; }

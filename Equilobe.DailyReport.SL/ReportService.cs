@@ -140,7 +140,7 @@ namespace Equilobe.DailyReport.SL
 
             SyncAtlassianUserAvatars(users, instanceId);
             AddOrUpdateDbUsers(users, instanceId);
-            MarkStallingUsersAsInactive(instanceId);
+            SyncStallingUsers(instanceId);
         }
 
         private void SyncAtlassianUserAvatars(List<AtlassianUser> users, long instanceId)
@@ -200,7 +200,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void MarkStallingUsersAsInactive(long instanceId)
+        private void SyncStallingUsers(long instanceId)
         {
             using (var db = new ReportsDb())
             {
@@ -218,7 +218,7 @@ namespace Equilobe.DailyReport.SL
                 {
                     if (!worklogs.ContainsKey(user.Id))
                     {
-                        user.IsActive = false;
+                        user.IsStalling = true;
                         continue;
                     }
 
@@ -228,7 +228,12 @@ namespace Equilobe.DailyReport.SL
                         .First();
 
                     if (lastWorklog < DateTime.UtcNow.AddMonths(-1))
-                        user.IsActive = false;
+                    {
+                        user.IsStalling = true;
+                        continue;
+                    }
+
+                    user.IsStalling = false;
                 }
 
                 db.SaveChanges();
@@ -276,6 +281,7 @@ namespace Equilobe.DailyReport.SL
                 return db.AtlassianUsers
                     .Where(p => p.InstalledInstanceId == instanceId)
                     .Where(p => p.IsActive)
+                    .Where(p => !p.IsStalling)
                     .ToList();
             }
         }
