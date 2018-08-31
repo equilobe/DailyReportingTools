@@ -14,11 +14,27 @@
 
                     $http.get("/api/report/" + ctrl.instanceId)
                         .success(function (data) {
-                            ctrl.data = data
+                            ctrl.data = formatDates(data);
                         })
                         .finally(function () {
                             ctrl.isLoading = false;
                         });
+
+                    function formatDates(data) {
+                        var i, j;
+                        for (i = 0; i < data.length; i++) {
+                            for (j = 0; j < data[i].worklogs.length; j++) {
+                                data[i].worklogs[j].dayHumanReadable = moment(data[i].date).format("DD/MMM");
+
+                                var timeSpent = data[i].worklogs[j].totalTimeSpentInSeconds;
+                                var time = moment.utc(timeSpent * 1000);
+
+                                data[i].worklogs[j].totalTimeSpent = timeSpent % 3600 == 0 ? time.format("H[h]") : time.format("H[h] m[m]");
+                            }
+                        }
+
+                        return data;
+                    }
                 }
 
                 ctrl.actions.getDashboardData();

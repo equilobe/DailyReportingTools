@@ -33,7 +33,7 @@
                                         {{ dashboardItem.worklogs[0].dayHumanReadable }}
                                         <br />
                                         <span ng-class="{'text-color-red': dashboardItem.worklogs[0].totalTimeSpentInSeconds == 0}">
-                                            {{ dashboardItem.worklogs[0].totalTimeSpentHumanReadable }}
+                                            {{ dashboardItem.worklogs[0].totalTimeSpent }}
                                         </span>
                                     </div>
                                 </td>
@@ -44,7 +44,7 @@
                                                 {{ worklogGroup.dayHumanReadable }}
                                             </td>
                                             <td ng-class="{'text-color-red': worklogGroup.totalTimeSpentInSeconds == 0}">
-                                                {{ worklogGroup.totalTimeSpentHumanReadable }}
+                                                {{ worklogGroup.totalTimeSpent }}
                                             </td>
                                         </tr>
                                     </table>

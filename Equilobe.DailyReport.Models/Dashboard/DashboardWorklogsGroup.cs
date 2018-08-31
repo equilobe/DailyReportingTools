@@ -24,25 +24,5 @@ namespace Equilobe.DailyReport.Models.Dashboard
                 return totalTime;
             }
         }
-
-        // Xh Ym
-        public string TotalTimeSpentHumanReadable
-        {
-            get
-            {
-                var hours = TotalTimeSpentInSeconds / 3600;
-                var minutes = (TotalTimeSpentInSeconds % 3600) / 60;
-
-                return (minutes == 0) ? hours + "h" : hours + "h " + minutes + "m";
-            }
-        }
-
-        public string DayHumanReadable
-        {
-            get
-            {
-                return Date.ToString("dd/MMM");
-            }
-        }
     }
 }
