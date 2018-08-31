@@ -88,7 +88,7 @@ namespace Equilobe.DailyReport.SL
         {
             var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(JiraRequestContext, lastSync);
 
-            if (deletedWorklogsIds == null)
+            if (deletedWorklogsIds == null || !deletedWorklogsIds.Any())
                 return;
 
             using (var db = new ReportsDb())

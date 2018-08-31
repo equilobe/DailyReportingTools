@@ -98,7 +98,7 @@ namespace Equilobe.DailyReport.SL
 
         public List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since)
         {
-            var unixTimestamp = DateTimeHelpers.ToUnixTimestamp(since);
+            var unixTimestamp = DateTimeHelpers.ToUnixTimestamp(since.AddDays(-1));
 
             return GetClient(context).GetDeletedWorklogsIds(unixTimestamp);
         }
