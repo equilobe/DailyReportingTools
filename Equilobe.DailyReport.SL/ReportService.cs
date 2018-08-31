@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.SL.DbExtensions;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -20,13 +21,17 @@ namespace Equilobe.DailyReport.SL
         public ITaskSchedulerService TaskSchedulerService { get; set; }
 
         public JiraRequestContext JiraRequestContext { get; set; }
+        public TimeSpan OffsetFromUtc { get; set; }
 
         #region IReportService Implementation
         public List<DashboardItem> GetDashboardData(long instanceId)
         {
-            var users = GetAllAtlassianUsers(instanceId);
+            OffsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);
+
+            var users = GetAtlassianUsers(instanceId, true, false);
             var usersIds = users.Select(p => p.Id).ToList();
-            var worklogs = GetLastWorklogsByUsers(usersIds, instanceId);
+            var bussinessDaysAgo = GetLastBusinessDaysAgo(Constants.NumberOfDaysForWorklog);
+            var worklogs = GetLastWorklogsByUsers(usersIds, instanceId, bussinessDaysAgo);
             var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
             var dashboardItems = new List<DashboardItem>();
 
@@ -35,7 +40,7 @@ namespace Equilobe.DailyReport.SL
                 var item = ToDashboardItem(user, avatarsFolderPath);
 
                 if (worklogs.ContainsKey(user.Id))
-                    item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user));
+                    item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs[user.Id], user, bussinessDaysAgo));
 
                 dashboardItems.Add(item);
             }
@@ -71,16 +76,6 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
-        private int GetAtlassianUsersCount(long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                return db.AtlassianUsers
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .Count();
-            }
-        }
-
         private void SyncAtlassianWorklogs(long instanceId)
         {
             var lastSync = GetLastSyncDate(instanceId);
@@ -98,10 +93,7 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
-                var dbWorklogs = db.AtlassianWorklogs
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .Where(p => deletedWorklogsIds.Contains(p.JiraWorklogId))
-                    .ToList();
+                var dbWorklogs = db.GetAtlassianWorklogsByJiraIds(instanceId, deletedWorklogsIds);
 
                 db.AtlassianWorklogs.RemoveRange(dbWorklogs);
 
@@ -115,8 +107,7 @@ namespace Equilobe.DailyReport.SL
 
             using (var db = new ReportsDb())
             {
-                var dbWorklogs = db.AtlassianWorklogs
-                    .Where(p => p.InstalledInstanceId == instanceId);
+                var dbWorklogs = db.GetAtlassianWorklogs(instanceId);
 
                 foreach (var worklog in worklogs)
                 {
@@ -139,7 +130,7 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
 
             SyncAtlassianUserAvatars(users, instanceId);
-            AddOrUpdateDbUsers(users, instanceId);
+            AddOrUpdateDbAtlassianUsers(users, instanceId);
             SyncStallingUsers(instanceId);
         }
 
@@ -180,11 +171,11 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void AddOrUpdateDbUsers(List<AtlassianUser> users, long instanceId)
+        private void AddOrUpdateDbAtlassianUsers(List<AtlassianUser> users, long instanceId)
         {
             using (var db = new ReportsDb())
             {
-                var dbUsers = db.AtlassianUsers.Where(p => p.InstalledInstanceId == instanceId);
+                var dbUsers = db.GetAtlassianUsers(instanceId);
 
                 foreach (var user in users)
                 {
@@ -204,36 +195,17 @@ namespace Equilobe.DailyReport.SL
         {
             using (var db = new ReportsDb())
             {
-                var users = db.AtlassianUsers
-                    .Where(p => p.IsActive)
-                    .Where(p => p.InstalledInstanceId == instanceId);
-
+                var users = db.GetAtlassianUsers(instanceId, true);
                 var usersIds = users.Select(p => p.Id).ToList();
-                var worklogs = db.AtlassianWorklogs
-                    .Where(p => usersIds.Contains(p.AtlassianUserId))
-                    .GroupBy(p => p.AtlassianUserId)
-                    .ToDictionary(p => p.Key, p => p.ToList());
+                var worklogs = db.GetUsersWorklogs(usersIds);
 
                 foreach (var user in users)
                 {
-                    if (!worklogs.ContainsKey(user.Id))
-                    {
-                        user.IsStalling = true;
-                        continue;
-                    }
+                    var from = DateTime.UtcNow.AddMonths(-1).ToOriginalTimeZone(OffsetFromUtc);
 
-                    var lastWorklog = worklogs[user.Id]
-                        .OrderByDescending(p => p.StartedAt)
-                        .Select(p => p.StartedAt)
-                        .First();
-
-                    if (lastWorklog < DateTime.UtcNow.AddMonths(-1))
-                    {
-                        user.IsStalling = true;
-                        continue;
-                    }
-
-                    user.IsStalling = false;
+                    user.IsStalling = !worklogs.ContainsKey(user.Id) ? 
+                        true : 
+                        !HasWorklogsFromTimeAgo(worklogs[user.Id], user.Id, from);
                 }
 
                 db.SaveChanges();
@@ -245,6 +217,16 @@ namespace Equilobe.DailyReport.SL
             var instanceKey = DataService.GetInstance(instanceId).UniqueKey;
 
             TaskSchedulerService.CreateDashboardDataSyncTask(instanceKey);
+        }
+
+        private bool HasWorklogsFromTimeAgo(List<AtlassianWorklog> worklogs, long userId, DateTime from)
+        {
+            if (worklogs == null || !worklogs.Any())
+                return false;
+
+            return worklogs
+                .Where(p => p.StartedAt.ToOriginalTimeZone(OffsetFromUtc) > from)
+                .Any();
         }
 
         private DateTime GetLastSyncDate(long instanceId)
@@ -261,28 +243,23 @@ namespace Equilobe.DailyReport.SL
 
         private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId, DateTime lastSync)
         {
-            var users = GetAllAtlassianUsers(instanceId);
+            var users = GetAtlassianUsers(instanceId, true, false);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
 
-            var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);
-            var fromDate = lastSync.ToOriginalTimeZone(offsetFromUtc);
+            var fromDate = lastSync.ToOriginalTimeZone(OffsetFromUtc);
             var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(JiraRequestContext, userKeys, fromDate);
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, instanceId);
 
             return worklogs;
         }
 
-        private List<AtlassianUser> GetAllAtlassianUsers(long instanceId)
+        private List<AtlassianUser> GetAtlassianUsers(long instanceId, bool isActive, bool isStalling)
         {
             using (var db = new ReportsDb())
             {
-                return db.AtlassianUsers
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .Where(p => p.IsActive)
-                    .Where(p => !p.IsStalling)
-                    .ToList();
+                return db.GetAtlassianUsers(instanceId, isActive, isStalling).ToList();
             }
         }
 
@@ -302,7 +279,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private Dictionary<long, List<DashboardWorklog>> GetLastWorklogsByUsers(List<long> ids, long instanceId)
+        private Dictionary<long, List<DashboardWorklog>> GetLastWorklogsByUsers(List<long> ids, long instanceId, DateTime businessDaysAgo)
         {
             using (var db = new ReportsDb())
             {
@@ -310,26 +287,20 @@ namespace Equilobe.DailyReport.SL
                     .Single(p => p.Id == instanceId)
                     .BaseUrl;
 
-                return db.AtlassianWorklogs
-                    .Where(p => ids.Contains(p.AtlassianUserId))
-                    .OrderByDescending(p => p.StartedAt)
-                    .Take(Constants.NumberOfDaysForWorklog * 2)
-                    .GroupBy(p => p.AtlassianUserId)
-                    .ToDictionary(p => p.Key, p => p.Select(q => ToDashboardWorklog(q, baseUrl)).ToList());
+                return db.GetLastWorklogsByUsers(ids, businessDaysAgo, OffsetFromUtc, ToDashboardWorklog, baseUrl);
             }
         }
 
-        private List<DashboardWorklogsGroup> GetLastWorklogsGroupForUser(Dictionary<long, List<DashboardWorklog>> worklogs, AtlassianUser user)
+        private List<DashboardWorklogsGroup> GetLastWorklogsGroupForUser(List<DashboardWorklog> userWorklogs, AtlassianUser user, DateTime bussinessDaysAgo)
         {
-            var userWorklogs = worklogs[user.Id];
             var worklogsGroupedByDay = GroupWorklogsByDay(userWorklogs);
-            var lastBusinessDaysOfWork = GetLastBusinessDaysOfWork();
+            var lastBusinessDaysOfWork = GetLastBusinessDaysOfWork(bussinessDaysAgo);
             var worklogGroups = new List<DashboardWorklogsGroup>();
 
             foreach (var worklogDay in lastBusinessDaysOfWork)
             {
-                var worklogsList = worklogsGroupedByDay.ContainsKey(worklogDay) ? 
-                    worklogsGroupedByDay[worklogDay] : 
+                var worklogsList = worklogsGroupedByDay.ContainsKey(worklogDay) ?
+                    worklogsGroupedByDay[worklogDay] :
                     new List<DashboardWorklog>();
 
                 worklogGroups.Add(new DashboardWorklogsGroup
@@ -349,18 +320,34 @@ namespace Equilobe.DailyReport.SL
                 .ToDictionary(p => p.Key, p => p.ToList());
         }
 
-        private List<DateTime> GetLastBusinessDaysOfWork()
+        private List<DateTime> GetLastBusinessDaysOfWork(DateTime bussinessDaysAgo)
         {
-            var now = DateTime.UtcNow;
+            var numberOfDays = DateTime.Today.ToOriginalTimeZone(OffsetFromUtc).Subtract(bussinessDaysAgo).Days;
+            var today = DateTime.Today.ToOriginalTimeZone(OffsetFromUtc);
 
             var days = Enumerable
-                .Range(0, Constants.NumberOfDaysForWorklog * 2)
-                .Select(p => now.AddDays(-p).Date)
+                .Range(0, numberOfDays)
+                .Select(p => today.AddDays(-p).Date)
                 .Where(p => p.DayOfWeek != DayOfWeek.Saturday && p.DayOfWeek != DayOfWeek.Sunday)
                 .Take(Constants.NumberOfDaysForWorklog)
                 .ToList();
 
             return days;
+        }
+
+        private DateTime GetLastBusinessDaysAgo(int days)
+        {
+            var tempDate = DateTime.Today.ToOriginalTimeZone(OffsetFromUtc);
+
+            while (days > 0)
+            {
+                tempDate = tempDate.AddDays(-1);
+
+                if (tempDate.DayOfWeek != DayOfWeek.Saturday && tempDate.DayOfWeek != DayOfWeek.Sunday)
+                    days--;
+            }
+
+            return tempDate;
         }
 
         private DashboardWorklog ToDashboardWorklog(AtlassianWorklog worklog, string baseUrl)

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtlassianUserExtensions.cs" />
     <Compile Include="Cmd.cs" />
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="CommandLine.cs" />
