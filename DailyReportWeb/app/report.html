@@ -24,10 +24,10 @@
                                     <br />
                                     <br />
                                     <div class="text-large">
-                                        {{ dashboardItem.worklogs[0].dayHumanReadable }}
+                                        {{ dashboardItem.worklogs[0].date | neatDate }}
                                         <br />
                                         <span ng-class="{'text-color-red': dashboardItem.worklogs[0].totalTimeSpentInSeconds == 0}">
-                                            {{ dashboardItem.worklogs[0].totalTimeSpent }}
+                                            {{ dashboardItem.worklogs[0].totalTimeSpentInSeconds | neatDuration }}
                                         </span>
                                     </div>
                                 </td>
@@ -35,10 +35,10 @@
                                     <table class="table">
                                         <tr ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0">
                                             <td>
-                                                {{ worklogGroup.dayHumanReadable }}
+                                                {{ worklogGroup.date | neatDate }}
                                             </td>
                                             <td ng-class="{'text-color-red': worklogGroup.totalTimeSpentInSeconds == 0}">
-                                                {{ worklogGroup.totalTimeSpent }}
+                                                {{ worklogGroup.totalTimeSpentInSeconds | neatDuration }}
                                             </td>
                                         </tr>
                                     </table>
