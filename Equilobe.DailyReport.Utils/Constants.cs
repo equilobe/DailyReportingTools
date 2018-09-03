@@ -4,5 +4,6 @@
     {
         public static int NumberOfDaysForWorklog = 7;
         public static int DashboardSyncScheduledTaskInterval = 15;
+        public static int MaximumIssuesPerPage = 100;
     }
 }

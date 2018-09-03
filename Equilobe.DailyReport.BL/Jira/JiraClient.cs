@@ -132,9 +132,9 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
-        public RestRequest GetIssuesWorklogByJql(string jql)
+        public RestRequest GetIssuesWorklogByJql(int startAt, string jql)
         {
-            return new RestRequest(JiraApiUrls.SearchSelectedField(jql), Method.GET);
+            return new RestRequest(JiraApiUrls.SearchSelectedField(startAt, jql), Method.GET);
         }
 
         public List<JiraBasicIssue> GetWorklogsForUser(string projectKey, string author, string fromDate, string toDate)
@@ -146,9 +146,22 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public List<JiraIssue> GetWorklogsForMultipleUsers(string authors, string startDate)
         {
-            var request = GetIssuesWorklogByJql(JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
+            var result = new List<JiraIssue>();
+            var startAt = 0;
+            var hasMoreValues = true;
 
-            return ResolveRequest<JiraResponse<JiraIssue>>(request).Issues;
+            do
+            {
+                var request = GetIssuesWorklogByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
+                var response = ResolveRequest<JiraResponse<JiraIssue>>(request);
+
+                result.AddRange(response.Issues);
+
+                hasMoreValues = startAt + Constants.MaximumIssuesPerPage < response.Total;
+                startAt += Constants.MaximumIssuesPerPage;
+            } while (hasMoreValues);
+
+            return result;
         }
 
         public List<long> GetDeletedWorklogsIds(long sinceUnixTimestamp)
