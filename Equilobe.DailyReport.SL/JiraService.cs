@@ -91,7 +91,7 @@ namespace Equilobe.DailyReport.SL
         public List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate)
         {
             var startDate = fromDate.AddDays(-1).ToString("yyyy-MM-dd");
-            var worklogAuthors = string.Join(",", authors);
+            var worklogAuthors = string.Join(",", authors).Replace("@", "\\\\u0040");
 
             return GetClient(context).GetWorklogsForMultipleUsers(worklogAuthors, startDate);
         }

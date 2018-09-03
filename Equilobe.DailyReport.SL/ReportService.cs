@@ -39,8 +39,7 @@ namespace Equilobe.DailyReport.SL
             {
                 var item = ToDashboardItem(user, avatarsFolderPath);
 
-                if (worklogs.ContainsKey(user.Id))
-                    item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs[user.Id], user, bussinessDaysAgo));
+                item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user, bussinessDaysAgo));
 
                 dashboardItems.Add(item);
             }
@@ -243,7 +242,7 @@ namespace Equilobe.DailyReport.SL
 
         private List<AtlassianWorklog> GetAtlassianWorklogs(long instanceId, DateTime lastSync)
         {
-            var users = GetAtlassianUsers(instanceId, true, false);
+            var users = GetAtlassianUsers(instanceId, true);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
@@ -255,7 +254,7 @@ namespace Equilobe.DailyReport.SL
             return worklogs;
         }
 
-        private List<AtlassianUser> GetAtlassianUsers(long instanceId, bool isActive, bool isStalling)
+        private List<AtlassianUser> GetAtlassianUsers(long instanceId, bool isActive, bool? isStalling = null)
         {
             using (var db = new ReportsDb())
             {
@@ -291,15 +290,15 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private List<DashboardWorklogsGroup> GetLastWorklogsGroupForUser(List<DashboardWorklog> userWorklogs, AtlassianUser user, DateTime bussinessDaysAgo)
+        private List<DashboardWorklogsGroup> GetLastWorklogsGroupForUser(Dictionary<long, List<DashboardWorklog>> userWorklogs, AtlassianUser user, DateTime bussinessDaysAgo)
         {
-            var worklogsGroupedByDay = GroupWorklogsByDay(userWorklogs);
+            var worklogsGroupedByDay = userWorklogs.ContainsKey(user.Id) ? GroupWorklogsByDay(userWorklogs[user.Id]) : null;
             var lastBusinessDaysOfWork = GetLastBusinessDaysOfWork(bussinessDaysAgo);
             var worklogGroups = new List<DashboardWorklogsGroup>();
 
             foreach (var worklogDay in lastBusinessDaysOfWork)
             {
-                var worklogsList = worklogsGroupedByDay.ContainsKey(worklogDay) ?
+                var worklogsList = worklogsGroupedByDay != null && worklogsGroupedByDay.ContainsKey(worklogDay) ?
                     worklogsGroupedByDay[worklogDay] :
                     new List<DashboardWorklog>();
 
@@ -393,7 +392,7 @@ namespace Equilobe.DailyReport.SL
             {
                 foreach (var worklog in issue.Fields.Worklog.Worklogs)
                 {
-                    var user = users.SingleOrDefault(p => p.Key == worklog.Author.Name);
+                    var user = users.SingleOrDefault(p => p.Key == worklog.Author.Key);
 
                     worklogs.Add(new AtlassianWorklog
                     {

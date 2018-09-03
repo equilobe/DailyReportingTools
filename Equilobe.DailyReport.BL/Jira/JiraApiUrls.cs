@@ -20,7 +20,7 @@ namespace Equilobe.DailyReport.BL
 
         public static string AllUsers()
         {
-            return string.Format("rest/api/2/user/search?username=_");
+            return string.Format("rest/api/2/user/search?maxResults=1000&username=_");
         }
 
         public static string User(string userName)
