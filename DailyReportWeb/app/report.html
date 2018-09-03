@@ -9,12 +9,6 @@
             </p>
         </div>
     </div>
-    <div class="container">
-        <button class="btn btn-success" ng-click="reportCtrl.actions.updateDashboardData()" ng-disabled="reportCtrl.isLoading">
-            Update Dashboard Data
-        </button>
-    </div>
-    <br />
     <div class="container mg-btm-30">
         <div class="row">
             <div class="col-sm-4" ng-repeat="dashboardItem in reportCtrl.data">
@@ -55,5 +49,11 @@
                 </div>
             </div>
         </div>
+    </div>
+    <br />
+    <div class="container hcenter">
+        <button class="btn btn-success" ng-click="reportCtrl.actions.updateDashboardData()" ng-disabled="reportCtrl.isLoading">
+            Update Dashboard Data
+        </button>
     </div>
 </form>

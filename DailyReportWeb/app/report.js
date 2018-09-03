@@ -21,19 +21,27 @@
                         });
 
                     function formatDates(data) {
-                        var i, j;
+                        var i, j, k;
+
                         for (i = 0; i < data.length; i++) {
                             for (j = 0; j < data[i].worklogs.length; j++) {
-                                data[i].worklogs[j].dayHumanReadable = moment(data[i].date).format("DD/MMM");
+                                data[i].worklogs[j].dayHumanReadable = moment(data[i].worklogs[j].date).format("DD/MMM");
 
-                                var timeSpent = data[i].worklogs[j].totalTimeSpentInSeconds;
-                                var time = moment.utc(timeSpent * 1000);
+                                data[i].worklogs[j].totalTimeSpent = secondsToReportTime(data[i].worklogs[j].totalTimeSpentInSeconds);
 
-                                data[i].worklogs[j].totalTimeSpent = timeSpent % 3600 == 0 ? time.format("H[h]") : time.format("H[h] m[m]");
+                                for (k = 0; k < data[i].worklogs[j].worklogGroup.length; k++) {
+                                    data[i].worklogs[j].worklogGroup[k].totalTimeSpent = secondsToReportTime(data[i].worklogs[j].worklogGroup[k].totalTimeSpentInSeconds);
+                                }
                             }
                         }
 
                         return data;
+                    }
+
+                    function secondsToReportTime(timeSpent) {
+                        var time = moment.utc(timeSpent * 1000);
+
+                        return timeSpent % 3600 == 0 ? time.format("H[h]") : time.format("H[h] m[m]");
                     }
                 }
 
