@@ -132,7 +132,7 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
-        public RestRequest GetIssuesWorklogByJql(int startAt, string jql)
+        public RestRequest GetIssuesIdsByJql(int startAt, string jql)
         {
             return new RestRequest(JiraApiUrls.SearchSelectedField(startAt, jql), Method.GET);
         }
@@ -147,21 +147,50 @@ namespace Equilobe.DailyReport.BL.Jira
         public List<JiraIssue> GetWorklogsForMultipleUsers(string authors, string startDate)
         {
             var result = new List<JiraIssue>();
+
+            var issues = GetIssuesKeysForMultipleUsers(authors, startDate);
+
+            foreach (var issue in issues)
+            {
+                var response = GetIssueWorklogs(issue.Key);
+
+                if (response != null && response.Worklogs.Any())
+                {
+                    var jiraIssueWorklog = new JiraIssue
+                    {
+                        Id = issue.Id,
+                        Key = issue.Key,
+                        Fields = new JiraFields
+                        {
+                            Worklog = response
+                        }
+                    };
+
+                    result.Add(jiraIssueWorklog);
+                }
+            }
+
+            return result;
+        }
+
+        private List<JiraIssue> GetIssuesKeysForMultipleUsers(string authors, string startDate)
+        {
+            var issues = new List<JiraIssue>();
             var startAt = 0;
             var hasMoreValues = true;
 
             do
             {
-                var request = GetIssuesWorklogByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
+                var request = GetIssuesIdsByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
                 var response = ResolveRequest<JiraResponse<JiraIssue>>(request);
 
-                result.AddRange(response.Issues);
+                issues.AddRange(response.Issues);
 
                 hasMoreValues = startAt + Constants.MaximumIssuesPerPage < response.Total;
                 startAt += Constants.MaximumIssuesPerPage;
             } while (hasMoreValues);
 
-            return result;
+            return issues;
         }
 
         public List<long> GetDeletedWorklogsIds(long sinceUnixTimestamp)
