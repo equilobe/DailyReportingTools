@@ -1,6 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.BitBucket;
 using Equilobe.DailyReport.Models.Interfaces;
 using RestSharp;
+using System.Linq;
 
 namespace Equilobe.DailyReport.BL.BitBucket
 {
@@ -21,9 +22,11 @@ namespace Equilobe.DailyReport.BL.BitBucket
         {
         }
 
-        public BitBucketResponsePage<PullRequest> GetPullRequests(string owner, string repository, int page = 1)
+        public BitBucketResponsePage<PullRequest> GetPullRequests(string owner, string repository, string updated, int page)
         {
-            var request = new RestRequest(BitBucketApiUrls.PullRequests(owner, repository, page), Method.GET);
+            var request = updated == null ?
+                new RestRequest(BitBucketApiUrls.PullRequests(owner, repository, page), Method.GET) :
+                new RestRequest(BitBucketApiUrls.PullRequestsUpdated(owner, repository, updated, page));
 
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequest>>(Client, request);
         }
@@ -42,11 +45,11 @@ namespace Equilobe.DailyReport.BL.BitBucket
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<Contributor>>(Client, request);
         }
 
-        public BitBucketResponsePage<PullRequestComment> GetPullRequestComments(string owner, string repository, int pullRequestId)
+        public BitBucketResponsePage<PullRequestComment> GetPullRequestComments(string owner, string repository, int pullRequestId, string created, int page)
         {
-            var request = new RestRequest(BitBucketApiUrls.PullRequestComments(owner, repository, pullRequestId));
+            var request = new RestRequest(BitBucketApiUrls.PullRequestComments(owner, repository, pullRequestId, created, page));
 
-            return RestApiHelper.ResolveJiraRequest<BitBucketResponsePage<PullRequestComment>>(Client, request);
+            return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequestComment>>(Client, request);
         }
     }
 }

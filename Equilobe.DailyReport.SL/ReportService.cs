@@ -61,10 +61,11 @@ namespace Equilobe.DailyReport.SL
         public void UpdateDashboardData(long instanceId)
         {
             var reportContext = GetReportContext(instanceId);
+            var lastSync = GetLastSyncDate(instanceId);
 
             SyncAtlassianUsers(reportContext);
-            SyncAtlassianWorklogs(reportContext);
-            SyncActivityAndEngagementMetrics(reportContext.InstanceId);
+            SyncAtlassianWorklogs(reportContext, lastSync);
+            SyncActivityAndEngagementMetrics(reportContext.InstanceId, lastSync);
             UpdateLastSyncDate(reportContext.InstanceId);
 
             CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
@@ -81,31 +82,24 @@ namespace Equilobe.DailyReport.SL
             AtlassianUserDataService.SyncAtlassianUsers(users, context);
         }
 
-        private void SyncAtlassianWorklogs(ReportContext context)
+        private void SyncAtlassianWorklogs(ReportContext context, DateTime lastSync)
         {
-            var lastSync = GetLastSyncDate(context.InstanceId);
-
             var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, lastSync);
             var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
 
             AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
         }
 
-        private void SyncActivityAndEngagementMetrics(long instanceId)
+        private void SyncActivityAndEngagementMetrics(long instanceId, DateTime lastSync)
         {
-            var sourceControlOptions = GetSourceControlOptions(instanceId);
-            var pullRequests = BitBucketService.GetAllPullRequests(sourceControlOptions);
+            var repoOptions = DataService.GetAllReposSourceControlOptions(instanceId);
+
+            if (!repoOptions.Any())
+                return;
+
             var usersEngagement = GetUsersEngagementDefault(instanceId);
 
-            foreach (var pr in pullRequests)
-            {
-                var comments = BitBucketService.GetPullRequestComments(sourceControlOptions, pr.Id);
-                
-                foreach (var comment in comments)
-                    usersEngagement[comment.User.Username].CommentsCount++;
-            }
-
-            var test = 3;
+            SyncEngagementWithComments(repoOptions, lastSync, usersEngagement);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -131,15 +125,35 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private Dictionary<string, UserEngagement> GetUsersEngagementDefault(long instanceId)
         {
-            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
+            var users = DataService.GetInstanceUsers(instanceId);
 
-            return users.ToDictionary(p => p.Key, p => new UserEngagement
+            return users.ToDictionary(p => p.JiraDisplayName, p => new UserEngagement
             {
                 CommentsCount = 0,
                 CommitsCount = 0,
                 LinesOfCodeAdded = 0,
-                LinesOfCodeRemoved = 0
+                LinesOfCodeRemoved = 0,
+                JiraUserKey = p.JiraUserKey
             });
+        }
+
+        private void SyncEngagementWithComments(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        {
+            foreach (var repo in repoOptions)
+            {
+                var pullRequests = BitBucketService.GetAllPullRequests(repo, lastSync);
+
+                foreach (var pr in pullRequests)
+                {
+                    var comments = BitBucketService.GetPullRequestComments(repo, pr.Id, lastSync);
+
+                    foreach (var comment in comments)
+                    {
+                        if (comment.User != null)
+                            usersEngagement[comment.User.DisplayName].CommentsCount++;
+                    }
+                }
+            }
         }
 
         private ReportContext GetReportContext(long instanceId)
@@ -320,11 +334,6 @@ namespace Equilobe.DailyReport.SL
             }
 
             return worklogs;
-        }
-
-        private SourceControlOptions GetSourceControlOptions(long instanceId)
-        {
-            return null;
         }
         #endregion
     }

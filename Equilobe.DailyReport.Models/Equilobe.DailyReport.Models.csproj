@@ -61,6 +61,7 @@
     <Compile Include="BitBucket\Author.cs" />
     <Compile Include="BitBucket\Branch.cs" />
     <Compile Include="BitBucket\Contributor.cs" />
+    <Compile Include="BitBucket\PullRequestComment.cs" />
     <Compile Include="BitBucket\PullRequestCommit.cs" />
     <Compile Include="BitBucket\Link.cs" />
     <Compile Include="BitBucket\Markup.cs" />

@@ -7,9 +7,14 @@
             return string.Format("repositories/{0}/{1}/pullrequests?page={2}", owner, repository, page);
         }
 
-        public static string PullRequestComments(string owner, string repository, int pullRequestId)
+        public static string PullRequestsUpdated(string owner, string repository, string updated, int page)
         {
-            return string.Format("repositories/{0}/{1}/pullRequests/{2}/comments?pagelen=1000", owner, repository, pullRequestId);
+            return string.Format("repositories/{0}/{1}/pullrequests?q=updated_on>{2}&page={3}", owner, repository, updated, page);
+        }
+
+        public static string PullRequestComments(string owner, string repository, int pullRequestId, string created, int page)
+        {
+            return string.Format("repositories/{0}/{1}/pullrequests/{2}/comments?pagelen=100&page={3}&q=created_on>{4}", owner, repository, pullRequestId, page, created);
         }
 
         public static string Commits(string owner, string repository, int page)

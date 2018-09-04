@@ -44,5 +44,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<Subscription> GetInstanceSubscriptions(long instanceId);
         void SaveIpnLogError(long id, string error);
         InstalledInstance GetInstanceByKey(string instanceUniqueKey);
+        List<SourceControlOptions> GetAllReposSourceControlOptions(long instanceId);
+        List<User> GetInstanceUsers(long instanceId);
     }
 }
