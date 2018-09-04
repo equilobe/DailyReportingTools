@@ -132,9 +132,11 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
-        public RestRequest GetIssuesIdsByJql(int startAt, string jql)
+        public JiraResponse<JiraIssue> GetIssuesIdsByJql(int startAt, string jql)
         {
-            return new RestRequest(JiraApiUrls.SearchSelectedField(startAt, jql), Method.GET);
+            var request = new RestRequest(JiraApiUrls.SearchIdField(startAt, jql), Method.GET);
+
+            return ResolveRequest<JiraResponse<JiraIssue>>(request);
         }
 
         public List<JiraBasicIssue> GetWorklogsForUser(string projectKey, string author, string fromDate, string toDate)
@@ -148,7 +150,7 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var result = new List<JiraIssue>();
 
-            var issues = GetIssuesKeysForMultipleUsers(authors, startDate);
+            var issues = GetIssueKeysForMultipleUsers(authors, startDate);
 
             foreach (var issue in issues)
             {
@@ -173,22 +175,21 @@ namespace Equilobe.DailyReport.BL.Jira
             return result;
         }
 
-        private List<JiraIssue> GetIssuesKeysForMultipleUsers(string authors, string startDate)
+        private List<JiraIssue> GetIssueKeysForMultipleUsers(string authors, string startDate)
         {
             var issues = new List<JiraIssue>();
             var startAt = 0;
             var hasMoreValues = true;
 
-            do
+            while (hasMoreValues)
             {
-                var request = GetIssuesIdsByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
-                var response = ResolveRequest<JiraResponse<JiraIssue>>(request);
+                var response = GetIssuesIdsByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
 
                 issues.AddRange(response.Issues);
 
                 hasMoreValues = startAt + Constants.MaximumIssuesPerPage < response.Total;
                 startAt += Constants.MaximumIssuesPerPage;
-            } while (hasMoreValues);
+            };
 
             return issues;
         }

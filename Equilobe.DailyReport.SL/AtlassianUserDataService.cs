@@ -14,6 +14,7 @@ namespace Equilobe.DailyReport.SL
     {
         public IJiraService JiraService { get; set; }
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
+        public IUserAvatarService UserAvatarService { get; set; }
 
         #region IAtlassianDataService implementation
         public List<AtlassianUser> GetAtlassianUsers(long instanceId, bool? isActive = null, bool? isStalling = null)
@@ -60,37 +61,9 @@ namespace Equilobe.DailyReport.SL
 
         private void UpdateUsersAvatars(List<AtlassianUser> users, ReportContext context)
         {
-            var fileNames = UploadUsersAvatarsAndGetFilenames(users, context);
+            var fileNames = UserAvatarService.UploadUsersAvatarsAndGetFilenames(users, context);
 
             UpdateDbUsersAvatars(fileNames, context.InstanceId);
-        }
-
-        private Dictionary<string, string> UploadUsersAvatarsAndGetFilenames(List<AtlassianUser> users, ReportContext context)
-        {
-            var folderPath = ImageHelper.GetUserAvatarsFullPath();
-            var userFileDict = new Dictionary<string, string>();
-
-            foreach (var user in users)
-            {
-                if (!user.IsActive)
-                    continue;
-
-                var image = JiraService.GetUserAvatar(context.JiraRequestContext, user.AvatarFileName);
-                var imageName = user.Key + ".jpg";
-                var path = Path.Combine(folderPath, imageName);
-
-                try
-                {
-                    File.WriteAllBytes(path, image);
-                    userFileDict.Add(user.Key, imageName);
-                }
-                catch
-                {
-                    userFileDict.Add(user.Key, null);
-                }
-            }
-
-            return userFileDict;
         }
 
         private void UpdateDbUsersAvatars(Dictionary<string, string> fileNames, long instanceId)
@@ -124,7 +97,7 @@ namespace Equilobe.DailyReport.SL
 
                     user.IsStalling = !worklogs.ContainsKey(user.Id) ?
                         true :
-                        !HasWorklogsFromTimeAgo(worklogs[user.Id], user.Id, from, context.OffsetFromUtc);
+                        !HasWorklogsFromTimeAgo(worklogs[user.Id], from, context.OffsetFromUtc);
                 }
 
                 db.SaveChanges();
@@ -142,7 +115,7 @@ namespace Equilobe.DailyReport.SL
             dbUser.IsActive = jiraUser.IsActive;
         }
 
-        private bool HasWorklogsFromTimeAgo(List<AtlassianWorklog> worklogs, long userId, DateTime from, TimeSpan offsetFromUtc)
+        private bool HasWorklogsFromTimeAgo(List<AtlassianWorklog> worklogs, DateTime from, TimeSpan offsetFromUtc)
         {
             if (worklogs == null || !worklogs.Any())
                 return false;

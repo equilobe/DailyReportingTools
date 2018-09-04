@@ -130,6 +130,7 @@
     <Compile Include="SvnService.cs" />
     <Compile Include="TaskSchedulerService.cs" />
     <Compile Include="TimeZoneService.cs" />
+    <Compile Include="UserAvatarService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">
