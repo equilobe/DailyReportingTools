@@ -108,11 +108,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationUserManager.cs" />
+    <Compile Include="AtlassianUserDataService.cs" />
+    <Compile Include="AtlassianWorklogDataService.cs" />
     <Compile Include="BitBucketService.cs" />
     <Compile Include="ConfigurationService.cs" />
-    <Compile Include="DbExtensions\AtlassianUserExtensions.cs" />
     <Compile Include="DataService.cs" />
-    <Compile Include="DbExtensions\AtlassianWorklogsExtensions.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="EncryptionService.cs" />
     <Compile Include="ErrorService.cs" />

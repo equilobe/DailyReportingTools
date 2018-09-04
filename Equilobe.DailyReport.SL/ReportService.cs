@@ -7,10 +7,8 @@ using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Equilobe.DailyReport.Utils;
-using Equilobe.DailyReport.SL.DbExtensions;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -19,11 +17,13 @@ namespace Equilobe.DailyReport.SL
         public IJiraService JiraService { get; set; }
         public IDataService DataService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }
+        public IAtlassianUserDataService AtlassianUserDataService { get; set; }
+        public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
 
         #region IReportService Implementation
         public List<DashboardItem> GetDashboardData(long instanceId)
         {
-            var users = GetAtlassianUsers(instanceId, true, false);
+            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
             var reportContext = GetReportContext(instanceId);
             var worklogs = GetLastWorklogsByUsers(users, reportContext);
             var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
@@ -68,88 +68,24 @@ namespace Equilobe.DailyReport.SL
         }
         #endregion
 
-        #region Helpers
+        #region Update methods
         private void SyncAtlassianUsers(ReportContext context)
         {
             var users = JiraService.GetAllUsers(context.JiraRequestContext)
                 .Select(p => ToAtlassianUser(p, context.InstanceId))
                 .ToList();
 
-            SyncAtlassianUserAvatars(users, context);
-            AddOrUpdateDbAtlassianUsers(users, context.InstanceId);
-            SyncStallingUsers(context);
+            AtlassianUserDataService.SyncAtlassianUsers(users, context);
         }
 
         private void SyncAtlassianWorklogs(ReportContext context)
         {
             var lastSync = GetLastSyncDate(context.InstanceId);
 
-            SyncDeletedWorklogs(context, lastSync);
-            SyncUpdatedWorklogs(context, lastSync);
-        }
-
-        private void SyncDeletedWorklogs(ReportContext context, DateTime lastSync)
-        {
             var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, lastSync);
+            var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
 
-            if (deletedWorklogsIds == null || !deletedWorklogsIds.Any())
-                return;
-
-            using (var db = new ReportsDb())
-            {
-                var dbWorklogs = db.GetAtlassianWorklogsByJiraIds(context.InstanceId, deletedWorklogsIds);
-
-                db.AtlassianWorklogs.RemoveRange(dbWorklogs);
-
-                db.SaveChanges();
-            }
-        }
-
-        private void SyncUpdatedWorklogs(ReportContext context, DateTime lastSync)
-        {
-            var worklogs = GetAtlassianWorklogs(context, lastSync);
-
-            using (var db = new ReportsDb())
-            {
-                var dbWorklogs = db.GetAtlassianWorklogs(context.InstanceId);
-
-                foreach (var worklog in worklogs)
-                {
-                    var dbWorklog = dbWorklogs.Where(p => p.JiraWorklogId == worklog.JiraWorklogId).SingleOrDefault();
-
-                    if (dbWorklog == null)
-                        db.AtlassianWorklogs.Add(worklog);
-                    else if (dbWorklog.UpdatedAt != worklog.UpdatedAt)
-                        UpdateDbWorklog(dbWorklog, worklog);
-                }
-
-                db.SaveChanges();
-            }
-        }
-
-        private void SyncAtlassianUserAvatars(List<AtlassianUser> users, ReportContext context)
-        {
-            var folderPath = ImageHelper.GetUserAvatarsFullPath();
-
-            foreach (var user in users)
-            {
-                if (!user.IsActive)
-                    continue;
-
-                var image = JiraService.GetUserAvatar(context.JiraRequestContext, user.AvatarFileName);
-                var imageName = user.Key + ".jpg";
-                var path = Path.Combine(folderPath, imageName);
-
-                try
-                {
-                    File.WriteAllBytes(path, image);
-                    user.AvatarFileName = imageName;
-                }
-                catch
-                {
-                    user.AvatarFileName = null;
-                }
-            }
+            AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -164,64 +100,15 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void AddOrUpdateDbAtlassianUsers(List<AtlassianUser> users, long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                var dbUsers = db.GetAtlassianUsers(instanceId);
-
-                foreach (var user in users)
-                {
-                    var dbUser = dbUsers.Where(p => p.Key == user.Key).SingleOrDefault();
-
-                    if (dbUser == null)
-                        db.AtlassianUsers.Add(user);
-                    else
-                        UpdateDbUser(dbUser, user);
-                }
-
-                db.SaveChanges();
-            }
-        }
-
-        private void SyncStallingUsers(ReportContext context)
-        {
-            using (var db = new ReportsDb())
-            {
-                var users = db.GetAtlassianUsers(context.InstanceId, true);
-                var usersIds = users.Select(p => p.Id).ToList();
-                var worklogs = db.GetUsersWorklogs(usersIds);
-
-                foreach (var user in users)
-                {
-                    var from = DateTime.UtcNow.AddMonths(-1).ToOriginalTimeZone(context.OffsetFromUtc);
-
-                    user.IsStalling = !worklogs.ContainsKey(user.Id) ? 
-                        true : 
-                        !HasWorklogsFromTimeAgo(worklogs[user.Id], user.Id, from, context.OffsetFromUtc);
-                }
-
-                db.SaveChanges();
-            }
-        }
-
         private void CreateOrUpdateSyncScheduleTask(long instanceId)
         {
             var instanceKey = DataService.GetInstance(instanceId).UniqueKey;
 
             TaskSchedulerService.CreateDashboardDataSyncTask(instanceKey);
         }
+        #endregion
 
-        private bool HasWorklogsFromTimeAgo(List<AtlassianWorklog> worklogs, long userId, DateTime from, TimeSpan offsetFromUtc)
-        {
-            if (worklogs == null || !worklogs.Any())
-                return false;
-
-            return worklogs
-                .Where(p => p.StartedAt.ToOriginalTimeZone(offsetFromUtc) > from)
-                .Any();
-        }
-
+        #region Helpers
         private ReportContext GetReportContext(long instanceId)
         {
             var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);
@@ -249,7 +136,7 @@ namespace Equilobe.DailyReport.SL
 
         private List<AtlassianWorklog> GetAtlassianWorklogs(ReportContext context, DateTime lastSync)
         {
-            var users = GetAtlassianUsers(context.InstanceId, true);
+            var users = AtlassianUserDataService.GetAtlassianUsers(context.InstanceId, true);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
@@ -259,14 +146,6 @@ namespace Equilobe.DailyReport.SL
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, context.InstanceId);
 
             return worklogs;
-        }
-
-        private List<AtlassianUser> GetAtlassianUsers(long instanceId, bool isActive, bool? isStalling = null)
-        {
-            using (var db = new ReportsDb())
-            {
-                return db.GetAtlassianUsers(instanceId, isActive, isStalling).ToList();
-            }
         }
 
         private JiraRequestContext GetJiraRequestContext(long instanceId)
@@ -285,17 +164,17 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private Dictionary<long, List<DashboardWorklog>> GetLastWorklogsByUsers(List<AtlassianUser> users, ReportContext filter)
+        private Dictionary<long, List<DashboardWorklog>> GetLastWorklogsByUsers(List<AtlassianUser> users, ReportContext context)
         {
-            var ids = users.Select(p => p.Id).ToList();
-
             using (var db = new ReportsDb())
             {
+                var ids = users.Select(p => p.Id).ToList();
+
                 var baseUrl = db.InstalledInstances
-                    .Single(p => p.Id == filter.InstanceId)
+                    .Single(p => p.Id == context.InstanceId)
                     .BaseUrl;
 
-                return db.GetLastWorklogsByUsers(ids, filter.BusinessDaysAgo, filter.OffsetFromUtc, ToDashboardWorklog, baseUrl);
+                return AtlassianWorklogDataService.GetLastWorklogsByUsers(ids, context, baseUrl);
             }
         }
 
@@ -358,18 +237,6 @@ namespace Equilobe.DailyReport.SL
             return tempDate;
         }
 
-        private DashboardWorklog ToDashboardWorklog(AtlassianWorklog worklog, string baseUrl)
-        {
-            return new DashboardWorklog
-            {
-                Comment = worklog.Comment,
-                IssueKey = worklog.IssueKey,
-                IssueUrl = baseUrl + "browse/" + worklog.IssueKey,
-                TimeSpentInSeconds = worklog.TimeSpentInSeconds,
-                Date = worklog.StartedAt
-            };
-        }
-
         private AtlassianUser ToAtlassianUser(JiraUser user, long instanceId)
         {
             return new AtlassianUser
@@ -420,22 +287,6 @@ namespace Equilobe.DailyReport.SL
             }
 
             return worklogs;
-        }
-
-        private void UpdateDbUser(AtlassianUser dbUser, AtlassianUser jiraUser)
-        {
-            dbUser.DisplayName = jiraUser.DisplayName;
-            dbUser.Key = jiraUser.Key;
-            dbUser.EmailAddress = jiraUser.EmailAddress;
-            dbUser.AvatarFileName = jiraUser.AvatarFileName;
-            dbUser.IsActive = jiraUser.IsActive;
-        }
-
-        private void UpdateDbWorklog(AtlassianWorklog dbWorklog, AtlassianWorklog jiraWorklog)
-        {
-            dbWorklog.Comment = jiraWorklog.Comment;
-            dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
-            dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
         }
         #endregion
     }
