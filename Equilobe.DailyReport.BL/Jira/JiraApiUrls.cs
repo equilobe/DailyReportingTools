@@ -90,7 +90,7 @@ namespace Equilobe.DailyReport.BL
 
         public static string SearchSelectedField(int startAt, string jql)
         {
-            return string.Format("rest/api/2/search?startAt={0}&maxResults=100&fields=project,summary,worklog&jql={1}", startAt, jql);
+            return string.Format("rest/api/2/search?startAt={0}&maxResults=100&fields=id&jql={1}", startAt, jql);
         }
 
         public static string Board(string projectKey)
