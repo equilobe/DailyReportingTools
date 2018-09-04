@@ -88,7 +88,7 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/api/2/worklog/deleted?since={0}", since);
         }
 
-        public static string SearchSelectedField(int startAt, string jql)
+        public static string SearchIdField(int startAt, string jql)
         {
             return string.Format("rest/api/2/search?startAt={0}&maxResults=100&fields=id&jql={1}", startAt, jql);
         }

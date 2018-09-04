@@ -97,6 +97,7 @@
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
+    <Compile Include="Interfaces\IUserAvatarService.cs" />
     <Compile Include="Jira\JiraDeletedWorklogs.cs" />
     <Compile Include="Jira\Comment.cs" />
     <Compile Include="Jira\FixVersion.cs" />
