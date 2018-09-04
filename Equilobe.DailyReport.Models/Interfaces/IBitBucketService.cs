@@ -9,6 +9,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
     public interface IBitBucketService : IService
     {
         Log GetLog(ISourceControlContext context);
+        List<PullRequestComment> GetPullRequestComments(SourceControlOptions options, int pullRequestId);
         List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions);
         List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate);
         List<string> GetContributorsFromCommits(SourceControlContext context);

@@ -64,7 +64,7 @@ namespace Equilobe.DailyReport.SL
 
             SyncAtlassianUsers(reportContext);
             SyncAtlassianWorklogs(reportContext);
-            SyncActivityAndEngagementMetrics(instanceId);
+            SyncActivityAndEngagementMetrics(reportContext.InstanceId);
             UpdateLastSyncDate(reportContext.InstanceId);
 
             CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
@@ -95,6 +95,17 @@ namespace Equilobe.DailyReport.SL
         {
             var sourceControlOptions = GetSourceControlOptions(instanceId);
             var pullRequests = BitBucketService.GetAllPullRequests(sourceControlOptions);
+            var usersEngagement = GetUsersEngagementDefault(instanceId);
+
+            foreach (var pr in pullRequests)
+            {
+                var comments = BitBucketService.GetPullRequestComments(sourceControlOptions, pr.Id);
+                
+                foreach (var comment in comments)
+                    usersEngagement[comment.User.Username].CommentsCount++;
+            }
+
+            var test = 3;
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -118,6 +129,19 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
+        private Dictionary<string, UserEngagement> GetUsersEngagementDefault(long instanceId)
+        {
+            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
+
+            return users.ToDictionary(p => p.Key, p => new UserEngagement
+            {
+                CommentsCount = 0,
+                CommitsCount = 0,
+                LinesOfCodeAdded = 0,
+                LinesOfCodeRemoved = 0
+            });
+        }
+
         private ReportContext GetReportContext(long instanceId)
         {
             var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);

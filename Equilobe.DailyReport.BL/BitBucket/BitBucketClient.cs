@@ -41,5 +41,12 @@ namespace Equilobe.DailyReport.BL.BitBucket
 
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<Contributor>>(Client, request);
         }
+
+        public BitBucketResponsePage<PullRequestComment> GetPullRequestComments(string owner, string repository, int pullRequestId)
+        {
+            var request = new RestRequest(BitBucketApiUrls.PullRequestComments(owner, repository, pullRequestId));
+
+            return RestApiHelper.ResolveJiraRequest<BitBucketResponsePage<PullRequestComment>>(Client, request);
+        }
     }
 }

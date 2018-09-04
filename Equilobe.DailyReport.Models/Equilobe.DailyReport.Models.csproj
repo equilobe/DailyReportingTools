@@ -73,6 +73,7 @@
     <Compile Include="Dashboard\DayWorklogGroup.cs" />
     <Compile Include="Dashboard\DashboardWorklog.cs" />
     <Compile Include="Dashboard\ReportContext.cs" />
+    <Compile Include="Dashboard\UserEngagement.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\Enums.cs" />

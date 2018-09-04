@@ -14,6 +14,17 @@ namespace Equilobe.DailyReport.SL
     {
         public IConfigurationService ConfigurationService { get; set; }
 
+        public List<PullRequestComment> GetPullRequestComments(SourceControlOptions options, int pullRequestId)
+        {
+            var credentials = options.Credentials;
+            var client = GetClient(credentials);
+            var comments = new List<PullRequestComment>();
+
+            var commentsPage = client.GetPullRequestComments(options.RepoOwner, options.Repo, pullRequestId);
+
+            return comments;
+        }
+
         public Log GetLog(ISourceControlContext context)
         {
             var pullRequests = GetAllPullRequests(context.SourceControlOptions);
