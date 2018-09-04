@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -19,6 +20,7 @@ namespace Equilobe.DailyReport.SL
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public IAtlassianUserDataService AtlassianUserDataService { get; set; }
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
+        public IBitBucketService BitBucketService { get; set; }
 
         #region IReportService Implementation
         public List<DashboardItem> GetDashboardData(long instanceId)
@@ -62,6 +64,7 @@ namespace Equilobe.DailyReport.SL
 
             SyncAtlassianUsers(reportContext);
             SyncAtlassianWorklogs(reportContext);
+            SyncActivityAndEngagementMetrics(instanceId);
             UpdateLastSyncDate(reportContext.InstanceId);
 
             CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
@@ -86,6 +89,12 @@ namespace Equilobe.DailyReport.SL
             var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
 
             AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
+        }
+
+        private void SyncActivityAndEngagementMetrics(long instanceId)
+        {
+            var sourceControlOptions = GetSourceControlOptions(instanceId);
+            var pullRequests = BitBucketService.GetAllPullRequests(sourceControlOptions);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -287,6 +296,11 @@ namespace Equilobe.DailyReport.SL
             }
 
             return worklogs;
+        }
+
+        private SourceControlOptions GetSourceControlOptions(long instanceId)
+        {
+            return null;
         }
         #endregion
     }
