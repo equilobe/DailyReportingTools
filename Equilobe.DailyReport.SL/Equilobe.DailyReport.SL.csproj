@@ -131,6 +131,7 @@
     <Compile Include="TaskSchedulerService.cs" />
     <Compile Include="TimeZoneService.cs" />
     <Compile Include="UserAvatarService.cs" />
+    <Compile Include="UserEngagementDataService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">

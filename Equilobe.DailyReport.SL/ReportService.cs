@@ -21,6 +21,7 @@ namespace Equilobe.DailyReport.SL
         public IAtlassianUserDataService AtlassianUserDataService { get; set; }
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
         public IBitBucketService BitBucketService { get; set; }
+        public IUserEngagementDataService UserEngagementDataService { get; set; }
 
         #region IReportService Implementation
         public List<DashboardItem> GetDashboardData(long instanceId)
@@ -98,8 +99,10 @@ namespace Equilobe.DailyReport.SL
                 return;
 
             var usersEngagement = GetUsersEngagementDefault(instanceId);
+            var todayEngagement = GetTodayEngagementStats(repoOptions, lastSync, usersEngagement);
+            var engagementStats = ToEngagementByAtlassianUserId(todayEngagement, instanceId);
 
-            SyncEngagementWithComments(repoOptions, lastSync, usersEngagement);
+            UserEngagementDataService.UpdateUserEngagementStats(engagementStats, lastSync);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -137,7 +140,7 @@ namespace Equilobe.DailyReport.SL
             });
         }
 
-        private void SyncEngagementWithComments(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
         {
             foreach (var repo in repoOptions)
             {
@@ -154,6 +157,22 @@ namespace Equilobe.DailyReport.SL
                     }
                 }
             }
+
+            return usersEngagement;
+        }
+
+        private Dictionary<long, UserEngagement> ToEngagementByAtlassianUserId(Dictionary<string, UserEngagement> todayEngagement, long instanceId)
+        {
+            var userKeys = todayEngagement.Values.Select(p => p.JiraUserKey).ToList();
+            var users = AtlassianUserDataService.GetUserIdsByUserKeys(userKeys);
+            var result = new Dictionary<long, UserEngagement>();
+
+            foreach (var engagement in todayEngagement)
+            {
+                result.Add(users[engagement.Value.JiraUserKey], engagement.Value);
+            }
+
+            return result;
         }
 
         private ReportContext GetReportContext(long instanceId)
