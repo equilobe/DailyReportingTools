@@ -108,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationUserManager.cs" />
+    <Compile Include="AtlassianUserDataService.cs" />
+    <Compile Include="AtlassianWorklogDataService.cs" />
     <Compile Include="BitBucketService.cs" />
     <Compile Include="ConfigurationService.cs" />
     <Compile Include="DataService.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="SvnService.cs" />
     <Compile Include="TaskSchedulerService.cs" />
     <Compile Include="TimeZoneService.cs" />
+    <Compile Include="UserAvatarService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">

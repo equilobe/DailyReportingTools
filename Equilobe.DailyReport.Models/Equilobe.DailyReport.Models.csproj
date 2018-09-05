@@ -69,6 +69,10 @@
     <Compile Include="BitBucket\SourceOrDestination.cs" />
     <Compile Include="BitBucket\State.cs" />
     <Compile Include="BitBucket\Summary.cs" />
+    <Compile Include="Dashboard\DashboardItem.cs" />
+    <Compile Include="Dashboard\DayWorklogGroup.cs" />
+    <Compile Include="Dashboard\DashboardWorklog.cs" />
+    <Compile Include="Dashboard\ReportContext.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\Enums.cs" />
@@ -76,6 +80,8 @@
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />
+    <Compile Include="Interfaces\IAtlassianUserDataService.cs" />
+    <Compile Include="Interfaces\IAtlassianWorklogDataService.cs" />
     <Compile Include="Interfaces\IBitBucketService.cs" />
     <Compile Include="Interfaces\IConfigurationService.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
@@ -91,6 +97,7 @@
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
+    <Compile Include="Interfaces\IUserAvatarService.cs" />
     <Compile Include="Jira\JiraDeletedWorklogs.cs" />
     <Compile Include="Jira\Comment.cs" />
     <Compile Include="Jira\FixVersion.cs" />

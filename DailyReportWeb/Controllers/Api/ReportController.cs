@@ -1,4 +1,6 @@
-﻿using Equilobe.DailyReport.Models.Interfaces;
+﻿using Equilobe.DailyReport.Models.Dashboard;
+using Equilobe.DailyReport.Models.Interfaces;
+using System.Collections.Generic;
 using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
@@ -9,9 +11,9 @@ namespace DailyReportWeb.Controllers.Api
         public IReportService ReportService { get; set; }
 
         [HttpGet]
-        public object Get(long id)
+        public List<DashboardItem> Get(long id)
         {
-            return null;
+            return ReportService.GetDashboardData(id);
         }
 
         [HttpPost]

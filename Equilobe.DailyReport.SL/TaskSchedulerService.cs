@@ -1,5 +1,6 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.TaskScheduling;
+using Equilobe.DailyReport.Utils;
 using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Equilobe.DailyReport.SL
             var toolPath = ConfigurationService.GetSyncTaskScriptPath();
             var arguments = GetSyncTaskArguments(instanceUniqueKey);
             var trigger = new TimeTrigger();
-            trigger.Repetition.Interval = TimeSpan.FromMinutes(15);
+            trigger.Repetition.Interval = TimeSpan.FromMinutes(Constants.DashboardSyncScheduledTaskInterval);
 
             CreateOrUpdateTask(taskKey, toolPath, arguments, trigger);
         }
