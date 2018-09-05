@@ -25,8 +25,10 @@ namespace Equilobe.DailyReport.Models.Storage
         public virtual ICollection<UserImage> UserImages { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual ICollection<AtlassianUser> AtlassianUsers { get; set; }
+        public virtual ICollection<AtlassianWorklog> AtlassianWorklogs { get; set; }
+        public virtual ICollection<UserEngagementStats> UserEngagementStats { get; set; }
 
 
-		public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

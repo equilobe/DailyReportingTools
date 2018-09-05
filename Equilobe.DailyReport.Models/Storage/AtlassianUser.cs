@@ -14,5 +14,6 @@ namespace Equilobe.DailyReport.Models.Storage
 
         public virtual InstalledInstance InstalledInstance { get; set; }
         public virtual ICollection<AtlassianWorklog> Worklogs { get; set; }
+        public virtual ICollection<UserEngagementStats> UserEngagementStats { get; set; }
     }
 }
