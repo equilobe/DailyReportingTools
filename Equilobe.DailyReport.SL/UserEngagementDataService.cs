@@ -16,7 +16,6 @@ namespace Equilobe.DailyReport.SL
             using (var db = new ReportsDb())
             {
                 var userIds = engagement.Keys.ToList();
-                var date = day.Date;
 
                 var dbEngagement = db.UserEngagementStats
                     .Where(p => userIds.Contains(p.AtlassianUserId))

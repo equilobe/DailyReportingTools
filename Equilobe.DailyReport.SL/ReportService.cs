@@ -62,11 +62,10 @@ namespace Equilobe.DailyReport.SL
         public void UpdateDashboardData(long instanceId)
         {
             var reportContext = GetReportContext(instanceId);
-            var lastSync = GetLastSyncDate(instanceId);
 
             SyncAtlassianUsers(reportContext);
-            SyncAtlassianWorklogs(reportContext, lastSync);
-            SyncActivityAndEngagementMetrics(reportContext.InstanceId, lastSync);
+            SyncAtlassianWorklogs(reportContext);
+            SyncActivityAndEngagementMetrics(reportContext.InstanceId, DateTime.Today);
             UpdateLastSyncDate(reportContext.InstanceId);
 
             CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
@@ -83,15 +82,16 @@ namespace Equilobe.DailyReport.SL
             AtlassianUserDataService.SyncAtlassianUsers(users, context);
         }
 
-        private void SyncAtlassianWorklogs(ReportContext context, DateTime lastSync)
+        private void SyncAtlassianWorklogs(ReportContext context)
         {
+            var lastSync = GetLastSyncDate(context.InstanceId);
             var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, lastSync);
             var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
 
             AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
         }
 
-        private void SyncActivityAndEngagementMetrics(long instanceId, DateTime lastSync)
+        private void SyncActivityAndEngagementMetrics(long instanceId, DateTime day)
         {
             var repoOptions = DataService.GetAllReposSourceControlOptions(instanceId);
 
@@ -99,10 +99,10 @@ namespace Equilobe.DailyReport.SL
                 return;
 
             var usersEngagement = GetUsersEngagementDefault(instanceId);
-            var todayEngagement = GetTodayEngagementStats(repoOptions, lastSync, usersEngagement);
+            var todayEngagement = GetTodayEngagementStats(repoOptions, day, usersEngagement);
             var engagementStats = ToEngagementByAtlassianUserId(todayEngagement, instanceId);
 
-            UserEngagementDataService.UpdateUserEngagementStats(engagementStats, lastSync);
+            UserEngagementDataService.UpdateUserEngagementStats(engagementStats, day);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -164,7 +164,7 @@ namespace Equilobe.DailyReport.SL
         private Dictionary<long, UserEngagement> ToEngagementByAtlassianUserId(Dictionary<string, UserEngagement> todayEngagement, long instanceId)
         {
             var userKeys = todayEngagement.Values.Select(p => p.JiraUserKey).ToList();
-            var users = AtlassianUserDataService.GetUserIdsByUserKeys(userKeys);
+            var users = AtlassianUserDataService.GetUserIdsByUserKeys(userKeys, instanceId);
             var result = new Dictionary<long, UserEngagement>();
 
             foreach (var engagement in todayEngagement)
