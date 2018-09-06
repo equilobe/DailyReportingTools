@@ -11,7 +11,7 @@ namespace Equilobe.DailyReport.SL
     public class UserEngagementDataService : IUserEngagementDataService
     {
         #region IUserEngagementDataService implementation
-        public void UpdateUserEngagementStats(Dictionary<long, UserEngagement> engagement, DateTime day)
+        public void UpdateUserEngagementStats(Dictionary<long, UserEngagement> engagement, DateTime day, TimeSpan offsetFromUtc)
         {
             using (var db = new ReportsDb())
             {
@@ -19,12 +19,22 @@ namespace Equilobe.DailyReport.SL
 
                 var dbEngagement = db.UserEngagementStats
                     .Where(p => userIds.Contains(p.AtlassianUserId))
-                    .Where(p => p.Date >= day);
+                    .ToList();
 
                 if (!dbEngagement.Any())
                     AddEngagementStats(db, engagement, day);
                 else
-                    UpdateEngagementStats(dbEngagement, engagement);
+                {
+                    var dbEngagementIds = dbEngagement
+                        .Where(p => p.Date.ToOriginalTimeZone(offsetFromUtc) >= day.ToOriginalTimeZone(offsetFromUtc))
+                        .Select(p => p.Id)
+                        .ToList();
+
+                    var dbEngagements = db.UserEngagementStats
+                        .Where(p => dbEngagementIds.Contains(p.Id));
+
+                    UpdateEngagementStats(dbEngagements, engagement);
+                }
 
                 db.SaveChanges();
             }

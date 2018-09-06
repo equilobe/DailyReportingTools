@@ -22,6 +22,7 @@ namespace Equilobe.DailyReport.SL
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
         public IBitBucketService BitBucketService { get; set; }
         public IUserEngagementDataService UserEngagementDataService { get; set; }
+        public IAdvancedSettingsDataService AdvancedSettingsDataService { get; set; }
 
         #region IReportService Implementation
         public List<DashboardItem> GetDashboardData(long instanceId)
@@ -65,7 +66,7 @@ namespace Equilobe.DailyReport.SL
 
             SyncAtlassianUsers(reportContext);
             SyncAtlassianWorklogs(reportContext);
-            SyncActivityAndEngagementMetrics(reportContext.InstanceId, DateTime.Today);
+            SyncActivityAndEngagementMetrics(reportContext, DateTime.Today);
             UpdateLastSyncDate(reportContext.InstanceId);
 
             CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
@@ -91,18 +92,18 @@ namespace Equilobe.DailyReport.SL
             AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
         }
 
-        private void SyncActivityAndEngagementMetrics(long instanceId, DateTime day)
+        private void SyncActivityAndEngagementMetrics(ReportContext context, DateTime day)
         {
-            var repoOptions = DataService.GetAllReposSourceControlOptions(instanceId);
+            var repoOptions = AdvancedSettingsDataService.GetAllReposSourceControlOptions(context.InstanceId);
 
             if (!repoOptions.Any())
                 return;
 
-            var usersEngagement = GetUsersEngagementDefault(instanceId);
+            var usersEngagement = GetUsersEngagementDefault(context.InstanceId);
             var todayEngagement = GetTodayEngagementStats(repoOptions, day, usersEngagement);
-            var engagementStats = ToEngagementByAtlassianUserId(todayEngagement, instanceId);
+            var engagementStats = ToEngagementByAtlassianUserId(todayEngagement, context.InstanceId);
 
-            UserEngagementDataService.UpdateUserEngagementStats(engagementStats, day);
+            UserEngagementDataService.UpdateUserEngagementStats(engagementStats, day, context.OffsetFromUtc);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -128,16 +129,25 @@ namespace Equilobe.DailyReport.SL
         #region Helpers
         private Dictionary<string, UserEngagement> GetUsersEngagementDefault(long instanceId)
         {
-            var users = DataService.GetInstanceUsers(instanceId);
+            var users = AdvancedSettingsDataService.GetUserMappings(instanceId);
+            var dict = new Dictionary<string, UserEngagement>();
 
-            return users.ToDictionary(p => p.JiraDisplayName, p => new UserEngagement
+            foreach (var user in users)
             {
-                CommentsCount = 0,
-                CommitsCount = 0,
-                LinesOfCodeAdded = 0,
-                LinesOfCodeRemoved = 0,
-                JiraUserKey = p.JiraUserKey
-            });
+                if (!user.SourceControlUsernames.Any())
+                    continue;
+
+                dict.Add(user.SourceControlUsernames.First(), new UserEngagement
+                {
+                    CommentsCount = 0,
+                    CommitsCount = 0,
+                    LinesOfCodeAdded = 0,
+                    LinesOfCodeRemoved = 0,
+                    JiraUserKey = user.JiraUserKey
+                });
+            }
+
+            return dict;
         }
 
         private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
@@ -152,7 +162,7 @@ namespace Equilobe.DailyReport.SL
         {
             foreach (var repo in repoOptions)
             {
-                var pullRequests = BitBucketService.GetAllPullRequests(repo, lastSync);
+                var pullRequests = BitBucketService.GetPullRequests(repo, lastSync);
 
                 foreach (var pr in pullRequests)
                 {
@@ -161,7 +171,7 @@ namespace Equilobe.DailyReport.SL
                     foreach (var comment in comments)
                     {
                         if (comment.User != null)
-                            usersEngagement[comment.User.DisplayName].CommentsCount++;
+                            usersEngagement[comment.User.Username].CommentsCount++;
                     }
                 }
             }
