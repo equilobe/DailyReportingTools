@@ -130,15 +130,24 @@ namespace Equilobe.DailyReport.SL
         private Dictionary<string, UserEngagement> GetUsersEngagementDefault(long instanceId)
         {
             var users = AdvancedSettingsDataService.GetUserMappings(instanceId);
+            var dict = new Dictionary<string, UserEngagement>();
 
-            return users.ToDictionary(p => p.JiraDisplayName, p => new UserEngagement
+            foreach (var user in users)
             {
-                CommentsCount = 0,
-                CommitsCount = 0,
-                LinesOfCodeAdded = 0,
-                LinesOfCodeRemoved = 0,
-                JiraUserKey = p.JiraUserKey
-            });
+                if (!user.SourceControlUsernames.Any())
+                    continue;
+
+                dict.Add(user.SourceControlUsernames.First(), new UserEngagement
+                {
+                    CommentsCount = 0,
+                    CommitsCount = 0,
+                    LinesOfCodeAdded = 0,
+                    LinesOfCodeRemoved = 0,
+                    JiraUserKey = user.JiraUserKey
+                });
+            }
+
+            return dict;
         }
 
         private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
@@ -154,7 +163,7 @@ namespace Equilobe.DailyReport.SL
                     foreach (var comment in comments)
                     {
                         if (comment.User != null)
-                            usersEngagement[comment.User.DisplayName].CommentsCount++;
+                            usersEngagement[comment.User.Username].CommentsCount++;
                     }
                 }
             }
