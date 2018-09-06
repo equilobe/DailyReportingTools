@@ -131,7 +131,7 @@ namespace Equilobe.DailyReport.SL
         {
             var users = AdvancedSettingsDataService.GetUserMappings(instanceId);
 
-            return users.ToDictionary(p => p.JiraDisplayName, p => new UserEngagement //not unique
+            return users.ToDictionary(p => p.JiraDisplayName, p => new UserEngagement
             {
                 CommentsCount = 0,
                 CommitsCount = 0,
