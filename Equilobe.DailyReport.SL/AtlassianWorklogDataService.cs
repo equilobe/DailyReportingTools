@@ -11,14 +11,20 @@ namespace Equilobe.DailyReport.SL
     public class AtlassianWorklogDataService : IAtlassianWorklogDataService
     {
         #region IAtlassianWorklogDataService implementation
-        public Dictionary<long, List<AtlassianWorklog>> GetAtlassianWorklogsByUserIds(long instanceId, List<long> usersIds)
+        public List<InstanceWorklogs> GetAtlassianWorklogsByUserIds(long instanceId, List<long> usersIds)
         {
             using (var db = new ReportsDb())
             {
                 return db.AtlassianWorklogs
                     .Where(p => usersIds.Contains(p.AtlassianUserId))
                     .GroupBy(p => p.AtlassianUserId)
-                    .ToDictionary(p => p.Key, p => p.ToList());
+                    .AsEnumerable()
+                    .Select(p => new InstanceWorklogs
+                    {
+                        Id = p.Key,
+                        Worklogs = p.ToList()
+                    })
+                    .ToList();
             }
         }
 
