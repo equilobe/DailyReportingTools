@@ -16,7 +16,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public DateTime StartedAt { get; set; }
         public long TimeSpentInSeconds { get; set; }
 
-        public virtual InstalledInstance InstalledInstance { get; set; }
         public virtual AtlassianUser AtlassianUser { get; set; }
     }
 }
