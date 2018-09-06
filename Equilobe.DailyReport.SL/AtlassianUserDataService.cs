@@ -94,7 +94,7 @@ namespace Equilobe.DailyReport.SL
                 foreach (var user in users)
                 {
                     var from = DateTime.UtcNow.AddMonths(-1).ToOriginalTimeZone(context.OffsetFromUtc);
-                    var worklogList = worklogs.FirstOrDefault(p => p.Id == user.Id);
+                    var worklogList = worklogs.FirstOrDefault(p => p.AtlassianUserId == user.Id);
 
                     user.IsStalling = worklogList == null ?
                         true :

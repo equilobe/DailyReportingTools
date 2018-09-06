@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.Models.Dashboard
 {
-    public class InstanceWorklogs
+    public class AtlassianUserWorklogs
     {
-        public long Id { get; set; }
+        public long AtlassianUserId { get; set; }
         public List<AtlassianWorklog> Worklogs { get; set; }
     }
 }
