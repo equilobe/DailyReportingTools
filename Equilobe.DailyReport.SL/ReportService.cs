@@ -142,6 +142,14 @@ namespace Equilobe.DailyReport.SL
 
         private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
         {
+            UpdateEngagementStatsWithComments(repoOptions, lastSync, usersEngagement);
+            UpdateEngagementStatsWithCommits(repoOptions, lastSync, usersEngagement);
+
+            return usersEngagement;
+        }
+
+        private void UpdateEngagementStatsWithComments(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        {
             foreach (var repo in repoOptions)
             {
                 var pullRequests = BitBucketService.GetAllPullRequests(repo, lastSync);
@@ -157,8 +165,19 @@ namespace Equilobe.DailyReport.SL
                     }
                 }
             }
+        }
 
-            return usersEngagement;
+        private void UpdateEngagementStatsWithCommits(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        {
+            foreach (var repo in repoOptions)
+            {
+                var commits = BitBucketService.GetAllCommits(repo, lastSync, lastSync.AddDays(1));
+
+                foreach (var commit in commits)
+                {
+                    //TODO
+                }
+            }
         }
 
         private Dictionary<long, UserEngagement> ToEngagementByAtlassianUserId(Dictionary<string, UserEngagement> todayEngagement, long instanceId)
