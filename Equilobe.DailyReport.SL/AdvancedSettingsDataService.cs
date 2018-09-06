@@ -14,52 +14,25 @@ namespace Equilobe.DailyReport.SL
         #region IAdvancedSettingsDataService implementation
         public List<SourceControlOptions> GetAllReposSourceControlOptions(long instanceId)
         {
-            var sourceControlOptions = new List<SourceControlOptions>();
+            var advancedReportSettings = GetInstancePolicyStrings(instanceId);
 
-            using (var db = new ReportsDb())
-            {
-                var policyStrings = GetInstancePolicyStrings(instanceId);
+            if (!advancedReportSettings.Any())
+                return new List<SourceControlOptions>();
 
-                if (!policyStrings.Any())
-                    return sourceControlOptions;
-
-                foreach (var policyString in policyStrings)
-                {
-                    var advancedSettings = new AdvancedReportSettings();
-
-                    Deserialization.XmlDeserialize<AdvancedReportSettings>(policyString)
-                        .CopyPropertiesOnObjects(advancedSettings);
-
-                    sourceControlOptions.Add(advancedSettings.SourceControlOptions);
-                }
-            }
-
-            return sourceControlOptions;
+            return advancedReportSettings
+                .Select(p => p.SourceControlOptions)
+                .ToList();
         }
 
         public List<User> GetUserMappings(long instanceId)
         {
-            var users = new List<User>();
+            var advancedReportSettings = GetInstancePolicyStrings(instanceId);
 
-            using (var db = new ReportsDb())
-            {
-                var policyStrings = GetInstancePolicyStrings(instanceId);
+            if (!advancedReportSettings.Any())
+                return new List<User>();
 
-                if (!policyStrings.Any())
-                    return users;
-
-                foreach (var policyString in policyStrings)
-                {
-                    var advancedSettings = new AdvancedReportSettings();
-
-                    Deserialization.XmlDeserialize<AdvancedReportSettings>(policyString)
-                        .CopyPropertiesOnObjects(advancedSettings);
-
-                    users.AddRange(advancedSettings.UserOptions);
-                }
-            }
-
-            return users
+            return advancedReportSettings
+                .SelectMany(p => p.UserOptions)
                 .GroupBy(p => p.JiraUserKey)
                 .Select(p => p.FirstOrDefault())
                 .ToList();
@@ -67,16 +40,31 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
-        private List<string> GetInstancePolicyStrings(long instanceId)
+        private List<AdvancedReportSettings> GetInstancePolicyStrings(long instanceId)
         {
             using (var db = new ReportsDb())
             {
-                return db.BasicSettings
+                var policies = db.BasicSettings
                     .Where(p => p.InstalledInstanceId == instanceId)
                     .Where(p => p.SerializedAdvancedSettings != null)
                     .Select(p => p.SerializedAdvancedSettings.PolicyString)
                     .ToList();
+
+                return policies
+                    .Where(p => p.Any())
+                    .Select(ToAdvancedReportSettings)
+                    .ToList();
             }
+        }
+
+        private AdvancedReportSettings ToAdvancedReportSettings(string policy)
+        {
+            var advancedSettings = new AdvancedReportSettings();
+
+            Deserialization.XmlDeserialize<AdvancedReportSettings>(policy)
+                .CopyPropertiesOnObjects(advancedSettings);
+
+            return advancedSettings;
         }
         #endregion
     }
