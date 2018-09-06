@@ -1,7 +1,7 @@
 ﻿using Equilobe.DailyReport.Models.BitBucket;
 using Equilobe.DailyReport.Models.Interfaces;
 using RestSharp;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Equilobe.DailyReport.BL.BitBucket
 {
@@ -50,6 +50,14 @@ namespace Equilobe.DailyReport.BL.BitBucket
             var request = new RestRequest(BitBucketApiUrls.PullRequestComments(owner, repository, pullRequestId, createdOn, page));
 
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequestComment>>(Client, request);
+        }
+
+        public List<DiffStat> GetCommitDiffStats(string owner, string repository, string commitHash)
+        {
+            var request = new RestRequest(BitBucketApiUrls.CommitDiffs(owner, repository, commitHash));
+
+            return RestApiHelper.ResolveRequest<BitBucketResponsePage<DiffStat>>(Client, request)
+                .Values;
         }
     }
 }

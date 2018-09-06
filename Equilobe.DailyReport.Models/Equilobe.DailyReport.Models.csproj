@@ -57,10 +57,12 @@
     <Compile Include="BitBucket\BitBucketResponsePage.cs" />
     <Compile Include="BitBucket\Commit.cs" />
     <Compile Include="BitBucket\CommitAuthor.cs" />
+    <Compile Include="BitBucket\CommitInfo.cs" />
     <Compile Include="BitBucket\CommitParent.cs" />
     <Compile Include="BitBucket\Author.cs" />
     <Compile Include="BitBucket\Branch.cs" />
     <Compile Include="BitBucket\Contributor.cs" />
+    <Compile Include="BitBucket\DiffStat.cs" />
     <Compile Include="BitBucket\PullRequestComment.cs" />
     <Compile Include="BitBucket\PullRequestCommit.cs" />
     <Compile Include="BitBucket\Link.cs" />

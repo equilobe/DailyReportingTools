@@ -26,5 +26,10 @@
         {
             return string.Format("teams/{0}/members?page={1}", team, page);
         }
+
+        public static string CommitDiffs(string owner, string repository, string commitHash)
+        {
+            return string.Format("repositories/{0}/{1}/diffstat/{2}?pagelen=5000", owner, repository, commitHash);
+        }
     }
 }

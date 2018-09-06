@@ -185,7 +185,15 @@ namespace Equilobe.DailyReport.SL
 
                 foreach (var commit in commits)
                 {
-                    //TODO
+                    var diffStats = BitBucketService.GetCommitDiffStats(repo, commit.Hash);
+
+                    usersEngagement[commit.Author.User.Username].CommitsCount++;
+
+                    foreach (var diff in diffStats)
+                    {
+                        usersEngagement[commit.Author.User.Username].LinesOfCodeAdded = diff.LinesAdded;
+                        usersEngagement[commit.Author.User.Username].LinesOfCodeRemoved = diff.LinesRemoved;
+                    }
                 }
             }
         }
