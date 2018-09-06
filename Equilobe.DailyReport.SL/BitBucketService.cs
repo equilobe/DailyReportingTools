@@ -19,12 +19,12 @@ namespace Equilobe.DailyReport.SL
             var credentials = options.Credentials;
             var client = GetClient(credentials);
             var page = 1;
-            var created = lastSync.ToString("yyyy-MM-dd");
+            var createdOn = lastSync.ToString("yyyy-MM-dd");
             var comments = new List<PullRequestComment>();
 
             while (true)
             {
-                var commentsPage = client.GetPullRequestComments(options.RepoOwner, options.Repo, pullRequestId, created, page);
+                var commentsPage = client.GetPullRequestComments(options.RepoOwner, options.Repo, pullRequestId, createdOn, page);
 
                 if (commentsPage.Values != null)
                     comments.AddRange(commentsPage.Values);
@@ -50,13 +50,13 @@ namespace Equilobe.DailyReport.SL
         {
             var credentials = sourceControlOptions.Credentials;
             var client = GetClient(credentials);
-            var updated = lastSync.HasValue ? lastSync.Value.ToString("yyyy-MM-dd") : null;
+            var updatedOn = lastSync.HasValue ? lastSync.Value.ToString("yyyy-MM-dd") : null;
             var pullRequests = new List<PullRequest>();
             var page = 1;
 
             while (true)
             {
-                var pullRequestPage = client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, updated, page);
+                var pullRequestPage = client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, updatedOn, page);
 
                 if (pullRequestPage.Values != null)
                     pullRequests.AddRange(pullRequestPage.Values);

@@ -22,11 +22,11 @@ namespace Equilobe.DailyReport.BL.BitBucket
         {
         }
 
-        public BitBucketResponsePage<PullRequest> GetPullRequests(string owner, string repository, string updated, int page)
+        public BitBucketResponsePage<PullRequest> GetPullRequests(string owner, string repository, string updatedOn, int page)
         {
-            var request = updated == null ?
+            var request = updatedOn == null ?
                 new RestRequest(BitBucketApiUrls.PullRequests(owner, repository, page), Method.GET) :
-                new RestRequest(BitBucketApiUrls.PullRequestsUpdated(owner, repository, updated, page));
+                new RestRequest(BitBucketApiUrls.PullRequestsUpdated(owner, repository, updatedOn, page));
 
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequest>>(Client, request);
         }
@@ -45,9 +45,9 @@ namespace Equilobe.DailyReport.BL.BitBucket
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<Contributor>>(Client, request);
         }
 
-        public BitBucketResponsePage<PullRequestComment> GetPullRequestComments(string owner, string repository, int pullRequestId, string created, int page)
+        public BitBucketResponsePage<PullRequestComment> GetPullRequestComments(string owner, string repository, int pullRequestId, string createdOn, int page)
         {
-            var request = new RestRequest(BitBucketApiUrls.PullRequestComments(owner, repository, pullRequestId, created, page));
+            var request = new RestRequest(BitBucketApiUrls.PullRequestComments(owner, repository, pullRequestId, createdOn, page));
 
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequestComment>>(Client, request);
         }
