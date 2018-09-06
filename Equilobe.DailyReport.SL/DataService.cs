@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
-using System.Net.Http;
 using Equilobe.DailyReport.Models.PayPal;
 using Equilobe.DailyReport.Models.Data;
 using System.Transactions;
@@ -482,70 +481,7 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public List<SourceControlOptions> GetAllReposSourceControlOptions(long instanceId)
-        {
-            var sourceControlOptions = new List<SourceControlOptions>();
-
-            using (var db = new ReportsDb())
-            {
-                var policyStrings = GetInstancePolicyStrings(instanceId);
-
-                if (!policyStrings.Any())
-                    return sourceControlOptions;
-
-                foreach (var policyString in policyStrings)
-                {
-                    var advancedSettings = new AdvancedReportSettings();
-
-                    Deserialization.XmlDeserialize<AdvancedReportSettings>(policyString)
-                        .CopyPropertiesOnObjects(advancedSettings);
-
-                    sourceControlOptions.Add(advancedSettings.SourceControlOptions);
-                }
-            }
-
-            return sourceControlOptions;
-        }
-
-        public List<User> GetInstanceUsers(long instanceId)
-        {
-            var users = new List<User>();
-
-            using (var db = new ReportsDb())
-            {
-                var policyStrings = GetInstancePolicyStrings(instanceId);
-
-                if (!policyStrings.Any())
-                    return users;
-
-                foreach (var policyString in policyStrings)
-                {
-                    var advancedSettings = new AdvancedReportSettings();
-
-                    Deserialization.XmlDeserialize<AdvancedReportSettings>(policyString)
-                        .CopyPropertiesOnObjects(advancedSettings);
-
-                    users.AddRange(advancedSettings.UserOptions);
-                }
-            }
-
-            return users;
-        }
-
         #region helpers
-        private List<string> GetInstancePolicyStrings(long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                return db.BasicSettings
-                    .Include(p => p.SerializedAdvancedSettings)
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .Where(p => p.SerializedAdvancedSettings != null)
-                    .Select(p => p.SerializedAdvancedSettings.PolicyString)
-                    .ToList();
-            }
-        }
-
         string GetTimeZoneIdFromProjectKey(string uniqueProjcetKey)
         {
             using (var db = new ReportsDb())

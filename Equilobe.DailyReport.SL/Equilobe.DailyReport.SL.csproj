@@ -107,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedSettingsDataService.cs" />
     <Compile Include="ApplicationUserManager.cs" />
     <Compile Include="AtlassianUserDataService.cs" />
     <Compile Include="AtlassianWorklogDataService.cs" />

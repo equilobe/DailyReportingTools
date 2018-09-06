@@ -40,13 +40,13 @@ namespace Equilobe.DailyReport.SL
 
         public Log GetLog(ISourceControlContext context)
         {
-            var pullRequests = GetAllPullRequests(context.SourceControlOptions);
+            var pullRequests = GetPullRequests(context.SourceControlOptions);
             var commits = GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate);
 
             return BitBucketLogHelper.LoadLog(commits, pullRequests, context.FromDate);
         }
 
-        public List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions, DateTime? lastSync = null)
+        public List<PullRequest> GetPullRequests(SourceControlOptions sourceControlOptions, DateTime? lastSync = null)
         {
             var credentials = sourceControlOptions.Credentials;
             var client = GetClient(credentials);

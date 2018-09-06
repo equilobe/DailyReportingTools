@@ -6,6 +6,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
 {
     public interface IUserEngagementDataService : IService
     {
-        void UpdateUserEngagementStats(Dictionary<long, UserEngagement> engagement, DateTime day);
+        void UpdateUserEngagementStats(Dictionary<long, UserEngagement> engagement, DateTime day, TimeSpan offsetFromUtc);
     }
 }
