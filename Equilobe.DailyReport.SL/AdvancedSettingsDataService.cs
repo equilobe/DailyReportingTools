@@ -34,7 +34,7 @@ namespace Equilobe.DailyReport.SL
             return advancedReportSettings
                 .SelectMany(p => p.UserOptions)
                 .GroupBy(p => p.JiraUserKey)
-                .Select(p => p.FirstOrDefault())
+                .Select(p => ToUserMappings(p.ToList()))
                 .ToList();
         }
         #endregion
@@ -65,6 +65,22 @@ namespace Equilobe.DailyReport.SL
                 .CopyPropertiesOnObjects(advancedSettings);
 
             return advancedSettings;
+        }
+
+        private User ToUserMappings(List<User> userGroup)
+        {
+            var elem = userGroup.FirstOrDefault();
+
+            var sourceControlUsernames = userGroup
+                .SelectMany(p => p.SourceControlUsernames)
+                .ToList();
+
+            return new User
+            {
+                JiraUserKey = elem.JiraUserKey,
+                JiraDisplayName = elem.JiraDisplayName,
+                SourceControlUsernames = sourceControlUsernames
+            };
         }
         #endregion
     }

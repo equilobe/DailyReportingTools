@@ -132,16 +132,25 @@ namespace Equilobe.DailyReport.SL
             var users = AdvancedSettingsDataService.GetUserMappings(instanceId);
             var dict = new Dictionary<string, UserEngagement>();
 
-            return users
-                .Where(p => p.SourceControlUsernames.Any())
-                .ToDictionary(p => p.SourceControlUsernames.First(), p => new UserEngagement
+            foreach (var user in users)
+            {
+                foreach (var username in user.SourceControlUsernames)
                 {
-                    CommentsCount = 0,
-                    CommitsCount = 0,
-                    LinesOfCodeAdded = 0,
-                    LinesOfCodeRemoved = 0,
-                    JiraUserKey = p.JiraUserKey
-                });
+                    if (!dict.ContainsKey(username))
+                    {
+                        dict.Add(username, new UserEngagement
+                        {
+                            CommentsCount = 0,
+                            CommitsCount = 0,
+                            LinesOfCodeAdded = 0,
+                            LinesOfCodeRemoved = 0,
+                            JiraUserKey = user.JiraUserKey
+                        });
+                    }
+                }
+            }
+
+            return dict;
         }
 
         private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
