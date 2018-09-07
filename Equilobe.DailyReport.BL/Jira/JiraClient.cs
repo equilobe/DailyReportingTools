@@ -132,9 +132,11 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
-        public RestRequest GetIssuesWorklogByJql(string jql)
+        public JiraResponse<JiraIssue> GetIssuesIdsByJql(int startAt, string jql)
         {
-            return new RestRequest(JiraApiUrls.SearchSelectedField(jql), Method.GET);
+            var request = new RestRequest(JiraApiUrls.SearchIdField(startAt, jql), Method.GET);
+
+            return ResolveRequest<JiraResponse<JiraIssue>>(request);
         }
 
         public List<JiraBasicIssue> GetWorklogsForUser(string projectKey, string author, string fromDate, string toDate)
@@ -146,9 +148,50 @@ namespace Equilobe.DailyReport.BL.Jira
 
         public List<JiraIssue> GetWorklogsForMultipleUsers(string authors, string startDate)
         {
-            var request = GetIssuesWorklogByJql(JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
+            var result = new List<JiraIssue>();
 
-            return ResolveRequest<JiraResponse<JiraIssue>>(request).Issues;
+            var issues = GetIssueKeysForMultipleUsers(authors, startDate);
+
+            foreach (var issue in issues)
+            {
+                var response = GetIssueWorklogs(issue.Key);
+
+                if (response != null && response.Worklogs.Any())
+                {
+                    var jiraIssueWorklog = new JiraIssue
+                    {
+                        Id = issue.Id,
+                        Key = issue.Key,
+                        Fields = new JiraFields
+                        {
+                            Worklog = response
+                        }
+                    };
+
+                    result.Add(jiraIssueWorklog);
+                }
+            }
+
+            return result;
+        }
+
+        private List<JiraIssue> GetIssueKeysForMultipleUsers(string authors, string startDate)
+        {
+            var issues = new List<JiraIssue>();
+            var startAt = 0;
+            var hasMoreValues = true;
+
+            while (hasMoreValues)
+            {
+                var response = GetIssuesIdsByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
+
+                issues.AddRange(response.Issues);
+
+                hasMoreValues = startAt + Constants.MaximumIssuesPerPage < response.Total;
+                startAt += Constants.MaximumIssuesPerPage;
+            };
+
+            return issues;
         }
 
         public List<long> GetDeletedWorklogsIds(long sinceUnixTimestamp)

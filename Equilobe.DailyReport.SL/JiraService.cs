@@ -91,14 +91,14 @@ namespace Equilobe.DailyReport.SL
         public List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate)
         {
             var startDate = fromDate.ToString("yyyy-MM-dd");
-            var worklogAuthors = string.Join(",", authors);
+            var worklogAuthors = string.Join(",", authors).Replace("@", "\\\\u0040");
 
             return GetClient(context).GetWorklogsForMultipleUsers(worklogAuthors, startDate);
         }
 
         public List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since)
         {
-            var unixTimestamp = DateTimeHelpers.ToUnixTimestamp(since);
+            var unixTimestamp = DateTimeHelpers.ToUnixTimestamp(since.AddDays(-1));
 
             return GetClient(context).GetDeletedWorklogsIds(unixTimestamp);
         }
