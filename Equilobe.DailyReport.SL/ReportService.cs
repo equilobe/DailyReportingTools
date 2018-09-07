@@ -69,7 +69,7 @@ namespace Equilobe.DailyReport.SL
             SyncActivityAndEngagementMetrics(reportContext, DateTime.Today);
             UpdateLastSyncDate(reportContext.InstanceId);
 
-            CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
+            //CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
         }
         #endregion
 
@@ -170,7 +170,7 @@ namespace Equilobe.DailyReport.SL
 
                     foreach (var comment in comments)
                     {
-                        if (comment.User != null)
+                        if (comment.User != null && usersEngagement.ContainsKey(comment.User.Username))
                             usersEngagement[comment.User.Username].CommentsCount++;
                     }
                 }
@@ -186,13 +186,16 @@ namespace Equilobe.DailyReport.SL
                 foreach (var commit in commits)
                 {
                     var diffStats = BitBucketService.GetCommitDiffStats(repo, commit.Hash);
+                    var username = commit.Author.User.Username;
 
-                    usersEngagement[commit.Author.User.Username].CommitsCount++;
+                    usersEngagement[username].CommitsCount++;
 
                     foreach (var diff in diffStats)
                     {
-                        usersEngagement[commit.Author.User.Username].LinesOfCodeAdded = diff.LinesAdded;
-                        usersEngagement[commit.Author.User.Username].LinesOfCodeRemoved = diff.LinesRemoved;
+                        if (diff.LinesAdded < Constants.MaximumChangedLines)
+                            usersEngagement[username].LinesOfCodeAdded = diff.LinesAdded;
+
+                        usersEngagement[username].LinesOfCodeRemoved = diff.LinesRemoved;
                     }
                 }
             }
