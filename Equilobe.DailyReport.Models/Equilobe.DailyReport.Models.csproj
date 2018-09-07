@@ -181,6 +181,7 @@
     <Compile Include="Storage\AtlassianUser.cs" />
     <Compile Include="Storage\Payment.cs" />
     <Compile Include="Storage\Subscription.cs" />
+    <Compile Include="Storage\UserEngagementStats.cs" />
     <Compile Include="Storage\UserImage.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />

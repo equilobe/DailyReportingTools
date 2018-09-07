@@ -27,6 +27,6 @@ namespace Equilobe.DailyReport.Models.Storage
         public virtual ICollection<AtlassianUser> AtlassianUsers { get; set; }
 
 
-		public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }
