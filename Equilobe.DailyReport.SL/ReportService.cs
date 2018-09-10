@@ -134,17 +134,20 @@ namespace Equilobe.DailyReport.SL
 
             foreach (var user in users)
             {
-                if (!user.SourceControlUsernames.Any())
-                    continue;
-
-                dict.Add(user.SourceControlUsernames.First(), new UserEngagement
+                foreach (var username in user.SourceControlUsernames)
                 {
-                    CommentsCount = 0,
-                    CommitsCount = 0,
-                    LinesOfCodeAdded = 0,
-                    LinesOfCodeRemoved = 0,
-                    JiraUserKey = user.JiraUserKey
-                });
+                    if (!dict.ContainsKey(username))
+                    {
+                        dict.Add(username, new UserEngagement
+                        {
+                            CommentsCount = 0,
+                            CommitsCount = 0,
+                            LinesOfCodeAdded = 0,
+                            LinesOfCodeRemoved = 0,
+                            JiraUserKey = user.JiraUserKey
+                        });
+                    }
+                }
             }
 
             return dict;
@@ -205,14 +208,9 @@ namespace Equilobe.DailyReport.SL
         {
             var userKeys = todayEngagement.Values.Select(p => p.JiraUserKey).ToList();
             var users = AtlassianUserDataService.GetUserIdsByUserKeys(userKeys, instanceId);
-            var result = new Dictionary<long, UserEngagement>();
 
-            foreach (var engagement in todayEngagement)
-            {
-                result.Add(users[engagement.Value.JiraUserKey], engagement.Value);
-            }
-
-            return result;
+            return todayEngagement
+                .ToDictionary(p => users[p.Value.JiraUserKey], p => p.Value);
         }
 
         private ReportContext GetReportContext(long instanceId)

@@ -160,7 +160,8 @@ namespace Equilobe.DailyReport.SL
         private string GetSyncTaskArguments(string instanceUniqueKey)
         {
             var instance = DataService.GetInstanceByKey(instanceUniqueKey);
-            var apiEndpoint = "\"http://localhost:59489/api/dashboardSync?instanceUniqueKey=" + instanceUniqueKey + "\"";
+            var webBaseUrl = ConfigurationService.GetWebBaseUrl();
+            var apiEndpoint = "\"" + webBaseUrl + "/api/dashboardSync?instanceUniqueKey=" + instanceUniqueKey + "\"";
             var scriptPath = ConfigurationService.GetDashboardDataSyncScriptPath();
 
             return scriptPath + " -ApiEndpoint " + apiEndpoint;

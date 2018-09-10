@@ -75,6 +75,7 @@
     <Compile Include="Dashboard\DashboardItem.cs" />
     <Compile Include="Dashboard\DayWorklogGroup.cs" />
     <Compile Include="Dashboard\DashboardWorklog.cs" />
+    <Compile Include="Dashboard\AtlassianUserWorklogs.cs" />
     <Compile Include="Dashboard\ReportContext.cs" />
     <Compile Include="Dashboard\UserEngagement.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
