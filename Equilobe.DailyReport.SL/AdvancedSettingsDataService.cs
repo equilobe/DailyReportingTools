@@ -46,7 +46,7 @@ namespace Equilobe.DailyReport.SL
 
                 return policies
                     .Where(p => p.Any())
-                    .Select(XmlHelper.DeserializeXml<AdvancedReportSettings>)
+                    .Select(Deserialization.XmlDeserialize<AdvancedReportSettings>)
                     .ToList();
             }
         }

@@ -7,7 +7,7 @@
             return string.Format("repositories/{0}/{1}/pullrequests?page={2}", owner, repository, page);
         }
 
-        public static string PullRequestsUpdated(string owner, string repository, string updatedOn, int page)
+        public static string UpdatedPullRequests(string owner, string repository, string updatedOn, int page)
         {
             return string.Format("repositories/{0}/{1}/pullrequests?q=updated_on>{2}&page={3}", owner, repository, updatedOn, page);
         }
