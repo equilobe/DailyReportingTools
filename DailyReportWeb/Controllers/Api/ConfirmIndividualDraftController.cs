@@ -14,7 +14,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    public class ConfirmIndividualDraftController : ApiController
+    public class ConfirmIndividualDraftController : BaseApiController
     {
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }

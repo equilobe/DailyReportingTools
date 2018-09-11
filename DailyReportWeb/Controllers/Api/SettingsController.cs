@@ -12,7 +12,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class SettingsController : ApiController
+    public class SettingsController : BaseApiController
     {
         public ISettingsService SettingsService { get; set; }
         public IDataService DataService { get; set; }

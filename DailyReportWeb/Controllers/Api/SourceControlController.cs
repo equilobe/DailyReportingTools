@@ -8,7 +8,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class SourceControlController : ApiController
+    public class SourceControlController : BaseApiController
     {
         public ISourceControlService SourceControlService { get; set; }
 

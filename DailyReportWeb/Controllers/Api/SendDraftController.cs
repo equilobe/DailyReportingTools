@@ -13,7 +13,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    public class SendDraftController : ApiController
+    public class SendDraftController : BaseApiController
     {
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }

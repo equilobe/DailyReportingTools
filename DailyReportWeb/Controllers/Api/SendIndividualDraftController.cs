@@ -11,7 +11,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    public class SendIndividualDraftController : ApiController
+    public class SendIndividualDraftController : BaseApiController
     {
         public IReportExecutionService ReportExecutionService { get; set; }
         public IJiraService JiraService { get; set; }

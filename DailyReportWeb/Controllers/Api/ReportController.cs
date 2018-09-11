@@ -6,7 +6,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class ReportController : ApiController
+    public class ReportController : BaseApiController
     {
         public IReportService ReportService { get; set; }
 
