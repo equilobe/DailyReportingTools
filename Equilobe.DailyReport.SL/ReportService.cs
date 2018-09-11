@@ -69,7 +69,7 @@ namespace Equilobe.DailyReport.SL
             SyncActivityAndEngagementMetrics(reportContext, DateTime.Today);
             UpdateLastSyncDate(reportContext.InstanceId);
 
-            //CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
+            CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
         }
         #endregion
 
