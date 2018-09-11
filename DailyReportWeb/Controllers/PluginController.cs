@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
-    public class PluginController : Controller
+    public class PluginController : BaseMvcController
     {
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public IDataService DataService { get; set; }

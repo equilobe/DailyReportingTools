@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseMvcController
     {
         public ActionResult Index()
         {

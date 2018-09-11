@@ -199,6 +199,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
+    <Compile Include="Controllers\Api\BaseApiController.cs" />
     <Compile Include="Controllers\Api\DashboardSyncController.cs" />
     <Compile Include="Controllers\Api\ReportController.cs" />
     <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
@@ -213,6 +214,7 @@
     <Compile Include="Controllers\Api\TimezoneController.cs" />
     <Compile Include="Controllers\Api\WelcomeController.cs" />
     <Compile Include="Controllers\AvatarController.cs" />
+    <Compile Include="Controllers\BaseMvcController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IPNController.cs" />
     <Compile Include="Controllers\PluginController.cs" />

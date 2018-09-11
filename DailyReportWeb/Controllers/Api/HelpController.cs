@@ -9,7 +9,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class HelpController : ApiController
+    public class HelpController : BaseApiController
     {
         public SimpleResult Get()
         {
