@@ -280,13 +280,21 @@ namespace Equilobe.DailyReport.SL
                         CreatedAt = worklog.CreatedAt,
                         UpdatedAt = worklog.UpdatedAt,
                         StartedAt = worklog.StartedAt,
-                        TimeSpentInSeconds = worklog.TimeSpentSeconds,
+                        TimeSpentInSeconds = ToRoundedTime(worklog.TimeSpentSeconds),
                         AtlassianUserId = user.Id
                     });
                 }
             }
 
             return worklogs;
+        }
+
+        private long ToRoundedTime(long seconds)
+        {
+            if (seconds % 60 == 0)
+                return seconds;
+
+            return (long)Math.Round(seconds / 60d, 0) * 60;
         }
         #endregion
     }
