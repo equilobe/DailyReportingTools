@@ -188,17 +188,18 @@ namespace Equilobe.DailyReport.SL
 
                 foreach (var commit in commits)
                 {
-                    var diffStats = BitBucketService.GetCommitDiffStats(repo, commit.Hash);
+                    var filesDiffStats = BitBucketService.GetCommitDiffStats(repo, commit.Hash);
                     var username = commit.Author.User.Username;
 
                     usersEngagement[username].CommitsCount++;
 
-                    foreach (var diff in diffStats)
+                    foreach (var fileDiff in filesDiffStats)
                     {
-                        if (diff.LinesAdded < Constants.MaximumChangedLines)
-                            usersEngagement[username].LinesOfCodeAdded = diff.LinesAdded;
+                        if (fileDiff.LinesAdded < Constants.MaximumChangedLines)
+                            usersEngagement[username].LinesOfCodeAdded += fileDiff.LinesAdded;
 
-                        usersEngagement[username].LinesOfCodeRemoved = diff.LinesRemoved;
+                        if (fileDiff.LinesRemoved < Constants.MaximumChangedLines)
+                            usersEngagement[username].LinesOfCodeRemoved += fileDiff.LinesRemoved;
                     }
                 }
             }
