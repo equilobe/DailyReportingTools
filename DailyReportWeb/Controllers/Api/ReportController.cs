@@ -5,7 +5,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    [Authorize]
+    [AllowAnonymous]
     public class ReportController : BaseApiController
     {
         public IReportService ReportService { get; set; }
