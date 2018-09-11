@@ -26,7 +26,7 @@ namespace Equilobe.DailyReport.BL.BitBucket
         {
             var request = updatedOn == null ?
                 new RestRequest(BitBucketApiUrls.PullRequests(owner, repository, page), Method.GET) :
-                new RestRequest(BitBucketApiUrls.PullRequestsUpdated(owner, repository, updatedOn, page));
+                new RestRequest(BitBucketApiUrls.UpdatedPullRequests(owner, repository, updatedOn, page));
 
             return RestApiHelper.ResolveRequest<BitBucketResponsePage<PullRequest>>(Client, request);
         }

@@ -16,9 +16,6 @@ namespace Equilobe.DailyReport.SL
         {
             var advancedReportSettings = GetInstancePolicyStrings(instanceId);
 
-            if (!advancedReportSettings.Any())
-                return new List<SourceControlOptions>();
-
             return advancedReportSettings
                 .Select(p => p.SourceControlOptions)
                 .ToList();
@@ -27,9 +24,6 @@ namespace Equilobe.DailyReport.SL
         public List<User> GetUserMappings(long instanceId)
         {
             var advancedReportSettings = GetInstancePolicyStrings(instanceId);
-
-            if (!advancedReportSettings.Any())
-                return new List<User>();
 
             return advancedReportSettings
                 .SelectMany(p => p.UserOptions)
@@ -52,24 +46,14 @@ namespace Equilobe.DailyReport.SL
 
                 return policies
                     .Where(p => p.Any())
-                    .Select(ToAdvancedReportSettings)
+                    .Select(Deserialization.XmlDeserialize<AdvancedReportSettings>)
                     .ToList();
             }
         }
 
-        private AdvancedReportSettings ToAdvancedReportSettings(string policy)
-        {
-            var advancedSettings = new AdvancedReportSettings();
-
-            Deserialization.XmlDeserialize<AdvancedReportSettings>(policy)
-                .CopyPropertiesOnObjects(advancedSettings);
-
-            return advancedSettings;
-        }
-
         private User ToUserMappings(List<User> userGroup)
         {
-            var elem = userGroup.FirstOrDefault();
+            var elem = userGroup.First();
 
             var sourceControlUsernames = userGroup
                 .SelectMany(p => p.SourceControlUsernames)
