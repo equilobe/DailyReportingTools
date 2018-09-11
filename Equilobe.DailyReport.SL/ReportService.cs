@@ -165,7 +165,7 @@ namespace Equilobe.DailyReport.SL
 
                     foreach (var comment in comments)
                     {
-                        if (comment.User != null)
+                        if (comment.User != null && usersEngagement.ContainsKey(comment.User.Username))
                             usersEngagement[comment.User.Username].CommentsCount++;
                     }
                 }
