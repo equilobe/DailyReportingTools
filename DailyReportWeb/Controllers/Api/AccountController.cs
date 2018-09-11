@@ -20,6 +20,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
+    [ExceptionHandling]
     public class AccountController : ApiController
     {
         public IDataService DataService { get; set; }
