@@ -209,12 +209,12 @@ namespace Equilobe.DailyReport.SL
 
         private List<DateTime> GetLastBusinessDaysOfWork(ReportContext filter)
         {
-            var numberOfDays = DateTime.Today.ToOriginalTimeZone(filter.OffsetFromUtc).Subtract(filter.BusinessDaysAgo).Days;
-            var today = DateTime.Today.ToOriginalTimeZone(filter.OffsetFromUtc);
+            var yesterday = DateTime.Today.AddDays(-1).ToOriginalTimeZone(filter.OffsetFromUtc);
+            var numberOfDays = yesterday.Subtract(filter.BusinessDaysAgo).Days;
 
             var days = Enumerable
                 .Range(0, numberOfDays)
-                .Select(p => today.AddDays(-p).Date)
+                .Select(p => yesterday.AddDays(-p).Date)
                 .Where(p => p.DayOfWeek != DayOfWeek.Saturday && p.DayOfWeek != DayOfWeek.Sunday)
                 .Take(Constants.NumberOfDaysForWorklog)
                 .ToList();

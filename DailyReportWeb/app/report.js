@@ -44,6 +44,14 @@
                 return moment(date).format("DD/MMM");
             }
         }])
+        .filter('neatFirstDate', [function () {
+            return function (date) {
+                return moment(date).calendar(null, {
+                    lastDay: '[Yesterday]',
+                    lastWeek: 'dddd'
+                });
+            }
+        }])
         .filter('neatDuration', [function () {
             return function (seconds) {
                 var hours = Math.floor(seconds / 3600),

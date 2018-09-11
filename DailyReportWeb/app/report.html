@@ -15,8 +15,8 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <table width="100%">
-                            <tr>
-                                <td valign="middle" align="center">
+                            <tr class="row">
+                                <td valign="middle" align="center" class="col-md-6">
                                     <img class="img-circle border" src="{{ dashboardItem.avatarUrl }}" />
                                     <br />
                                     <strong>{{ dashboardItem.displayName }}</strong>
@@ -24,20 +24,20 @@
                                     <br />
                                     <br />
                                     <div class="text-large">
-                                        {{ dashboardItem.worklogs[0].date | neatDate }}
+                                        {{ dashboardItem.worklogs[0].date | neatFirstDate }}
                                         <br />
                                         <span ng-class="{'text-color-red': dashboardItem.worklogs[0].totalTimeSpentInSeconds == 0}">
                                             {{ dashboardItem.worklogs[0].totalTimeSpentInSeconds | neatDuration }}
                                         </span>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="col-md-6">
                                     <table class="table">
                                         <tr ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0">
                                             <td>
                                                 {{ worklogGroup.date | neatDate }}
                                             </td>
-                                            <td ng-class="{'text-color-red': worklogGroup.totalTimeSpentInSeconds == 0}">
+                                            <td ng-class="{'text-color-red': worklogGroup.totalTimeSpentInSeconds == 0}" align="center">
                                                 {{ worklogGroup.totalTimeSpentInSeconds | neatDuration }}
                                             </td>
                                         </tr>
