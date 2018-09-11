@@ -107,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedSettingsDataService.cs" />
     <Compile Include="ApplicationUserManager.cs" />
     <Compile Include="AtlassianUserDataService.cs" />
     <Compile Include="AtlassianWorklogDataService.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="TaskSchedulerService.cs" />
     <Compile Include="TimeZoneService.cs" />
     <Compile Include="UserAvatarService.cs" />
+    <Compile Include="UserEngagementDataService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Equilobe.DailyReport.BL\Equilobe.DailyReport.BL.csproj">

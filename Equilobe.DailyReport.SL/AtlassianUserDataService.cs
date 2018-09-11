@@ -29,6 +29,18 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public Dictionary<string, long> GetUserIdsByUserKeys(List<string> userKeys, long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.AtlassianUsers
+                    .Where(p => userKeys.Contains(p.Key))
+                    .Where(p => p.InstalledInstanceId == instanceId)
+                    .GroupBy(p => p.Key)
+                    .ToDictionary(p => p.Key, p => p.Select(q => q.Id).FirstOrDefault());
+            }
+        }
+
         public void SyncAtlassianUsers(List<AtlassianUser> users, ReportContext context)
         {
             UpdateAtlassianUsers(context.InstanceId, users);

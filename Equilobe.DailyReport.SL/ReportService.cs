@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Equilobe.DailyReport.Utils;
+using Equilobe.DailyReport.Models.Policy;
 
 namespace Equilobe.DailyReport.SL
 {
@@ -19,6 +20,9 @@ namespace Equilobe.DailyReport.SL
         public ITaskSchedulerService TaskSchedulerService { get; set; }
         public IAtlassianUserDataService AtlassianUserDataService { get; set; }
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
+        public IBitBucketService BitBucketService { get; set; }
+        public IUserEngagementDataService UserEngagementDataService { get; set; }
+        public IAdvancedSettingsDataService AdvancedSettingsDataService { get; set; }
 
         #region IReportService Implementation
         public List<DashboardItem> GetDashboardData(long instanceId)
@@ -62,6 +66,7 @@ namespace Equilobe.DailyReport.SL
 
             SyncAtlassianUsers(reportContext);
             SyncAtlassianWorklogs(reportContext);
+            SyncActivityAndEngagementMetrics(reportContext, DateTime.Today);
             UpdateLastSyncDate(reportContext.InstanceId);
 
             CreateOrUpdateSyncScheduleTask(reportContext.InstanceId);
@@ -81,11 +86,24 @@ namespace Equilobe.DailyReport.SL
         private void SyncAtlassianWorklogs(ReportContext context)
         {
             var lastSync = GetLastSyncDate(context.InstanceId);
-
             var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, lastSync);
             var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
 
             AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
+        }
+
+        private void SyncActivityAndEngagementMetrics(ReportContext context, DateTime day)
+        {
+            var repoOptions = AdvancedSettingsDataService.GetAllReposSourceControlOptions(context.InstanceId);
+
+            if (!repoOptions.Any())
+                return;
+
+            var usersEngagement = GetUsersEngagementDefault(context.InstanceId);
+            var todayEngagement = GetTodayEngagementStats(repoOptions, day, usersEngagement);
+            var engagementStats = ToEngagementByAtlassianUserId(todayEngagement, context.InstanceId);
+
+            UserEngagementDataService.UpdateUserEngagementStats(engagementStats, day, context.OffsetFromUtc);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -109,6 +127,62 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
+        private Dictionary<string, UserEngagement> GetUsersEngagementDefault(long instanceId)
+        {
+            var users = AdvancedSettingsDataService.GetUserMappings(instanceId);
+            var dict = new Dictionary<string, UserEngagement>();
+
+            foreach (var user in users)
+            {
+                foreach (var username in user.SourceControlUsernames)
+                {
+                    if (!dict.ContainsKey(username))
+                    {
+                        dict.Add(username, new UserEngagement
+                        {
+                            CommentsCount = 0,
+                            CommitsCount = 0,
+                            LinesOfCodeAdded = 0,
+                            LinesOfCodeRemoved = 0,
+                            JiraUserKey = user.JiraUserKey
+                        });
+                    }
+                }
+            }
+
+            return dict;
+        }
+
+        private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        {
+            foreach (var repo in repoOptions)
+            {
+                var pullRequests = BitBucketService.GetPullRequests(repo, lastSync);
+
+                foreach (var pr in pullRequests)
+                {
+                    var comments = BitBucketService.GetPullRequestComments(repo, pr.Id, lastSync);
+
+                    foreach (var comment in comments)
+                    {
+                        if (comment.User != null)
+                            usersEngagement[comment.User.Username].CommentsCount++;
+                    }
+                }
+            }
+
+            return usersEngagement;
+        }
+
+        private Dictionary<long, UserEngagement> ToEngagementByAtlassianUserId(Dictionary<string, UserEngagement> todayEngagement, long instanceId)
+        {
+            var userKeys = todayEngagement.Values.Select(p => p.JiraUserKey).ToList();
+            var users = AtlassianUserDataService.GetUserIdsByUserKeys(userKeys, instanceId);
+
+            return todayEngagement
+                .ToDictionary(p => users[p.Value.JiraUserKey], p => p.Value);
+        }
+
         private ReportContext GetReportContext(long instanceId)
         {
             var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);

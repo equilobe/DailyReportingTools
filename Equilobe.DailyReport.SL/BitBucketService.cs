@@ -14,24 +14,49 @@ namespace Equilobe.DailyReport.SL
     {
         public IConfigurationService ConfigurationService { get; set; }
 
+        public List<PullRequestComment> GetPullRequestComments(SourceControlOptions options, int pullRequestId, DateTime lastSync)
+        {
+            var credentials = options.Credentials;
+            var client = GetClient(credentials);
+            var page = 1;
+            var createdOn = lastSync.ToString("yyyy-MM-dd");
+            var comments = new List<PullRequestComment>();
+
+            while (true)
+            {
+                var commentsPage = client.GetPullRequestComments(options.RepoOwner, options.Repo, pullRequestId, createdOn, page);
+
+                if (commentsPage.Values != null)
+                    comments.AddRange(commentsPage.Values);
+
+                if (commentsPage.Next == null)
+                    break;
+
+                page++;
+            }
+
+            return comments;
+        }
+
         public Log GetLog(ISourceControlContext context)
         {
-            var pullRequests = GetAllPullRequests(context.SourceControlOptions);
+            var pullRequests = GetPullRequests(context.SourceControlOptions);
             var commits = GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate);
 
             return BitBucketLogHelper.LoadLog(commits, pullRequests, context.FromDate);
         }
 
-        public List<PullRequest> GetAllPullRequests(SourceControlOptions sourceControlOptions)
+        public List<PullRequest> GetPullRequests(SourceControlOptions sourceControlOptions, DateTime? lastSync = null)
         {
             var credentials = sourceControlOptions.Credentials;
             var client = GetClient(credentials);
+            var updatedOn = lastSync.HasValue ? lastSync.Value.ToString("yyyy-MM-dd") : null;
             var pullRequests = new List<PullRequest>();
             var page = 1;
 
             while (true)
             {
-                var pullRequestPage = client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, page);
+                var pullRequestPage = client.GetPullRequests(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, updatedOn, page);
 
                 if (pullRequestPage.Values != null)
                     pullRequests.AddRange(pullRequestPage.Values);

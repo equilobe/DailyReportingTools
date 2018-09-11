@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
-using System.Net.Http;
 using Equilobe.DailyReport.Models.PayPal;
 using Equilobe.DailyReport.Models.Data;
 using System.Transactions;

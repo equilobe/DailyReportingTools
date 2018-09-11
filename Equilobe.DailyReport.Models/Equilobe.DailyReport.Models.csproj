@@ -61,6 +61,7 @@
     <Compile Include="BitBucket\Author.cs" />
     <Compile Include="BitBucket\Branch.cs" />
     <Compile Include="BitBucket\Contributor.cs" />
+    <Compile Include="BitBucket\PullRequestComment.cs" />
     <Compile Include="BitBucket\PullRequestCommit.cs" />
     <Compile Include="BitBucket\Link.cs" />
     <Compile Include="BitBucket\Markup.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Dashboard\DashboardWorklog.cs" />
     <Compile Include="Dashboard\AtlassianUserWorklogs.cs" />
     <Compile Include="Dashboard\ReportContext.cs" />
+    <Compile Include="Dashboard\UserEngagement.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\Enums.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />
+    <Compile Include="Interfaces\IAdvancedSettingsDataService.cs" />
     <Compile Include="Interfaces\IAtlassianUserDataService.cs" />
     <Compile Include="Interfaces\IAtlassianWorklogDataService.cs" />
     <Compile Include="Interfaces\IBitBucketService.cs" />
@@ -99,6 +102,7 @@
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Interfaces\IUserAvatarService.cs" />
+    <Compile Include="Interfaces\IUserEngagementDataService.cs" />
     <Compile Include="Jira\JiraDeletedWorklogs.cs" />
     <Compile Include="Jira\Comment.cs" />
     <Compile Include="Jira\FixVersion.cs" />
