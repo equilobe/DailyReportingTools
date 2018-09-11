@@ -14,6 +14,10 @@ namespace Equilobe.DailyReport.SL
         public Dictionary<string, string> UploadUsersAvatarsAndGetFilenames(List<AtlassianUser> users, ReportContext context)
         {
             var folderPath = ImageHelper.GetUserAvatarsFullPath();
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
             var userFileDict = new Dictionary<string, string>();
 
             foreach (var user in users)
