@@ -16,7 +16,7 @@
                     <div class="panel-body">
                         <table width="100%">
                             <tr class="row">
-                                <td valign="middle" align="center" class="col-md-6">
+                                <td valign="middle" align="center" class="col-md-5">
                                     <img class="img-circle border" src="{{ dashboardItem.avatarUrl }}" />
                                     <br />
                                     <strong>{{ dashboardItem.displayName }}</strong>
@@ -31,7 +31,7 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td class="col-md-6">
+                                <td class="col-md-7">
                                     <table class="table">
                                         <tr ng-repeat="worklogGroup in dashboardItem.worklogs" ng-if="$index > 0">
                                             <td>
