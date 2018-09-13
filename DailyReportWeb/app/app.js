@@ -17,9 +17,30 @@
             .when('/', {
                 redirectTo: '/app/welcome'
             })
+            .when('/app/instances/:instanceId/report/:hash', {
+                templateUrl: 'app/report.html',
+                controller: 'ReportCtrl as reportCtrl',
+                resolve: {
+                    report: function ($http, $location, $route) {
+                        var params = { instanceId: $route.current.params.instanceId, hash: $route.current.params.hash };
+
+                        $http.get('api/report/isDashboardAvailable', { params: params })
+                            .success(function (data) {
+                                if (!data)
+                                    $location.url('/app/signin');
+                            });
+                    }
+                }
+            })
             .when('/app/instances/:instanceId/report', {
                 templateUrl: 'app/report.html',
-                controller: 'ReportCtrl as reportCtrl'
+                controller: 'ReportCtrl as reportCtrl',
+                resolve: {
+                    report: function ($location) {
+                        if (!isAuth)
+                            $location.url('/app/signin');
+                    }
+                }
             })
             .otherwise({
                 redirectTo: '/'
@@ -51,7 +72,7 @@
         var getAccurateTimeZoneSuggestion = function (result) {
             // this is a hack so that the time zone id will not be mistaken as being part of the URL
             var timeZoneId = result.time_zone.replace(/\//g, '-');
-            $http.get("/api/timezone/" + timeZoneId)
+            $http.get("/api/timezone/getTimezoneById", { params: timeZoneId })
                  .success(function (response) {
                      $scope.timeZoneList = response.timeZoneList;
                      $scope.timeZone = response.suggestedTimeZone;

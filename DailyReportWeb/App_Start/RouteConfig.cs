@@ -45,16 +45,18 @@ namespace DailyReportWeb
 
         public static HttpConfiguration InitApiRoutes(this HttpConfiguration config)
         {
-			config.Routes.MapHttpRoute(
-				name: "Account",
-				routeTemplate: "api/account/{action}",
-				defaults: new { controller = "Account" }
-			);
+            config.Routes.MapHttpRoute(
+                name: "ActionApi",
+                routeTemplate: "api/{controller}/{action}",
+                defaults: new { },
+                constraints: new { action = @"^[a-zA-Z]+$" }
+            );
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new { id = RouteParameter.Optional },
+                constraints: new { id = @"^$|\d+"}
             );
 
             var jsonFormatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;

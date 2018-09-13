@@ -21,6 +21,16 @@ namespace Equilobe.DailyReport.SL
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
 
         #region IReportService Implementation
+        public bool IsDashboardAvailable(DashboardFilter filter)
+        {
+            var instance = DataService.GetInstance(filter.InstanceId);
+
+            if (string.IsNullOrEmpty(filter.Hash) || instance.Hash != filter.Hash)
+                return false;
+
+            return true;
+        }
+
         public List<DashboardItem> GetDashboardData(long instanceId)
         {
             var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);

@@ -16,6 +16,12 @@ namespace DailyReportWeb.Controllers.Api
             return ReportService.GetDashboardData(id);
         }
 
+        [HttpGet]
+        public bool IsDashboardAvailable([FromUri] DashboardFilter filter)
+        {
+            return ReportService.IsDashboardAvailable(filter);
+        }
+
         [HttpPost]
         public void Post(long id)
         {

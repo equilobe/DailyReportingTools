@@ -69,6 +69,7 @@
     <Compile Include="BitBucket\SourceOrDestination.cs" />
     <Compile Include="BitBucket\State.cs" />
     <Compile Include="BitBucket\Summary.cs" />
+    <Compile Include="Dashboard\DashboardFilter.cs" />
     <Compile Include="Dashboard\DashboardItem.cs" />
     <Compile Include="Dashboard\DayWorklogGroup.cs" />
     <Compile Include="Dashboard\DashboardWorklog.cs" />
