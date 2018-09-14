@@ -68,10 +68,11 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncUpdatedWorklogs(List<AtlassianWorklog> jiraWorklogs, long instanceId)
         {
-            var dbWorklogs = GetWorklogs(instanceId);
-
             using (var db = new ReportsDb())
             {
+                var dbWorklogs = db.AtlassianWorklogs
+                    .Where(p => p.InstalledInstanceId == instanceId);
+
                 foreach (var worklog in jiraWorklogs)
                 {
                     var dbWorklog = dbWorklogs.SingleOrDefault(p => p.JiraWorklogId == worklog.JiraWorklogId);
@@ -102,16 +103,6 @@ namespace Equilobe.DailyReport.SL
             dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
             dbWorklog.StartedAt = jiraWorklog.StartedAt;
             dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
-        }
-
-        private List<AtlassianWorklog> GetWorklogs(long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                return db.AtlassianWorklogs
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .ToList();
-            }
         }
 
         private DashboardWorklog ToDashboardWorklog(AtlassianWorklog worklog, string baseUrl)
