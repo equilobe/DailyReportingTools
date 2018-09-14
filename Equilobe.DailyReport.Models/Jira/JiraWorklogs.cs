@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Equilobe.DailyReport.Models.Jira
 {
     [DataContract]
-    public class JiraDeletedWorklogs
+    public class JiraWorklogs
     {
         [DataMember(Name = "since")]
         public long Since { get; set; }
@@ -19,11 +19,11 @@ namespace Equilobe.DailyReport.Models.Jira
         public bool IsLastPage { get; set; }
 
         [DataMember(Name = "values")]
-        public List<DeletedWorklog> Values { get; set; }
+        public List<WorklogSummary> Values { get; set; }
     }
 
     [DataContract]
-    public class DeletedWorklog
+    public class WorklogSummary
     {
         [DataMember(Name = "worklogId")]
         public long WorklogId { get; set; }

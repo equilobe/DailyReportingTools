@@ -198,7 +198,7 @@ namespace Equilobe.DailyReport.BL.Jira
         {
             var request = new RestRequest(JiraApiUrls.DeletedWorklogs(sinceUnixTimestamp), Method.GET);
 
-            return ResolveJiraRequest<JiraDeletedWorklogs>(request).Values?
+            return ResolveJiraRequest<JiraWorklogs>(request).Values?
                 .Select(p => p.WorklogId)
                 .ToList();
         }
