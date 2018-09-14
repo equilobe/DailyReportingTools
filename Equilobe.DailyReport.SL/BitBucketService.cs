@@ -98,6 +98,13 @@ namespace Equilobe.DailyReport.SL
                 .ToList();
         }
 
+        public List<DiffStat> GetCommitDiffStats(SourceControlOptions sourceControlOptions, string commitHash)
+        {
+            var client = GetClient(sourceControlOptions.Credentials);
+
+            return client.GetCommitDiffStats(sourceControlOptions.RepoOwner, sourceControlOptions.Repo, commitHash);
+        }
+
         public List<string> GetContributorsFromCommits(SourceControlContext context)
         {
             return GetAllCommits(context.SourceControlOptions, context.FromDate, context.ToDate)

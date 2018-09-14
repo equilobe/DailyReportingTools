@@ -155,6 +155,14 @@ namespace Equilobe.DailyReport.SL
 
         private Dictionary<string, UserEngagement> GetTodayEngagementStats(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
         {
+            UpdateEngagementStatsWithComments(repoOptions, lastSync, usersEngagement);
+            UpdateEngagementStatsWithCommits(repoOptions, lastSync, usersEngagement);
+
+            return usersEngagement;
+        }
+
+        private void UpdateEngagementStatsWithComments(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        {
             foreach (var repo in repoOptions)
             {
                 var pullRequests = BitBucketService.GetPullRequests(repo, lastSync);
@@ -170,8 +178,31 @@ namespace Equilobe.DailyReport.SL
                     }
                 }
             }
+        }
 
-            return usersEngagement;
+        private void UpdateEngagementStatsWithCommits(List<SourceControlOptions> repoOptions, DateTime lastSync, Dictionary<string, UserEngagement> usersEngagement)
+        {
+            foreach (var repo in repoOptions)
+            {
+                var commits = BitBucketService.GetAllCommits(repo, lastSync, lastSync.AddDays(1));
+
+                foreach (var commit in commits)
+                {
+                    var filesDiffStats = BitBucketService.GetCommitDiffStats(repo, commit.Hash);
+                    var username = commit.Author.User.Username;
+
+                    usersEngagement[username].CommitsCount++;
+
+                    foreach (var fileDiff in filesDiffStats)
+                    {
+                        if (fileDiff.LinesAdded < Constants.MaximumChangedLines)
+                            usersEngagement[username].LinesOfCodeAdded += fileDiff.LinesAdded;
+
+                        if (fileDiff.LinesRemoved < Constants.MaximumChangedLines)
+                            usersEngagement[username].LinesOfCodeRemoved += fileDiff.LinesRemoved;
+                    }
+                }
+            }
         }
 
         private Dictionary<long, UserEngagement> ToEngagementByAtlassianUserId(Dictionary<string, UserEngagement> todayEngagement, long instanceId)

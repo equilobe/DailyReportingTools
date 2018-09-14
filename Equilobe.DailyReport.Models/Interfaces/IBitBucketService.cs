@@ -14,5 +14,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
         List<Commit> GetAllCommits(SourceControlOptions sourceControlOptions, DateTime fromDate, DateTime toDate);
         List<string> GetContributorsFromCommits(SourceControlContext context);
         List<string> GetAllContributors(SourceControlOptions sourceControlOptions);
+        List<DiffStat> GetCommitDiffStats(SourceControlOptions sourceControlOptions, string commitHash);
     }
 }
