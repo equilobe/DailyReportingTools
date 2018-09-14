@@ -74,7 +74,7 @@ namespace Equilobe.DailyReport.SL
             {
                 foreach (var worklog in jiraWorklogs)
                 {
-                    var dbWorklog = dbWorklogs.Where(p => p.JiraWorklogId == worklog.JiraWorklogId).SingleOrDefault();
+                    var dbWorklog = dbWorklogs.SingleOrDefault(p => p.JiraWorklogId == worklog.JiraWorklogId);
 
                     if (dbWorklog == null)
                         db.AtlassianWorklogs.Add(worklog);
@@ -100,6 +100,7 @@ namespace Equilobe.DailyReport.SL
         {
             dbWorklog.Comment = jiraWorklog.Comment;
             dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
+            dbWorklog.StartedAt = jiraWorklog.StartedAt;
             dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
         }
 
