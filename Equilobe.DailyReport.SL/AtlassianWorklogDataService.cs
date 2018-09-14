@@ -43,22 +43,22 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void SyncAtlassianWroklogs(List<AtlassianWorklog> jiraWorklogs, List<long> deletedWorklogsIds, ReportContext context, DateTime lastSync)
+        public void SyncAtlassianWroklogs(List<AtlassianWorklog> jiraWorklogs, List<long> deletedWorklogsIds, long instanceId)
         {
-            UpdateDeletedWorklogs(deletedWorklogsIds, context, lastSync);
-            SyncUpdatedWorklogs(jiraWorklogs, context, lastSync);
+            UpdateDeletedWorklogs(deletedWorklogsIds, instanceId);
+            SyncUpdatedWorklogs(jiraWorklogs, instanceId);
         }
         #endregion
 
         #region Update methods
-        private void UpdateDeletedWorklogs(List<long> deletedWorklogsIds, ReportContext context, DateTime lastSync)
+        private void UpdateDeletedWorklogs(List<long> deletedWorklogsIds, long instanceId)
         {
             if (deletedWorklogsIds == null || !deletedWorklogsIds.Any())
                 return;
 
             using (var db = new ReportsDb())
             {
-                var dbWorklogs = GetAtlassianWorklogsByJiraIds(db, context.InstanceId, deletedWorklogsIds);
+                var dbWorklogs = GetAtlassianWorklogsByJiraIds(db, instanceId, deletedWorklogsIds);
 
                 db.AtlassianWorklogs.RemoveRange(dbWorklogs);
 
@@ -66,15 +66,16 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void SyncUpdatedWorklogs(List<AtlassianWorklog> jiraWorklogs, ReportContext context, DateTime lastSync)
+        private void SyncUpdatedWorklogs(List<AtlassianWorklog> jiraWorklogs, long instanceId)
         {
-            var dbWorklogs = GetWorklogs(context.InstanceId);
-
             using (var db = new ReportsDb())
             {
+                var dbWorklogs = db.AtlassianWorklogs
+                    .Where(p => p.InstalledInstanceId == instanceId);
+
                 foreach (var worklog in jiraWorklogs)
                 {
-                    var dbWorklog = dbWorklogs.Where(p => p.JiraWorklogId == worklog.JiraWorklogId).SingleOrDefault();
+                    var dbWorklog = dbWorklogs.SingleOrDefault(p => p.JiraWorklogId == worklog.JiraWorklogId);
 
                     if (dbWorklog == null)
                         db.AtlassianWorklogs.Add(worklog);
@@ -100,17 +101,8 @@ namespace Equilobe.DailyReport.SL
         {
             dbWorklog.Comment = jiraWorklog.Comment;
             dbWorklog.UpdatedAt = jiraWorklog.UpdatedAt;
+            dbWorklog.StartedAt = jiraWorklog.StartedAt;
             dbWorklog.TimeSpentInSeconds = jiraWorklog.TimeSpentInSeconds;
-        }
-
-        private List<AtlassianWorklog> GetWorklogs(long instanceId)
-        {
-            using (var db = new ReportsDb())
-            {
-                return db.AtlassianWorklogs
-                    .Where(p => p.InstalledInstanceId == instanceId)
-                    .ToList();
-            }
         }
 
         private DashboardWorklog ToDashboardWorklog(AtlassianWorklog worklog, string baseUrl)
