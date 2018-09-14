@@ -26,6 +26,7 @@
 
                 ctrl.actions.updateDashboardData = function () {
                     ctrl.isLoading = true;
+                    ctrl.data = {};
 
                     $http.post("/api/report/" + ctrl.instanceId)
                         .error(function () {
