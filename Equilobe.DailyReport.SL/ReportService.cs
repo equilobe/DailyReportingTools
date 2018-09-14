@@ -80,12 +80,10 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncAtlassianWorklogs(ReportContext context)
         {
-            var lastSync = GetLastSyncDate(context.InstanceId);
+            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, context.BusinessDaysAgo);
+            var jiraWorklogs = GetAtlassianWorklogs(context);
 
-            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, lastSync);
-            var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
-
-            AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
+            AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context.InstanceId);
         }
 
         private void UpdateLastSyncDate(long instanceId)
@@ -134,15 +132,14 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private List<AtlassianWorklog> GetAtlassianWorklogs(ReportContext context, DateTime lastSync)
+        private List<AtlassianWorklog> GetAtlassianWorklogs(ReportContext context)
         {
             var users = AtlassianUserDataService.GetAtlassianUsers(context.InstanceId, true);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
 
-            var fromDate = lastSync.ToOriginalTimeZone(context.OffsetFromUtc);
-            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(context.JiraRequestContext, userKeys, fromDate);
+            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(context.JiraRequestContext, userKeys, context.BusinessDaysAgo);
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, context.InstanceId);
 
             return worklogs;
