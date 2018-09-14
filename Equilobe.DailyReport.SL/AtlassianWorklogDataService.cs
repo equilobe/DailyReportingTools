@@ -43,22 +43,22 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        public void SyncAtlassianWroklogs(List<AtlassianWorklog> jiraWorklogs, List<long> deletedWorklogsIds, ReportContext context, DateTime lastSync)
+        public void SyncAtlassianWroklogs(List<AtlassianWorklog> jiraWorklogs, List<long> deletedWorklogsIds, long instanceId)
         {
-            UpdateDeletedWorklogs(deletedWorklogsIds, context, lastSync);
-            SyncUpdatedWorklogs(jiraWorklogs, context, lastSync);
+            UpdateDeletedWorklogs(deletedWorklogsIds, instanceId);
+            SyncUpdatedWorklogs(jiraWorklogs, instanceId);
         }
         #endregion
 
         #region Update methods
-        private void UpdateDeletedWorklogs(List<long> deletedWorklogsIds, ReportContext context, DateTime lastSync)
+        private void UpdateDeletedWorklogs(List<long> deletedWorklogsIds, long instanceId)
         {
             if (deletedWorklogsIds == null || !deletedWorklogsIds.Any())
                 return;
 
             using (var db = new ReportsDb())
             {
-                var dbWorklogs = GetAtlassianWorklogsByJiraIds(db, context.InstanceId, deletedWorklogsIds);
+                var dbWorklogs = GetAtlassianWorklogsByJiraIds(db, instanceId, deletedWorklogsIds);
 
                 db.AtlassianWorklogs.RemoveRange(dbWorklogs);
 
@@ -66,9 +66,9 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private void SyncUpdatedWorklogs(List<AtlassianWorklog> jiraWorklogs, ReportContext context, DateTime lastSync)
+        private void SyncUpdatedWorklogs(List<AtlassianWorklog> jiraWorklogs, long instanceId)
         {
-            var dbWorklogs = GetWorklogs(context.InstanceId);
+            var dbWorklogs = GetWorklogs(instanceId);
 
             using (var db = new ReportsDb())
             {
