@@ -13,13 +13,8 @@ namespace DailyReportWeb.Controllers.Api
         public DashboardPage Get([FromUri] DashboardFilter filter)
         {
             if (!ReportService.IsDashboardAvailable(filter))
-            {
-                return new DashboardPage
-                {
-                    IsAvailable = false
-                };
-            }
-            
+                return DashboardPage.Unavailable;
+
             return ReportService.GetDashboardData(filter.InstanceId);
         }
 
