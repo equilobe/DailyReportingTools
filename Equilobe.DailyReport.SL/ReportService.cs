@@ -25,7 +25,7 @@ namespace Equilobe.DailyReport.SL
         {
             var instance = DataService.GetInstance(filter.InstanceId);
 
-            if (filter.IsAuthenticated && (string.IsNullOrEmpty(filter.Hash) || instance.Hash != filter.Hash))
+            if (!filter.IsAuthenticated && (string.IsNullOrEmpty(filter.Hash) || instance.Hash != filter.Hash))
                 return false;
 
             return true;

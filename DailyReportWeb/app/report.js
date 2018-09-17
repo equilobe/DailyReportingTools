@@ -15,7 +15,7 @@
                     ctrl.isLoading = true;
                     var requestParams = { instanceId: ctrl.instanceId, hash: ctrl.hash, isAuthenticated: isAuth };
 
-                    $http.get("/api/report/", { params: requestParams })
+                    $http.get("/api/report/get", { params: requestParams })
                         .success(function (data) {
                             if (!data.isAvailable)
                                 $location.url('/app/signin');
