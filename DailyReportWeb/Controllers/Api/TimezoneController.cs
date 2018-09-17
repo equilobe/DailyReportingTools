@@ -23,7 +23,7 @@ namespace DailyReportWeb.Controllers.Api
         /// <param name="id">The id is the IANA time zone returned from the ajax call made to freegeoip.net. 
         /// NOTE: the id has all of the slashes ('/') replaced by '-'</param>
         /// <returns></returns>
-        public Equilobe.DailyReport.Models.TimeZone.TimeZones GetTimezoneById([FromUri] string id)
+        public Equilobe.DailyReport.Models.TimeZone.TimeZones Get(string id)
         {
             id = id.Replace('-', '/');
             return new Equilobe.DailyReport.Models.TimeZone.TimeZones()

@@ -45,11 +45,11 @@ namespace DailyReportWeb
 
         public static HttpConfiguration InitApiRoutes(this HttpConfiguration config)
         {
-            config.Routes.MapHttpRoute(
-                name: "Account",
-                routeTemplate: "api/account/{action}",
-                defaults: new { controller = "Account" }
-            );
+			config.Routes.MapHttpRoute(
+				name: "Account",
+				routeTemplate: "api/account/{action}",
+				defaults: new { controller = "Account" }
+			);
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
