@@ -1,6 +1,5 @@
 ﻿using Equilobe.DailyReport.Models.Dashboard;
 using Equilobe.DailyReport.Models.Interfaces;
-using System.Collections.Generic;
 using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
@@ -11,15 +10,17 @@ namespace DailyReportWeb.Controllers.Api
         public IReportService ReportService { get; set; }
 
         [HttpGet]
-        public List<DashboardItem> Get(long id)
+        public DashboardPage Get([FromUri] DashboardFilter filter)
         {
-            return ReportService.GetDashboardData(id);
-        }
-
-        [HttpGet]
-        public bool IsDashboardAvailable([FromUri] DashboardFilter filter)
-        {
-            return ReportService.IsDashboardAvailable(filter);
+            if (!ReportService.IsDashboardAvailable(filter))
+            {
+                return new DashboardPage
+                {
+                    IsAvailable = false
+                };
+            }
+            
+            return ReportService.GetDashboardData(filter.InstanceId);
         }
 
         [HttpPost]

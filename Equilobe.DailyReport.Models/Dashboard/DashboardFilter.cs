@@ -7,6 +7,9 @@ namespace Equilobe.DailyReport.Models.Dashboard
     {
         [DataMember]
         public long InstanceId { get; set; }
+
+        [DataMember]
+        public bool IsAuthenticated { get; set; }
         
         [DataMember]
         public string Hash { get; set; }

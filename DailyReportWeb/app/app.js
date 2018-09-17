@@ -19,18 +19,7 @@
             })
             .when('/app/instances/:instanceId/report/:hash', {
                 templateUrl: 'app/report.html',
-                controller: 'ReportCtrl as reportCtrl',
-                resolve: {
-                    report: function ($http, $location, $route) {
-                        var params = { instanceId: $route.current.params.instanceId, hash: $route.current.params.hash };
-
-                        $http.get('api/report/isDashboardAvailable', { params: params })
-                            .success(function (data) {
-                                if (!data)
-                                    $location.url('/app/signin');
-                            });
-                    }
-                }
+                controller: 'ReportCtrl as reportCtrl'
             })
             .when('/app/instances/:instanceId/report', {
                 templateUrl: 'app/report.html',
