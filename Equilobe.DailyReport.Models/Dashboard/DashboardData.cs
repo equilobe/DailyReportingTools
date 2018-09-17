@@ -2,18 +2,18 @@
 
 namespace Equilobe.DailyReport.Models.Dashboard
 {
-    public class DashboardPage
+    public class DashboardData
     {
         public bool IsAvailable { get; set; }
 
         public List<DashboardItem> Items { get; set; }
 
 
-        public static DashboardPage Unavailable
+        public static DashboardData Unavailable
         {
             get
             {
-                return new DashboardPage
+                return new DashboardData
                 {
                     IsAvailable = false,
                     Items = null

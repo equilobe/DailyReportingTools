@@ -10,10 +10,10 @@ namespace DailyReportWeb.Controllers.Api
         public IReportService ReportService { get; set; }
 
         [HttpGet]
-        public DashboardPage Get([FromUri] DashboardFilter filter)
+        public DashboardData Get([FromUri] DashboardFilter filter)
         {
             if (!ReportService.IsDashboardAvailable(filter))
-                return DashboardPage.Unavailable;
+                return DashboardData.Unavailable;
 
             return ReportService.GetDashboardData(filter.InstanceId);
         }

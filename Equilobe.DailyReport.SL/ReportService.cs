@@ -31,9 +31,9 @@ namespace Equilobe.DailyReport.SL
             return true;
         }
 
-        public DashboardPage GetDashboardData(long instanceId)
+        public DashboardData GetDashboardData(long instanceId)
         {
-            return new DashboardPage
+            return new DashboardData
             {
                 IsAvailable = true,
                 Items = GetDashboardItems(instanceId)
