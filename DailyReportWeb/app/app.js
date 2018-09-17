@@ -61,7 +61,7 @@
         var getAccurateTimeZoneSuggestion = function (result) {
             // this is a hack so that the time zone id will not be mistaken as being part of the URL
             var timeZoneId = result.time_zone.replace(/\//g, '-');
-            $http.get("/api/timezone/" + timeZoneId )
+            $http.get("/api/timezone/" + timeZoneId)
                  .success(function (response) {
                      $scope.timeZoneList = response.timeZoneList;
                      $scope.timeZone = response.suggestedTimeZone;
