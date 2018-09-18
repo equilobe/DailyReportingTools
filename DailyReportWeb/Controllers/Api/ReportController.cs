@@ -15,7 +15,7 @@ namespace DailyReportWeb.Controllers.Api
             if (!ReportService.IsDashboardAvailable(filter))
                 return DashboardData.Unavailable();
 
-            return ReportService.GetDashboardData(filter.InstanceId);
+            return ReportService.GetDashboardData(filter);
         }
 
         [HttpPost]

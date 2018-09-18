@@ -165,6 +165,16 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public InstalledInstance GetInstanceByHash(string hash)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances
+                    .Where(p => p.Hash == hash)
+                    .SingleOrDefault();
+            }
+        }
+
         public InstalledInstance GetInstanceByKey(string instanceUniqueKey)
         {
             using (var db = new ReportsDb())

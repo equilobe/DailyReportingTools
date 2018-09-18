@@ -16,7 +16,7 @@
                 ctrl.actions.getDashboardData = function () {
                     ctrl.isLoading = true;
 
-                    $http.get("/api/report?instanceId=" + ctrl.instanceId + "&hash=" + ctrl.hash + "&isAuthenticated=" + isAuth)
+                    $http.get("/api/report?instanceId=" + ctrl.instanceId + "&hash=" + ctrl.hash)
                         .success(function (data) {
                             if (!data.isAvailable)
                                 $location.url('/app/signin');

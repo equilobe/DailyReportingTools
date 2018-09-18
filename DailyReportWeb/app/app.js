@@ -17,7 +17,7 @@
             .when('/', {
                 redirectTo: '/app/welcome'
             })
-            .when('/app/instances/:instanceId/report/:hash', {
+            .when('/app/report/:hash', {
                 templateUrl: 'app/report.html',
                 controller: 'ReportCtrl as reportCtrl'
             })
