@@ -22,10 +22,8 @@
                                 $location.url('/app/signin');
 
                             ctrl.data = data.items;
-                        })
-                        .finally(function () {
                             ctrl.isLoading = false;
-                        });
+                        })
                 }
 
                 ctrl.actions.getDashboardData();
@@ -41,9 +39,6 @@
                         .success(function () {
                             ctrl.actions.getDashboardData();
                         })
-                        .finally(function () {
-                            ctrl.isLoading = false;
-                        });
                 }
             }])
         .filter('neatDate', [function () {
