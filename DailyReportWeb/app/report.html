@@ -11,9 +11,7 @@
     </div>
     <div class="container mg-btm-30">
         <div ng-repeat="dashboardItem in reportCtrl.data" ng-if="$index % 3 == 0" class="row">
-            <div class="col-sm-4" ng-include="reportCtrl.reportCardHtml"></div>
-            <div class="col-sm-4" ng-include="reportCtrl.reportCardHtml"></div>
-            <div class="col-sm-4" ng-include="reportCtrl.reportCardHtml"></div>
+            <div class="col-sm-4" ng-repeat="dashboardItem in reportCtrl.data.slice($index, ($index + 3 > reportCtrl.data.length ? reportCtrl.length : $index + 3))" ng-include="reportCtrl.reportCardHtml"></div>
         </div>
     </div>
     <br />
