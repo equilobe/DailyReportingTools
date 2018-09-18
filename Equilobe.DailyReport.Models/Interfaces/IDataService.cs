@@ -19,6 +19,7 @@ namespace Equilobe.DailyReport.Models.Interfaces
         Subscription GetSubscription(string subscriptionId);
         InstalledInstance GetInstance(string subscriptionId);
         InstalledInstance GetInstance(long instanceId);
+        InstalledInstance GetInstanceByHash(string hash);
         ApplicationUser GetUser(string userId);
         ApplicationUser GetUser(long instanceId);
         void DeactivateInstance(string subscriptionId);

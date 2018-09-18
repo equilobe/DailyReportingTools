@@ -23,16 +23,21 @@ namespace Equilobe.DailyReport.SL
         #region IReportService Implementation
         public bool IsDashboardAvailable(DashboardFilter filter)
         {
-            var instance = DataService.GetInstance(filter.InstanceId);
-
-            if (!filter.IsAuthenticated && (string.IsNullOrEmpty(filter.Hash) || instance.Hash != filter.Hash))
+            if (filter.InstanceId == 0 && filter.Hash == "undefined")
                 return false;
 
-            return true;
+            var instance = filter.InstanceId != 0 ?
+                DataService.GetInstance(filter.InstanceId):
+                DataService.GetInstanceByHash(filter.Hash);
+
+            return instance != null;
         }
 
-        public DashboardData GetDashboardData(long instanceId)
+        public DashboardData GetDashboardData(DashboardFilter filter)
         {
+            var instanceId = filter.InstanceId != 0 ? filter.InstanceId :
+                DataService.GetInstanceByHash(filter.Hash).Id;
+
             return new DashboardData
             {
                 IsAvailable = true,
