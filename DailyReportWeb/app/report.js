@@ -10,6 +10,7 @@
                 ctrl.data = {};
                 ctrl.actions = {};
                 ctrl.neatDate = 'dd/MMM';
+                ctrl.reportCardHtml = './app/reportCard.html';
 
                 ctrl.actions.getDashboardData = function () {
                     ctrl.isLoading = true;
