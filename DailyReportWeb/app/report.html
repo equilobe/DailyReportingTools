@@ -12,6 +12,7 @@
     <div class="container mg-btm-30">
         <div class="row">
             <div class="col-sm-4" ng-repeat="dashboardItem in reportCtrl.data">
+                <div class="clearfix" ng-if="$index % 3 == 0"></div>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <table width="100%">
