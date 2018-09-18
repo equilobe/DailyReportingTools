@@ -30,6 +30,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>LOCAL;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -410,8 +419,14 @@
     <Content Include="..\Config\appSettings.dev.config">
       <Link>config\appSettings.dev.config</Link>
     </Content>
+    <Content Include="..\Config\appSettings.local.config">
+      <Link>config\appSettings.local.config</Link>
+    </Content>
     <Content Include="..\Config\ConnectionStrings.dev.config">
       <Link>config\ConnectionStrings.dev.config</Link>
+    </Content>
+    <Content Include="..\Config\ConnectionStrings.local.config">
+      <Link>config\ConnectionStrings.local.config</Link>
     </Content>
     <None Include="Content\main.scss" />
     <None Include="Properties\PublishProfiles\PublishToDev.pubxml" />
@@ -443,6 +458,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Local.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
