@@ -4,7 +4,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    public class DashboardSyncController : ApiController
+    public class DashboardSyncController : BaseApiController
     {
         public IReportService ReportService { get; set; }
 

@@ -4,7 +4,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    public class WelcomeController : ApiController
+    public class WelcomeController : BaseApiController
     {
         public IDataService DataService { get; set; }
 

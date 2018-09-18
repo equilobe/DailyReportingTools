@@ -17,9 +17,19 @@
             .when('/', {
                 redirectTo: '/app/welcome'
             })
-            .when('/app/instances/:instanceId/report', {
+            .when('/app/instances/:instanceId/report/:hash', {
                 templateUrl: 'app/report.html',
                 controller: 'ReportCtrl as reportCtrl'
+            })
+            .when('/app/instances/:instanceId/report', {
+                templateUrl: 'app/report.html',
+                controller: 'ReportCtrl as reportCtrl',
+                resolve: {
+                    report: function ($location) {
+                        if (!isAuth)
+                            $location.url('/app/signin');
+                    }
+                }
             })
             .otherwise({
                 redirectTo: '/'

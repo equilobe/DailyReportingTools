@@ -9,6 +9,6 @@ namespace Equilobe.DailyReport.Models.Interfaces
     {
         List<AtlassianUserWorklogs> GetAtlassianWorklogsByUserIds(long instanceId, List<long> users);
         Dictionary<long, List<DashboardWorklog>> GetLastWorklogsByUsers(List<long> usersIds, ReportContext context, string baseUrl);
-        void SyncAtlassianWroklogs(List<AtlassianWorklog> jiraWorklogs, List<long> deletedWorklogsIds, ReportContext context, DateTime lastSync);
+        void SyncAtlassianWroklogs(List<AtlassianWorklog> jiraWorklogs, List<long> deletedWorklogsIds, long instanceId);
     }
 }

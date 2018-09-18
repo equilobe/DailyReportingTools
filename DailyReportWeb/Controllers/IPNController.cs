@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace DailyReportWeb.Controllers
 {
-    public class IPNController : Controller
+    public class IPNController : BaseMvcController
     {
         public IPayPalService PayPalService { get; set; }
 

@@ -9,7 +9,7 @@ using System.Web.Http;
 
 namespace DailyReportWeb.Controllers.Api
 {
-    public class TimezoneController : ApiController
+    public class TimezoneController : BaseApiController
     {
         public ITimeZoneService TimeZoneService { get; set; }
 

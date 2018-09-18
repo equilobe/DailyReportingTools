@@ -59,6 +59,7 @@ namespace Equilobe.DailyReport.SL
                     installedInstance = new InstalledInstance();
                     installedInstance.ExpirationDate = DateTime.MaxValue;
                     installedInstance.UniqueKey = RandomString.Get();
+                    installedInstance.Hash = RandomString.Get();
                     db.InstalledInstances.Add(installedInstance);
                     installedInstance.UserId = user.Id;
                 }

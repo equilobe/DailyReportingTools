@@ -25,24 +25,23 @@ namespace Equilobe.DailyReport.SL
         public IAdvancedSettingsDataService AdvancedSettingsDataService { get; set; }
 
         #region IReportService Implementation
-        public List<DashboardItem> GetDashboardData(long instanceId)
+        public bool IsDashboardAvailable(DashboardFilter filter)
         {
-            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
-            var reportContext = GetReportContext(instanceId);
-            var worklogs = GetLastWorklogsByUsers(users, reportContext);
-            var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
-            var dashboardItems = new List<DashboardItem>();
+            var instance = DataService.GetInstance(filter.InstanceId);
 
-            foreach (var user in users)
+            if (!filter.IsAuthenticated && (string.IsNullOrEmpty(filter.Hash) || instance.Hash != filter.Hash))
+                return false;
+
+            return true;
+        }
+
+        public DashboardData GetDashboardData(long instanceId)
+        {
+            return new DashboardData
             {
-                var item = ToDashboardItem(user, avatarsFolderPath);
-
-                item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user, reportContext));
-
-                dashboardItems.Add(item);
-            }
-
-            return dashboardItems;
+                IsAvailable = true,
+                Items = GetDashboardItems(instanceId)
+            };
         }
 
         public SimpleResult SyncDashboardData(string instanceUniqueKey)
@@ -85,11 +84,9 @@ namespace Equilobe.DailyReport.SL
 
         private void SyncAtlassianWorklogs(ReportContext context)
         {
-            var lastSync = GetLastSyncDate(context.InstanceId);
-            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, lastSync);
-            var jiraWorklogs = GetAtlassianWorklogs(context, lastSync);
-
-            AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context, lastSync);
+            var deletedWorklogsIds = JiraService.GetDeletedWorklogsIds(context.JiraRequestContext, context.BusinessDaysAgo);
+            var jiraWorklogs = GetAtlassianWorklogs(context);
+            AtlassianWorklogDataService.SyncAtlassianWroklogs(jiraWorklogs, deletedWorklogsIds, context.InstanceId);
         }
 
         private void SyncActivityAndEngagementMetrics(ReportContext context, DateTime day)
@@ -127,6 +124,25 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
+        private List<DashboardItem> GetDashboardItems(long instanceId)
+        {
+            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
+            var reportContext = GetReportContext(instanceId);
+            var worklogs = GetLastWorklogsByUsers(users, reportContext);
+            var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
+            var dashboardItems = new List<DashboardItem>();
+
+            foreach (var user in users)
+            {
+                var item = ToDashboardItem(user, avatarsFolderPath);
+
+                item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user, reportContext));
+
+                dashboardItems.Add(item);
+            }
+
+            return dashboardItems;
+        }
         private Dictionary<string, UserEngagement> GetUsersEngagementDefault(long instanceId)
         {
             var users = AdvancedSettingsDataService.GetUserMappings(instanceId);
@@ -239,15 +255,14 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
-        private List<AtlassianWorklog> GetAtlassianWorklogs(ReportContext context, DateTime lastSync)
+        private List<AtlassianWorklog> GetAtlassianWorklogs(ReportContext context)
         {
             var users = AtlassianUserDataService.GetAtlassianUsers(context.InstanceId, true);
             var userKeys = users
                 .Select(p => p.Key)
                 .ToList();
 
-            var fromDate = lastSync.ToOriginalTimeZone(context.OffsetFromUtc);
-            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(context.JiraRequestContext, userKeys, fromDate);
+            var issueWorklogs = JiraService.GetWorklogsForMultipleUsers(context.JiraRequestContext, userKeys, context.BusinessDaysAgo);
             var worklogs = GetWorklogsFromIssueWorklogs(issueWorklogs, users, context.InstanceId);
 
             return worklogs;
@@ -314,12 +329,12 @@ namespace Equilobe.DailyReport.SL
 
         private List<DateTime> GetLastBusinessDaysOfWork(ReportContext filter)
         {
-            var numberOfDays = DateTime.Today.ToOriginalTimeZone(filter.OffsetFromUtc).Subtract(filter.BusinessDaysAgo).Days;
-            var today = DateTime.Today.ToOriginalTimeZone(filter.OffsetFromUtc);
+            var yesterday = DateTime.Today.AddDays(-1).ToOriginalTimeZone(filter.OffsetFromUtc);
+            var numberOfDays = yesterday.Subtract(filter.BusinessDaysAgo).Days;
 
             var days = Enumerable
                 .Range(0, numberOfDays)
-                .Select(p => today.AddDays(-p).Date)
+                .Select(p => yesterday.AddDays(-p).Date)
                 .Where(p => p.DayOfWeek != DayOfWeek.Saturday && p.DayOfWeek != DayOfWeek.Sunday)
                 .Take(Constants.NumberOfDaysForWorklog)
                 .ToList();
@@ -385,13 +400,21 @@ namespace Equilobe.DailyReport.SL
                         CreatedAt = worklog.CreatedAt,
                         UpdatedAt = worklog.UpdatedAt,
                         StartedAt = worklog.StartedAt,
-                        TimeSpentInSeconds = worklog.TimeSpentSeconds,
+                        TimeSpentInSeconds = ToRoundedTime(worklog.TimeSpentSeconds),
                         AtlassianUserId = user.Id
                     });
                 }
             }
 
             return worklogs;
+        }
+
+        private long ToRoundedTime(long seconds)
+        {
+            if (seconds % 60 == 0)
+                return seconds;
+
+            return (long)Math.Round(seconds / 60d, 0) * 60;
         }
         #endregion
     }

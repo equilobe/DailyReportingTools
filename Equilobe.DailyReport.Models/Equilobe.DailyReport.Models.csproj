@@ -12,6 +12,15 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Local\</OutputPath>
+    <DefineConstants>LOCAL;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -72,7 +81,9 @@
     <Compile Include="BitBucket\SourceOrDestination.cs" />
     <Compile Include="BitBucket\State.cs" />
     <Compile Include="BitBucket\Summary.cs" />
+    <Compile Include="Dashboard\DashboardFilter.cs" />
     <Compile Include="Dashboard\DashboardItem.cs" />
+    <Compile Include="Dashboard\DashboardData.cs" />
     <Compile Include="Dashboard\DayWorklogGroup.cs" />
     <Compile Include="Dashboard\DashboardWorklog.cs" />
     <Compile Include="Dashboard\AtlassianUserWorklogs.cs" />
@@ -105,7 +116,7 @@
     <Compile Include="Interfaces\ITimeZoneService.cs" />
     <Compile Include="Interfaces\IUserAvatarService.cs" />
     <Compile Include="Interfaces\IUserEngagementDataService.cs" />
-    <Compile Include="Jira\JiraDeletedWorklogs.cs" />
+    <Compile Include="Jira\JiraWorklogs.cs" />
     <Compile Include="Jira\Comment.cs" />
     <Compile Include="Jira\FixVersion.cs" />
     <Compile Include="Jira\IssueLink.cs" />

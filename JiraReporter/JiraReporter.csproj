@@ -12,6 +12,15 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Local\</OutputPath>
+    <DefineConstants>LOCAL;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
@@ -129,6 +138,10 @@
       <Link>config\appSettings.dev.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\Config\appSettings.local.config">
+      <Link>config\appSettings.local.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\Config\ConnectionStrings.config">
       <Link>config\ConnectionStrings.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -143,6 +156,9 @@
     </None>
     <None Include="App.config" />
     <None Condition=" '$(Configuration)' == 'Debug' " Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+    </None>
+    <None Condition=" '$(Configuration)' == 'Local' " Include="App.Local.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
     <None Condition=" '$(Configuration)' == 'Release' " Include="App.Release.config">
