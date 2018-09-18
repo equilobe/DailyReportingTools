@@ -9,16 +9,13 @@ namespace Equilobe.DailyReport.Models.Dashboard
         public List<DashboardItem> Items { get; set; }
 
 
-        public static DashboardData Unavailable
+        public static DashboardData Unavailable()
         {
-            get
+            return new DashboardData
             {
-                return new DashboardData
-                {
-                    IsAvailable = false,
-                    Items = null
-                };
-            }
+                IsAvailable = false,
+                Items = null
+            };
         }
     }
 }
