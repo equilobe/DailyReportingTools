@@ -21,24 +21,23 @@ namespace Equilobe.DailyReport.SL
         public IAtlassianWorklogDataService AtlassianWorklogDataService { get; set; }
 
         #region IReportService Implementation
-        public List<DashboardItem> GetDashboardData(long instanceId)
+        public bool IsDashboardAvailable(DashboardFilter filter)
         {
-            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
-            var reportContext = GetReportContext(instanceId);
-            var worklogs = GetLastWorklogsByUsers(users, reportContext);
-            var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
-            var dashboardItems = new List<DashboardItem>();
+            var instance = DataService.GetInstance(filter.InstanceId);
 
-            foreach (var user in users)
+            if (!filter.IsAuthenticated && (string.IsNullOrEmpty(filter.Hash) || instance.Hash != filter.Hash))
+                return false;
+
+            return true;
+        }
+
+        public DashboardData GetDashboardData(long instanceId)
+        {
+            return new DashboardData
             {
-                var item = ToDashboardItem(user, avatarsFolderPath);
-
-                item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user, reportContext));
-
-                dashboardItems.Add(item);
-            }
-
-            return dashboardItems;
+                IsAvailable = true,
+                Items = GetDashboardItems(instanceId)
+            };
         }
 
         public SimpleResult SyncDashboardData(string instanceUniqueKey)
@@ -107,6 +106,26 @@ namespace Equilobe.DailyReport.SL
         #endregion
 
         #region Helpers
+        private List<DashboardItem> GetDashboardItems(long instanceId)
+        {
+            var users = AtlassianUserDataService.GetAtlassianUsers(instanceId, true, false);
+            var reportContext = GetReportContext(instanceId);
+            var worklogs = GetLastWorklogsByUsers(users, reportContext);
+            var avatarsFolderPath = ImageHelper.GetUserAvatarsRelativePath();
+            var dashboardItems = new List<DashboardItem>();
+
+            foreach (var user in users)
+            {
+                var item = ToDashboardItem(user, avatarsFolderPath);
+
+                item.Worklogs.AddRange(GetLastWorklogsGroupForUser(worklogs, user, reportContext));
+
+                dashboardItems.Add(item);
+            }
+
+            return dashboardItems;
+        }
+
         private ReportContext GetReportContext(long instanceId)
         {
             var offsetFromUtc = DataService.GetOffsetFromInstanceId(instanceId);

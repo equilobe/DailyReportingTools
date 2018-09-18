@@ -11,6 +11,7 @@ namespace Equilobe.DailyReport.Models.Storage
         [Required]
         public string BaseUrl { get; set; }
         public string UniqueKey { get; set; }
+        public string Hash { get; set; }
         public string TimeZone { get; set; }
         public string UserId { get; set; }
         public string JiraUsername { get; set; }

@@ -2,10 +2,11 @@
     'use strict';
 
     angular.module('app')
-        .controller("ReportCtrl", ["$scope", "$http", '$routeParams',
-            function reportCtrl($scope, $http, $routeParams) {
+        .controller("ReportCtrl", ["$scope", "$http", '$routeParams', '$location',
+            function reportCtrl($scope, $http, $routeParams, $location) {
                 var ctrl = this;
                 ctrl.instanceId = $routeParams.instanceId;
+                ctrl.hash = $routeParams.hash;
                 ctrl.data = {};
                 ctrl.actions = {};
                 ctrl.neatDate = 'dd/MMM';
@@ -13,9 +14,12 @@
                 ctrl.actions.getDashboardData = function () {
                     ctrl.isLoading = true;
 
-                    $http.get("/api/report/" + ctrl.instanceId)
+                    $http.get("/api/report?instanceId=" + ctrl.instanceId + "&hash=" + ctrl.hash + "&isAuthenticated=" + isAuth)
                         .success(function (data) {
-                            ctrl.data = data;
+                            if (!data.isAvailable)
+                                $location.url('/app/signin');
+
+                            ctrl.data = data.items;
                         })
                         .finally(function () {
                             ctrl.isLoading = false;
