@@ -301,6 +301,7 @@
       <DependentUpon>confirmEmail.html</DependentUpon>
     </Content>
     <Content Include="app\app.js" />
+    <Content Include="app\reportCard.html" />
     <Content Include="app\reportSummary.html" />
     <Content Include="app\resetPassword.html" />
     <Content Include="app\resetPassword.js">
