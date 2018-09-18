@@ -4,6 +4,7 @@
     angular.module('app')
         .controller("ReportCtrl", ["$scope", "$http", '$routeParams', '$location',
             function reportCtrl($scope, $http, $routeParams, $location) {
+                $("body").attr("data-page", "report");
                 var ctrl = this;
                 ctrl.instanceId = $routeParams.instanceId;
                 ctrl.hash = $routeParams.hash;
