@@ -30,6 +30,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>LOCAL;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -110,6 +119,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.7.1\lib\net45\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Settings.AppSettings, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Settings.AppSettings.2.1.2\lib\net45\Serilog.Settings.AppSettings.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.File.3.2.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -187,6 +208,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
+    <Compile Include="Controllers\Api\BaseApiController.cs" />
+    <Compile Include="Controllers\Api\DashboardSyncController.cs" />
+    <Compile Include="Controllers\Api\ReportController.cs" />
     <Compile Include="Controllers\Api\ConfirmDraftController.cs" />
     <Compile Include="Controllers\Api\ConfirmIndividualDraftController.cs" />
     <Compile Include="Controllers\Api\HelpController.cs" />
@@ -199,10 +223,12 @@
     <Compile Include="Controllers\Api\TimezoneController.cs" />
     <Compile Include="Controllers\Api\WelcomeController.cs" />
     <Compile Include="Controllers\AvatarController.cs" />
+    <Compile Include="Controllers\BaseMvcController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IPNController.cs" />
     <Compile Include="Controllers\PluginController.cs" />
     <Compile Include="DependencyInjection.cs" />
+    <Compile Include="ExceptionHandlingAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -253,6 +279,13 @@
     <Content Include="app\howItWorks.test.js">
       <DependentUpon>howItWorks.html</DependentUpon>
     </Content>
+    <Content Include="app\report.html" />
+    <Content Include="app\report.js">
+      <DependentUpon>report.html</DependentUpon>
+    </Content>
+    <Content Include="app\report.test.js">
+      <DependentUpon>report.html</DependentUpon>
+    </Content>
     <Content Include="app\instances.html" />
     <Content Include="app\instances.js">
       <DependentUpon>instances.html</DependentUpon>
@@ -268,6 +301,7 @@
       <DependentUpon>confirmEmail.html</DependentUpon>
     </Content>
     <Content Include="app\app.js" />
+    <Content Include="app\reportCard.html" />
     <Content Include="app\reportSummary.html" />
     <Content Include="app\resetPassword.html" />
     <Content Include="app\resetPassword.js">
@@ -386,8 +420,14 @@
     <Content Include="..\Config\appSettings.dev.config">
       <Link>config\appSettings.dev.config</Link>
     </Content>
+    <Content Include="..\Config\appSettings.local.config">
+      <Link>config\appSettings.local.config</Link>
+    </Content>
     <Content Include="..\Config\ConnectionStrings.dev.config">
       <Link>config\ConnectionStrings.dev.config</Link>
+    </Content>
+    <Content Include="..\Config\ConnectionStrings.local.config">
+      <Link>config\ConnectionStrings.local.config</Link>
     </Content>
     <None Include="Content\main.scss" />
     <None Include="Properties\PublishProfiles\PublishToDev.pubxml" />
@@ -403,6 +443,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
@@ -415,6 +459,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Local.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
@@ -431,7 +478,9 @@
     <Content Include="Views\Email\SubscriptionCanceling.cshtml" />
     <Content Include="Views\Email\PasswordResetEmail.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\Images\UserAvatars\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>

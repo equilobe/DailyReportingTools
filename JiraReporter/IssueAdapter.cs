@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Equilobe.DailyReport.Models.Policy;
 using JiraReporter.Helpers;
+using Equilobe.DailyReport.Utils;
 
 namespace JiraReporter
 {
@@ -22,7 +23,10 @@ namespace JiraReporter
             if (context.Issue.Entries == null)
                 return;
 
-            context.Issue.Entries.RemoveAll(e => e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate || e.StartDate.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate || context.AuthorName != e.AuthorFullName);
+            context.Issue.Entries
+                .RemoveWhere(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) < context.FromDate)
+                .RemoveWhere(e => e.StartedAt.ToOriginalTimeZone(context.OffsetFromUtc) >= context.ToDate)
+                .RemoveWhere(e => context.AuthorName != e.AuthorFullName);
         }
 
         public static void RemoveWrongIssues(List<IssueDetailed> issues)
@@ -135,7 +139,7 @@ namespace JiraReporter
 
         public static bool HasSubtasksInProgress(IssueDetailed task)
         {
-            if (task.Resolution == null && task.StatusCategory.name != "In Progess" && task.SubtasksDetailed.Exists(s => s.StatusCategory.name == "In Progress"))
+            if (task.Resolution == null && task.StatusCategory.Name != "In Progess" && task.SubtasksDetailed.Exists(s => s.StatusCategory.Name == "In Progress"))
                 return true;
             return false;
         }
@@ -152,7 +156,7 @@ namespace JiraReporter
             issue.Errors = new List<Error>();
             if (issue.IsSubtask == false && issue.Label != policy.AdvancedOptions.PermanentTaskLabel)
             {
-                if (issue.StatusCategory.name == "Done")
+                if (issue.StatusCategory.Name == "Done")
                 {
                     if (issue.TimeSpentTotal == 0)
                     {
@@ -194,8 +198,8 @@ namespace JiraReporter
         {
             var basicIssue = new IssueDetailed
             {
-                Key = issue.key,
-                Summary = issue.fields.summary
+                Key = issue.Key,
+                Summary = issue.Fields.Summary
             };
             GetEntriesFromJiraWorklogs(issue, basicIssue);
 
@@ -204,18 +208,18 @@ namespace JiraReporter
 
         public static void GetEntriesFromJiraWorklogs(JiraIssue issue, IssueDetailed basicIssue)
         {
-            if (issue.fields.worklog != null && issue.fields.worklog.worklogs != null)
-                basicIssue.Entries = issue.fields.worklog.worklogs.Select(wk => new Entry
+            if (issue.Fields.Worklog != null && issue.Fields.Worklog.Worklogs != null)
+                basicIssue.Entries = issue.Fields.Worklog.Worklogs.Select(wk => new Entry
                 {
-                    Author = wk.author.name,
-                    AuthorFullName = wk.author.displayName,
-                    StartDate = Convert.ToDateTime(wk.started),
-                    Created = Convert.ToDateTime(wk.created),
-                    Updated = Convert.ToDateTime(wk.updated),
-                    Comment = wk.comment,
-                    TimeSpent = wk.timeSpentSeconds,
-                    UpdateAuthor = wk.updateAuthor.name,
-                    UpdateAuthorFullName = wk.updateAuthor.displayName
+                    Author = wk.Author,
+                    AuthorFullName = wk.Author.DisplayName,
+                    StartedAt = wk.StartedAt,
+                    CreatedAt = wk.CreatedAt,
+                    UpdatedAt = wk.UpdatedAt,
+                    Comment = wk.Comment,
+                    TimeSpent = wk.TimeSpentSeconds,
+                    UpdateAuthor = wk.UpdateAuthor,
+                    UpdateAuthorFullName = wk.UpdateAuthor.DisplayName
                 }).ToList();
         }
     }

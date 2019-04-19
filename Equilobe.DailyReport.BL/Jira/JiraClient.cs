@@ -1,5 +1,4 @@
-﻿using Equilobe.DailyReport.JWT;
-using Equilobe.DailyReport.Models.Jira;
+﻿using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Utils;
 using RestSharp;
 using System;
@@ -61,6 +60,15 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveRequest<Project>(request);
         }
 
+        public List<JiraUser> GetAllUsers()
+        {
+            var request = new RestRequest(JiraApiUrls.AllUsers(), Method.GET);
+
+            return ResolveRequest<List<JiraUser>>(request)
+                .Where(p => !p.Key.StartsWith("addon_"))
+                .ToList();
+        }
+
         public JiraUser GetUser(string username)
         {
             var request = new RestRequest(JiraApiUrls.User(username), Method.GET);
@@ -73,7 +81,7 @@ namespace Equilobe.DailyReport.BL.Jira
             var request = new RestRequest(JiraApiUrls.Users(projectKey), Method.GET);
 
             return ResolveRequest<List<JiraUser>>(request)
-                .Where(user => !user.key.StartsWith("addon_"))
+                .Where(user => !user.Key.StartsWith("addon_"))
                 .ToList();
         }
 
@@ -84,25 +92,25 @@ namespace Equilobe.DailyReport.BL.Jira
             return ResolveJiraRequest<JiraIssue>(request);
         }
 
-        public Worklogs GetIssueWorklogs(string issueKey)
+        public JiraResponse<Worklog> GetIssueWorklogs(string issueKey)
         {
             var request = new RestRequest(JiraApiUrls.IssueWorklogs(issueKey), Method.GET);
 
-            return ResolveJiraRequest<Worklogs>(request);
+            return ResolveJiraRequest<JiraResponse<Worklog>>(request);
         }
 
-        public JiraIssues GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
+        public JiraResponse<JiraIssue> GetCompletedIssues(string projectKey, DateTime startDate, DateTime endDate)
         {
             var request = GetIssuesByJql(JiraApiUrls.ResolvedIssues(projectKey, TimeFormatting.DateToISO(startDate), TimeFormatting.DateToISO(endDate)));
 
-            return ResolveJiraRequest<JiraIssues>(request);
+            return ResolveJiraRequest<JiraResponse<JiraIssue>>(request);
         }
 
-        public JiraIssues GetSprintTasks(string projectKey, string sprintId)
+        public JiraResponse<JiraIssue> GetSprintTasks(string projectKey, string sprintId)
         {
             var request = GetIssuesByJql(JiraApiUrls.IssueInCurrentSprint(projectKey, sprintId));
 
-            return ResolveJiraRequest<JiraIssues>(request);
+            return ResolveJiraRequest<JiraResponse<JiraIssue>>(request);
         }
 
         public ProjectInfo GetProjectInfo(long id)
@@ -124,25 +132,89 @@ namespace Equilobe.DailyReport.BL.Jira
             return new RestRequest(JiraApiUrls.Search(jql), Method.GET);
         }
 
-        public List<JiraBasicIssue> GetWorklogs(string projectKey, string author, string fromDate, string toDate)
+        public JiraResponse<JiraIssue> GetIssuesIdsByJql(int startAt, string jql)
         {
-            var request = GetIssuesByJql(JiraApiUrls.WorkLogs(projectKey, author, fromDate, toDate));
+            var request = new RestRequest(JiraApiUrls.SearchIdField(startAt, jql), Method.GET);
 
-            return ResolveRequest<JiraBasicIssues>(request).issues;
+            return ResolveRequest<JiraResponse<JiraIssue>>(request);
         }
 
-        public Board Board(string projectKey)
+        public List<JiraBasicIssue> GetWorklogsForUser(string projectKey, string author, string fromDate, string toDate)
+        {
+            var request = GetIssuesByJql(JiraApiUrls.WorkLogsForUser(projectKey, author, fromDate, toDate));
+
+            return ResolveRequest<JiraResponse<JiraBasicIssue>>(request).Issues;
+        }
+
+        public List<JiraIssue> GetWorklogsForMultipleUsers(string authors, string startDate)
+        {
+            var result = new List<JiraIssue>();
+
+            var issues = GetIssueKeysForMultipleUsers(authors, startDate);
+
+            foreach (var issue in issues)
+            {
+                var response = GetIssueWorklogs(issue.Key);
+
+                if (response != null && response.Worklogs.Any())
+                {
+                    var jiraIssueWorklog = new JiraIssue
+                    {
+                        Id = issue.Id,
+                        Key = issue.Key,
+                        Fields = new JiraFields
+                        {
+                            Worklog = response
+                        }
+                    };
+
+                    result.Add(jiraIssueWorklog);
+                }
+            }
+
+            return result;
+        }
+
+        private List<JiraIssue> GetIssueKeysForMultipleUsers(string authors, string startDate)
+        {
+            var issues = new List<JiraIssue>();
+            var startAt = 0;
+            var hasMoreValues = true;
+
+            while (hasMoreValues)
+            {
+                var response = GetIssuesIdsByJql(startAt, JiraApiUrls.WorklogsForMultipleUsers(authors, startDate));
+
+                issues.AddRange(response.Issues);
+
+                hasMoreValues = startAt + Constants.MaximumIssuesPerPage < response.Total;
+                startAt += Constants.MaximumIssuesPerPage;
+            };
+
+            return issues;
+        }
+
+        public List<long> GetDeletedWorklogsIds(long sinceUnixTimestamp)
+        {
+            var request = new RestRequest(JiraApiUrls.DeletedWorklogs(sinceUnixTimestamp), Method.GET);
+
+            return ResolveJiraRequest<JiraWorklogs>(request).Values?
+                .Select(p => p.WorklogId)
+                .ToList();
+        }
+
+        public JiraBasicIssue Board(string projectKey)
         {
             var request = new RestRequest(JiraApiUrls.Board(projectKey), Method.GET);
 
-            return ResolveJiraRequest<JiraBoard>(request).Values[0];
+            return ResolveJiraRequest<JiraResponse<JiraBasicIssue>>(request).Values[0];
         }
 
-        public JiraSprints GetAllSprints(string boardId, string startAt)
+        public JiraResponse<Sprint> GetAllSprints(long boardId, string startAt)
         {
             var request = new RestRequest(JiraApiUrls.AllSprints(boardId, startAt), Method.GET);
 
-            return ResolveJiraRequest<JiraSprints>(request);
+            return ResolveJiraRequest<JiraResponse<Sprint>>(request);
         }
     }
 }

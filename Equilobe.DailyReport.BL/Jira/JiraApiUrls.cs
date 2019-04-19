@@ -18,6 +18,11 @@ namespace Equilobe.DailyReport.BL
             return "rest/api/2/project";
         }
 
+        public static string AllUsers()
+        {
+            return string.Format("rest/api/2/user/search?maxResults=1000&username=_");
+        }
+
         public static string User(string userName)
         {
             return string.Format("rest/api/latest/user?username={0}", userName);
@@ -58,19 +63,34 @@ namespace Equilobe.DailyReport.BL
             return string.Format("project = '{0}' AND sprint in openSprints()", project);
         }
 
-        public static string UnassignedUncompletedIssues(string projectKey, int sprintId)
+        public static string UnassignedUncompletedIssues(string projectKey, long sprintId)
         {
             return string.Format("assignee=null and project='{0}' and sprint={1} and statusCategory != 'Done' and issueType != 'sub-task'", projectKey, sprintId);
         }
 
-        public static string AssignedUncompletedIssues(string assignee, string projectKey, int sprintId)
+        public static string AssignedUncompletedIssues(string assignee, string projectKey, long sprintId)
         {
             return string.Format("assignee='{0}' and project='{1}' and sprint={2} and statusCategory != 'Done'", assignee, projectKey, sprintId);
         }
 
-        public static string WorkLogs(string projectKey, string author, string fromDate, string endDate)
+        public static string WorkLogsForUser(string projectKey, string author, string fromDate, string endDate)
         {
             return string.Format("project = {0} AND worklogAuthor = '{1}' AND worklogDate >= '{2}' AND worklogDate <= '{3}'", projectKey, author, fromDate, endDate);
+        }
+
+        public static string WorklogsForMultipleUsers(string authors, string startDate)
+        {
+            return string.Format("worklogAuthor in ({0}) AND worklogDate >= '{1}'", authors, startDate);
+        }
+
+        public static string DeletedWorklogs(long since)
+        {
+            return string.Format("rest/api/2/worklog/deleted?since={0}", since);
+        }
+
+        public static string SearchIdField(int startAt, string jql)
+        {
+            return string.Format("rest/api/2/search?startAt={0}&maxResults=100&fields=id&jql={1}", startAt, jql);
         }
 
         public static string Board(string projectKey)
@@ -78,7 +98,7 @@ namespace Equilobe.DailyReport.BL
             return string.Format("rest/agile/1.0/board?projectKeyOrId={0}", projectKey);
         }
 
-        public static string AllSprints(string boardId, string startAt)
+        public static string AllSprints(long boardId, string startAt)
         {
             return string.Format("rest/agile/1.0/board/{0}/sprint?startAt={1}", boardId, startAt);
         }

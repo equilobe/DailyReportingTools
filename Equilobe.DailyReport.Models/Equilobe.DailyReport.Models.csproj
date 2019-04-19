@@ -12,6 +12,15 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Local\</OutputPath>
+    <DefineConstants>LOCAL;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -69,6 +78,13 @@
     <Compile Include="BitBucket\SourceOrDestination.cs" />
     <Compile Include="BitBucket\State.cs" />
     <Compile Include="BitBucket\Summary.cs" />
+    <Compile Include="Dashboard\DashboardFilter.cs" />
+    <Compile Include="Dashboard\DashboardItem.cs" />
+    <Compile Include="Dashboard\DashboardData.cs" />
+    <Compile Include="Dashboard\DayWorklogGroup.cs" />
+    <Compile Include="Dashboard\DashboardWorklog.cs" />
+    <Compile Include="Dashboard\AtlassianUserWorklogs.cs" />
+    <Compile Include="Dashboard\ReportContext.cs" />
     <Compile Include="Data\PayPalVariables.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\Enums.cs" />
@@ -76,6 +92,8 @@
     <Compile Include="General\ItemContext.cs" />
     <Compile Include="General\ItemListContext.cs" />
     <Compile Include="General\UserContext.cs" />
+    <Compile Include="Interfaces\IAtlassianUserDataService.cs" />
+    <Compile Include="Interfaces\IAtlassianWorklogDataService.cs" />
     <Compile Include="Interfaces\IBitBucketService.cs" />
     <Compile Include="Interfaces\IConfigurationService.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
@@ -85,15 +103,33 @@
     <Compile Include="Interfaces\IErrorService.cs" />
     <Compile Include="Interfaces\IPayPalService.cs" />
     <Compile Include="Interfaces\IRegistrationService.cs" />
+    <Compile Include="Interfaces\IReportService.cs" />
     <Compile Include="Interfaces\ISettingsService.cs" />
     <Compile Include="Interfaces\IReportExecutionService.cs" />
     <Compile Include="Interfaces\ISourceControlService.cs" />
     <Compile Include="Interfaces\ITaskSchedulerService.cs" />
     <Compile Include="Interfaces\ITimeZoneService.cs" />
+    <Compile Include="Interfaces\IUserAvatarService.cs" />
+    <Compile Include="Jira\JiraWorklogs.cs" />
+    <Compile Include="Jira\Comment.cs" />
+    <Compile Include="Jira\FixVersion.cs" />
+    <Compile Include="Jira\IssueLink.cs" />
+    <Compile Include="Jira\IssueType.cs" />
+    <Compile Include="Jira\JiraAuthorSummary.cs" />
+    <Compile Include="Jira\JiraBasicIssue.cs" />
+    <Compile Include="Jira\JiraDateIdentifiedResponse.cs" />
+    <Compile Include="Jira\JiraIdentifiableResponse.cs" />
+    <Compile Include="Jira\JiraFields.cs" />
+    <Compile Include="Jira\JiraResponse.cs" />
+    <Compile Include="Jira\Progress.cs" />
     <Compile Include="Jira\Sprint.cs" />
-    <Compile Include="Jira\JiraBoard.cs" />
     <Compile Include="Jira\Filters\ProjectDateFilter.cs" />
     <Compile Include="Jira\ProjectInfo.cs" />
+    <Compile Include="Jira\Status.cs" />
+    <Compile Include="Jira\TimeTracking.cs" />
+    <Compile Include="Jira\Votes.cs" />
+    <Compile Include="Jira\Watches.cs" />
+    <Compile Include="Jira\Worklog.cs" />
     <Compile Include="PayPal\EmailNotification.cs" />
     <Compile Include="PayPal\PaymentContext.cs" />
     <Compile Include="PayPal\PayPalCheckoutInfo.cs" />
@@ -143,12 +179,9 @@
     <Compile Include="ReportFrame\WorkingDaysInfo.cs" />
     <Compile Include="Jira\Avatar.cs" />
     <Compile Include="Jira\Entries.cs" />
-    <Compile Include="Jira\Filter.cs" />
     <Compile Include="Jira\JiraIssue.cs" />
     <Compile Include="Jira\JiraUser.cs" />
     <Compile Include="Jira\Project.cs" />
-    <Compile Include="Jira\View.cs" />
-    <Compile Include="Jira\Views.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IGitHubService.cs" />
     <Compile Include="Interfaces\ISvnService.cs" />
@@ -156,8 +189,10 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Storage\FinalDraftConfirmation.cs" />
     <Compile Include="Storage\IdentityModel.cs" />
+    <Compile Include="Storage\AtlassianUser.cs" />
     <Compile Include="Storage\Payment.cs" />
     <Compile Include="Storage\Subscription.cs" />
+    <Compile Include="Storage\UserEngagementStats.cs" />
     <Compile Include="Storage\UserImage.cs" />
     <Compile Include="Storage\InstalledInstance.cs" />
     <Compile Include="Storage\ReportExecutionSummary.cs" />
@@ -168,6 +203,7 @@
     <Compile Include="Policy\Policy.cs" />
     <Compile Include="Storage\ReportExecutionInstance.cs" />
     <Compile Include="Storage\SerializedAdvancedSettings.cs" />
+    <Compile Include="Storage\AtlassianWorklog.cs" />
     <Compile Include="TimeZone\TimeZones.cs" />
     <Compile Include="ReportFrame\AuthorTasks.cs" />
     <Compile Include="TaskScheduling\ProjectListContext.cs" />

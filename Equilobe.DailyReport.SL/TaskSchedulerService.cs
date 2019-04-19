@@ -1,9 +1,8 @@
 ﻿using Equilobe.DailyReport.Models.Interfaces;
 using Equilobe.DailyReport.Models.TaskScheduling;
+using Equilobe.DailyReport.Utils;
 using Microsoft.Win32.TaskScheduler;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Security.Principal;
 
@@ -12,6 +11,7 @@ namespace Equilobe.DailyReport.SL
     public class TaskSchedulerService : ITaskSchedulerService
     {
         public IConfigurationService ConfigurationService { get; set; }
+        public IDataService DataService { get; set; }
 
         public bool TryRunReportTask(ProjectContext context)
         {
@@ -26,36 +26,55 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void CreateDashboardDataSyncTask(string instanceUniqueKey)
+        {
+            var taskKey = GetJiraDBSyncTaskKey(instanceUniqueKey);
+            var toolPath = ConfigurationService.GetSyncTaskScriptPath();
+            var arguments = GetSyncTaskArguments(instanceUniqueKey);
+            var trigger = new TimeTrigger();
+            trigger.Repetition.Interval = TimeSpan.FromMinutes(Constants.DashboardSyncScheduledTaskInterval);
+
+            CreateOrUpdateTask(taskKey, toolPath, arguments, trigger);
+        }
+
         public void SetTask(ScheduledTaskContext context)
         {
-            using (var taskService = new TaskService())
+            var taskKey = GetTaskKey(context.UniqueProjectKey);
+            var toolPath = ConfigurationService.GetJiraReporterPath();
+            var arguments = "--uniqueProjectKey=" + context.UniqueProjectKey;
+            var trigger = string.IsNullOrEmpty(context.ReportTime) ? null : new DailyTrigger
             {
-                var task = taskService.GetTask(ConfigurationService.GetTaskSchedulerFolderName() + "\\" + GetTaskKey(context.UniqueProjectKey));
+                StartBoundary = DateTime.Parse(context.ReportTime)
+            };
+
+            CreateOrUpdateTask(taskKey, toolPath, arguments, trigger);
+        }
+
+        public void CreateOrUpdateTask(string taskKey, string toolPath, string arguments, Trigger trigger)
+        {
+            using (var ts = new TaskService())
+            {
+                var task = ts.GetTask(ConfigurationService.GetTaskSchedulerFolderName() + "\\" + taskKey);
 
                 TaskDefinition taskDefinition;
 
                 if (task == null)
                 {
-                    taskDefinition = taskService.NewTask();
-                    taskDefinition.Actions.Add(new ExecAction(ConfigurationService.GetJiraReporterPath(),
-                                                              "--uniqueProjectKey=" + context.UniqueProjectKey,
-                                                              ConfigurationService.GetReportToolPath()));
+                    taskDefinition = ts.NewTask();
+                    taskDefinition.Actions.Add(new ExecAction(toolPath, arguments, ConfigurationService.GetReportToolPath()));
                     taskDefinition.Settings.MultipleInstances = TaskInstancesPolicy.Queue;
                 }
                 else
                     taskDefinition = task.Definition;
 
                 taskDefinition.Triggers.Clear();
-                if (!string.IsNullOrEmpty(context.ReportTime))
-                    taskDefinition.Triggers.Add(new DailyTrigger
-                    {
-                        StartBoundary = DateTime.Parse(context.ReportTime)
-                    });
 
-                GetTaskFolder(taskService).RegisterTaskDefinition(GetTaskKey(context.UniqueProjectKey), taskDefinition, TaskCreation.CreateOrUpdate, WindowsIdentity.GetCurrent().Name);
+                if (trigger != null)
+                    taskDefinition.Triggers.Add(trigger);
+
+                GetTaskFolder(ts).RegisterTaskDefinition(taskKey, taskDefinition, TaskCreation.CreateOrUpdate, WindowsIdentity.GetCurrent().Name);
             }
         }
-
 
         public void UpdateTask(ScheduledTaskContext context)
         {
@@ -94,6 +113,15 @@ namespace Equilobe.DailyReport.SL
             }
         }
 
+        public void DeleteDashboardDataSyncTask(string instanceUniqueKey)
+        {
+            using (var taskService = new TaskService())
+            {
+                var taskFolder = GetTaskFolder(taskService);
+                taskFolder.DeleteTask(GetJiraDBSyncTaskKey(instanceUniqueKey), false);
+            }
+        }
+
         #region Helpers
         private void RunReportTask(ProjectContext context)
         {
@@ -110,6 +138,11 @@ namespace Equilobe.DailyReport.SL
             return "DRT-" + uniqueProjectKey;
         }
 
+        private string GetJiraDBSyncTaskKey(string instanceUniqueKey)
+        {
+            return "DD-" + instanceUniqueKey;
+        }
+
         private TaskFolder GetTaskFolder(TaskService taskService)
         {
             var taskSchedulerFolderName = ConfigurationService.GetTaskSchedulerFolderName();
@@ -122,6 +155,16 @@ namespace Equilobe.DailyReport.SL
                 return taskService.RootFolder.CreateFolder(taskSchedulerFolderName);
 
             return taskFolder;
+        }
+
+        private string GetSyncTaskArguments(string instanceUniqueKey)
+        {
+            var instance = DataService.GetInstanceByKey(instanceUniqueKey);
+            var webBaseUrl = ConfigurationService.GetWebBaseUrl();
+            var apiEndpoint = "\"" + webBaseUrl + "/api/dashboardSync?instanceUniqueKey=" + instanceUniqueKey + "\"";
+            var scriptPath = ConfigurationService.GetDashboardDataSyncScriptPath();
+
+            return scriptPath + " -ApiEndpoint " + apiEndpoint;
         }
         #endregion
     }

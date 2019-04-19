@@ -49,7 +49,7 @@ namespace DailyReportWeb
 
             builder.RegisterTypes(types)
                 .AsImplementedInterfaces()
-                .PropertiesAutowired()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies)
                 .SingleInstance();
         }
     }

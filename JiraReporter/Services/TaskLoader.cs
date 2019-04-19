@@ -74,9 +74,9 @@ namespace JiraReporter.Services
 
             var completedTasks = new List<IssueDetailed>();
             var issues = JiraService.GetCompletedIssues(issuesContext);
-            foreach (var jiraIssue in issues.issues)
+            foreach (var jiraIssue in issues.Issues)
             {
-                if (jiraIssue.fields.issuetype.subtask == false)
+                if (jiraIssue.Fields.IssueType.Subtask == false)
                 {
                     var issue = GetCompleteIssue(context, jiraIssue);
 
@@ -96,12 +96,12 @@ namespace JiraReporter.Services
             context.ReportTasks.AdditionalCompletedTasks = context.ReportTasks.CompletedTasksAll.Count - context.ReportTasks.CompletedTasksVisible.Count;
         }
 
-        JiraIssues GetSprintTasks(JiraReport context, string sprintId)
+        JiraResponse<JiraIssue> GetSprintTasks(JiraReport context, string sprintId)
         {
             return JiraService.GetSprintTasks(context.JiraRequestContext, context.ProjectKey, sprintId);
         }
 
-        void SetUnfinishedTasks(JiraIssues jiraIssues, JiraReport context)
+        void SetUnfinishedTasks(JiraResponse<JiraIssue> jiraIssues, JiraReport context)
         {
             var tasks = context.ReportTasks;
             tasks.InProgressTasks = new List<IssueDetailed>();
@@ -109,12 +109,12 @@ namespace JiraReporter.Services
             tasks.UnassignedTasksAll = new List<IssueDetailed>();
             tasks.SprintTasksAll = new List<IssueDetailed>();
 
-            foreach (var jiraIssue in jiraIssues.issues)
+            foreach (var jiraIssue in jiraIssues.Issues)
             {
                 var issue = GetCompleteIssue(context, jiraIssue);
                 tasks.SprintTasksAll.Add(issue);
 
-                if (issue.StatusCategory.name == "In Progress")
+                if (issue.StatusCategory.Name == "In Progress")
                     tasks.InProgressTasks.Add(issue);
                 else
                     if (issue.Resolution == null)
@@ -122,7 +122,7 @@ namespace JiraReporter.Services
                         IssueAdapter.HasSubtasksInProgress(issue);
                         tasks.OpenTasks.Add(issue);
                     }
-                if (issue.Assignee == null && issue.StatusCategory.name != "Done")
+                if (issue.Assignee == null && issue.StatusCategory.Name != "Done")
                     tasks.UnassignedTasksAll.Add(issue);
             }
         }
@@ -143,11 +143,11 @@ namespace JiraReporter.Services
                 return;
 
             if (context.ReportTasks.InProgressTasks != null)
-                context.ReportTasks.InProgressTasks = context.ReportTasks.InProgressTasks.OrderBy(task => task.Priority.id).ToList();
+                context.ReportTasks.InProgressTasks = context.ReportTasks.InProgressTasks.OrderBy(task => task.Priority.Id).ToList();
             if (context.ReportTasks.OpenTasks != null)
-                context.ReportTasks.OpenTasks = context.ReportTasks.OpenTasks.OrderBy(task => task.Priority.id).ToList();
+                context.ReportTasks.OpenTasks = context.ReportTasks.OpenTasks.OrderBy(task => task.Priority.Id).ToList();
             if (context.ReportTasks.UnassignedTasksAll != null)
-                context.ReportTasks.UnassignedTasksAll = context.ReportTasks.UnassignedTasksAll.OrderBy(task => task.Priority.id).ToList();
+                context.ReportTasks.UnassignedTasksAll = context.ReportTasks.UnassignedTasksAll.OrderBy(task => task.Priority.Id).ToList();
         }
 
         List<JiraIssue> GetAditionalSprintIssues(JiraReport report, Sprint sprint)
@@ -155,7 +155,7 @@ namespace JiraReporter.Services
             if (sprint == null)
                 return new List<JiraIssue>();
 
-            return GetSprintTasks(report, sprint.Id.ToString()).issues;
+            return GetSprintTasks(report, sprint.Id.ToString()).Issues;
         }
 
         #region Static Helpers

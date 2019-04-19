@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace DailyReportWeb.Controllers
 {
-    public class AvatarController : Controller
+    public class AvatarController : BaseMvcController
     {
        public IDataService DataService { get; set; }
 

@@ -6,9 +6,9 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Jira.Filters;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
+using Equilobe.DailyReport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 
 namespace Equilobe.DailyReport.SL
@@ -56,8 +56,8 @@ namespace Equilobe.DailyReport.SL
             var options = GetUsers(jiraContext, project.Key)
                 .Select(user => new User
                 {
-                    JiraDisplayName = user.displayName,
-                    JiraUserKey = user.key
+                    JiraDisplayName = user.DisplayName,
+                    JiraUserKey = user.Key
                 })
                 .ToList();
 
@@ -83,6 +83,26 @@ namespace Equilobe.DailyReport.SL
             return new TimesheetGenerator(client).GetTimesheetIssuesForAuthor(context.ProjectKey, context.TargetUser, context.StartDate, context.EndDate);
         }
 
+        public List<JiraUser> GetAllUsers(JiraRequestContext context)
+        {
+            return GetClient(context).GetAllUsers();
+        }
+
+        public List<JiraIssue> GetWorklogsForMultipleUsers(JiraRequestContext context, List<string> authors, DateTime fromDate)
+        {
+            var startDate = fromDate.ToString("yyyy-MM-dd");
+            var worklogAuthors = string.Join(",", authors).Replace("@", "\\\\u0040");
+
+            return GetClient(context).GetWorklogsForMultipleUsers(worklogAuthors, startDate);
+        }
+
+        public List<long> GetDeletedWorklogsIds(JiraRequestContext context, DateTime since)
+        {
+            var unixTimestamp = DateTimeHelpers.ToUnixTimestamp(since.AddDays(-1));
+
+            return GetClient(context).GetDeletedWorklogsIds(unixTimestamp);
+        }
+
         public JiraUser GetUser(JiraRequestContext context, string username)
         {
             return GetClient(context).GetUser(username);
@@ -98,12 +118,12 @@ namespace Equilobe.DailyReport.SL
             return GetClient(context).GetIssue(issueKey);
         }
 
-        public JiraIssues GetCompletedIssues(IssuesContext context)
+        public JiraResponse<JiraIssue> GetCompletedIssues(IssuesContext context)
         {
             return GetClient(context.RequestContext).GetCompletedIssues(context.ProjectKey, context.StartDate, context.EndDate);
         }
 
-        public JiraIssues GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId)
+        public JiraResponse<JiraIssue> GetSprintTasks(JiraRequestContext context, string projectKey, string sprintId)
         {
             return GetClient(context).GetSprintTasks(projectKey, sprintId);
         }

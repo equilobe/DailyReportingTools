@@ -12,6 +12,15 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Local\</OutputPath>
+    <DefineConstants>LOCAL;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -46,9 +55,12 @@
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="CommandLine.cs" />
     <Compile Include="CommandLineText.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Ensure.cs" />
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="LinqExtensions.cs" />
     <Compile Include="RandomString.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="ReportDateFormatter.cs" />

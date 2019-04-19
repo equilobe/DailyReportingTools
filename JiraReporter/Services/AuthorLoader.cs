@@ -6,6 +6,7 @@ using Equilobe.DailyReport.Models.Jira;
 using Equilobe.DailyReport.Models.Policy;
 using Equilobe.DailyReport.Models.ReportFrame;
 using Equilobe.DailyReport.Models.Storage;
+using Equilobe.DailyReport.Utils;
 using JiraReporter.Helpers;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace JiraReporter.Services
 
         private bool UserIsNotIgnored(JiraUser u)
         {
-            var userJiraOptions = _policy.UserOptions.Find(user => user.JiraUserKey == u.key);
+            var userJiraOptions = _policy.UserOptions.Find(user => user.JiraUserKey == u.Key);
             if (userJiraOptions == null)
                 return true;
 
@@ -282,7 +283,11 @@ namespace JiraReporter.Services
         {
             foreach (var subtask in issue.SubtasksDetailed)
             {
-                subtask.Entries.RemoveAll(e => e.AuthorFullName != _currentAuthor.Name || e.StartDate < _context.FromDate || e.StartDate > _context.ToDate);
+                subtask.Entries
+                    .RemoveWhere(e => e.AuthorFullName != _currentAuthor.Name)
+                    .RemoveWhere(e => e.StartedAt < _context.FromDate)
+                    .RemoveWhere(e => e.StartedAt > _context.ToDate);
+
                 IssueAdapter.TimeSpentFromEntries(subtask);
                 IssueAdapter.SetTimeFormat(subtask);
             }
@@ -329,7 +334,7 @@ namespace JiraReporter.Services
             };
 
             if (_context.IssuePriorityEnabled)
-                _currentAuthor.InProgressTasks.Issues = _currentAuthor.InProgressTasks.Issues.OrderBy(task => task.Priority.id).ToList();
+                _currentAuthor.InProgressTasks.Issues = _currentAuthor.InProgressTasks.Issues.OrderBy(task => task.Priority.Id).ToList();
         }
 
         private void SetAuthorRemainingTasksSection()
@@ -360,7 +365,7 @@ namespace JiraReporter.Services
                     _currentTasksCount++;
 
                 issue.CopyPropertiesOnObjects(newIssue);
-                newIssue.Subtasks = new List<Subtask>();
+                newIssue.Subtasks = new List<JiraIssue>();
                 newIssue.SubtasksDetailed = new List<IssueDetailed>();
                 _currentAuthor.RemainingTasks.Issues.Add(newIssue);
 
@@ -464,7 +469,7 @@ namespace JiraReporter.Services
 
         private bool TaskIsNotFromSprint(IssueDetailed issue)
         {
-            return !_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i => i.key == issue.Key) && !issue.IsSubtask && !_context.ReportTasks.PastSprintTasks.Exists(t => t.key == issue.Key);
+            return !_context.ReportTasks.SprintTasksAll.Exists(t => t.Key == issue.Key) && !_context.ReportTasks.FutureSprintTasks.Exists(i => i.Key == issue.Key) && !issue.IsSubtask && !_context.ReportTasks.PastSprintTasks.Exists(t => t.Key == issue.Key);
         }
 
         private void SetNotConfirmedError()
@@ -536,7 +541,7 @@ namespace JiraReporter.Services
             };
 
             if (_context.IssuePriorityEnabled)
-                _currentAuthor.OpenTasks.Issues = _currentAuthor.OpenTasks.Issues.OrderBy(priority => priority.Priority.id).ToList();
+                _currentAuthor.OpenTasks.Issues = _currentAuthor.OpenTasks.Issues.OrderBy(priority => priority.Priority.Id).ToList();
         }
 
         private List<IssueDetailed> GetAuthorTasks(List<IssueDetailed> tasks)

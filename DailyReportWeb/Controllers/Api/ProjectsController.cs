@@ -15,7 +15,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class ProjectsController : ApiController
+    public class ProjectsController : BaseApiController
     {
         public ISettingsService SettingsService { get; set; }
         public ITaskSchedulerService TaskSchedulerService { get; set; }

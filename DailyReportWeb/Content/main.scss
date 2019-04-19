@@ -22,6 +22,27 @@
     margin-bottom: 30px;
 }
 
+.text-large {
+    font-size: 20px;
+}
+
+.text-color-red {
+    color: red;
+}
+
+.table {
+    margin-bottom: 0px;
+
+    tr:first-child td {
+        border-top: none;
+    }
+}
+
+.panel-body {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
 .logo {
     font-weight: bold;
     color: #000;

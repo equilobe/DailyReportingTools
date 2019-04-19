@@ -1,0 +1,27 @@
+﻿<div class="jumbotron jumbo">
+    <div class="container">
+        <h1>
+            Report Dashboard
+        </h1>
+        <p class="help-block" ng-if="reportCtrl.isLoading">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...
+        </p>
+        <p class="help-block" ng-if="!reportCtrl.isLoading">
+            Use this page to view the activity of the users within the instance
+        </p>
+    </div>
+</div>
+
+<div class="container mg-btm-30">
+    <div ng-repeat="dashboardItem in reportCtrl.data" ng-if="$index % 3 == 0" class="row">
+        <div class="col-sm-4" ng-repeat="dashboardItem in reportCtrl.data.slice($index, ($index + 3 > reportCtrl.data.length ? reportCtrl.length : $index + 3))" ng-include="reportCtrl.reportCardHtml"></div>
+    </div>
+</div>
+
+<br />
+
+<div class="container hcenter" ng-if="isAuth">
+    <button class="btn btn-success btn-lg" ng-click="reportCtrl.actions.updateDashboardData()" ng-disabled="reportCtrl.isLoading">
+        Update Dashboard Data
+    </button>
+</div>

@@ -59,6 +59,8 @@ namespace Equilobe.DailyReport.SL
                 {
                     installedInstance = new InstalledInstance();
                     installedInstance.ExpirationDate = DateTime.MaxValue;
+                    installedInstance.UniqueKey = RandomString.Get();
+                    installedInstance.Hash = RandomString.Get();
                     db.InstalledInstances.Add(installedInstance);
                     installedInstance.UserId = user.Id;
                 }
@@ -160,6 +162,14 @@ namespace Equilobe.DailyReport.SL
                                                     .Single(i => i.Id == instanceId);
 
                 return instance;
+            }
+        }
+
+        public InstalledInstance GetInstanceByKey(string instanceUniqueKey)
+        {
+            using (var db = new ReportsDb())
+            {
+                return db.InstalledInstances.SingleOrDefault(p => p.UniqueKey == instanceUniqueKey);
             }
         }
 
@@ -438,6 +448,18 @@ namespace Equilobe.DailyReport.SL
         {
             var timeZoneId = GetTimeZoneIdFromProjectKey(key);
             return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
+        }
+
+        public TimeSpan GetOffsetFromInstanceId(long instanceId)
+        {
+            using (var db = new ReportsDb())
+            {
+                var timeZoneId = db.InstalledInstances
+                    .First(p => p.Id == instanceId)
+                    .TimeZone;
+
+                return TimeZoneHelpers.GetOffsetFromTimezoneId(timeZoneId);
+            }
         }
 
         public List<Subscription> GetInstanceSubscriptions(long instanceId)

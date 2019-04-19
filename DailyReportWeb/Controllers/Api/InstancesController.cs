@@ -13,7 +13,7 @@ using System.Web.Http;
 namespace DailyReportWeb.Controllers.Api
 {
     [Authorize]
-    public class InstancesController : ApiController
+    public class InstancesController : BaseApiController
     {
         public IDataService DataService { get; set; }
         public IJiraService JiraService { get; set; }
